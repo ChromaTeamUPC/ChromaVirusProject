@@ -1,0 +1,157 @@
+fileFormatVersion: 2
+guid: f88c4e168cd00b74b9fcc924ce4e48f4
+timeCreated: 1462350614
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Aracnobot
+    100002: //RootNode
+    100004: BocaDreta
+    100006: BocaDretaJuntura
+    100008: BocaDretaPunta
+    100010: BocaEsquerra
+    100012: BocaEsquerraJuntura
+    100014: BocaEsquerraPunta
+    100016: CamaDretaDebant
+    100018: CamaDretaMitg
+    100020: CamaDretaRedera
+    100022: CamaEsquerraDebant
+    100024: CamaEsquerraMitg
+    100026: CamaEsquerraRedera
+    100028: Centre
+    100030: Cul1
+    100032: EngranatgeCentre
+    100034: EngranatgeDretaDebant
+    100036: EngranatgeDretaMitg
+    100038: EngranatgeDretaRedera
+    100040: EngranatgeEsquerraDebant
+    100042: EngranatgeEsquerraMitg
+    100044: EngranatgeEsquerraRedera
+    100046: ikHandle1
+    100048: ikHandle2
+    100050: ikHandle3
+    100052: ikHandle4
+    100054: ikHandle5
+    100056: ikHandle6
+    100058: ikHandle7
+    100060: ikHandle8
+    100062: nurbsCircle13
+    100064: nurbsCircle25
+    100066: nurbsCircle26
+    100068: nurbsCircle27
+    100070: PuntaDretaDebant
+    100072: PuntaDretaMitg
+    100074: PuntaDretaRedera
+    100076: PuntaEsquerraDebant
+    100078: PuntaEsquerraMitg
+    100080: PuntaEsquerraRedera
+    400000: Aracnobot
+    400002: //RootNode
+    400004: BocaDreta
+    400006: BocaDretaJuntura
+    400008: BocaDretaPunta
+    400010: BocaEsquerra
+    400012: BocaEsquerraJuntura
+    400014: BocaEsquerraPunta
+    400016: CamaDretaDebant
+    400018: CamaDretaMitg
+    400020: CamaDretaRedera
+    400022: CamaEsquerraDebant
+    400024: CamaEsquerraMitg
+    400026: CamaEsquerraRedera
+    400028: Centre
+    400030: Cul1
+    400032: EngranatgeCentre
+    400034: EngranatgeDretaDebant
+    400036: EngranatgeDretaMitg
+    400038: EngranatgeDretaRedera
+    400040: EngranatgeEsquerraDebant
+    400042: EngranatgeEsquerraMitg
+    400044: EngranatgeEsquerraRedera
+    400046: ikHandle1
+    400048: ikHandle2
+    400050: ikHandle3
+    400052: ikHandle4
+    400054: ikHandle5
+    400056: ikHandle6
+    400058: ikHandle7
+    400060: ikHandle8
+    400062: nurbsCircle13
+    400064: nurbsCircle25
+    400066: nurbsCircle26
+    400068: nurbsCircle27
+    400070: PuntaDretaDebant
+    400072: PuntaDretaMitg
+    400074: PuntaDretaRedera
+    400076: PuntaEsquerraDebant
+    400078: PuntaEsquerraMitg
+    400080: PuntaEsquerraRedera
+    4300000: Aracnobot
+    7400000: SpawnFloor
+    9500000: //RootNode
+    13700000: Aracnobot
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

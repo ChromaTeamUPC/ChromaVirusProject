@@ -1,0 +1,32 @@
+fileFormatVersion: 2
+guid: 68452a8d2d1994f44bff78f5e8b31b09
+timeCreated: 1461622129
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - platform1Red: {fileID: 2100000, guid: 5d6462c6a992c49419f98c5fa57aa20a, type: 2}
+  - platform1Green: {fileID: 2100000, guid: d27566f4e7037b541bca477f0b5a24e5, type: 2}
+  - platform1Blue: {fileID: 2100000, guid: 5c9d69c6ea96dd3409e0350fed6a9a18, type: 2}
+  - platform1Yellow: {fileID: 2100000, guid: 5367a81e5bee1b7499bc7635c5d9d136, type: 2}
+  - player1Red: {fileID: 2100000, guid: 7bf5507072e83974cac33dddac3f017e, type: 2}
+  - player1Green: {fileID: 2100000, guid: 55ab9cb30570e7f419a0a90129c61314, type: 2}
+  - player1Blue: {fileID: 2100000, guid: 8ff7421d527226f469511a8b1257bd3f, type: 2}
+  - player1Yellow: {fileID: 2100000, guid: 0a00f0c967f4ba94fa848c41bddfcb85, type: 2}
+  - playerShotRed: {fileID: 2100000, guid: 77dbe2943e0718e4397bf8bc7cbe99f7, type: 2}
+  - playerShotGreen: {fileID: 2100000, guid: a0c7bd91c743bd34ca47af336035ae7c, type: 2}
+  - playerShotBlue: {fileID: 2100000, guid: a2d4cd985a20e6745adcdef9f779c155, type: 2}
+  - playerShotYellow: {fileID: 2100000, guid: 37402accb5f28bc41af2b6ba51ccf386, type: 2}
+  - voxelRed: {fileID: 2100000, guid: 2175cb69aeb8e9140bb4ca70e2b9214b, type: 2}
+  - voxelBlue: {fileID: 2100000, guid: 8c713e3f1f29ad644849e706476d337e, type: 2}
+  - voxelGreen: {fileID: 2100000, guid: 6a2e98f41a08dea498b636479d447c6f, type: 2}
+  - voxelYellow: {fileID: 2100000, guid: 4b88bd14fb80aa44bb23aebc040a5fa4, type: 2}
+  - spiderRed: {fileID: 2100000, guid: 28e60b89567288a449540a14ab9c92d9, type: 2}
+  - spiderGreen: {fileID: 2100000, guid: d1cce6cd4bd032749a6bd4c6af9252c9, type: 2}
+  - spiderBlue: {fileID: 2100000, guid: 8374d47e529607e47bb31cc677a75df7, type: 2}
+  - spiderYellow: {fileID: 2100000, guid: f56d0857f29c76649b1fd837b2439502, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

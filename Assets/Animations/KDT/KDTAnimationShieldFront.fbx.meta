@@ -1,0 +1,290 @@
+fileFormatVersion: 2
+guid: dd49963bde4a4da4dbdd84a03b3755e1
+timeCreated: 1461495897
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Auriculars
+    100002: "Bra\xE7Dreta"
+    100004: "Bra\xE7Esquerra"
+    100006: CamaDreta
+    100008: CamaEsquerra
+    100010: Cap
+    100012: ColseDreta
+    100014: ColseEsquerra
+    100016: Cos
+    100018: "Ctrl_Bra\xE7_Dreta"
+    100020: Ctrl_Cos
+    100022: Ctrl_Escut
+    100024: Ctrl_Global
+    100026: Ctrl_Hombro_Dreta
+    100028: Ctrl_Hombros
+    100030: Ctrl_Ma_Dreta
+    100032: DitGordo2Dreta
+    100034: DitGordo2Esquerra
+    100036: DitGordo3Dreta
+    100038: DitGordo3Esquerra
+    100040: DitGordo4Dreta
+    100042: DitGordo4Esquerra
+    100044: DitGordoDreta
+    100046: DitGordoEsquerra
+    100048: Dits2Dreta
+    100050: Dits2Esquerra
+    100052: Dits3Dreta
+    100054: Dits3Esquerra
+    100056: DitsDreta
+    100058: DitsEsquerra
+    100060: GenollDreta
+    100062: GenollEsquerra
+    100064: ikHandle1
+    100066: ikHandle2
+    100068: ikHandle3
+    100070: ikHandle4
+    100072: KDT
+    100074: KDT_Shield
+    100076: //RootNode
+    100078: MaDreta
+    100080: MaEsquerra
+    100082: Pantxa
+    100084: Pelvis
+    100086: PeuDreta
+    100088: PeuEsquerra
+    100090: Pit
+    400000: Auriculars
+    400002: "Bra\xE7Dreta"
+    400004: "Bra\xE7Esquerra"
+    400006: CamaDreta
+    400008: CamaEsquerra
+    400010: Cap
+    400012: ColseDreta
+    400014: ColseEsquerra
+    400016: Cos
+    400018: "Ctrl_Bra\xE7_Dreta"
+    400020: Ctrl_Cos
+    400022: Ctrl_Escut
+    400024: Ctrl_Global
+    400026: Ctrl_Hombro_Dreta
+    400028: Ctrl_Hombros
+    400030: Ctrl_Ma_Dreta
+    400032: DitGordo2Dreta
+    400034: DitGordo2Esquerra
+    400036: DitGordo3Dreta
+    400038: DitGordo3Esquerra
+    400040: DitGordo4Dreta
+    400042: DitGordo4Esquerra
+    400044: DitGordoDreta
+    400046: DitGordoEsquerra
+    400048: Dits2Dreta
+    400050: Dits2Esquerra
+    400052: Dits3Dreta
+    400054: Dits3Esquerra
+    400056: DitsDreta
+    400058: DitsEsquerra
+    400060: GenollDreta
+    400062: GenollEsquerra
+    400064: ikHandle1
+    400066: ikHandle2
+    400068: ikHandle3
+    400070: ikHandle4
+    400072: KDT
+    400074: KDT_Shield
+    400076: //RootNode
+    400078: MaDreta
+    400080: MaEsquerra
+    400082: Pantxa
+    400084: Pelvis
+    400086: PeuDreta
+    400088: PeuEsquerra
+    400090: Pit
+    2300000: KDT_Shield
+    3300000: KDT_Shield
+    4300000: KDT
+    4300002: KDT_Shield
+    7400000: ShieldFront
+    9500000: //RootNode
+    13700000: KDT
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: ShieldFront
+      takeName: ShieldFront
+      firstFrame: 61
+      lastFrame: 110
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Ctrl_Global
+        weight: 1
+      - path: Ctrl_Global/Ctrl_Cos
+        weight: 1
+      - path: Ctrl_Global/Ctrl_Cos/Ctrl_Hombros
+        weight: 1
+      - path: Ctrl_Global/Ctrl_Cos/Ctrl_Hombros/Ctrl_Hombro_Dreta
+        weight: 1
+      - path: Ctrl_Global/Ctrl_Cos/Ctrl_Hombros/Ctrl_Hombro_Dreta/Ctrl_Ma_Dreta
+        weight: 1
+      - path: "Ctrl_Global/Ctrl_Cos/Ctrl_Hombros/Ctrl_Hombro_Dreta/Ctrl_Ma_Dreta/Ctrl_Bra\xE7_Dreta"
+        weight: 1
+      - path: "Ctrl_Global/Ctrl_Cos/Ctrl_Hombros/Ctrl_Hombro_Dreta/Ctrl_Ma_Dreta/Ctrl_Bra\xE7_Dreta/Ctrl_Escut"
+        weight: 1
+      - path: "Ctrl_Global/Ctrl_Cos/Ctrl_Hombros/Ctrl_Hombro_Dreta/Ctrl_Ma_Dreta/Ctrl_Bra\xE7_Dreta/Ctrl_Escut/KDT_Shield"
+        weight: 1
+      - path: ikHandle1
+        weight: 1
+      - path: ikHandle2
+        weight: 1
+      - path: ikHandle3
+        weight: 1
+      - path: ikHandle4
+        weight: 1
+      - path: KDT
+        weight: 1
+      - path: Pantxa
+        weight: 1
+      - path: Pantxa/Cos
+        weight: 1
+      - path: Pantxa/Cos/Pit
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta/DitGordoDreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta/DitGordoDreta/DitGordo2Dreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta/DitGordoDreta/DitGordo2Dreta/DitGordo3Dreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta/DitGordoDreta/DitGordo2Dreta/DitGordo3Dreta/DitGordo4Dreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta/DitsDreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta/DitsDreta/Dits2Dreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta/DitsDreta/Dits2Dreta/Dits3Dreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra/DitGordoEsquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra/DitGordoEsquerra/DitGordo2Esquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra/DitGordoEsquerra/DitGordo2Esquerra/DitGordo3Esquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra/DitGordoEsquerra/DitGordo2Esquerra/DitGordo3Esquerra/DitGordo4Esquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra/DitsEsquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra/DitsEsquerra/Dits2Esquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra/DitsEsquerra/Dits2Esquerra/Dits3Esquerra"
+        weight: 1
+      - path: Pantxa/Cos/Pit/Cap
+        weight: 1
+      - path: Pantxa/Cos/Pit/Cap/Auriculars
+        weight: 1
+      - path: Pantxa/Pelvis
+        weight: 1
+      - path: Pantxa/Pelvis/CamaDreta
+        weight: 1
+      - path: Pantxa/Pelvis/CamaDreta/GenollDreta
+        weight: 1
+      - path: Pantxa/Pelvis/CamaDreta/GenollDreta/PeuDreta
+        weight: 1
+      - path: Pantxa/Pelvis/CamaEsquerra
+        weight: 1
+      - path: Pantxa/Pelvis/CamaEsquerra/GenollEsquerra
+        weight: 1
+      - path: Pantxa/Pelvis/CamaEsquerra/GenollEsquerra/PeuEsquerra
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 61
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
