@@ -45,6 +45,7 @@ public class MainMenuManager : MonoBehaviour {
         DisableMainButtons();      
         currentState = MainMenuState.FadingIn;
         fadeScript.StartFadingToClear(Color.black, 1f);
+        rsc.audioMng.FadeInMainMenuMusic();
     }
 
     // Update is called once per frame
@@ -144,12 +145,18 @@ public class MainMenuManager : MonoBehaviour {
         }
     }
 
+    private void FadeOut()
+    {
+        fadeScript.StartFadingToColor(2f);
+        rsc.audioMng.FadeOutMainMenuMusic(1.5f);
+    }
+
     public void Select1Player()
     {
         playersNumber = 1;
         DisablePlayerSelectionButtons();
         currentState = MainMenuState.FadingToGame;
-        fadeScript.StartFadingToColor();      
+        FadeOut();
     }
 
     public void Select2Players()
@@ -157,7 +164,7 @@ public class MainMenuManager : MonoBehaviour {
         playersNumber = 2;
         DisablePlayerSelectionButtons();
         currentState = MainMenuState.FadingToGame;
-        fadeScript.StartFadingToColor();     
+        FadeOut();
     }
 
     public void OnClickHelp()
@@ -170,7 +177,7 @@ public class MainMenuManager : MonoBehaviour {
     public void OnClickCredits()
     {
         currentState = MainMenuState.FadingToCredits;
-        fadeScript.StartFadingToColor();      
+        FadeOut();
     }
 
     public void OnClickExit()

@@ -52,6 +52,7 @@ public class Level01Controller : MonoBehaviour
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
 
         fadeScript.StartFadingToClear();
+        rsc.audioMng.FadeInMainMusic();
 	}
 
     void OnDestroy()
