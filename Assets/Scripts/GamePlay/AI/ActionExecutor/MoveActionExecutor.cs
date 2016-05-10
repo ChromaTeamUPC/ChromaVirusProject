@@ -78,9 +78,11 @@ public class MoveActionExecutor: BaseExecutor
             state.agent.destination = state.target.transform.position + direction;
         }
 
+
         if ((state.agent.hasPath && state.agent.remainingDistance <= 1f)
             || (moveAction.maxTime > 0 && elapsedTime > moveAction.maxTime))
         {
+            Debug.Log(state.agent.remainingDistance);
             if (!moveAction.inertia)
                 state.agent.velocity = Vector3.zero;
 

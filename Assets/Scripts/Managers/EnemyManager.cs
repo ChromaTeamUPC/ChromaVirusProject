@@ -260,6 +260,8 @@ public class EnemyManager : MonoBehaviour {
         level01Z01spiderDefault03.Add(new SelectTargetAIAction("player"));
         level01Z01spiderDefault03.Add(new MoveAIAction("player", 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 0, 3f));
         level01Z01spiderDefault03.Add(new MoveAIAction("player", 20.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 20, 6f, false, 1f));
+        level01Z01spiderDefault03.Add(new MoveAIAction("player", 8.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z01spiderDefault03.Add(new SpiderBiteAIAction(2f, 1));
         level01Z01spiderDefault03.Add(new MoveAIAction("player", 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -20, 10f, false, 6f, 1));
 
         level01Z01spiderDefault04.Add(new MoveAIAction("Z01WP07", 10f, true));
@@ -401,7 +403,7 @@ public class EnemyManager : MonoBehaviour {
         z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderDefault01, null, null, 0.5f));
         plan0101.sequentialWaves.Add(z01wave01);
 
-        /*List<WaveAction> z01wave02 = new List<WaveAction>();
+        List<WaveAction> z01wave02 = new List<WaveAction>();
         z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderDefault02, null, null));
         z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderDefault02, null, null, 0.5f));
         z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderDefault02, null, null, 0.5f));
@@ -469,7 +471,7 @@ public class EnemyManager : MonoBehaviour {
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP01", level01Z01spiderDefault07, null, null, 0.3f));
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP01", level01Z01spiderDefault07, null, null, 0.3f));
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP01", level01Z01spiderDefault07, null, null, 0.3f));
-        plan0101.sequentialWaves.Add(z01wave07);*/
+        plan0101.sequentialWaves.Add(z01wave07);
 
         ////plan0102---------------------------------------------------------------------------------------------------------------
         plan0102 = new ZonePlan();
