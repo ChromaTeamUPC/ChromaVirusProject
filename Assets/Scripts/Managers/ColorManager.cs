@@ -125,10 +125,15 @@ public class ColorManager : MonoBehaviour
     {
         ChromaColor newColor;
 
-        //If there is no color enemies in the scene, random color change
+        //If there is no color enemies in the scene, standard sequence
         if (TotalColorItems() == 0)
         {
-            newColor = ChromaColorInfo.Random;
+            newColor = currentColor;
+
+            if (newColor == ChromaColorInfo.Last)
+                newColor = ChromaColorInfo.First;
+            else
+                newColor++;
         }
         else
         {

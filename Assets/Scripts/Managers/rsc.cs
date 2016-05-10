@@ -7,6 +7,7 @@ public class rsc : MonoBehaviour
     //Objects maintained between scenes
     public static DebugManager debugMng;
     public static EventManager eventMng;
+    public static AudioManager audioMng;
     public static EnemyManager enemyMng;
     public static PoolManager poolMng;
     public static ColorManager colorMng;
@@ -45,6 +46,8 @@ public class rsc : MonoBehaviour
     private DebugManager debugManager;
     [SerializeField]
     private EventManager eventManager;
+    [SerializeField]
+    private AudioManager audioManager;
     [SerializeField]
     private EnemyManager enemyManager;
     [SerializeField]
@@ -88,6 +91,12 @@ public class rsc : MonoBehaviour
             {
                 Debug.Log("Storing Event Manager");
                 eventMng = eventManager;
+            }
+
+            if (audioMng == null)
+            {
+                Debug.Log("Storing Audio Manager");
+                audioMng = audioManager;
             }
 
             if (enemyMng == null)

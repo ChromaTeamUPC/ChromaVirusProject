@@ -17,12 +17,10 @@ public class CreditsController : MonoBehaviour {
 
     public Transform credits;
     public Transform copyright;
-    public AudioSource music;
     public float initialDelay = 3f;
     public float crawlingSpeed = 1f;
     public float finalDelay = 3f;
 
-    private float volumeFadeTime;
     private float waitingTime;
 
 	// Use this for initialization
@@ -30,6 +28,7 @@ public class CreditsController : MonoBehaviour {
     {
         currentState = CreditsState.FadingIn;
         fadeScript.StartFadingToClear();
+        rsc.audioMng.FadeInCreditsMusic(1.5f);
 	}
 	
 	// Update is called once per frame
@@ -68,7 +67,7 @@ public class CreditsController : MonoBehaviour {
                 if (waitingTime > finalDelay)
                 {
                     fadeScript.StartFadingToColor(Color.black, 4f);
-                    volumeFadeTime = 0f;
+                    rsc.audioMng.FadeOutCreditsMusic(4f);
                     currentState = CreditsState.FadingOut;
                 }
                 break;
@@ -76,8 +75,6 @@ public class CreditsController : MonoBehaviour {
             case CreditsState.FadingOut:
                 //Continue crawling
                 //credits.Translate(Vector3.up * Time.deltaTime * crawlingSpeed);
-                volumeFadeTime += Time.deltaTime;
-                music.volume = Mathf.Lerp(1, 0, 1 / 4f * volumeFadeTime);
 
                 if (!fadeScript.FadingToColor)
                 {
@@ -89,7 +86,7 @@ public class CreditsController : MonoBehaviour {
         if (Input.GetButtonDown("Back"))
         {
             fadeScript.StartFadingToColor(Color.black, 2f);
-            volumeFadeTime = 0f;
+            rsc.audioMng.FadeOutCreditsMusic(2f);
             currentState = CreditsState.FadingOut;
         }
     }

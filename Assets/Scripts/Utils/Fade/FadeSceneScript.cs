@@ -41,6 +41,11 @@ public class FadeSceneScript : MonoBehaviour {
         StartFadingToClear(defaultFadeColor, defaultFadeSeconds);
     }
 
+    public void StartFadingToClear(float fadeSeconds)
+    {
+        StartFadingToClear(defaultFadeColor, fadeSeconds);
+    }
+
     public void StartFadingToClear(Color initialColor, float fadeSeconds)
     {
         curtain.color = initialColor;
@@ -58,6 +63,11 @@ public class FadeSceneScript : MonoBehaviour {
     public void StartFadingToColor()
     {
         StartFadingToColor(defaultFadeColor, defaultFadeSeconds);
+    }
+
+    public void StartFadingToColor(float fadeSeconds)
+    {
+        StartFadingToColor(defaultFadeColor, fadeSeconds);
     }
 
     public void StartFadingToColor(Color finalColor, float fadeSeconds)
