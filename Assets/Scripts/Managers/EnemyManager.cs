@@ -94,11 +94,13 @@ public class EnemyManager : MonoBehaviour {
     private void EnemySpawned(EventInfo eventInfo)
     {
         ++enemies;
+        Debug.Log("Enemies++ = " + enemies);
     }
 
     private void EnemyDied(EventInfo eventInfo)
     {
         --enemies;
+        Debug.Log("Enemies-- = " + enemies);
     }
 
     private void TurretSpawned(EventInfo eventInfo)
@@ -184,11 +186,13 @@ public class EnemyManager : MonoBehaviour {
 
         foreach(WaveAction action in actions)
         {
-            if(action.Delay > 0)
+            if(action.InitialDelay > 0)
             {
-                yield return new WaitForSeconds(action.Delay);
+                yield return new WaitForSeconds(action.InitialDelay);
             }
             action.Execute();
+            while (action.Executing)
+                yield return null;
         }
 
         --executingWaves;
@@ -227,9 +231,27 @@ public class EnemyManager : MonoBehaviour {
         }
     }
 
-    public GameObject SelectTarget()
+    public GameObject SelectTarget(GameObject origin)
     {
-        return rsc.gameInfo.player1;
+        if(rsc.gameInfo.numberOfPlayers == 1)
+            return rsc.gameInfo.player1;
+        else
+        {
+            //If both players active, return the closest one
+            if (rsc.gameInfo.player1Controller.Active && rsc.gameInfo.player2Controller.Active)
+            {
+                float toPlayer1 = (origin.transform.position - rsc.gameInfo.player1.transform.position).magnitude;
+                float toPlayer2 = (origin.transform.position - rsc.gameInfo.player2.transform.position).magnitude;
+                if (toPlayer2 > toPlayer1)
+                    return rsc.gameInfo.player2;
+                else
+                    return rsc.gameInfo.player1;
+            }
+            else if (rsc.gameInfo.player2Controller.Active)
+                return rsc.gameInfo.player2;
+            else
+                return rsc.gameInfo.player1;
+        }
     }
 
 
@@ -395,38 +417,38 @@ public class EnemyManager : MonoBehaviour {
         plan0101.enemiesThreshold = 1;
 
         List<WaveAction> z01wave01 = new List<WaveAction>();
-        z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderDefault01, null, null));
+        z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderDefault01, null, null, 0f, 6, 1f));
+        /*z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderDefault01, null, null, 0.5f));
         z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderDefault01, null, null, 0.5f));
         z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderDefault01, null, null, 0.5f));
         z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderDefault01, null, null, 0.5f));
-        z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderDefault01, null, null, 0.5f));
-        z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderDefault01, null, null, 0.5f));
+        z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderDefault01, null, null, 0.5f));*/
         plan0101.sequentialWaves.Add(z01wave01);
 
         List<WaveAction> z01wave02 = new List<WaveAction>();
-        z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderDefault02, null, null));
+        z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderDefault02, null, null, 0f, 6, 1f));
+        /*z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderDefault02, null, null, 0.5f));
         z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderDefault02, null, null, 0.5f));
         z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderDefault02, null, null, 0.5f));
         z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderDefault02, null, null, 0.5f));
-        z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderDefault02, null, null, 0.5f));
-        z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderDefault02, null, null, 0.5f));
+        z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderDefault02, null, null, 0.5f));*/
         plan0101.sequentialWaves.Add(z01wave02);
 
         List<WaveAction> z01wave03 = new List<WaveAction>();
-        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP03", level01Z01spiderDefault03, null, null));
-        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP03", level01Z01spiderDefault03, null, null, 0.5f));
-        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP03", level01Z01spiderDefault03, null, null, 0.5f));
+        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP03", level01Z01spiderDefault03, null, null, 0f, 3, 1f));
+        /*z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP03", level01Z01spiderDefault03, null, null, 0.5f));
+        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP03", level01Z01spiderDefault03, null, null, 0.5f));*/
 
-        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", level01Z01spiderDefault03, null, null, 1f));
-        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", level01Z01spiderDefault03, null, null, 0.5f));
-        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", level01Z01spiderDefault03, null, null, 0.5f));
+        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", level01Z01spiderDefault03, null, null, 3f, 3, 1f));
+        /*z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", level01Z01spiderDefault03, null, null, 0.5f));
+        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", level01Z01spiderDefault03, null, null, 0.5f));*/
 
-        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z01SP02", level01Z01spiderDefault03, null, null, 1f));
-        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z01SP02", level01Z01spiderDefault03, null, null, 0.5f));
-        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z01SP02", level01Z01spiderDefault03, null, null, 0.5f));
+        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z01SP02", level01Z01spiderDefault03, null, null, 3f, 3, 1f));
+        /*z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z01SP02", level01Z01spiderDefault03, null, null, 0.5f));
+        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z01SP02", level01Z01spiderDefault03, null, null, 0.5f));*/
         plan0101.sequentialWaves.Add(z01wave03);
 
-        List<WaveAction> z01wave04 = new List<WaveAction>();
+        /*List<WaveAction> z01wave04 = new List<WaveAction>();
         z01wave04.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP03", level01Z01spiderDefault04, null, null));
         z01wave04.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP03", level01Z01spiderDefault04, null, null, 0.5f));
         z01wave04.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP03", level01Z01spiderDefault04, null, null, 0.5f));
