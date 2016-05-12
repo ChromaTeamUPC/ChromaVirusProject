@@ -137,22 +137,37 @@ public class ColorManager : MonoBehaviour
         }
         else
         {
-            newColor = currentColor;
-            // control disabled at the moment
-            ////Search first color in loop that has items
-            do
+            //If there is only one color of enemies, change between that color and a random one
+            if (TotalColorsWithItems() == 1)
             {
-                if (newColor == ChromaColorInfo.Last)
-                    newColor = ChromaColorInfo.First;
-                else
-                    newColor++;
-            }
-            while (colorCount[(int)newColor] <= 0);
+                ChromaColor itemsColor = GetFirstColorWithItems();
 
-            //if (newColor == ChromaColorInfo.Last)
-            //    newColor = ChromaColorInfo.First;
-            //else
-            //    newColor++;
+                if (currentColor != itemsColor)
+                    newColor = itemsColor;
+                else
+                {
+                    do
+                    {
+                        newColor = ChromaColorInfo.Random;
+                    }
+                    while (newColor == itemsColor);
+                }
+            }
+            //If there is more than one color of enemies, change between their colors
+            else
+            {
+                newColor = currentColor;
+
+                ////Search first color in loop that has items
+                do
+                {
+                    if (newColor == ChromaColorInfo.Last)
+                        newColor = ChromaColorInfo.First;
+                    else
+                        newColor++;
+                }
+                while (colorCount[(int)newColor] <= 0);
+            }
         }
 
         if (currentColor != newColor)
@@ -160,6 +175,26 @@ public class ColorManager : MonoBehaviour
             currentColor = newColor;
             SendColorEvent();
         }
+    }
+
+    private ChromaColor GetFirstColorWithItems()
+    {
+        for (int i = 0; i < colorCount.Length; ++i)
+            if (colorCount[i] > 0)
+                return (ChromaColor)i;
+
+        return ChromaColorInfo.Random;
+    }
+
+    private int TotalColorsWithItems()
+    {
+        int result = 0;
+
+        for (int i = 0; i < colorCount.Length; ++i)
+            if (colorCount[i] > 0)
+                ++result;
+
+        return result;
     }
 
     private int TotalColorItems()

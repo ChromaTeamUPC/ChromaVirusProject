@@ -17,6 +17,10 @@ public class Level01Controller : MonoBehaviour
     public Transform zone2PlayerSpawnPoint;
     public Transform zone3PlayerSpawnPoint;
 
+    public SpawnerController zone2spawner1;
+    public SpawnerController zone3spawner1;
+    public SpawnerController zone3spawner2;
+
     [SerializeField]
     private FadeSceneScript fadeScript;
 
@@ -70,6 +74,18 @@ public class Level01Controller : MonoBehaviour
         ZoneReachedInfo info = (ZoneReachedInfo)eventInfo;
         currentZone = info.zoneId;
         rsc.enemyMng.StartPlan(currentZone);
+        switch (currentZone)
+        {
+            case 102:
+                zone2spawner1.Activate();
+                break;
+            case 103:
+                zone3spawner1.Activate();
+                zone3spawner2.Activate();
+                break;
+            default:
+                break;
+        }
     }
 
     private void ZonePlanFinished(EventInfo eventInfo)
@@ -84,7 +100,7 @@ public class Level01Controller : MonoBehaviour
 
             case 102:
                 wallZone02.SetActive(false);
-                wallZone03.SetActive(false);
+                wallZone03.SetActive(false);               
                 break;
 
             case 103:

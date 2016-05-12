@@ -4,11 +4,14 @@ using System.Collections;
 public class PlayerBaseState
 {   
     protected PlayerController player;
+    protected bool animationEnded;
 
 	public virtual void Init(PlayerController controller)
     {
         player = controller;
     }
+
+    public virtual void AnimationEnded() { animationEnded = true; }
 
     public virtual void OnStateEnter() { }
 

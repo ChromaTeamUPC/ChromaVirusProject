@@ -5,6 +5,8 @@ public class AudioManager : MonoBehaviour {
 
     public float defaultFadeSeconds;
 
+    public float musicMaxVolume = 1f;
+
     [SerializeField]
     private AudioSource mainMenuMusic;
     [SerializeField]
@@ -20,6 +22,8 @@ public class AudioManager : MonoBehaviour {
     private BeatSynchronizer beatSynchronizer;
     [SerializeField]
     private BeatCounter beatCounter;
+
+
 
     #region COMMON_MUSICS
     //Main menu music
@@ -85,15 +89,15 @@ public class AudioManager : MonoBehaviour {
                     fadeSpeed = 1 / fadeSeconds;
                     music.volume = 0;
 
-                    while (music.volume < 0.975f)
+                    while (music.volume < musicMaxVolume - 0.025f) 
                     {
                         fadeTime += Time.deltaTime;
-                        music.volume = Mathf.Lerp(0, 1, fadeSpeed * fadeTime);
+                        music.volume = Mathf.Lerp(0, musicMaxVolume, fadeSpeed * fadeTime);
                         yield return null;
                     }
                 }
 
-                music.volume = 1;
+                music.volume = musicMaxVolume;
             }
         }
         else
@@ -179,15 +183,15 @@ public class AudioManager : MonoBehaviour {
                     fadeSpeed = 1 / fadeSeconds;
                     gamePlayMusicTrak1.volume = 0;
 
-                    while (gamePlayMusicTrak1.volume < 0.975f)
+                    while (gamePlayMusicTrak1.volume < musicMaxVolume - 0.025f)
                     {
                         fadeTime += Time.deltaTime;
-                        gamePlayMusicTrak1.volume = Mathf.Lerp(0, 1, fadeSpeed * fadeTime);
+                        gamePlayMusicTrak1.volume = Mathf.Lerp(0, musicMaxVolume, fadeSpeed * fadeTime);
                         yield return null;
                     }
                 }
 
-                gamePlayMusicTrak1.volume = 1;
+                gamePlayMusicTrak1.volume = musicMaxVolume;
             }
         }
         else

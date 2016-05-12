@@ -13,6 +13,7 @@ public class rsc : MonoBehaviour
     public static ColorManager colorMng;
     public static ColoredObjectsManager coloredObjectsMng;
     public static GameManager gameMng;
+    public static CoroutineHelper coroutineHlp;
 
     public static GameInfo gameInfo;
 
@@ -58,6 +59,8 @@ public class rsc : MonoBehaviour
     private ColoredObjectsManager coloredObjectsManager;
     [SerializeField]
     private GameManager gameManager;
+    [SerializeField]
+    private CoroutineHelper coroutineHelper;
 
     [SerializeField]
     private GameObject player1prefab;
@@ -127,6 +130,12 @@ public class rsc : MonoBehaviour
             {
                 Debug.Log("Storing Game Manager");
                 gameMng = gameManager;
+            }
+
+            if(coroutineHlp == null)
+            {
+                Debug.Log("Storing Coroutine Helper");
+                coroutineHlp = coroutineHelper;
             }
 
             if (gameInfo == null)

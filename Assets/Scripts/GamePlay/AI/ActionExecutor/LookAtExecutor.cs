@@ -21,7 +21,7 @@ public class LookAtExecutor : BaseExecutor
         }
         else if (!state.target.activeSelf)
         {
-            state.target = rsc.enemyMng.SelectTarget();
+            state.target = rsc.enemyMng.SelectTarget(state.parent.gameObject);
         }
 
         direction = state.target.transform.position - state.agent.transform.position;

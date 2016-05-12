@@ -3,16 +3,22 @@ using System.Collections;
 
 public class PlayerLongIdleState : PlayerBaseState {
 
+    private int idleHash, idle2Hash;
+    private int loopedTimes;
+
     public override void OnStateEnter()
     {
         Debug.Log("Long Idle state");
+
         //select random idle animation
-        //play animation
+        player.animator.SetTrigger("LongIdle");
+        animationEnded = false;
     }
 
     public override PlayerBaseState Update()
     {
-        /*bool keyPressed = false;
+        
+        bool keyPressed = false;
 
         if (player.SpecialPressed())
         {
@@ -34,15 +40,18 @@ public class PlayerLongIdleState : PlayerBaseState {
                 return player.movingState;
         }
 
-        if (keyPressed  or animation done)
+        if (keyPressed)
+        {
+            player.animator.SetTrigger("KeyPressed");
+            return player.idleState;
+        }
+        else if (animationEnded)
         {
             return player.idleState;
         }
         else
         {
             return null;
-        }*/
-
-        return player.idleState;
+        }
     }
 }

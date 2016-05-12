@@ -5,9 +5,6 @@ public class SpawnerController : MonoBehaviour {
 
     public int maxHealth;
 
-    public bool spawnSpiders;
-    public bool spawnMosquitos;
-
     public float spawnMinDelay;
     public float spawnMaxDelay;
 
@@ -37,14 +34,12 @@ public class SpawnerController : MonoBehaviour {
             {
                 elapsedTime -= spawnDelay;
 
-                /*GameObject enemy = coloredObjMng.GetSpider(ChromaColorInfo.Random);
+                SpiderAIBehaviour enemy = coloredObjMng.GetSpider(ChromaColorInfo.Random);
 
                 if (enemy != null)
                 {
-                    enemy.transform.position = spawnPoint.position;
-                    enemy.transform.rotation = spawnPoint.rotation;
-                    enemy.SetActive(true);
-                }*/
+                    enemy.Spawn(spawnPoint);
+                }
 
                 spawnDelay = Random.Range(spawnMinDelay, spawnMaxDelay);
             }
@@ -64,6 +59,7 @@ public class SpawnerController : MonoBehaviour {
     {
         active = false;
         rsc.eventMng.TriggerEvent(EventManager.EventType.SPAWNER_DESTROYED, EventInfo.emptyInfo);
+        Destroy(this, 2f);
     }
 
 
@@ -74,10 +70,13 @@ public class SpawnerController : MonoBehaviour {
 
     public void TakeDamage(int damage)
     {
+        if (!active) return;
+
         currentHealth -= damage;
 
         if (currentHealth <= 0)
         {
+            //Play destroy animation, then destroy object
             Deactivate();
         }
     }

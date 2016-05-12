@@ -25,7 +25,7 @@ public class MoveActionExecutor: BaseExecutor
         }
         else if(!state.target.activeSelf)
         {
-            state.target = rsc.enemyMng.SelectTarget();
+            state.target = rsc.enemyMng.SelectTarget(state.parent.gameObject);
         }
 
         switch(moveAction.offsetType)
@@ -65,7 +65,7 @@ public class MoveActionExecutor: BaseExecutor
         {
             if(moveAction.targetId == "player" && !state.target.activeSelf)
             {
-                state.target = rsc.enemyMng.SelectTarget();
+                state.target = rsc.enemyMng.SelectTarget(state.parent.gameObject);
             }
 
             if(moveAction.offsetType == AIAction.OffsetType.AROUND_ENEMY_RELATIVE)

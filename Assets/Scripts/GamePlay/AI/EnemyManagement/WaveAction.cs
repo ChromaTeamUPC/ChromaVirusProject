@@ -3,9 +3,12 @@ using System.Collections;
 
 public class WaveAction
 {
-    protected float delay = 0f;
+    protected float initialDelay = 0f;
+    protected bool executing = false;
 
-    public float Delay { get { return delay; } }
+    public float InitialDelay { get { return initialDelay; } }
+
+    public bool Executing { get { return executing; } }
 
     public virtual void Execute()
     {

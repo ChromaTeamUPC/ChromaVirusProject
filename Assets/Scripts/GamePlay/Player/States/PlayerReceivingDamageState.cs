@@ -5,8 +5,8 @@ public class PlayerReceivingDamageState : PlayerBaseState {
 
     public override void OnStateEnter()
     {
-        //play damaged animation
-        //calculate destination position
+        player.animator.SetTrigger("Hit");
+        animationEnded = false;
         player.canTakeDamage = false;
     }
 
@@ -17,8 +17,10 @@ public class PlayerReceivingDamageState : PlayerBaseState {
 
     public override PlayerBaseState Update()
     {
-        //if animation finished  and position reached return to idle
-        //else return null
-        return player.idleState;
+        if(animationEnded)
+        {
+            return player.idleState;
+        }
+        return null;
     }
 }

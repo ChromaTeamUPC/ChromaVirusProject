@@ -7,12 +7,13 @@ public class PlayerMovingState : PlayerBaseState
     {
         Debug.Log("Moving state");
         //play moving animation
-        //start trail
+        player.animator.SetBool("Walking", true);
     }
 
     public override void OnStateExit()
     {
         //Stop trail
+        player.animator.SetBool("Walking", false);
     }
 
 

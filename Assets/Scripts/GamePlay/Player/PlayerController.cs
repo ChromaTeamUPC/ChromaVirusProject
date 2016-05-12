@@ -3,6 +3,15 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
+    private enum PLAYER_MOVING_DIRECTION
+    {
+        NONE,
+        FORWARD,
+        BACKWARD,
+        LEFT,
+        RIGHT
+    }
+
     [SerializeField]
     private int playerId = 0;
         
@@ -63,6 +72,9 @@ public class PlayerController : MonoBehaviour {
     private string fire;
     private string dash;
     private string special;
+
+    private bool currentShootingStatus = false;
+    private bool newShootingStatus = false;
 
     private Renderer rend;
     [HideInInspector]
@@ -200,11 +212,33 @@ public class PlayerController : MonoBehaviour {
         //Move();
         //Turn();
         //Shoot();
-
-        PlayerBaseState newState = currentState.Update();
-        if (newState != null)
+        //Debug
+        if(Input.GetKeyDown(KeyCode.H))
         {
-            ChangeState(newState);
+            TakeDamage(25);
+            return;
+        }
+        else if(Input.GetKeyDown(KeyCode.D))
+        {
+            TakeDamage(100);
+            return;
+        }
+
+        if (currentState != null)
+        {
+            PlayerBaseState newState = currentState.Update();
+            if (newState != null)
+            {
+                ChangeState(newState);
+            }
+        }
+
+        if(currentShootingStatus != newShootingStatus)
+        {
+            currentShootingStatus = newShootingStatus;
+            newShootingStatus = false;
+            animator.SetBool("Shooting", currentShootingStatus);
+            Debug.Log(currentShootingStatus);
         }
     }
 
@@ -235,8 +269,16 @@ public class PlayerController : MonoBehaviour {
         currentEnergy = 0;
         currentState = spawningState;
         currentState.OnStateEnter();
+        currentShootingStatus = false;
+        newShootingStatus = false;
         PlayerSpawnedEventInfo.eventInfo.player = this;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNED, PlayerSpawnedEventInfo.eventInfo);
+    }
+
+    public void AnimationEnded()
+    {
+        if (currentState != null)
+            currentState.AnimationEnded();
     }
 
     public Vector3 GetMovingVector()
@@ -282,11 +324,11 @@ public class PlayerController : MonoBehaviour {
 
         bool moving = false;
 
-        animator.SetBool("shieldFront", false);
+        /*animator.SetBool("shieldFront", false);
         animator.SetBool("shieldBack", false);
         animator.SetBool("shieldLeft", false);
         animator.SetBool("shieldRight", false);
-        animator.SetBool("walkingNoShield", false);
+        animator.SetBool("walkingNoShield", false);*/
 
         if (direction != Vector3.zero)
         {
@@ -300,26 +342,26 @@ public class PlayerController : MonoBehaviour {
                 Quaternion newRotation = Quaternion.LookRotation(direction);
                 newRotation = Quaternion.RotateTowards(transform.rotation, newRotation, angularSpeed * Time.deltaTime);
                 transform.rotation = newRotation;
-                animator.SetBool("walkingNoShield", true);
+                animator.SetInteger("WalkingMode", (int)PLAYER_MOVING_DIRECTION.NONE);
             }
             else
             {
                 int angleBetweenSticks = AngleBetween360(GetMovingVector(), GetAimingDirection());
 
                 if (angleBetweenSticks <= 45 || angleBetweenSticks > 315)
-                    animator.SetBool("shieldFront", true);
+                    animator.SetInteger("WalkingMode", (int)PLAYER_MOVING_DIRECTION.FORWARD);
                 else if (angleBetweenSticks > 135 && angleBetweenSticks <= 225)
-                    animator.SetBool("shieldBack", true);
+                    animator.SetInteger("WalkingMode", (int)PLAYER_MOVING_DIRECTION.BACKWARD);
                 else if (angleBetweenSticks > 45 && angleBetweenSticks <= 135)
-                    animator.SetBool("shieldRight", true);
+                    animator.SetInteger("WalkingMode", (int)PLAYER_MOVING_DIRECTION.RIGHT);
                 else if (angleBetweenSticks > 225 && angleBetweenSticks <= 315)
-                    animator.SetBool("shieldLeft", true);
+                    animator.SetInteger("WalkingMode", (int)PLAYER_MOVING_DIRECTION.LEFT);
             }
             // TODELETE
             //Debug.Log(AngleBetween360(GetMovingVector(), GetAimingDirection()));
         }
         else if (GetAimingDirection() != Vector3.zero)
-            animator.SetBool("shieldFront", true);
+            animator.SetInteger("WalkingMode", (int)PLAYER_MOVING_DIRECTION.FORWARD);
 
         ctrl.SimpleMove(direction * speed);
 
@@ -352,12 +394,8 @@ public class PlayerController : MonoBehaviour {
         bool shooting = false;
         shotLight.enabled = false;
 
-        animator.SetBool("standingShooting", false);
-
         if (Input.GetAxisRaw(fire) > 0.1f)
-        {
-            animator.SetBool("standingShooting", true);
-
+        { 
             shooting = true;
             if (Time.time > nextFire)
             {
@@ -369,15 +407,14 @@ public class PlayerController : MonoBehaviour {
                 if (isFirstShot)
                 {
                     //Get a shot from pool
-                    GameObject shot = coloredObjMng.GetPlayerShot();
+                    PlayerShotController shot = coloredObjMng.GetPlayerShot();
 
                     if (shot != null)
                     {
                         shot.transform.position = shotSpawn.position;
                         shot.transform.rotation = shotSpawn.rotation;
-                        PlayerShotController controller = shot.GetComponent<PlayerShotController>();
-                        controller.damage *= 2;
-                        controller.Shot();
+                        shot.damage *= 2;
+                        shot.Shoot();
                     }
                     isFirstShot = false;
                 }
@@ -385,20 +422,20 @@ public class PlayerController : MonoBehaviour {
                 else
                 {
                     //Get two shots from pool
-                    GameObject shot1 = coloredObjMng.GetPlayerShot();
-                    GameObject shot2 = coloredObjMng.GetPlayerShot();
+                    PlayerShotController shot1 = coloredObjMng.GetPlayerShot();
+                    PlayerShotController shot2 = coloredObjMng.GetPlayerShot();
 
                     if (shot1 != null && shot2 != null)
                     {
                         shot1.transform.rotation = shotSpawn.rotation;
                         shot1.transform.position = shotSpawn.position;
                         shot1.transform.Translate(new Vector3(shotSideOffset, 0, 0));
-                        shot1.GetComponent<PlayerShotController>().Shot();
+                        shot1.Shoot();
 
                         shot2.transform.rotation = shotSpawn.rotation;
                         shot2.transform.position = shotSpawn.position;
                         shot2.transform.Translate(new Vector3(-shotSideOffset, 0, 0));
-                        shot2.GetComponent<PlayerShotController>().Shot();
+                        shot2.Shoot();
 
                         if (shotSideOffset <= minSideOffset || shotSideOffset >= maxSideOffset)
                             sideOffsetVariation *= -1;
@@ -412,6 +449,8 @@ public class PlayerController : MonoBehaviour {
         {
             isFirstShot = true;
         }
+
+        newShootingStatus = shooting;
 
         return shooting;
     }
@@ -448,6 +487,10 @@ public class PlayerController : MonoBehaviour {
             //rsc.eventMng.TriggerEvent(EventMng.EventType.PLAYER_DIED, new PlayerSpawnedEventInfo { player = this });
             //gameObject.SetActive(false);
         }
+        else
+        {
+            ChangeState(receivingDamageState);
+        }
     }
 
     public void TakeDamage(int damage, ChromaColor color)
@@ -469,7 +512,6 @@ public class PlayerController : MonoBehaviour {
         if (other.tag == "Border")
         {
             isInBorder = true;
-            TakeDamage(100);
         }
     }
 

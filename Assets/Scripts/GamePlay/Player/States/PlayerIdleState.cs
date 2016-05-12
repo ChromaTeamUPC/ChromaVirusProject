@@ -28,8 +28,8 @@ public class PlayerIdleState : PlayerBaseState {
         can he move?
         */
 
-        if (!player.ctrl.isGrounded)
-            return player.fallingState;
+        /*if (!player.ctrl.isGrounded)
+            return player.fallingState;*/
 
         if(player.isInBorder)
         {

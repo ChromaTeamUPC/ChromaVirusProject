@@ -1,0 +1,166 @@
+fileFormatVersion: 2
+guid: 9f21528a335668c4dab774bd5c532b81
+timeCreated: 1462881525
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Auriculars
+    100002: "Bra\xE7Dreta"
+    100004: "Bra\xE7Esquerra"
+    100006: CamaDreta
+    100008: CamaEsquerra
+    100010: Cap
+    100012: ColseDreta
+    100014: ColseEsquerra
+    100016: Cos
+    100018: "Ctrl_Bra\xE7_Dreta"
+    100020: Ctrl_Cos
+    100022: Ctrl_Escut
+    100024: Ctrl_Global
+    100026: Ctrl_Hombro_Dreta
+    100028: Ctrl_Hombros
+    100030: Ctrl_Ma_Dreta
+    100032: DitGordo2Dreta
+    100034: DitGordo2Esquerra
+    100036: DitGordo3Dreta
+    100038: DitGordo3Esquerra
+    100040: DitGordo4Dreta
+    100042: DitGordo4Esquerra
+    100044: DitGordoDreta
+    100046: DitGordoEsquerra
+    100048: Dits2Dreta
+    100050: Dits2Esquerra
+    100052: Dits3Dreta
+    100054: Dits3Esquerra
+    100056: DitsDreta
+    100058: DitsEsquerra
+    100060: GenollDreta
+    100062: GenollEsquerra
+    100064: ikHandle2
+    100066: ikHandle4
+    100068: KDT
+    100070: KDT_Shield
+    100072: //RootNode
+    100074: MaDreta
+    100076: MaEsquerra
+    100078: Pantxa
+    100080: Pelvis
+    100082: PeuDreta
+    100084: PeuEsquerra
+    100086: Pit
+    400000: Auriculars
+    400002: "Bra\xE7Dreta"
+    400004: "Bra\xE7Esquerra"
+    400006: CamaDreta
+    400008: CamaEsquerra
+    400010: Cap
+    400012: ColseDreta
+    400014: ColseEsquerra
+    400016: Cos
+    400018: "Ctrl_Bra\xE7_Dreta"
+    400020: Ctrl_Cos
+    400022: Ctrl_Escut
+    400024: Ctrl_Global
+    400026: Ctrl_Hombro_Dreta
+    400028: Ctrl_Hombros
+    400030: Ctrl_Ma_Dreta
+    400032: DitGordo2Dreta
+    400034: DitGordo2Esquerra
+    400036: DitGordo3Dreta
+    400038: DitGordo3Esquerra
+    400040: DitGordo4Dreta
+    400042: DitGordo4Esquerra
+    400044: DitGordoDreta
+    400046: DitGordoEsquerra
+    400048: Dits2Dreta
+    400050: Dits2Esquerra
+    400052: Dits3Dreta
+    400054: Dits3Esquerra
+    400056: DitsDreta
+    400058: DitsEsquerra
+    400060: GenollDreta
+    400062: GenollEsquerra
+    400064: ikHandle2
+    400066: ikHandle4
+    400068: KDT
+    400070: KDT_Shield
+    400072: //RootNode
+    400074: MaDreta
+    400076: MaEsquerra
+    400078: Pantxa
+    400080: Pelvis
+    400082: PeuDreta
+    400084: PeuEsquerra
+    400086: Pit
+    2300000: KDT_Shield
+    3300000: KDT_Shield
+    4300000: KDT
+    4300002: KDT_Shield
+    7400000: Die
+    9500000: //RootNode
+    13700000: KDT
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
