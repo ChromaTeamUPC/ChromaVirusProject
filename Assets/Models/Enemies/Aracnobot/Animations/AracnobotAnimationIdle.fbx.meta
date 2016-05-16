@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: dcd726d6fdf5f1241923612e20e5f28e
-timeCreated: 1462350614
+timeCreated: 1463390936
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -20,26 +20,26 @@ ModelImporter:
     100024: CamaEsquerraMitg
     100026: CamaEsquerraRedera
     100028: Centre
-    100030: Cul1
-    100032: EngranatgeCentre
-    100034: EngranatgeDretaDebant
-    100036: EngranatgeDretaMitg
-    100038: EngranatgeDretaRedera
-    100040: EngranatgeEsquerraDebant
-    100042: EngranatgeEsquerraMitg
-    100044: EngranatgeEsquerraRedera
-    100046: ikHandle1
-    100048: ikHandle2
-    100050: ikHandle3
-    100052: ikHandle4
-    100054: ikHandle5
-    100056: ikHandle6
-    100058: ikHandle7
-    100060: ikHandle8
-    100062: nurbsCircle13
-    100064: nurbsCircle25
-    100066: nurbsCircle26
-    100068: nurbsCircle27
+    100030: Ctrl_Cos
+    100032: Ctrl_General
+    100034: Cul1
+    100036: EngranatgeCentre
+    100038: EngranatgeDretaDebant
+    100040: EngranatgeDretaMitg
+    100042: EngranatgeDretaRedera
+    100044: EngranatgeEsquerraDebant
+    100046: EngranatgeEsquerraMitg
+    100048: EngranatgeEsquerraRedera
+    100050: ikHandle1
+    100052: ikHandle2
+    100054: ikHandle3
+    100056: ikHandle4
+    100058: ikHandle5
+    100060: ikHandle6
+    100062: ikHandle7
+    100064: ikHandle8
+    100066: nurbsCircle25
+    100068: nurbsCircle26
     100070: PuntaDretaDebant
     100072: PuntaDretaMitg
     100074: PuntaDretaRedera
@@ -61,26 +61,26 @@ ModelImporter:
     400024: CamaEsquerraMitg
     400026: CamaEsquerraRedera
     400028: Centre
-    400030: Cul1
-    400032: EngranatgeCentre
-    400034: EngranatgeDretaDebant
-    400036: EngranatgeDretaMitg
-    400038: EngranatgeDretaRedera
-    400040: EngranatgeEsquerraDebant
-    400042: EngranatgeEsquerraMitg
-    400044: EngranatgeEsquerraRedera
-    400046: ikHandle1
-    400048: ikHandle2
-    400050: ikHandle3
-    400052: ikHandle4
-    400054: ikHandle5
-    400056: ikHandle6
-    400058: ikHandle7
-    400060: ikHandle8
-    400062: nurbsCircle13
-    400064: nurbsCircle25
-    400066: nurbsCircle26
-    400068: nurbsCircle27
+    400030: Ctrl_Cos
+    400032: Ctrl_General
+    400034: Cul1
+    400036: EngranatgeCentre
+    400038: EngranatgeDretaDebant
+    400040: EngranatgeDretaMitg
+    400042: EngranatgeDretaRedera
+    400044: EngranatgeEsquerraDebant
+    400046: EngranatgeEsquerraMitg
+    400048: EngranatgeEsquerraRedera
+    400050: ikHandle1
+    400052: ikHandle2
+    400054: ikHandle3
+    400056: ikHandle4
+    400058: ikHandle5
+    400060: ikHandle6
+    400062: ikHandle7
+    400064: ikHandle8
+    400066: nurbsCircle25
+    400068: nurbsCircle26
     400070: PuntaDretaDebant
     400072: PuntaDretaMitg
     400074: PuntaDretaRedera
@@ -111,117 +111,7 @@ ModelImporter:
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations:
-    - serializedVersion: 16
-      name: Idle
-      takeName: Idle
-      firstFrame: 80
-      lastFrame: 109
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask:
-      - path: 
-        weight: 1
-      - path: Aracnobot
-        weight: 1
-      - path: ikHandle1
-        weight: 1
-      - path: ikHandle2
-        weight: 1
-      - path: ikHandle3
-        weight: 1
-      - path: ikHandle4
-        weight: 1
-      - path: ikHandle5
-        weight: 1
-      - path: ikHandle6
-        weight: 1
-      - path: ikHandle7
-        weight: 1
-      - path: ikHandle8
-        weight: 1
-      - path: nurbsCircle13
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/BocaDreta
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/BocaDreta/BocaDretaJuntura
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/BocaDreta/BocaDretaJuntura/BocaDretaPunta
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/BocaEsquerra
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/BocaEsquerra/BocaEsquerraJuntura
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/BocaEsquerra/BocaEsquerraJuntura/BocaEsquerraPunta
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaDretaDebant
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaDretaDebant/EngranatgeDretaDebant
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaDretaDebant/EngranatgeDretaDebant/PuntaDretaDebant
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaDretaMitg
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaDretaMitg/EngranatgeDretaMitg
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaDretaMitg/EngranatgeDretaMitg/PuntaDretaMitg
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaDretaRedera
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaDretaRedera/EngranatgeDretaRedera
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaDretaRedera/EngranatgeDretaRedera/PuntaDretaRedera
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaEsquerraDebant
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaEsquerraDebant/EngranatgeEsquerraDebant
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaEsquerraDebant/EngranatgeEsquerraDebant/PuntaEsquerraDebant
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaEsquerraMitg
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaEsquerraMitg/EngranatgeEsquerraMitg
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaEsquerraMitg/EngranatgeEsquerraMitg/PuntaEsquerraMitg
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaEsquerraRedera
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaEsquerraRedera/EngranatgeEsquerraRedera
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/CamaEsquerraRedera/EngranatgeEsquerraRedera/PuntaEsquerraRedera
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/EngranatgeCentre
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/EngranatgeCentre/Cul1
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/nurbsCircle25
-        weight: 1
-      - path: nurbsCircle13/nurbsCircle27/Centre/nurbsCircle26
-        weight: 1
-      maskType: 0
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 80
+    clipAnimations: []
     isReadable: 1
   meshes:
     lODScreenPercentages: []

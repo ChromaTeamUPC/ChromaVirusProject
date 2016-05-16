@@ -5,7 +5,6 @@ public class PlayerSwingingState : PlayerBaseState
 {
     public override void OnStateEnter()
     {
-        Debug.Log("Swinging State");
         //play swinging animation
     }
 

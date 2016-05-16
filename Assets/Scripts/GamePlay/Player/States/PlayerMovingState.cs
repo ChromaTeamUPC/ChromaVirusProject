@@ -5,7 +5,6 @@ public class PlayerMovingState : PlayerBaseState
 {
     public override void OnStateEnter()
     {
-        Debug.Log("Moving state");
         //play moving animation
         player.animator.SetBool("Walking", true);
     }

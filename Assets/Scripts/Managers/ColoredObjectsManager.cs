@@ -108,9 +108,9 @@ public class ColoredObjectsManager : MonoBehaviour
         {
             SpiderAIBehaviour spiderAI = spider.GetComponent<SpiderAIBehaviour>();
             spiderAI.color = currentColor;
-            Material[] mats = spiderAI.spiderRenderer.materials;
+            Material[] mats = spiderAI.rend.materials;
             mats[1] = currentSpider;
-            spiderAI.spiderRenderer.materials = mats;
+            spiderAI.rend.materials = mats;
 
             return spiderAI;
         }
@@ -141,9 +141,9 @@ public class ColoredObjectsManager : MonoBehaviour
         {
             SpiderAIBehaviour spiderAI = spider.GetComponent<SpiderAIBehaviour>();
             spiderAI.color = color;
-            Material[] mats = spiderAI.spiderRenderer.materials;
+            Material[] mats = spiderAI.rend.materials;
             mats[1] = GetMaterial(spiderMats, color);
-            spiderAI.spiderRenderer.materials = mats;
+            spiderAI.rend.materials = mats;
 
             return spiderAI;
         }

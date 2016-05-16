@@ -8,8 +8,6 @@ public class PlayerLongIdleState : PlayerBaseState {
 
     public override void OnStateEnter()
     {
-        Debug.Log("Long Idle state");
-
         //select random idle animation
         player.animator.SetTrigger("LongIdle");
         animationEnded = false;

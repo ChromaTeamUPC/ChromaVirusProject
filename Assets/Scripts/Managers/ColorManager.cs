@@ -14,6 +14,23 @@ public class ChromaColorInfo
     {
         get { return (ChromaColor)UnityEngine.Random.Range((int)First, (int)Last + 1); }
     }
+
+    public static string GetColorName(ChromaColor color)
+    {
+        switch (color)
+        {
+            case ChromaColor.RED:
+                return "Red";
+            case ChromaColor.GREEN:
+                return "Green";                
+            case ChromaColor.BLUE:
+                return "Blue";
+            case ChromaColor.YELLOW:
+                return "Yellow";
+            default:
+                return "Oooops wrong color";
+        }
+    }
 }
 
 public enum ChromaColor

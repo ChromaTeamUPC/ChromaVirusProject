@@ -238,15 +238,23 @@ public class PlayerController : MonoBehaviour {
             currentShootingStatus = newShootingStatus;
             newShootingStatus = false;
             animator.SetBool("Shooting", currentShootingStatus);
-            Debug.Log(currentShootingStatus);
+            //Debug.Log(currentShootingStatus);
         }
     }
 
     private void ChangeState(PlayerBaseState newState)
     {
-        if (currentState != null) currentState.OnStateExit();
+        if (currentState != null)
+        {
+            //Debug.Log("Player " + playerId + " Exiting: " + currentState.GetType().Name);
+            currentState.OnStateExit();
+        }
         currentState = newState;
-        if (currentState != null) currentState.OnStateEnter();
+        if (currentState != null)
+        {
+            //Debug.Log("Player " + playerId + " Entering: " + currentState.GetType().Name);
+            currentState.OnStateEnter();
+        }
     }
 
     public void InitPlayer()
@@ -323,12 +331,6 @@ public class PlayerController : MonoBehaviour {
         Vector3 direction = GetMovingVector();
 
         bool moving = false;
-
-        /*animator.SetBool("shieldFront", false);
-        animator.SetBool("shieldBack", false);
-        animator.SetBool("shieldLeft", false);
-        animator.SetBool("shieldRight", false);
-        animator.SetBool("walkingNoShield", false);*/
 
         if (direction != Vector3.zero)
         {

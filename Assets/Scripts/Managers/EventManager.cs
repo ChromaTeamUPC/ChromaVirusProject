@@ -93,8 +93,8 @@ public class EventManager : MonoBehaviour {
         TURRET_SPAWNED,
         TURRET_DESTROYED,
 
-        SPAWNER_ACTIVATED,
-        SPAWNER_DESTROYED,
+        VORTEX_ACTIVATED,
+        VORTEX_DESTROYED,
 
         ZONE_REACHED,
         ZONE_PLAN_FINISHED,

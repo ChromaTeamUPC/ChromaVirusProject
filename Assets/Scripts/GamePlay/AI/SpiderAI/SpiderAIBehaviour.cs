@@ -2,117 +2,66 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class SpiderAIBehaviour : MonoBehaviour
+public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 {
-    public int maxHealth = 30;
-    public int biteDamage = 10;
-
-    [HideInInspector]
-    public ChromaColor color;
-
-    private int currentHealth;
-    private VoxelizationClient voxelization;
-    [HideInInspector]
-    public Renderer spiderRenderer;
-
-    private AIBaseState currentState;
-
-    private AIBaseState spawningState;
-    private AIBaseState defaultState;
-    private AIBaseState closeState;
-    private AIBaseState attackChipState;
-
-    [HideInInspector]
-    public bool spawning;
-    [HideInInspector]
-    public float timeSinceLastAttack;
-    [HideInInspector]
-    public bool biting;
-    [HideInInspector]
-    public Animator animator;
-
-    //Test, remove
-    private bool done = true;
-    private float time;
-
-	// Use this for initialization
-	void Awake ()
+    public enum SpawnAnimation
     {
-        spawningState = new SpawningAIState(this);
-        defaultState = new SpiderAIDefaultState(this);
-        closeState = new AIBaseState(this);
-        attackChipState = new AIBaseState(this);
-        voxelization = GetComponent<VoxelizationClient>();
-        spiderRenderer = GetComponentInChildren<Renderer>();
-        animator = GetComponent<Animator>();
+        FLOOR,
+        SKY
     }
 
-    public void AIInit(List<AIAction> def, List<AIAction> close, List<AIAction> attack)
+    private SpiderBlackboard spiderBlackboard;
+
+    public int biteDamage = 10;
+    public float playerDetectionDistance = 5f;
+
+    public SpiderAIBaseState spawningState;
+    public SpiderAIActionsBaseState entryState;
+    public SpiderAIBaseState attackingChipState;
+    public SpiderAIBaseState attractedToBarrelState;
+    public SpiderAIActionsBaseState attackingPlayerState;
+    public SpiderAIBaseState dyingState;
+
+	// Use this for initialization
+	protected override void Awake ()
     {
-        currentHealth = maxHealth;
+        base.Awake();
+
+        spiderBlackboard = new SpiderBlackboard();    
+        spiderBlackboard.InitialSetup(gameObject);
+
+        blackboard = spiderBlackboard;
+
+        spawningState = new SpiderSpawningAIState(spiderBlackboard);
+        entryState = new SpiderEntryAIState(spiderBlackboard);
+        attackingChipState = new SpiderAttackingChipAIState(spiderBlackboard);
+        attractedToBarrelState = new SpiderAttractedToBarrelAIState(spiderBlackboard);
+        attackingPlayerState = new SpiderAttackingPlayerAIState(spiderBlackboard);
+        dyingState = new SpiderDyingAIState(spiderBlackboard);
+    }
+
+    public void AIInit(SpawnAnimation spawnAnimation, List<AIAction> entryList, List<AIAction> attackList)
+    {
+        spiderBlackboard.ResetValues();
+        spiderBlackboard.spawnAnimation = spawnAnimation;
 
         //Init states with lists
-        spawningState.Init(null, defaultState);
-        defaultState.Init(def, defaultState);
-        closeState.Init(close, defaultState);
-        attackChipState.Init(attack, defaultState);    
+        entryState.Init(entryList);
+        attackingPlayerState.Init(attackList);   
     }
 
     public void Spawn(Transform spawnPoint)
     {
-        timeSinceLastAttack = 100f;
         transform.position = spawnPoint.position;
         transform.rotation = spawnPoint.rotation;
-        spawning = true;
-        ChangeState(spawningState);
-
-        ColorEventInfo.eventInfo.newColor = color;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.ENEMY_SPAWNED, ColorEventInfo.eventInfo);
+        ChangeState(spawningState);      
     }
 
-    public void BiteDone()
-    {
-        biting = false;
-    }
-
-    public void Spawned()
-    {
-        spawning = false;
-    }
-
-    private void Die()
-    {
-        ColorEventInfo.eventInfo.newColor = color;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.ENEMY_DIED, ColorEventInfo.eventInfo);
-        rsc.poolMng.spiderPool.AddObject(gameObject);        
-    }
-
-    public void ImpactedByShot(ChromaColor shotColor, int damage)
-    {
-        if (shotColor == color)
-        {
-            TakeDamage(damage);
-        }
-        //Else future behaviour like duplicate or increase health
-    }
-
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-
-        if (currentHealth <= 0)
-        {
-            voxelization.SetMaterial(color);
-            voxelization.CalculateVoxelsGrid();
-            voxelization.SpawnVoxels();
-            Die();
-        }
-    }
 
     // Update is called once per frame
     void Update ()
     {
-        timeSinceLastAttack += Time.deltaTime;
+        spiderBlackboard.timeSinceLastAttack += Time.deltaTime;
 
         AIBaseState newState = currentState.Update();
 
@@ -120,21 +69,51 @@ public class SpiderAIBehaviour : MonoBehaviour
         {
             ChangeState(newState);
         }
-
-        //More conditions to change state
-        if (time < 5)
-            time += Time.deltaTime;
-        else if (!done)
-        {
-            ChangeState(closeState);
-            done = true;
-        }
 	}
 
-    private void ChangeState(AIBaseState newState)
+    //Not to be used outside FSM
+    public override AIBaseState ProcessShotImpact(ChromaColor shotColor, int damage)
     {
-        if (currentState != null) currentState.OnStateExit();
-        currentState = newState;
-        if (currentState != null) currentState.OnStateEnter();
+        if (spiderBlackboard.canReceiveDamage && spiderBlackboard.currentHealth > 0)
+        {
+            if (shotColor == color)
+            {
+                spiderBlackboard.currentHealth -= damage;
+                if (spiderBlackboard.currentHealth <= 0)
+                    return dyingState;
+            }
+            //Else future behaviour like duplicate or increase health
+        }
+
+        return null;
+    }
+
+    //Not to be used outside FSM
+    public override AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, int damage)
+    {
+        //Harmless to other colors
+        if (barrelColor != color)
+            return null;
+
+        if (spiderBlackboard.canReceiveDamage && spiderBlackboard.currentHealth > 0)
+        {
+            spiderBlackboard.currentHealth -= damage;
+            if (spiderBlackboard.currentHealth <= 0)
+                return dyingState;
+        }
+
+        return null;
+    }
+
+    public bool CheckPlayersDistance()
+    {
+        bool result = false;
+        if (rsc.gameInfo.player1Controller.Active)
+            result = Vector3.Distance(blackboard.entityGO.transform.position, rsc.gameInfo.player1.transform.position) < playerDetectionDistance;
+
+        if (!result && rsc.gameInfo.player2Controller.Active)
+            result = Vector3.Distance(blackboard.entityGO.transform.position, rsc.gameInfo.player2.transform.position) < playerDetectionDistance;
+
+        return result;
     }
 }

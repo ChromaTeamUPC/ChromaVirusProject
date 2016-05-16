@@ -14,64 +14,62 @@ public class SpawnSpiderWaveAction : WaveAction
     private ColorMode colorMode;
     private ChromaColor color;
     private int colorOffset;
-    //private Transform spawnPoint;
-    private string spawnPoint;
-    private List<AIAction> defaultActions;
-    private List<AIAction> closeActions;
-    private List<AIAction> attackChipActions;
 
-    private int howMany;
+    private string spawnPointName;
+    private Transform spawnPoint;
+    private SpawnPointController spawnController;
+
+    private List<AIAction> entryActions;
+    private List<AIAction> attackActions;
+
+    private int totalSpawnsNumber;
     private float delayBetweenSpawns;
-    private Transform spawn;
 
-    //public SpawnSpiderWaveAction(ChromaColor c,  Transform spPoint, List<AIAction> def, List<AIAction> close, List<AIAction> att, float del = 0f)
-    public SpawnSpiderWaveAction(ChromaColor c, string spPoint, List<AIAction> def, List<AIAction> close, List<AIAction> att, float iniDel = 0f, int howMny = 1, float delBetweenSp = 0f)
+    private SpiderAIBehaviour.SpawnAnimation spawnAnimation;
+
+
+    private SpawnSpiderWaveAction(ColorMode mode, string spPoint, List<AIAction> entry, List<AIAction> attack, float iniDel, int howMany, float delBetweenSp, SpiderAIBehaviour.SpawnAnimation spawnAnim)
     {
-        colorMode = ColorMode.FIXED;
+        colorMode = mode;
+        spawnPointName = spPoint;
+        entryActions = entry;
+        attackActions = attack;
+        initialDelay = iniDel;
+        totalSpawnsNumber = howMany;
+        delayBetweenSpawns = delBetweenSp;
+        spawnAnimation = spawnAnim;
+    }
+
+    public SpawnSpiderWaveAction(ChromaColor c, string spPoint, List<AIAction> entry, List<AIAction> attack,
+        float iniDel = 0f, int howMany = 1, float delBetweenSp = 0f, SpiderAIBehaviour.SpawnAnimation spawnAnim = SpiderAIBehaviour.SpawnAnimation.FLOOR)
+        : this(ColorMode.FIXED, spPoint, entry, attack, iniDel, howMany, delBetweenSp, spawnAnim)
+    {
         color = c;
-        spawnPoint = spPoint;
-        defaultActions = def;
-        closeActions = close;
-        attackChipActions = att;
-        initialDelay = iniDel;
-        howMany = howMny;
-        delayBetweenSpawns = delBetweenSp;
     }
 
-    public SpawnSpiderWaveAction(bool current, int colorOffset, string spPoint, List<AIAction> def, List<AIAction> close, List<AIAction> att, float iniDel = 0f, int howMny = 1, float delBetweenSp = 0f)
+    public SpawnSpiderWaveAction(bool current, int colorOffset, string spPoint, List<AIAction> entry, List<AIAction> attack,
+        float iniDel = 0f, int howMany = 1, float delBetweenSp = 0f, SpiderAIBehaviour.SpawnAnimation spawnAnim = SpiderAIBehaviour.SpawnAnimation.FLOOR)
+        : this(ColorMode.CURRENT, spPoint, entry, attack, iniDel, howMany, delBetweenSp, spawnAnim)
     {
-        colorMode = ColorMode.CURRENT;
         this.colorOffset = colorOffset;
-        spawnPoint = spPoint;
-        defaultActions = def;
-        closeActions = close;
-        attackChipActions = att;
-        initialDelay = iniDel;
-        howMany = howMny;
-        delayBetweenSpawns = delBetweenSp;
     }
 
-    public SpawnSpiderWaveAction(string spPoint, List<AIAction> def, List<AIAction> close, List<AIAction> att, float iniDel = 0f, int howMny = 1, float delBetweenSp = 0f)
+    public SpawnSpiderWaveAction(string spPoint, List<AIAction> entry, List<AIAction> attack,
+        float iniDel = 0f, int howMany = 1, float delBetweenSp = 0f, SpiderAIBehaviour.SpawnAnimation spawnAnim = SpiderAIBehaviour.SpawnAnimation.FLOOR)
+        : this(ColorMode.RANDOM, spPoint, entry, attack, iniDel, howMany, delBetweenSp, spawnAnim)
     {
-        colorMode = ColorMode.RANDOM;
-        spawnPoint = spPoint;
-        defaultActions = def;
-        closeActions = close;
-        attackChipActions = att;
-        initialDelay = iniDel;
-        howMany = howMny;
-        delayBetweenSpawns = delBetweenSp;
     }
 
     public override void Execute()
     {
         executing = true;
 
-        spawn = GameObject.Find(spawnPoint).transform; //TODO: Improve this
+        spawnPoint = GameObject.Find(spawnPointName).transform; //TODO: Improve this
+        spawnController = spawnPoint.GetComponent<SpawnPointController>();
 
         SpawnSpider();
 
-        if (howMany > 1)
+        if (totalSpawnsNumber > 1)
         {
             rsc.coroutineHlp.StartCoroutine(SpawnSpiders());
         }
@@ -105,8 +103,13 @@ public class SpawnSpiderWaveAction : WaveAction
 
         if (spider != null)
         {
-            spider.AIInit(defaultActions, closeActions, attackChipActions);
-            spider.Spawn(spawn);
+            spider.AIInit(spawnAnimation, entryActions, attackActions);
+            spider.Spawn(spawnPoint);
+
+            if(spawnAnimation == SpiderAIBehaviour.SpawnAnimation.FLOOR)
+            {
+                spawnController.CreatePortal(spider.color);
+            }
         }
     }
 
@@ -114,7 +117,7 @@ public class SpawnSpiderWaveAction : WaveAction
     {
         int totalSpawned = 1;
 
-        while(totalSpawned < howMany)
+        while(totalSpawned < totalSpawnsNumber)
         {
             yield return new WaitForSeconds(delayBetweenSpawns);
             SpawnSpider();

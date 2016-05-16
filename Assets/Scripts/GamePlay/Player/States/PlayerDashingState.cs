@@ -10,7 +10,6 @@ public class PlayerDashingState : PlayerBaseState
 
     public override void OnStateEnter()
     {
-        Debug.Log("Dashing state");
         //play dash animation
 
         GetDashDirection();

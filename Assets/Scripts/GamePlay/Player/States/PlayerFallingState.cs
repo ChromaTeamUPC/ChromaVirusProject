@@ -8,7 +8,6 @@ public class PlayerFallingState : PlayerBaseState
 
     public override void OnStateEnter()
     {
-        Debug.Log("Falling state");
         //play falling animation
         yOrigin = player.transform.position.y;
         firstFrame = true;

@@ -3,25 +3,30 @@ using System.Collections;
 
 public class SpiderBiteExecutor : BaseExecutor
 {
+    private SpiderBlackboard spiderBlackBoard;
     private SpiderBiteAIAction spiderBiteAction;
-    private SpiderAIBehaviour spider;
 
     private bool discardedAttack;
+
+    public override void Init(EnemyBaseBlackboard bb)
+    {
+        base.Init(bb);
+        spiderBlackBoard = (SpiderBlackboard)bb;      
+    }
 
     public override void SetAction(AIAction act)
     {
         base.SetAction(act);
         spiderBiteAction = (SpiderBiteAIAction)act;
 
-        spider = (SpiderAIBehaviour)state.parent;
+        blackBoard.agent.Stop();
 
-        state.agent.Stop();
-
-        if(spider.timeSinceLastAttack > spiderBiteAction.minimumTimeSinceLastAttack)
+        if(spiderBlackBoard.timeSinceLastAttack > spiderBiteAction.minimumTimeSinceLastAttack)
         {
-            spider.animator.SetTrigger("bite");
-            spider.timeSinceLastAttack = 0f;
-            spider.biting = true;
+            blackBoard.animationEnded = false;
+            blackBoard.animator.SetBool("walking", false);
+            blackBoard.animator.SetTrigger("bite");
+            spiderBlackBoard.timeSinceLastAttack = 0f;
             discardedAttack = false;
         }
         else
@@ -32,7 +37,7 @@ public class SpiderBiteExecutor : BaseExecutor
 
     public override int Execute()
     {
-        if (discardedAttack || !spider.biting)
+        if (discardedAttack || blackBoard.animationEnded)
             return action.nextAction;
         else
             return AIAction.ACTION_NOT_FINISHED;

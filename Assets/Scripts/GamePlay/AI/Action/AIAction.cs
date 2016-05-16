@@ -7,8 +7,6 @@ public class AIAction
     public const int ACTION_NOT_FINISHED = -2;
     public const int LIST_FINISHED = -3;
 
-
-
     public enum OffsetType
     {
         POSITION_ZERO,      // same coordinates as the waypoint
@@ -25,7 +23,8 @@ public class AIAction
     public enum Type
     {
         NONE,
-        SELECT_TARGET,
+        SELECT_PLAYER,
+        STANDING_IDLE,
         MOVE,
         LOOK_AT,
         SPIDER_BITE
@@ -41,13 +40,23 @@ public class AIAction
     }
 }
 
-public class SelectTargetAIAction : AIAction
+public class SelectPlayerAIAction : AIAction
 {
-    public string targetId; //TO REFACTOR: Not sure if needed
+    public bool overrideValidPlayer;
 
-    public SelectTargetAIAction(string target, int next = AIAction.NEXT_ACTION) : base(Type.SELECT_TARGET, next)
+    public SelectPlayerAIAction(bool overrideValid = true, int next = AIAction.NEXT_ACTION) : base(Type.SELECT_PLAYER, next)
     {
-        targetId = target;
+        overrideValidPlayer = overrideValid;
+    }
+}
+
+public class StandingIdleAIAction : AIAction
+{
+    public float seconds;
+
+    public StandingIdleAIAction(float sec, int next = AIAction.NEXT_ACTION): base(Type.STANDING_IDLE, next)
+    {
+        seconds = sec;
     }
 }
 

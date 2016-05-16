@@ -5,7 +5,6 @@ public class PlayerSpawningState : PlayerBaseState {
 
     public override void OnStateEnter()
     {
-        Debug.Log("Spawning state");
         //trigger spawning animation
         player.canTakeDamage = false;
     }

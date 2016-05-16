@@ -7,9 +7,6 @@ public class MoveActionExecutor: BaseExecutor
     private Vector3 direction;
     private float elapsedTime;
 
-    private SpiderAIBehaviour spider; // TOREFACTOR - this action must be used for any enemy
-
-
     public override void SetAction(AIAction act)
     {
         base.SetAction(act);
@@ -17,15 +14,13 @@ public class MoveActionExecutor: BaseExecutor
 
         string tId = moveAction.targetId;
 
-        spider = (SpiderAIBehaviour)state.parent; // TOREFACTOR - this action must be used for any enemy
-
         if (tId != "player")
         {
-            state.target = GameObject.Find(tId);
+            blackBoard.target = GameObject.Find(tId);
         }
-        else if(!state.target.activeSelf)
+        else if ((blackBoard.target == null) || (!blackBoard.target.activeSelf))
         {
-            state.target = rsc.enemyMng.SelectTarget(state.parent.gameObject);
+            blackBoard.target = rsc.enemyMng.SelectTarget(blackBoard.entityGO);
         }
 
         switch(moveAction.offsetType)
@@ -39,21 +34,23 @@ public class MoveActionExecutor: BaseExecutor
                 direction *= moveAction.distance;
                 break;
             case AIAction.OffsetType.AROUND_ENEMY_RELATIVE:
-                direction = (state.agent.transform.position - state.target.transform.position).normalized;
+                direction = (blackBoard.agent.transform.position - blackBoard.target.transform.position).normalized;
                 direction = Quaternion.Euler(0, moveAction.angle, 0) * direction;
                 direction *= moveAction.distance;
                 break;
         }
 
         if (moveAction.inertia)
-            state.agent.acceleration = 50;
+            blackBoard.agent.acceleration = 50;
         else
-            state.agent.acceleration = 1000;
+            blackBoard.agent.acceleration = 1000;
 
-        state.agent.speed = moveAction.speed;
-        spider.animator.speed = moveAction.speed / 4;
-        state.agent.destination = state.target.transform.position + direction;
-        state.agent.Resume();
+        blackBoard.animator.SetBool("walking", true);
+
+        blackBoard.agent.speed = moveAction.speed;
+        blackBoard.animator.speed = moveAction.speed / 4;
+        blackBoard.agent.destination = blackBoard.target.transform.position + direction;
+        blackBoard.agent.Resume();
         elapsedTime = 0f;
     }
 
@@ -63,28 +60,28 @@ public class MoveActionExecutor: BaseExecutor
 
         if (moveAction.focusType == AIAction.FocusType.CONTINUOUS)
         {
-            if(moveAction.targetId == "player" && !state.target.activeSelf)
+            if(moveAction.targetId == "player" && ((blackBoard.target == null) || (!blackBoard.target.activeSelf)))
             {
-                state.target = rsc.enemyMng.SelectTarget(state.parent.gameObject);
+                blackBoard.target = rsc.enemyMng.SelectTarget(blackBoard.entityGO);
             }
 
             if(moveAction.offsetType == AIAction.OffsetType.AROUND_ENEMY_RELATIVE)
             {
-                direction = (state.agent.transform.position - state.target.transform.position).normalized;
+                direction = (blackBoard.agent.transform.position - blackBoard.target.transform.position).normalized;
                 direction = Quaternion.Euler(0, moveAction.angle, 0) * direction;
                 direction *= moveAction.distance;
             }
 
-            state.agent.destination = state.target.transform.position + direction;
+            blackBoard.agent.destination = blackBoard.target.transform.position + direction;
         }
 
 
-        if ((state.agent.hasPath && state.agent.remainingDistance <= 1f)
+        if ((blackBoard.agent.hasPath && blackBoard.agent.remainingDistance <= 1.5f)
             || (moveAction.maxTime > 0 && elapsedTime > moveAction.maxTime))
         {
-            Debug.Log(state.agent.remainingDistance);
+            //Debug.Log(blackBoard.agent.remainingDistance);
             if (!moveAction.inertia)
-                state.agent.velocity = Vector3.zero;
+                blackBoard.agent.velocity = Vector3.zero;
 
             return moveAction.nextAction;
         }

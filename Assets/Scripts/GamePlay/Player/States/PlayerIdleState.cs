@@ -7,7 +7,6 @@ public class PlayerIdleState : PlayerBaseState {
 
     public override void OnStateEnter()
     {
-        Debug.Log("Idle state");
         elapsedTime = 0f;
         //play idle state
     }

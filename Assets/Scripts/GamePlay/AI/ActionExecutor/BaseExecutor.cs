@@ -3,18 +3,14 @@ using System.Collections;
 
 public class BaseExecutor
 {
-    protected AIBaseState state;
+    protected EnemyBaseBlackboard blackBoard;
     protected AIAction action;
-    //protected EnemyManager enemyManager;
 
-    public BaseExecutor()
-    {
-        //enemyManager = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
-    }
+    public BaseExecutor() {}
 
-    public void Init(AIBaseState parent)
+    public virtual void Init(EnemyBaseBlackboard bb)
     {
-        state = parent;
+        blackBoard = bb;
     }
 
     public virtual void SetAction(AIAction act)

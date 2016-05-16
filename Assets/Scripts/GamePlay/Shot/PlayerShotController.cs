@@ -19,8 +19,10 @@ public class PlayerShotController : MonoBehaviour {
 
     private Rigidbody rigidBody;
 
-    private Quaternion impactOriginalRotation;
-    private Quaternion projectileOriginalRotation;
+    //private Quaternion impactOriginalRotation;
+    //private Quaternion projectileOriginalRotation;
+
+    private SphereCollider shotCollider;
 
     private int defaultDamage;
     private float currentDuration;
@@ -29,15 +31,17 @@ public class PlayerShotController : MonoBehaviour {
     {
         defaultDamage = damage;
 
+        shotCollider = GetComponent<SphereCollider>();
+
         projectileParticle = Instantiate(projectileParticlePrefab, transform.position, transform.rotation) as GameObject;
         projectileParticle.transform.parent = transform;
         projectileParticle.SetActive(false);
-        projectileOriginalRotation = projectileParticle.transform.rotation;
+        //projectileOriginalRotation = projectileParticle.transform.rotation;
 
         impactParticle = Instantiate(impactParticlePrefab, transform.position, transform.rotation) as GameObject;
         impactParticle.transform.parent = transform;
         impactParticle.SetActive(false);
-        impactOriginalRotation = impactParticle.transform.rotation;
+        //impactOriginalRotation = impactParticle.transform.rotation;
 
         rigidBody = GetComponent<Rigidbody>();
     }
@@ -45,6 +49,7 @@ public class PlayerShotController : MonoBehaviour {
     // Use this for initialization
     public void Shoot()
     {
+        shotCollider.enabled = true;
         projectileParticle.SetActive(true);
         rigidBody.velocity = transform.forward * speed;
         currentDuration = 0f;
@@ -71,7 +76,18 @@ public class PlayerShotController : MonoBehaviour {
             SpiderAIBehaviour enemy = collision.collider.GetComponent<SpiderAIBehaviour>();
             enemy.ImpactedByShot(color, damage);
         }
+        else if (collision.collider.tag == "Vortex")
+        {
+            VortexController vortex = collision.collider.GetComponent<VortexController>();
+            vortex.ImpactedByShot(color, damage);
+        }
+        else if (collision.collider.tag == "Barrel")
+        {
+            BarrelImpacted barrel = collision.collider.GetComponent<BarrelImpacted>();
+            barrel.controller.ImpactedByShot(color);
+        }
 
+        shotCollider.enabled = false;
         //We let the impactParticle do its job
         StartCoroutine(WaitAndReturnToPool());
     }
@@ -85,7 +101,7 @@ public class PlayerShotController : MonoBehaviour {
     void ReturnToPool()
     {
         damage = defaultDamage;
-        projectileParticle.transform.localRotation = Quaternion.identity;
+        //projectileParticle.transform.localRotation = Quaternion.identity;
         projectileParticle.SetActive(false);
         impactParticle.transform.localRotation = Quaternion.identity;
         impactParticle.SetActive(false);

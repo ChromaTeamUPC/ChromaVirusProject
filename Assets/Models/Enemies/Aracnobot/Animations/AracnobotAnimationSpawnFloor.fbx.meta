@@ -46,6 +46,8 @@ ModelImporter:
     100076: PuntaEsquerraDebant
     100078: PuntaEsquerraMitg
     100080: PuntaEsquerraRedera
+    100082: Ctrl_Cos
+    100084: Ctrl_General
     400000: Aracnobot
     400002: //RootNode
     400004: BocaDreta
@@ -87,6 +89,8 @@ ModelImporter:
     400076: PuntaEsquerraDebant
     400078: PuntaEsquerraMitg
     400080: PuntaEsquerraRedera
+    400082: Ctrl_Cos
+    400084: Ctrl_General
     4300000: Aracnobot
     7400000: SpawnFloor
     9500000: //RootNode

@@ -17,15 +17,15 @@ public class LookAtExecutor : BaseExecutor
 
         if (tId != "player")
         {
-            state.target = GameObject.Find(tId);
+            blackBoard.target = GameObject.Find(tId);
         }
-        else if (!state.target.activeSelf)
+        else if ((blackBoard.target == null) || (!blackBoard.target.activeSelf))
         {
-            state.target = rsc.enemyMng.SelectTarget(state.parent.gameObject);
+            blackBoard.target = rsc.enemyMng.SelectTarget(blackBoard.entityGO);
         }
 
-        direction = state.target.transform.position - state.agent.transform.position;
-        state.agent.Stop();
+        direction = blackBoard.target.transform.position - blackBoard.agent.transform.position;
+        blackBoard.agent.Stop();
         //Debug.Log("Exiting LookAt set action");
     }
 
@@ -33,12 +33,12 @@ public class LookAtExecutor : BaseExecutor
     {
         //Debug.Log("Entering LookAt Executing");
         Quaternion newRotation = Quaternion.LookRotation(direction);
-        newRotation = Quaternion.RotateTowards(state.agent.transform.rotation, newRotation, angularSpeed * Time.deltaTime);
-        state.parent.transform.rotation = newRotation;
-        if(Vector3.Angle(direction, state.agent.transform.forward) < 5)
+        newRotation = Quaternion.RotateTowards(blackBoard.agent.transform.rotation, newRotation, angularSpeed * Time.deltaTime);
+        blackBoard.entityGO.transform.rotation = newRotation;
+        if(Vector3.Angle(direction, blackBoard.agent.transform.forward) < 5)
         {
 
-            state.agent.Resume();
+            blackBoard.agent.Resume();
             return lookAtAction.nextAction;
         }
         else

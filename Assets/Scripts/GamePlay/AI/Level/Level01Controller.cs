@@ -17,9 +17,9 @@ public class Level01Controller : MonoBehaviour
     public Transform zone2PlayerSpawnPoint;
     public Transform zone3PlayerSpawnPoint;
 
-    public SpawnerController zone2spawner1;
-    public SpawnerController zone3spawner1;
-    public SpawnerController zone3spawner2;
+    public VortexController zone2spawner1;
+    public VortexController zone3spawner1;
+    public VortexController zone3spawner2;
 
     [SerializeField]
     private FadeSceneScript fadeScript;
