@@ -515,6 +515,10 @@ public class PlayerController : MonoBehaviour {
         {
             isInBorder = true;
         }
+        else if (other.tag == "DeathZone")
+        {
+            TakeDamage(1000);
+        }
     }
 
     void OnTriggerExit(Collider other)

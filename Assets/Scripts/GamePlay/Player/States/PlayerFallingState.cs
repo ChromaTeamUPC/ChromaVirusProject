@@ -29,7 +29,7 @@ public class PlayerFallingState : PlayerBaseState
 
         if (firstFrame)
         {
-            player.ctrl.Move(Vector3.zero); //To stop inertia
+            player.ctrl.Move(new Vector3(0f, 0.01f, 0f)); //To stop inertia
             firstFrame = false;
         }
         else

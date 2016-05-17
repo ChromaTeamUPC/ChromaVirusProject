@@ -26,7 +26,10 @@ public class PlayerDashingState : PlayerBaseState
         if (currentDashTime > player.maxDashTime || currentDashSpeed < player.minDashSpeed)
         {
             player.ctrl.SimpleMove(Vector3.zero); //Force calculation of isGrounded
-            return player.idleState;
+            if (player.ctrl.isGrounded)
+                return player.idleState;
+            else
+                return player.fallingState;
         }
 
         currentDashTime += Time.deltaTime;
