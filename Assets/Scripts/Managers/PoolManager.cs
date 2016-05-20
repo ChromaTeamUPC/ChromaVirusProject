@@ -5,24 +5,44 @@ using System.Collections;
 public class PoolManager : MonoBehaviour
 {   
     [SerializeField]
-    private ScriptObjectPoolDefiner playerShotRedPoolDefiner;
+    private ScriptObjectPoolDefiner player1ShotRedPoolDefiner;
     [HideInInspector]
-    public ScriptObjectPool<PlayerShotController> playerShotRedPool;
+    public ScriptObjectPool<PlayerShotController> player1ShotRedPool;
 
     [SerializeField]
-    private ScriptObjectPoolDefiner playerShotGreenPoolDefiner;
+    private ScriptObjectPoolDefiner player1ShotGreenPoolDefiner;
     [HideInInspector]
-    public ScriptObjectPool<PlayerShotController> playerShotGreenPool;
+    public ScriptObjectPool<PlayerShotController> player1ShotGreenPool;
 
     [SerializeField]
-    private ScriptObjectPoolDefiner playerShotBluePoolDefiner;
+    private ScriptObjectPoolDefiner player1ShotBluePoolDefiner;
     [HideInInspector]
-    public ScriptObjectPool<PlayerShotController> playerShotBluePool;
+    public ScriptObjectPool<PlayerShotController> player1ShotBluePool;
 
     [SerializeField]
-    private ScriptObjectPoolDefiner playerShotYellowPoolDefiner;
+    private ScriptObjectPoolDefiner player1ShotYellowPoolDefiner;
     [HideInInspector]
-    public ScriptObjectPool<PlayerShotController> playerShotYellowPool;
+    public ScriptObjectPool<PlayerShotController> player1ShotYellowPool;
+
+    [SerializeField]
+    private ScriptObjectPoolDefiner player1MuzzleRedPoolDefiner;
+    [HideInInspector]
+    public ScriptObjectPool<MuzzleController> player1MuzzleRedPool;
+
+    [SerializeField]
+    private ScriptObjectPoolDefiner player1MuzzleGreenPoolDefiner;
+    [HideInInspector]
+    public ScriptObjectPool<MuzzleController> player1MuzzleGreenPool;
+
+    [SerializeField]
+    private ScriptObjectPoolDefiner player1MuzzleBluePoolDefiner;
+    [HideInInspector]
+    public ScriptObjectPool<MuzzleController> player1MuzzleBluePool;
+
+    [SerializeField]
+    private ScriptObjectPoolDefiner player1MuzzleYellowPoolDefiner;
+    [HideInInspector]
+    public ScriptObjectPool<MuzzleController> player1MuzzleYellowPool;
 
 
     public ObjectPool spiderPool;
@@ -35,10 +55,15 @@ public class PoolManager : MonoBehaviour
 
     void Awake()
     {
-        playerShotRedPool = CreateScriptObjectPool<PlayerShotController>(playerShotRedPool, playerShotRedPoolDefiner);
-        playerShotGreenPool = CreateScriptObjectPool<PlayerShotController>(playerShotGreenPool, playerShotGreenPoolDefiner);
-        playerShotBluePool = CreateScriptObjectPool<PlayerShotController>(playerShotBluePool, playerShotBluePoolDefiner);
-        playerShotYellowPool = CreateScriptObjectPool<PlayerShotController>(playerShotYellowPool, playerShotYellowPoolDefiner);
+        player1ShotRedPool = CreateScriptObjectPool<PlayerShotController>(player1ShotRedPool, player1ShotRedPoolDefiner);
+        player1ShotGreenPool = CreateScriptObjectPool<PlayerShotController>(player1ShotGreenPool, player1ShotGreenPoolDefiner);
+        player1ShotBluePool = CreateScriptObjectPool<PlayerShotController>(player1ShotBluePool, player1ShotBluePoolDefiner);
+        player1ShotYellowPool = CreateScriptObjectPool<PlayerShotController>(player1ShotYellowPool, player1ShotYellowPoolDefiner);
+
+        player1MuzzleRedPool = CreateScriptObjectPool<MuzzleController>(player1MuzzleRedPool, player1MuzzleRedPoolDefiner);
+        player1MuzzleGreenPool = CreateScriptObjectPool<MuzzleController>(player1MuzzleGreenPool, player1MuzzleGreenPoolDefiner);
+        player1MuzzleBluePool = CreateScriptObjectPool<MuzzleController>(player1MuzzleBluePool, player1MuzzleBluePoolDefiner);
+        player1MuzzleYellowPool = CreateScriptObjectPool<MuzzleController>(player1MuzzleYellowPool, player1MuzzleYellowPoolDefiner);
 
         voxelPool = CreateScriptObjectPool<VoxelController>(voxelPool, voxelPoolDefiner);
     }

@@ -7,6 +7,7 @@ public class PlayerShotController : MonoBehaviour {
 
     public int speed;
     public int damage;
+    public float forceMultiplier = 5f;
 
     [Range(0,20)]
     public float maxDuration;
@@ -74,7 +75,7 @@ public class PlayerShotController : MonoBehaviour {
         if (collision.collider.tag == "Enemy")
         {
             SpiderAIBehaviour enemy = collision.collider.GetComponent<SpiderAIBehaviour>();
-            enemy.ImpactedByShot(color, damage);
+            enemy.ImpactedByShot(color, damage, transform.forward * forceMultiplier);
         }
         else if (collision.collider.tag == "Vortex")
         {
@@ -92,13 +93,13 @@ public class PlayerShotController : MonoBehaviour {
         StartCoroutine(WaitAndReturnToPool());
     }
 
-    IEnumerator WaitAndReturnToPool()
+    private IEnumerator WaitAndReturnToPool()
     {
         yield return new WaitForSeconds(2f);
         ReturnToPool();
     }
 
-    void ReturnToPool()
+    private void ReturnToPool()
     {
         damage = defaultDamage;
         //projectileParticle.transform.localRotation = Quaternion.identity;
@@ -109,16 +110,16 @@ public class PlayerShotController : MonoBehaviour {
         switch (color)
         {
             case ChromaColor.RED:
-                rsc.poolMng.playerShotRedPool.AddObject(this);
+                rsc.poolMng.player1ShotRedPool.AddObject(this);
                 break;
             case ChromaColor.GREEN:
-                rsc.poolMng.playerShotGreenPool.AddObject(this);
+                rsc.poolMng.player1ShotGreenPool.AddObject(this);
                 break;
             case ChromaColor.BLUE:
-                rsc.poolMng.playerShotBluePool.AddObject(this);
+                rsc.poolMng.player1ShotBluePool.AddObject(this);
                 break;
             case ChromaColor.YELLOW:
-                rsc.poolMng.playerShotYellowPool.AddObject(this);
+                rsc.poolMng.player1ShotYellowPool.AddObject(this);
                 break;
         }
     }

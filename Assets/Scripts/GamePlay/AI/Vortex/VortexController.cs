@@ -12,6 +12,7 @@ public class VortexController : MonoBehaviour {
     public int maxEnemiesInScene = 10;
 
     public Transform spawnPoint;
+    public ParticleSystem particleSystem;
 
     private bool active;
     private int currentHealth;
@@ -19,10 +20,19 @@ public class VortexController : MonoBehaviour {
     private float spawnDelay;
     private float elapsedTime;
 
+    public float blinkSeconds = 0.1f;
+
     private ColoredObjectsManager coloredObjMng;
 
     private List<AIAction> entryActions;
     private List<AIAction> attackActions;
+
+    private BlinkController blinkController;
+
+    void Awake()
+    {
+        blinkController = GetComponent<BlinkController>();
+    }
 
     void Start()
     {
@@ -35,6 +45,7 @@ public class VortexController : MonoBehaviour {
     public void Activate()
     {
         active = true;
+        particleSystem.Play();
         currentHealth = maxHealth;
         spawnDelay = 0.01f;
         elapsedTime = 0f;
@@ -44,13 +55,16 @@ public class VortexController : MonoBehaviour {
     public void Deactivate()
     {
         active = false;
+        particleSystem.Stop();
         rsc.eventMng.TriggerEvent(EventManager.EventType.VORTEX_DESTROYED, EventInfo.emptyInfo);
-        Destroy(gameObject, 2f);
+        Destroy(gameObject, 3f);
     }
 
     public void ImpactedByShot(ChromaColor shotColor, int damage)
     {
         if (!active) return;
+
+        blinkController.Blink();
 
         currentHealth -= damage;
 

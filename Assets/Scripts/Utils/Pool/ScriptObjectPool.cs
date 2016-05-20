@@ -85,6 +85,7 @@ public class ScriptObjectPool<T> where T : MonoBehaviour
     public void AddObject(T pooledObject)
     {
         pooledObject.gameObject.SetActive(false);
+        pooledObject.transform.SetParent(objectsParent.transform);
         pool.Enqueue(pooledObject);
     }
 

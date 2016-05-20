@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour {
     [Header("Fire Settings")]
     public float fireRate = 0.25f;
     public Transform shotSpawn;
+    public Transform muzzlePoint;
     public Light shotLight;
 
     private float nextFire;
@@ -86,6 +87,8 @@ public class PlayerController : MonoBehaviour {
     public VoxelizationClient voxelization;
     private ChromaColor currentColor;
 
+    private BlinkController blinkController;
+
     [HideInInspector]
     public bool isInBorder;
 
@@ -119,6 +122,7 @@ public class PlayerController : MonoBehaviour {
         rend = GetComponentInChildren<Renderer>();
         ctrl = GetComponent<CharacterController>();
         voxelization = GetComponent<VoxelizationClient>();
+        blinkController = GetComponent<BlinkController>();
 
         spawningState = new PlayerSpawningState();
         idleState = new PlayerIdleState();
@@ -409,14 +413,20 @@ public class PlayerController : MonoBehaviour {
                 if (isFirstShot)
                 {
                     //Get a shot from pool
-                    PlayerShotController shot = coloredObjMng.GetPlayerShot();
+                    PlayerShotController shot = coloredObjMng.GetPlayer1Shot();
+                    MuzzleController muzzle = coloredObjMng.GetPlayer1Muzzle();
 
-                    if (shot != null)
+                    if (shot != null && muzzle != null)
                     {
                         shot.transform.position = shotSpawn.position;
                         shot.transform.rotation = shotSpawn.rotation;
                         shot.damage *= 2;
                         shot.Shoot();
+
+                        muzzle.transform.SetParent(muzzlePoint);
+                        muzzle.transform.position = muzzlePoint.position;
+                        muzzle.transform.rotation = muzzlePoint.rotation;
+                        muzzle.Play();
                     }
                     isFirstShot = false;
                 }
@@ -424,20 +434,35 @@ public class PlayerController : MonoBehaviour {
                 else
                 {
                     //Get two shots from pool
-                    PlayerShotController shot1 = coloredObjMng.GetPlayerShot();
-                    PlayerShotController shot2 = coloredObjMng.GetPlayerShot();
+                    PlayerShotController shot1 = coloredObjMng.GetPlayer1Shot();
+                    PlayerShotController shot2 = coloredObjMng.GetPlayer1Shot();
 
-                    if (shot1 != null && shot2 != null)
+                    MuzzleController muzzle1 = coloredObjMng.GetPlayer1Muzzle();
+                    MuzzleController muzzle2 = coloredObjMng.GetPlayer1Muzzle();
+
+                    if (shot1 != null && shot2 != null && muzzle1 != null && muzzle2 != null)
                     {
                         shot1.transform.rotation = shotSpawn.rotation;
                         shot1.transform.position = shotSpawn.position;
                         shot1.transform.Translate(new Vector3(shotSideOffset, 0, 0));
                         shot1.Shoot();
 
+                        muzzle1.transform.position = muzzlePoint.position;
+                        muzzle1.transform.rotation = muzzlePoint.rotation;
+                        muzzle1.transform.SetParent(muzzlePoint);
+                        muzzle1.transform.Translate(new Vector3(shotSideOffset, 0, 0));
+                        muzzle1.Play();
+
                         shot2.transform.rotation = shotSpawn.rotation;
                         shot2.transform.position = shotSpawn.position;
                         shot2.transform.Translate(new Vector3(-shotSideOffset, 0, 0));
                         shot2.Shoot();
+
+                        muzzle2.transform.position = muzzlePoint.position;
+                        muzzle2.transform.rotation = muzzlePoint.rotation;
+                        muzzle2.transform.SetParent(muzzlePoint);
+                        muzzle2.transform.Translate(new Vector3(-shotSideOffset, 0, 0));
+                        muzzle2.Play();
 
                         if (shotSideOffset <= minSideOffset || shotSideOffset >= maxSideOffset)
                             sideOffsetVariation *= -1;
@@ -470,6 +495,8 @@ public class PlayerController : MonoBehaviour {
     public void TakeDamage(int damage)
     {
         if (!canTakeDamage) return;
+
+        blinkController.Blink();
 
         currentHealth -= damage;
 

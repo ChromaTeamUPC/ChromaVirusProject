@@ -15,7 +15,7 @@ public class PlayerDyingState : PlayerBaseState
         if (animationEnded)
         {
             player.voxelization.CalculateVoxelsGrid();
-            //player.voxelization.SpawnVoxels();
+            player.voxelization.SpawnVoxels();
             PlayerDiedEventInfo.eventInfo.player = player;
             rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DIED, PlayerDiedEventInfo.eventInfo);
             player.gameObject.SetActive(false);

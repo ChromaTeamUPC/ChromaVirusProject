@@ -5,7 +5,10 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
 
     protected EnemyBaseBlackboard blackboard; //To be instantiated in inherited classes
 
+    [Header("Enemy Common Settings")]
     public int maxHealth = 30;
+
+    public float shotForceModifier = 1f;
 
     [HideInInspector]
     public ChromaColor color;
@@ -13,15 +16,23 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     private VoxelizationClient voxelization;
     [HideInInspector]
     public Renderer rend;
+    [HideInInspector]
+    public Collider mainCollider;
 
     protected AIBaseState currentState;
+
+    protected BlinkController blinkController;
 
 
     protected virtual void Awake()
     {
         voxelization = GetComponent<VoxelizationClient>();
         rend = GetComponentInChildren<Renderer>();
+        mainCollider = GetComponent<Collider>();
+        blinkController = GetComponent<BlinkController>();
     }
+
+    public virtual void SetMaterials(Material[] materials) { }
 
     public void AnimationEnded()
     {
@@ -39,20 +50,20 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     {
         if (currentState != null)
         {
-            Debug.Log(this.GetType().Name + " Exiting: " + currentState.GetType().Name);
+            //Debug.Log(this.GetType().Name + " Exiting: " + currentState.GetType().Name);
             currentState.OnStateExit();
         }
         currentState = newState;
         if (currentState != null)
         {
-            Debug.Log(this.GetType().Name + " Entering: " + currentState.GetType().Name);
+            //Debug.Log(this.GetType().Name + " Entering: " + currentState.GetType().Name);
             currentState.OnStateEnter();
         }
     }
 
-    public void ImpactedByShot(ChromaColor shotColor, int damage)
+    public void ImpactedByShot(ChromaColor shotColor, int damage, Vector3 direction)
     {
-        AIBaseState newState = currentState.ImpactedByShot(shotColor, damage);
+        AIBaseState newState = currentState.ImpactedByShot(shotColor, damage, direction);
 
         if (newState != null)
         {
@@ -60,7 +71,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         }
     }
 
-    public virtual AIBaseState ProcessShotImpact(ChromaColor shotColor, int damage)
+    public virtual AIBaseState ProcessShotImpact(ChromaColor shotColor, int damage, Vector3 direction)
     {
         return null;
     }

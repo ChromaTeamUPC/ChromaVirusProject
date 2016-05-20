@@ -509,35 +509,36 @@ public class EnemyManager : MonoBehaviour
     void CreateZonePlans() 
     {
         //TODO: JORDI TEST REMOVE WHEN DONE
-        /*plan0101 = new ZonePlan();
+        plan0101 = new ZonePlan();
 
         plan0101.enemiesThreshold = 1;
         List<WaveAction> z01wave01 = new List<WaveAction>();
-        z01wave01.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP01", jordiTestEntry01, jordiTestAttack01, 0f, 1, 1f, SpiderAIBehaviour.SpawnAnimation.SKY));
-        z01wave01.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP01", jordiTestEntry01, jordiTestAttack01, 4f, 1, 1f, SpiderAIBehaviour.SpawnAnimation.FLOOR));
+        z01wave01.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP01", jordiTestEntry01, jordiTestAttack01, 0f, 3, 1f, SpiderAIBehaviour.SpawnAnimation.FLOOR));
+        z01wave01.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", jordiTestEntry01, jordiTestAttack01, 2.5f, 1, 1f, SpiderAIBehaviour.SpawnAnimation.FLOOR));
+        z01wave01.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP01", jordiTestEntry01, jordiTestAttack01, 0.95f, 1, 1f, SpiderAIBehaviour.SpawnAnimation.FLOOR));
         plan0101.sequentialWaves.Add(z01wave01);
 
         plan0102 = new ZonePlan();
         plan0102.enemiesThreshold = 3;
 
         List<WaveAction> z02wave01 = new List<WaveAction>();
-        z02wave01.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z02SP01", jordiTestEntry01, jordiTestAttack01, 0f, 1, 1f, SpiderAIBehaviour.SpawnAnimation.SKY));
-        z02wave01.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z02SP01", jordiTestEntry01, jordiTestAttack01, 4f, 1, 1f, SpiderAIBehaviour.SpawnAnimation.FLOOR));
+        //z02wave01.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z02SP01", jordiTestEntry01, jordiTestAttack01, 0f, 1, 1f, SpiderAIBehaviour.SpawnAnimation.SKY));
+        //z02wave01.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z02SP01", jordiTestEntry01, jordiTestAttack01, 4f, 1, 1f, SpiderAIBehaviour.SpawnAnimation.FLOOR));
         plan0102.sequentialWaves.Add(z02wave01);
 
         plan0103 = new ZonePlan();
         plan0103.enemiesThreshold = 3;
 
         List<WaveAction> z03wave01 = new List<WaveAction>();
-        z03wave01.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z03SP01", jordiTestEntry01, jordiTestAttack01, 0f, 1, 1f, SpiderAIBehaviour.SpawnAnimation.SKY));
-        z03wave01.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z03SP01", jordiTestEntry01, jordiTestAttack01, 4f, 1, 1f, SpiderAIBehaviour.SpawnAnimation.FLOOR));
-        plan0103.sequentialWaves.Add(z02wave01);*/
+        //z03wave01.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z03SP01", jordiTestEntry01, jordiTestAttack01, 0f, 1, 1f, SpiderAIBehaviour.SpawnAnimation.SKY));
+        //z03wave01.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z03SP01", jordiTestEntry01, jordiTestAttack01, 4f, 1, 1f, SpiderAIBehaviour.SpawnAnimation.FLOOR));
+        plan0103.sequentialWaves.Add(z02wave01);
 
         //END TODO
 
         //Init zone plans
         //plan0101
-        plan0101 = new ZonePlan();
+        /*plan0101 = new ZonePlan();
 
         plan0101.enemiesThreshold = 1;
 
@@ -681,7 +682,7 @@ public class EnemyManager : MonoBehaviour
 
         List<WaveAction> z03wave06 = new List<WaveAction>();
         z03wave06.Add(new SpawnSpiderWaveAction(true, +4, "Z03SP01", level01Z03spiderEntry03b, level01Z03spiderEntry03b, 1f, 3, 0.7f));
-        plan0103.sequentialWaves.Add(z03wave06);
+        plan0103.sequentialWaves.Add(z03wave06);*/
     }
 
 }

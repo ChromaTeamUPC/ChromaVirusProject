@@ -22,9 +22,9 @@ public class AIBaseState
         return null;
     }
 
-    virtual public AIBaseState ImpactedByShot(ChromaColor shotColor, int damage)
+    virtual public AIBaseState ImpactedByShot(ChromaColor shotColor, int damage, Vector3 direction)
     {
-        return blackboard.entity.ProcessShotImpact(shotColor, damage);
+        return blackboard.entity.ProcessShotImpact(shotColor, damage, direction);
     }
 
     virtual public AIBaseState ImpactedByBarrel(ChromaColor barrelColor, int damage)

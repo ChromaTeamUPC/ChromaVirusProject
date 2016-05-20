@@ -8,6 +8,7 @@ public class SpiderSpawningAIState : SpiderAIBaseState {
 
     public override void OnStateEnter()
     {
+        spiderBlackboard.entity.mainCollider.enabled = false;
         spiderBlackboard.canReceiveDamage = false;
         spiderBlackboard.animationEnded = false;
 
@@ -20,6 +21,7 @@ public class SpiderSpawningAIState : SpiderAIBaseState {
 
     public override void OnStateExit()
     {
+        spiderBlackboard.entity.mainCollider.enabled = true;
         spiderBlackboard.canReceiveDamage = true;
     }
 

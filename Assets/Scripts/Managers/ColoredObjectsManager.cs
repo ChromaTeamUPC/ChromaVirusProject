@@ -4,26 +4,36 @@ using System.Collections;
 
 public class ColoredObjectsManager : MonoBehaviour
 {
+    [SerializeField]
+    private Material whiteMaterial;
+
     //Platform 1 Materials
 
     //Player
-    public Material[] player1Mats = new Material[4];
+    [SerializeField]
+    private Material[] player1Mats = new Material[4];
     private Material currentPlayer1;
 
     //Player Shot Light Color
-    public Color[] playerShotLights = new Color[4];
+    [SerializeField]
+    private Color[] playerShotLights = new Color[4];
     private Color currentPlayerShotLight;
 
     //Voxel Materials
-    public Material[] voxelMats = new Material[4];
+    [SerializeField]
+    private Material[] voxelMats = new Material[4];
     private Material currentVoxel;
 
     //Spider Materials
-    public Material[] spiderMats = new Material[4];
+    [SerializeField]
+    private Material[] spiderMats = new Material[4];
     private Material currentSpider;
     
-    private ScriptObjectPool<PlayerShotController>[] playerShotPools = new ScriptObjectPool<PlayerShotController>[4];
-    private ScriptObjectPool<PlayerShotController> currentPlayerShotPool;
+    private ScriptObjectPool<PlayerShotController>[] player1ShotPools = new ScriptObjectPool<PlayerShotController>[4];
+    private ScriptObjectPool<PlayerShotController> currentPlayer1ShotPool;
+
+    private ScriptObjectPool<MuzzleController>[] player1MuzzlePools = new ScriptObjectPool<MuzzleController>[4];
+    private ScriptObjectPool<MuzzleController> currentPlayer1MuzzlePool;
 
     private ObjectPool spiderPool;
     private ScriptObjectPool<VoxelController> voxelPool;
@@ -34,10 +44,15 @@ public class ColoredObjectsManager : MonoBehaviour
     {
         Debug.Log("Colored Objects Manager created");
 
-        playerShotPools[0] = rsc.poolMng.playerShotRedPool;
-        playerShotPools[1] = rsc.poolMng.playerShotGreenPool;
-        playerShotPools[2] = rsc.poolMng.playerShotBluePool;
-        playerShotPools[3] = rsc.poolMng.playerShotYellowPool;
+        player1ShotPools[0] = rsc.poolMng.player1ShotRedPool;
+        player1ShotPools[1] = rsc.poolMng.player1ShotGreenPool;
+        player1ShotPools[2] = rsc.poolMng.player1ShotBluePool;
+        player1ShotPools[3] = rsc.poolMng.player1ShotYellowPool;
+
+        player1MuzzlePools[0] = rsc.poolMng.player1MuzzleRedPool;
+        player1MuzzlePools[1] = rsc.poolMng.player1MuzzleGreenPool;
+        player1MuzzlePools[2] = rsc.poolMng.player1MuzzleBluePool;
+        player1MuzzlePools[3] = rsc.poolMng.player1MuzzleYellowPool;
 
         spiderPool = rsc.poolMng.spiderPool;
         voxelPool = rsc.poolMng.voxelPool;
@@ -66,7 +81,8 @@ public class ColoredObjectsManager : MonoBehaviour
         int colorIndex = (int)currentColor;
 
         currentPlayer1 = player1Mats[colorIndex];
-        currentPlayerShotPool = playerShotPools[colorIndex];
+        currentPlayer1ShotPool = player1ShotPools[colorIndex];
+        currentPlayer1MuzzlePool = player1MuzzlePools[colorIndex];
         currentPlayerShotLight = playerShotLights[colorIndex];
         currentVoxel = voxelMats[colorIndex];
         currentSpider = spiderMats[colorIndex];       
@@ -77,20 +93,32 @@ public class ColoredObjectsManager : MonoBehaviour
         return matArray[(int)color];
     }
 
+    public Material WhiteMaterial { get { return whiteMaterial; } }
+
     public Material GetPlayer1Material(ChromaColor color)
     {
         return GetMaterial(player1Mats, color);
     }
 
     //Player Shot methods
-    public PlayerShotController GetPlayerShot()
+    public PlayerShotController GetPlayer1Shot()
     {
-        return currentPlayerShotPool.GetObject();
+        return currentPlayer1ShotPool.GetObject();
     }
 
-    public PlayerShotController GetPlayerShot(ChromaColor color)
+    public MuzzleController GetPlayer1Muzzle(ChromaColor color)
     {
-        return playerShotPools[(int)color].GetObject();
+        return player1MuzzlePools[(int)color].GetObject();
+    }
+
+    public MuzzleController GetPlayer1Muzzle()
+    {
+        return currentPlayer1MuzzlePool.GetObject();
+    }
+
+    public PlayerShotController GetPlayer1Shot(ChromaColor color)
+    {
+        return player1ShotPools[(int)color].GetObject();
     }
 
     public Color GetPlayerShotLightColor()
@@ -141,9 +169,11 @@ public class ColoredObjectsManager : MonoBehaviour
         {
             SpiderAIBehaviour spiderAI = spider.GetComponent<SpiderAIBehaviour>();
             spiderAI.color = color;
-            Material[] mats = spiderAI.rend.materials;
-            mats[1] = GetMaterial(spiderMats, color);
-            spiderAI.rend.materials = mats;
+            //Material[] mats = spiderAI.rend.materials;
+            //mats[1] = GetMaterial(spiderMats, color);
+            //spiderAI.rend.materials = mats;
+
+            spiderAI.SetMaterials(new[] { GetMaterial(spiderMats, color) });
 
             return spiderAI;
         }

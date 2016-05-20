@@ -12,9 +12,10 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 
     private SpiderBlackboard spiderBlackboard;
 
+    [Header("Spider Settings")]
     public int biteDamage = 10;
     public float playerDetectionDistance = 5f;
-
+    
     public SpiderAIBaseState spawningState;
     public SpiderAIActionsBaseState entryState;
     public SpiderAIBaseState attackingChipState;
@@ -38,6 +39,19 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         attractedToBarrelState = new SpiderAttractedToBarrelAIState(spiderBlackboard);
         attackingPlayerState = new SpiderAttackingPlayerAIState(spiderBlackboard);
         dyingState = new SpiderDyingAIState(spiderBlackboard);
+    }
+
+    public override void SetMaterials(Material[] materials)
+    {
+        Material[] mats = rend.materials;
+
+        if (mats[1] != materials[0])
+        {
+            mats[1] = materials[0];
+            rend.materials = mats;
+
+            blinkController.InvalidateMaterials();
+        }
     }
 
     public void AIInit(SpawnAnimation spawnAnimation, List<AIAction> entryList, List<AIAction> attackList)
@@ -72,15 +86,20 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 	}
 
     //Not to be used outside FSM
-    public override AIBaseState ProcessShotImpact(ChromaColor shotColor, int damage)
+    public override AIBaseState ProcessShotImpact(ChromaColor shotColor, int damage, Vector3 direction)
     {
         if (spiderBlackboard.canReceiveDamage && spiderBlackboard.currentHealth > 0)
         {
+            blinkController.Blink();
+
             if (shotColor == color)
             {
                 spiderBlackboard.currentHealth -= damage;
                 if (spiderBlackboard.currentHealth <= 0)
+                {
+                    spiderBlackboard.lastShotDirection = direction;
                     return dyingState;
+                }
             }
             //Else future behaviour like duplicate or increase health
         }
