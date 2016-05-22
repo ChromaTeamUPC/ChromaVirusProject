@@ -115,7 +115,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Die
       takeName: Die
-      firstFrame: 170
+      firstFrame: 173
       lastFrame: 190
       wrapMode: 0
       orientationOffsetY: 0

@@ -39,7 +39,7 @@ public class VortexController : MonoBehaviour {
         active = false;
         coloredObjMng = rsc.coloredObjectsMng;
         entryActions = rsc.enemyMng.defaultSpiderEntry;
-        attackActions = rsc.enemyMng.defaulSpiderAttack;
+        attackActions = rsc.enemyMng.defaultSpiderAttack;
     }
 
     public void Activate()
