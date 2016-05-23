@@ -3,27 +3,23 @@ using System.Collections;
 
 public class SpawnPointController : MonoBehaviour {
 
-    public const float portalDuration = 2f;
+    public const float portalDuration = 1.25f;
 
     public GameObject redPortal;
-    //private ParticleSystem redPS;
     private float redPortalDuration;
-    private bool checkRedStop;
+    private bool isRedStopping;
 
     public GameObject greenPortal;
-    //private ParticleSystem greenPS;
     private float greenPortalDuration;
-    private bool checkGreenStop;
+    private bool isGreenStopping;
 
     public GameObject bluePortal;
-    //private ParticleSystem bluePS;
     private float bluePortalDuration;
-    private bool checkBlueStop;
+    private bool isBlueStopping;
 
     public GameObject yellowPortal;
-    //private ParticleSystem yellowPS;
     private float yellowPortalDuration;
-    private bool checkYellowStop;
+    private bool isYellowStopping;
 
     private ParticleSystem[] redPSs;
     private ParticleSystem[] greenPSs;
@@ -32,26 +28,14 @@ public class SpawnPointController : MonoBehaviour {
 
     void Awake()
     {
-        /*redPS = redPortal.GetComponent<ParticleSystem>();
-        greenPS = greenPortal.GetComponent<ParticleSystem>();
-        bluePS = bluePortal.GetComponent<ParticleSystem>();
-        yellowPS = yellowPortal.GetComponent<ParticleSystem>();
-        redPS.Stop();
-        redPS.Clear();
-        greenPS.Stop();
-        greenPS.Clear();
-        bluePS.Stop();
-        bluePS.Clear();
-        yellowPS.Stop();
-        yellowPS.Clear();*/
         redPortalDuration = 0f;
         greenPortalDuration = 0f;
         bluePortalDuration = 0f;
         yellowPortalDuration = 0f;
-        checkRedStop = false;
-        checkGreenStop = false;
-        checkBlueStop = false;
-        checkYellowStop = false;
+        isRedStopping = false;
+        isGreenStopping = false;
+        isBlueStopping = false;
+        isYellowStopping = false;
 
         redPSs = redPortal.GetComponentsInChildren<ParticleSystem>();
         greenPSs = greenPortal.GetComponentsInChildren<ParticleSystem>();
@@ -61,15 +45,15 @@ public class SpawnPointController : MonoBehaviour {
 
     void Update()
     {
-        CheckStop(redPSs, ref checkRedStop);
-        CheckStop(greenPSs, ref checkGreenStop);
-        CheckStop(bluePSs, ref checkBlueStop);
-        CheckStop(yellowPSs, ref checkYellowStop);
+        CheckStop(redPSs, ref isRedStopping);
+        CheckStop(greenPSs, ref isGreenStopping);
+        CheckStop(bluePSs, ref isBlueStopping);
+        CheckStop(yellowPSs, ref isYellowStopping);
 
-        UpdatePortal(redPSs, ref redPortalDuration, ref checkRedStop);
-        UpdatePortal(greenPSs, ref greenPortalDuration, ref checkGreenStop);
-        UpdatePortal(bluePSs, ref bluePortalDuration, ref checkBlueStop);
-        UpdatePortal(yellowPSs, ref yellowPortalDuration, ref checkYellowStop);
+        UpdatePortal(redPSs, ref redPortalDuration, ref isRedStopping);
+        UpdatePortal(greenPSs, ref greenPortalDuration, ref isGreenStopping);
+        UpdatePortal(bluePSs, ref bluePortalDuration, ref isBlueStopping);
+        UpdatePortal(yellowPSs, ref yellowPortalDuration, ref isYellowStopping);
 
         //TODO DEbug, remove when done
         /*if (Input.GetKeyDown(KeyCode.Keypad1))
@@ -118,21 +102,6 @@ public class SpawnPointController : MonoBehaviour {
         //Debug.Log("Is stopped: " + redPS.isStopped);
     }
 
-    /*private void UpdatePortal(ParticleSystem particleSystem, ref float duration, ref bool checkStop)
-    {
-        if (duration > 0)
-        {
-            duration -= Time.deltaTime;
-
-            if (duration <= 0)
-            {
-                particleSystem.Stop();
-                checkStop = true;
-                duration = 0;
-            }
-        }
-    }*/
-
     private void UpdatePortal(ParticleSystem[] particleSystems, ref float duration, ref bool checkStop)
     {
         if (duration > 0)
@@ -152,24 +121,12 @@ public class SpawnPointController : MonoBehaviour {
         }
     }
 
-    /*private void CheckStop(ParticleSystem particleSystem, ref bool checkStop)
-    {
-        if(checkStop)
-        {
-            if(particleSystem.isStopped)
-            {
-                particleSystem.Clear();
-                particleSystem.gameObject.SetActive(false);
-                checkStop = false;
-            }
-        }
-    }*/
 
-    private void CheckStop(ParticleSystem[] particleSystems, ref bool checkStop)
+    private void CheckStop(ParticleSystem[] particleSystems, ref bool isStopping)
     {
-        if (checkStop)
+        if (isStopping)
         {
-            checkStop = false;
+            isStopping = false;
             for (int i = 0; i < particleSystems.Length; ++i)
             {
                 if (particleSystems[i].isStopped)
@@ -180,7 +137,7 @@ public class SpawnPointController : MonoBehaviour {
                 else
                 {
                     particleSystems[i].Stop(false);
-                    checkStop = true;
+                    isStopping = true;
                 }
             }
         }
@@ -191,48 +148,42 @@ public class SpawnPointController : MonoBehaviour {
         switch (color)
         {
             case ChromaColor.RED:
-                InitPortal(redPSs, ref redPortalDuration, duration);
-                checkRedStop = false;
+                InitPortal(redPSs, ref isRedStopping, ref redPortalDuration, duration);
+                isRedStopping = false;
                 break;
             case ChromaColor.GREEN:
-                InitPortal(greenPSs, ref greenPortalDuration, duration);
-                checkGreenStop = false;
+                InitPortal(greenPSs, ref isGreenStopping, ref greenPortalDuration, duration);
+                isGreenStopping = false;
                 break;
             case ChromaColor.BLUE:
-                InitPortal(bluePSs, ref bluePortalDuration, duration);
-                checkBlueStop = false;
+                InitPortal(bluePSs, ref isBlueStopping, ref bluePortalDuration, duration);
+                isBlueStopping = false;
                 break;
             case ChromaColor.YELLOW:
-                InitPortal(yellowPSs, ref yellowPortalDuration, duration);
-                checkYellowStop = false;
+                InitPortal(yellowPSs, ref isYellowStopping, ref yellowPortalDuration, duration);
+                isYellowStopping = false;
                 break;
             default:
                 break;
         }
     }
 
-    /*private void InitPortal(ParticleSystem particleSystem, ref float currentDuration, float newDuration)
-    {
-        if(!particleSystem.gameObject.activeSelf)
-            particleSystem.gameObject.SetActive(true);
-
-        particleSystem.Play();
-
-        if (newDuration > currentDuration)
-            currentDuration = newDuration;
-    }*/
-
-    private void InitPortal(ParticleSystem[] particleSystems, ref float currentDuration, float newDuration)
+    private void InitPortal(ParticleSystem[] particleSystems, ref bool isStopping, ref float currentDuration, float newDuration)
     {
         for(int i= 0; i<particleSystems.Length; ++i)
         {
             if (!particleSystems[i].gameObject.activeSelf)
+            {
                 particleSystems[i].gameObject.SetActive(true);
+            }
 
-            particleSystems[i].Play(false);
+            if(!particleSystems[i].isPlaying || isStopping)
+                particleSystems[i].Play(false);
         }
 
         if (newDuration > currentDuration)
             currentDuration = newDuration;
+
+        isStopping = false;
     }
 }

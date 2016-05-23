@@ -52,7 +52,6 @@ public class PlayerController : MonoBehaviour {
     public float fireRate = 0.25f;
     public Transform shotSpawn;
     public Transform muzzlePoint;
-    public Light shotLight;
 
     private float nextFire;
     private bool isFirstShot = true;
@@ -208,6 +207,7 @@ public class PlayerController : MonoBehaviour {
         Material[] mats = rend.materials;
         mats[1] = mat;
         rend.materials = mats;
+        blinkController.InvalidateMaterials();
     }
 
 
@@ -398,7 +398,6 @@ public class PlayerController : MonoBehaviour {
     public bool Shoot()
     {
         bool shooting = false;
-        shotLight.enabled = false;
 
         if (Input.GetAxisRaw(fire) > 0.1f)
         { 
@@ -406,8 +405,6 @@ public class PlayerController : MonoBehaviour {
             if (Time.time > nextFire)
             {
                 nextFire = Time.time + fireRate;
-                shotLight.color = coloredObjMng.GetPlayerShotLightColor();
-                shotLight.enabled = true;
 
                 // check if it's first shot (single projectile)...
                 if (isFirstShot)

@@ -6,6 +6,7 @@ public class MoveActionExecutor: BaseExecutor
     private MoveAIAction moveAction;
     private Vector3 direction;
     private float elapsedTime;
+    private float originalAnimationSpeed;
 
     public override void SetAction(AIAction act)
     {
@@ -48,6 +49,7 @@ public class MoveActionExecutor: BaseExecutor
         blackBoard.animator.SetBool("walking", true);
 
         blackBoard.agent.speed = moveAction.speed;
+        originalAnimationSpeed = blackBoard.animator.speed;
         blackBoard.animator.speed = moveAction.speed / 4;
         blackBoard.agent.destination = blackBoard.target.transform.position + direction;
         blackBoard.agent.Resume();
@@ -82,6 +84,8 @@ public class MoveActionExecutor: BaseExecutor
             //Debug.Log(blackBoard.agent.remainingDistance);
             if (!moveAction.inertia)
                 blackBoard.agent.velocity = Vector3.zero;
+
+            blackBoard.animator.speed = originalAnimationSpeed;
 
             return moveAction.nextAction;
         }

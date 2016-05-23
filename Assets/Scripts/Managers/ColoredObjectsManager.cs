@@ -14,11 +14,6 @@ public class ColoredObjectsManager : MonoBehaviour
     private Material[] player1Mats = new Material[4];
     private Material currentPlayer1;
 
-    //Player Shot Light Color
-    [SerializeField]
-    private Color[] playerShotLights = new Color[4];
-    private Color currentPlayerShotLight;
-
     //Voxel Materials
     [SerializeField]
     private Material[] voxelMats = new Material[4];
@@ -83,7 +78,6 @@ public class ColoredObjectsManager : MonoBehaviour
         currentPlayer1 = player1Mats[colorIndex];
         currentPlayer1ShotPool = player1ShotPools[colorIndex];
         currentPlayer1MuzzlePool = player1MuzzlePools[colorIndex];
-        currentPlayerShotLight = playerShotLights[colorIndex];
         currentVoxel = voxelMats[colorIndex];
         currentSpider = spiderMats[colorIndex];       
     }
@@ -119,11 +113,6 @@ public class ColoredObjectsManager : MonoBehaviour
     public PlayerShotController GetPlayer1Shot(ChromaColor color)
     {
         return player1ShotPools[(int)color].GetObject();
-    }
-
-    public Color GetPlayerShotLightColor()
-    {
-        return currentPlayerShotLight;
     }
 
     //Spider methods

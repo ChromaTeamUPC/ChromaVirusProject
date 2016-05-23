@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour {
     {
         if (gameStarted)
         {
-            if (Input.GetButtonDown("Ok"))
+            if (Input.GetButtonDown("Pause"))
             {
                 paused = !paused;
 
@@ -68,6 +68,20 @@ public class GameManager : MonoBehaviour {
         loadLevel.allowSceneActivation = true;
     }
 
+    private void GameOver()
+    {
+        gameStarted = false;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_OVER, EventInfo.emptyInfo);
+        StartCoroutine(GoToMainMenu());
+    }
+
+    private void GameFinished()
+    {
+        gameStarted = false;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_FINISHED, EventInfo.emptyInfo);
+        StartCoroutine(GoToCredits());
+    }
+
     public void InitPlayers(int numPlayers)
     {
         rsc.gameInfo.numberOfPlayers = numPlayers;
@@ -91,17 +105,27 @@ public class GameManager : MonoBehaviour {
         {
             if (rsc.gameInfo.player1Controller.Lives == 0)
             {
-                rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_OVER, EventInfo.emptyInfo);
-                StartCoroutine(GoToMainMenu());
+                GameOver();
             }
         }
         else
         {
             if (rsc.gameInfo.player1Controller.Lives + rsc.gameInfo.player2Controller.Lives == 0)
             {
-                rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_OVER, EventInfo.emptyInfo);
-                StartCoroutine(GoToMainMenu());
+                GameOver();
             }
+        }
+    }
+
+    private void LevelCleared(EventInfo eventInfo)
+    {
+        int levelId = ((LevelEventInfo)eventInfo).levelId;
+
+        switch(levelId)
+        {
+            case 1: //Our only level for now
+                GameFinished();
+                break;
         }
     }
 
@@ -112,19 +136,6 @@ public class GameManager : MonoBehaviour {
         yield return new WaitForSeconds(3.0f);
 
         SceneManager.LoadScene("MainMenu");
-    }
-
-    private void LevelCleared(EventInfo eventInfo)
-    {
-        int levelId = ((LevelEventInfo)eventInfo).levelId;
-
-        switch(levelId)
-        {
-            case 1: //Our only level for now
-                rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_FINISHED, EventInfo.emptyInfo);
-                StartCoroutine(GoToCredits());
-                break;
-        }
     }
 
     private IEnumerator GoToCredits()
