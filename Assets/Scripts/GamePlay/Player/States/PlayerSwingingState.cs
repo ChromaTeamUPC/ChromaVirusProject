@@ -8,9 +8,6 @@ public class PlayerSwingingState : PlayerBaseState
         //play swinging animation
     }
 
-    public override void OnStateExit() { }
-
-
     public override PlayerBaseState Update()
     {
         /*actions check list:
@@ -23,19 +20,20 @@ public class PlayerSwingingState : PlayerBaseState
         can he move?
         */
 
-        if (!player.ctrl.isGrounded)
+        if (!player.isGrounded)
         {
             return player.fallingState;
         }
-
-        if (!player.isInBorder)
+        else if (!player.isInBorder)
         {
             return player.idleState;
         }
+        else
+        {
+            player.Turn();
+            player.Move();
 
-        player.Turn();
-        player.Move();
-
-        return null;
+            return null;
+        }
     }
 }

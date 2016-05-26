@@ -6,7 +6,6 @@ public class EnemyBaseBlackboard
     public GameObject entityGO;
     public EnemyBaseAIBehaviour entity;
 
-    public Rigidbody rigidBody;
     public NavMeshAgent agent;
 
     public Animator animator;
@@ -24,7 +23,6 @@ public class EnemyBaseBlackboard
     {     
         entityGO = e;
         entity = entityGO.GetComponent<EnemyBaseAIBehaviour>();
-        rigidBody = entityGO.GetComponent<Rigidbody>();
         agent = entityGO.GetComponent<NavMeshAgent>();
         animator = entityGO.GetComponent<Animator>();
 

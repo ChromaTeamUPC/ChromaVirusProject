@@ -11,19 +11,21 @@ public class PlayerDashingState : PlayerBaseState
     public override void OnStateEnter()
     {
         //play dash animation
-
-        GetDashDirection();
+        player.SetDashDirection();
+        //GetDashDirection();
         currentDashTime = 0f;
-        currentDashSpeed = player.initialDashSpeed;
+        //currentDashSpeed = player.initialDashSpeed;
+        player.currentSpeed = player.initialDashSpeed;
     }
 
     public override void OnStateExit()
     {
+        player.currentSpeed = player.speed;
     }
 
     public override PlayerBaseState Update()
     {
-        if (currentDashTime > player.maxDashTime || currentDashSpeed < player.minDashSpeed)
+        /*if (currentDashTime > player.maxDashTime || currentDashSpeed < player.minDashSpeed)
         {
             player.ctrl.SimpleMove(Vector3.zero); //Force calculation of isGrounded
             if (player.ctrl.isGrounded)
@@ -40,10 +42,26 @@ public class PlayerDashingState : PlayerBaseState
         player.Turn();
         player.Shoot();
 
+        return null;*/
+        if(currentDashTime > player.maxDashTime || player.currentSpeed < player.minDashSpeed)
+        {
+            if (player.isGrounded)
+                return player.idleState;
+            else
+                return player.fallingState;
+        }
+
+        currentDashTime += Time.fixedDeltaTime;
+        player.currentSpeed -= player.dashDeceleration * Time.fixedDeltaTime;
+
+        player.Turn();
+
+        player.Shoot();
+
         return null;
     }
 
-    private void GetDashDirection()
+    /*private void GetDashDirection()
     {
 
         Vector3 direction = player.GetMovingVector();
@@ -59,5 +77,5 @@ public class PlayerDashingState : PlayerBaseState
             //else dash is in forward direction
             dashDirection = player.transform.TransformDirection(Vector3.forward);
         }
-    }
+    }*/
 }

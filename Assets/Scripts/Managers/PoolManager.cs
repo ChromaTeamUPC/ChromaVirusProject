@@ -44,8 +44,12 @@ public class PoolManager : MonoBehaviour
     [HideInInspector]
     public ScriptObjectPool<MuzzleController> player1MuzzleYellowPool;
 
-
     public ObjectPool spiderPool;
+
+    [SerializeField]
+    private ScriptObjectPoolDefiner spiderBoltPoolDefiner;
+    [HideInInspector]
+    public ScriptObjectPool<SpiderBolt> spiderBoltPool;
 
     [SerializeField]
     private ScriptObjectPoolDefiner voxelPoolDefiner;
@@ -64,6 +68,8 @@ public class PoolManager : MonoBehaviour
         player1MuzzleGreenPool = CreateScriptObjectPool<MuzzleController>(player1MuzzleGreenPool, player1MuzzleGreenPoolDefiner);
         player1MuzzleBluePool = CreateScriptObjectPool<MuzzleController>(player1MuzzleBluePool, player1MuzzleBluePoolDefiner);
         player1MuzzleYellowPool = CreateScriptObjectPool<MuzzleController>(player1MuzzleYellowPool, player1MuzzleYellowPoolDefiner);
+
+        spiderBoltPool = CreateScriptObjectPool<SpiderBolt>(spiderBoltPool, spiderBoltPoolDefiner);
 
         voxelPool = CreateScriptObjectPool<VoxelController>(voxelPool, voxelPoolDefiner);
     }

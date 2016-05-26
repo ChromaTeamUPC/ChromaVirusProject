@@ -1,16 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour {
-
-    private enum PLAYER_MOVING_DIRECTION
-    {
-        NONE,
-        FORWARD,
-        BACKWARD,
-        LEFT,
-        RIGHT
-    }
+public class PlayerController : MonoBehaviour
+{
 
     [SerializeField]
     private int playerId = 0;
@@ -41,6 +33,16 @@ public class PlayerController : MonoBehaviour {
     public float minDashSpeed = 1;
     //public float dashStoppingSpeed = 1.0f;
 
+    [HideInInspector]
+    public float currentSpeed = 0f;
+    [HideInInspector]
+    public bool isGrounded = true;
+    [HideInInspector]
+    public bool isInBorder;
+    private float verticalVelocity = 0f;
+    private Vector3 horizontalDirection = Vector3.zero;
+    private Vector3 aimingDirection = Vector3.zero;    
+
     private int playerRayCastMask;
 
     //Attack
@@ -65,6 +67,9 @@ public class PlayerController : MonoBehaviour {
     public float idleRandomAnimTime = 10f;
 
     //Private atributes
+    [HideInInspector]
+    public bool keyPressed = false;
+
     private string moveHorizontal;
     private string moveVertical;
     private string aimHorizontal;
@@ -73,23 +78,22 @@ public class PlayerController : MonoBehaviour {
     private string dash;
     private string special;
 
+    [HideInInspector]
+    public bool animationEnded;
+
     private bool currentShootingStatus = false;
     private bool newShootingStatus = false;
 
-    private Renderer rend;
-    [HideInInspector]
-    public Animator animator;
-    [HideInInspector]
-    public CharacterController ctrl;
-    private ColoredObjectsManager coloredObjMng;
-    [HideInInspector]
-    public VoxelizationClient voxelization;
     private ChromaColor currentColor;
 
-    private BlinkController blinkController;
-
     [HideInInspector]
-    public bool isInBorder;
+    public Animator animator;
+    private Renderer rend;  
+    private CharacterController ctrl;
+    private ColoredObjectsManager coloredObjMng;
+    private VoxelizationClient voxelization;
+    
+    private BlinkController blinkController;
 
     //Player states
     public PlayerSpawningState spawningState;
@@ -103,9 +107,7 @@ public class PlayerController : MonoBehaviour {
     public PlayerFallingState fallingState;
     public PlayerDyingState dyingState;
 
-    private PlayerBaseState currentState;
-
-    
+    private PlayerBaseState currentState;  
 
     //Properties
     public bool Active { get { return active; } set { active = value; } }
@@ -114,14 +116,13 @@ public class PlayerController : MonoBehaviour {
     public int Health { get { return currentHealth; } }
     public int Energy { get { return (int)currentEnergy; } }
 
-    //Unity methods
     void Awake()
-    {
-        Debug.Log("Player " + playerId + " created.");
+    {    
         rend = GetComponentInChildren<Renderer>();
         ctrl = GetComponent<CharacterController>();
         voxelization = GetComponent<VoxelizationClient>();
         blinkController = GetComponent<BlinkController>();
+        animator = GetComponent<Animator>();    
 
         spawningState = new PlayerSpawningState();
         idleState = new PlayerIdleState();
@@ -163,7 +164,8 @@ public class PlayerController : MonoBehaviour {
         special = player + "_Special";
 
         playerRayCastMask = LayerMask.GetMask(player + "RayCast");
-        animator = GetComponent<Animator>();
+
+        Debug.Log("Player " + playerId + " created.");
     }
 
     void Start()
@@ -195,77 +197,19 @@ public class PlayerController : MonoBehaviour {
         switch (playerId)
         {
             case 1:
-                mat = rsc.coloredObjectsMng.GetPlayer1Material(currentColor);
+                mat = coloredObjMng.GetPlayer1Material(currentColor);
                 break;
             case 2:
-                mat = rsc.coloredObjectsMng.GetPlayer1Material(currentColor); //TODO: Change to player2 material
+                mat = coloredObjMng.GetPlayer1Material(currentColor); //TODO: Change to player2 material
                 break;
             default:
-                mat = rsc.coloredObjectsMng.GetPlayer1Material(currentColor);
+                mat = coloredObjMng.GetPlayer1Material(currentColor);
                 break;
         }
         Material[] mats = rend.materials;
         mats[1] = mat;
         rend.materials = mats;
         blinkController.InvalidateMaterials();
-    }
-
-
-    void FixedUpdate()
-    {
-        //Move();
-        //Turn();
-        //Shoot();
-        //Debug
-        if(Input.GetKeyDown(KeyCode.H))
-        {
-            TakeDamage(25);
-            return;
-        }
-        else if(Input.GetKeyDown(KeyCode.D))
-        {
-            TakeDamage(100);
-            return;
-        }
-
-        if (currentState != null)
-        {
-            PlayerBaseState newState = currentState.Update();
-            if (newState != null)
-            {
-                ChangeState(newState);
-            }
-        }
-
-        if(currentShootingStatus != newShootingStatus)
-        {
-            currentShootingStatus = newShootingStatus;
-            newShootingStatus = false;
-            animator.SetBool("Shooting", currentShootingStatus);
-            //Debug.Log(currentShootingStatus);
-        }
-    }
-
-    private void ChangeState(PlayerBaseState newState)
-    {
-        if (currentState != null)
-        {
-            //Debug.Log("Player " + playerId + " Exiting: " + currentState.GetType().Name);
-            currentState.OnStateExit();
-        }
-        currentState = newState;
-        if (currentState != null)
-        {
-            //Debug.Log("Player " + playerId + " Entering: " + currentState.GetType().Name);
-            currentState.OnStateEnter();
-        }
-    }
-
-    public void InitPlayer()
-    {        
-        //ResetPlayer();
-        //gameObject.SetActive(true);
-        //rsc.eventMng.TriggerEvent(EventMng.EventType.PLAYER_SPAWNED, new PlayerSpawnedEventInfo { player = this });
     }
 
     public void ResetPlayer()
@@ -279,8 +223,9 @@ public class PlayerController : MonoBehaviour {
     {
         currentHealth = maxHealth;
         currentEnergy = 0;
-        currentState = spawningState;
-        currentState.OnStateEnter();
+        verticalVelocity = Physics.gravity.y;
+
+        ChangeState(spawningState);
         currentShootingStatus = false;
         newShootingStatus = false;
         PlayerSpawnedEventInfo.eventInfo.player = this;
@@ -289,111 +234,206 @@ public class PlayerController : MonoBehaviour {
 
     public void AnimationEnded()
     {
-        if (currentState != null)
-            currentState.AnimationEnded();
+        animationEnded = true;
     }
 
-    public Vector3 GetMovingVector()
+    void Update()
     {
-        float h = Input.GetAxisRaw(moveHorizontal);
-        float v = Input.GetAxisRaw(moveVertical);
+        //Reset flags
+        keyPressed = false;
+        newShootingStatus = false;
 
-        Vector3 result = Vector3.zero;
-
-        if (Mathf.Abs(v) > 0 || Mathf.Abs(h) > 0)
+        if (currentState != null)
         {
-            result.x = h;
-            result.y = v;
+            PlayerBaseState newState = currentState.Update();
+            if (newState != null)
+            {
+                ChangeState(newState);
+            }
         }
 
-        return result;
+        UpdatePosition();
+
+        if(currentShootingStatus != newShootingStatus)
+        {
+            currentShootingStatus = newShootingStatus;
+            animator.SetBool("Shooting", currentShootingStatus);
+        }
     }
 
-    public Vector3 GetAimingDirection()
+    private void ChangeState(PlayerBaseState newState)
+    {
+        if (currentState != null)
+        {
+            Debug.Log("Player " + playerId + " Exiting: " + currentState.GetType().Name);
+            currentState.OnStateExit();
+        }
+        currentState = newState;
+        if (currentState != null)
+        {
+            Debug.Log("Player " + playerId + " Entering: " + currentState.GetType().Name);
+            currentState.OnStateEnter();
+        }
+    }
+
+    public void SpawnVoxels()
+    {
+        voxelization.CalculateVoxelsGrid();
+        voxelization.SpawnVoxels();
+    }
+
+    public bool GetAimingDirectionFromInput()
     {
         float h = Input.GetAxisRaw(aimHorizontal);
         float v = Input.GetAxisRaw(aimVertical);
 
-        Vector3 result = Vector3.zero;
+        aimingDirection = Vector3.zero;
+        bool result = false;
 
         if (Mathf.Abs(v) >= aimThreshold || Mathf.Abs(h) >= aimThreshold)
         {
-            result.x = h;
-            result.y = v;
+            aimingDirection.x = h;
+            aimingDirection.y = v;
+
+            aimingDirection = GetScreenRelativeDirection(aimingDirection);
+            keyPressed = true;
+            result = true;
         }
 
         return result;
     }
+
+    public void UpdateLookAt()
+    {
+        if (aimingDirection != Vector3.zero)
+        {
+            Quaternion newRotation = Quaternion.LookRotation(aimingDirection);
+            newRotation = Quaternion.RotateTowards(transform.rotation, newRotation, angularSpeed * Time.deltaTime);
+            transform.rotation = newRotation;
+        }
+    }
+
+    public bool Turn()
+    {
+        bool result = GetAimingDirectionFromInput();
+        UpdateLookAt();
+
+        return result;
+    }
+
+    public bool GetHorizontalDirectionFromInput()
+    {
+        float h = Input.GetAxisRaw(moveHorizontal);
+        float v = Input.GetAxisRaw(moveVertical);
+
+        horizontalDirection = Vector3.zero;
+        bool result = false;
+
+        if (Mathf.Abs(v) > 0 || Mathf.Abs(h) > 0)
+        {
+            horizontalDirection.x = h;
+            horizontalDirection.y = v;
+
+            horizontalDirection = GetScreenRelativeDirection(horizontalDirection);
+            keyPressed = true;
+            result = true;
+        }
+
+        return result;
+    }
+
+    public void UpdateMovingAnimatorFlags()
+    {
+        if (horizontalDirection != Vector3.zero)
+        {
+            //If we are not aiming, rotate towards direction
+            if (aimingDirection == Vector3.zero)
+            {
+                Quaternion newRotation = Quaternion.LookRotation(horizontalDirection);
+                newRotation = Quaternion.RotateTowards(transform.rotation, newRotation, angularSpeed * Time.deltaTime);
+                transform.rotation = newRotation;
+                animator.SetBool("WalkingAiming", false);
+            }
+            else
+            {
+                int angleBetweenSticks = AngleBetween360(aimingDirection, horizontalDirection);
+
+                float angleRad = angleBetweenSticks * Mathf.Deg2Rad;
+                float forward = Mathf.Cos(angleRad);
+                float lateral = Mathf.Sin(angleRad);
+                animator.SetFloat("Forward", forward);
+                animator.SetFloat("Lateral", lateral);
+
+                animator.SetBool("WalkingAiming", true);
+
+                //Debug.Log("Moving: " + horizontalDirection + " // Aiming: " + aimingDirection);
+                //Debug.Log("Angle: " + angleBetweenSticks + " // Forward: " + forward + " // Lateral: " + lateral);
+            }
+        }
+    }
+
+    public bool Move()
+    {
+        bool result = GetHorizontalDirectionFromInput();
+        UpdateMovingAnimatorFlags();
+
+        return result;
+    }
+
+    private int AngleBetween360(Vector3 v1, Vector3 v2)
+    {
+        Vector3 n = new Vector3(0, 1, 0);
+
+        float signedAngle = Mathf.Atan2(Vector3.Dot(n, Vector3.Cross(v1, v2)), Vector3.Dot(v1, v2)) * Mathf.Rad2Deg;
+
+        if (signedAngle >= 0)
+            return (int)signedAngle;
+        else
+            return (int)(360 + signedAngle);
+    }
+
+    public void SetDashDirection()
+    {
+        GetHorizontalDirectionFromInput();
+
+        if (horizontalDirection == Vector3.zero)
+        {
+            horizontalDirection = transform.TransformDirection(Vector3.forward);
+        }
+    }
+
+    public void UpdatePosition()
+    {
+        Vector3 totalDirection = horizontalDirection * currentSpeed;
+        totalDirection.y = verticalVelocity;
+
+        totalDirection *= Time.deltaTime;
+
+        ctrl.Move(totalDirection);
+
+        isGrounded = ctrl.isGrounded;
+
+        UpdateVerticalVelocity();
+    }
+
+    private void UpdateVerticalVelocity()
+    {
+        if (isGrounded)
+        {
+            verticalVelocity = Physics.gravity.y * Time.deltaTime;
+        }
+        else
+        {
+            verticalVelocity += Physics.gravity.y * Time.deltaTime;
+        }
+    }
+
 
     public Vector3 GetScreenRelativeDirection(Vector3 direction)
     {
         return rsc.camerasMng.GetDirection(transform.position, direction, playerRayCastMask);
     }
 
-    public bool Move()
-    {
-        Vector3 direction = GetMovingVector();
-
-        bool moving = false;
-
-        if (direction != Vector3.zero)
-        {
-            moving = true;
-
-            direction = GetScreenRelativeDirection(direction);
-
-            //If we are not aiming, rotate towards direction
-            if (GetAimingDirection() == Vector3.zero)
-            {
-                Quaternion newRotation = Quaternion.LookRotation(direction);
-                newRotation = Quaternion.RotateTowards(transform.rotation, newRotation, angularSpeed * Time.deltaTime);
-                transform.rotation = newRotation;
-                animator.SetInteger("WalkingMode", (int)PLAYER_MOVING_DIRECTION.NONE);
-            }
-            else
-            {
-                int angleBetweenSticks = AngleBetween360(GetMovingVector(), GetAimingDirection());
-
-                if (angleBetweenSticks <= 45 || angleBetweenSticks > 315)
-                    animator.SetInteger("WalkingMode", (int)PLAYER_MOVING_DIRECTION.FORWARD);
-                else if (angleBetweenSticks > 135 && angleBetweenSticks <= 225)
-                    animator.SetInteger("WalkingMode", (int)PLAYER_MOVING_DIRECTION.BACKWARD);
-                else if (angleBetweenSticks > 45 && angleBetweenSticks <= 135)
-                    animator.SetInteger("WalkingMode", (int)PLAYER_MOVING_DIRECTION.RIGHT);
-                else if (angleBetweenSticks > 225 && angleBetweenSticks <= 315)
-                    animator.SetInteger("WalkingMode", (int)PLAYER_MOVING_DIRECTION.LEFT);
-            }
-            // TODELETE
-            //Debug.Log(AngleBetween360(GetMovingVector(), GetAimingDirection()));
-        }
-        else if (GetAimingDirection() != Vector3.zero)
-            animator.SetInteger("WalkingMode", (int)PLAYER_MOVING_DIRECTION.FORWARD);
-
-        ctrl.SimpleMove(direction * speed);
-
-        return moving;
-    }
-    
-
-    public bool Turn()
-    {
-        Vector3 direction = GetAimingDirection();
-
-        bool aiming = false;
-
-        if (direction != Vector3.zero)
-        {
-            aiming = true;
-
-            direction = GetScreenRelativeDirection(direction);
-
-            Quaternion newRotation = Quaternion.LookRotation(direction);
-            newRotation = Quaternion.RotateTowards(transform.rotation, newRotation, angularSpeed * Time.deltaTime);
-            transform.rotation = newRotation;
-        }
-
-        return aiming;
-    }
 
     public bool Shoot()
     {
@@ -402,6 +442,8 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetAxisRaw(fire) > 0.1f)
         { 
             shooting = true;
+            keyPressed = true;
+
             if (Time.time > nextFire)
             {
                 nextFire = Time.time + fireRate;
@@ -481,12 +523,22 @@ public class PlayerController : MonoBehaviour {
 
     public bool DashPressed()
     {
-        return Input.GetButtonDown(dash);
+        bool result = Input.GetButtonDown(dash);
+
+        if (result)
+            keyPressed = true;
+
+        return result;
     }
 
     public bool SpecialPressed()
     {
-        return false;
+        bool result = Input.GetButtonDown(special);
+
+        if (result)
+            keyPressed = true;
+
+        return false; //TODO: remove false when implemented
     }
 
     public void TakeDamage(int damage)
@@ -508,10 +560,6 @@ public class PlayerController : MonoBehaviour {
         {
             currentLives--;
             ChangeState(dyingState);
-            //voxelization.CalculateVoxelsGrid();
-            //voxelization.SpawnVoxels();
-            //rsc.eventMng.TriggerEvent(EventMng.EventType.PLAYER_DIED, new PlayerSpawnedEventInfo { player = this });
-            //gameObject.SetActive(false);
         }
         else
         {
@@ -551,21 +599,7 @@ public class PlayerController : MonoBehaviour {
         {
             isInBorder = false;
         }
-        else if (other.tag == "DestroyerBoundary")
-        {
-            TakeDamage(currentHealth);
-        }
     }
 
-    private int  AngleBetween360(Vector3 v1, Vector3 v2)
-    {
-        Vector3 n = new Vector3(0, 0, 1);
-
-        float signedAngle = Mathf.Atan2(Vector3.Dot(n, Vector3.Cross(v1, v2)),Vector3.Dot(v1, v2)) * Mathf.Rad2Deg;
-
-        if (signedAngle >= 0)
-            return (int) signedAngle;
-        else
-            return (int) (360 + signedAngle);
-    }
+    
 }

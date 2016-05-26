@@ -20,9 +20,7 @@ public class GUIController : MonoBehaviour
     public Text gameOverTxt;
     public Text pauseTxt;
 
-    private GameObject player1;
     private PlayerController player1Controller;
-    private GameObject player2;
     private PlayerController player2Controller;
 
     private float referenceHealthFactor;
@@ -40,10 +38,7 @@ public class GUIController : MonoBehaviour
             player2Zone.SetActive(false);
         }
 
-        player1 = rsc.gameInfo.player1;
         player1Controller = rsc.gameInfo.player1Controller;
-
-        player2 = rsc.gameInfo.player2;
         player2Controller = rsc.gameInfo.player2Controller;
 
         referenceHealthFactor = player1Health.maxValue / player1Controller.maxHealth;

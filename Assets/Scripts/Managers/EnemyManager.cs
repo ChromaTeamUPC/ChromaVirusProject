@@ -38,7 +38,7 @@ public class EnemyManager : MonoBehaviour
     private List<AIAction> level01Z01spiderAttack07 = new List<AIAction>();
 
     private List<AIAction> level01Z02spiderEntry01a = new List<AIAction>();
-    private List<AIAction> level01Z02spiderEntry01b = new List<AIAction>();
+    //private List<AIAction> level01Z02spiderEntry01b = new List<AIAction>();
     private List<AIAction> level01Z02spiderEntry02a = new List<AIAction>();
     private List<AIAction> level01Z02spiderEntry02b = new List<AIAction>();
     private List<AIAction> level01Z02spiderEntry03a = new List<AIAction>();
@@ -129,13 +129,13 @@ public class EnemyManager : MonoBehaviour
     private void EnemySpawned(EventInfo eventInfo)
     {
         ++blackboard.activeEnemies;
-        Debug.Log("Enemies++ = " + blackboard.activeEnemies);
+        //Debug.Log("Enemies++ = " + blackboard.activeEnemies);
     }
 
     private void EnemyDied(EventInfo eventInfo)
     {
         --blackboard.activeEnemies;
-        Debug.Log("Enemies-- = " + blackboard.activeEnemies);
+        //Debug.Log("Enemies-- = " + blackboard.activeEnemies);
     }
 
     private void TurretSpawned(EventInfo eventInfo)
@@ -350,7 +350,7 @@ public class EnemyManager : MonoBehaviour
         level01Z01SpiderEntry01.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 0, 10f));
         level01Z01SpiderEntry01.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -20, 5f));
         level01Z01SpiderEntry01.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 0, 10f, true, 0f, 4));
-
+        
         level01Z01SpiderEntry02.Add(new MoveAIAction("Z01WP04", 10f));
         level01Z01SpiderEntry02.Add(new MoveAIAction("Z01WP05", 10f));
         level01Z01SpiderEntry02.Add(new MoveAIAction("Z01WP03", 10f));

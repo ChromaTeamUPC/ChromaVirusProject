@@ -23,7 +23,12 @@ public class ColoredObjectsManager : MonoBehaviour
     [SerializeField]
     private Material[] spiderMats = new Material[4];
     private Material currentSpider;
-    
+
+    //Floor Materials
+    [SerializeField]
+    private Material[] floorMats = new Material[4];
+    private Material currentFloor;
+
     private ScriptObjectPool<PlayerShotController>[] player1ShotPools = new ScriptObjectPool<PlayerShotController>[4];
     private ScriptObjectPool<PlayerShotController> currentPlayer1ShotPool;
 
@@ -79,7 +84,8 @@ public class ColoredObjectsManager : MonoBehaviour
         currentPlayer1ShotPool = player1ShotPools[colorIndex];
         currentPlayer1MuzzlePool = player1MuzzlePools[colorIndex];
         currentVoxel = voxelMats[colorIndex];
-        currentSpider = spiderMats[colorIndex];       
+        currentSpider = spiderMats[colorIndex];
+        currentFloor = floorMats[colorIndex];      
     }
 
     private Material GetMaterial(Material[] matArray, ChromaColor color)
@@ -158,9 +164,6 @@ public class ColoredObjectsManager : MonoBehaviour
         {
             SpiderAIBehaviour spiderAI = spider.GetComponent<SpiderAIBehaviour>();
             spiderAI.color = color;
-            //Material[] mats = spiderAI.rend.materials;
-            //mats[1] = GetMaterial(spiderMats, color);
-            //spiderAI.rend.materials = mats;
 
             spiderAI.SetMaterials(new[] { GetMaterial(spiderMats, color) });
 
@@ -210,5 +213,10 @@ public class ColoredObjectsManager : MonoBehaviour
     public Material GetVoxelRandomMaterial()
     {
         return GetVoxelMaterial(ChromaColorInfo.Random);
+    }
+
+    public Material GetFloorMaterial(ChromaColor color)
+    {
+        return GetMaterial(floorMats, color);
     }
 }

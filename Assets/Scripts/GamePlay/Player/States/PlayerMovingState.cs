@@ -5,6 +5,7 @@ public class PlayerMovingState : PlayerBaseState
 {
     public override void OnStateEnter()
     {
+        player.currentSpeed = player.speed;
         //play moving animation
         player.animator.SetBool("Walking", true);
     }
@@ -27,10 +28,11 @@ public class PlayerMovingState : PlayerBaseState
         can he move?
         */
 
-        if (!player.ctrl.isGrounded)
+        if (!player.isGrounded)
+        {
             return player.fallingState;
-
-        if (player.SpecialPressed())
+        }
+        else if (player.SpecialPressed())
         {
             return player.specialState;
         }
@@ -41,12 +43,15 @@ public class PlayerMovingState : PlayerBaseState
         else
         {
             player.Turn();
+
             player.Shoot();
 
-            if (player.Move())
-                return null;
-            else
+            if(!player.Move())
+            {
                 return player.idleState;
+            }
+
+            return null;
         }
     }
 }

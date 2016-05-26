@@ -26,7 +26,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
 
     protected virtual void Awake()
     {
-        voxelization = GetComponent<VoxelizationClient>();
+        voxelization = GetComponentInChildren<VoxelizationClient>();
         rend = GetComponentInChildren<Renderer>();
         mainCollider = GetComponent<Collider>();
         blinkController = GetComponent<BlinkController>();

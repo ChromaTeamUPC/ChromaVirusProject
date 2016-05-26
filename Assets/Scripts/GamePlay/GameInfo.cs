@@ -13,4 +13,6 @@ public class GameInfo
 
     public Vector3 gameCameraOffset;
     public Quaternion gameCameraRotation;
+
+    public float globalEnemySpeedFactor = 1f;
 }

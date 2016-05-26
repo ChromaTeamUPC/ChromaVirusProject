@@ -1,23 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerLongIdleState : PlayerBaseState {
-
-    private int idleHash, idle2Hash;
-    private int loopedTimes;
+public class PlayerLongIdleState : PlayerBaseState
+{
 
     public override void OnStateEnter()
     {
         //select random idle animation
         player.animator.SetTrigger("LongIdle");
-        animationEnded = false;
+        player.animationEnded = false;
+    }
+
+    public override void OnStateExit()
+    {
+        if(player.keyPressed)
+            player.animator.SetTrigger("KeyPressed");
     }
 
     public override PlayerBaseState Update()
     {
-        
-        bool keyPressed = false;
-
         if (player.SpecialPressed())
         {
             return player.specialState;
@@ -28,28 +29,45 @@ public class PlayerLongIdleState : PlayerBaseState {
         }
         else
         {
+            /*bool keyPressed = false;
+
             if (player.Turn())
                 keyPressed = true;
 
             if (player.Shoot())
                 keyPressed = true;
 
-            if (player.Move())
+            if (player.UpdateHorizontalDirectionFromInput())
                 return player.movingState;
+            //if (player.Move())
+            //   return player.movingState;
+
+            if (keyPressed)
+            {
+                player.animator.SetTrigger("KeyPressed");
+                return player.idleState;
+            }*/
+
+            player.Turn();
+
+            player.Shoot();
+
+            if (player.Move())
+            {
+                return player.movingState;
+            }
+
+            if (player.keyPressed)
+            {            
+                return player.idleState;
+            }
         }
 
-        if (keyPressed)
-        {
-            player.animator.SetTrigger("KeyPressed");
-            return player.idleState;
-        }
-        else if (animationEnded)
+        if (player.animationEnded)
         {
             return player.idleState;
         }
-        else
-        {
-            return null;
-        }
+        
+        return null;
     }
 }

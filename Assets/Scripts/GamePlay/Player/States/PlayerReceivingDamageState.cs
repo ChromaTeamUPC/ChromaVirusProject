@@ -6,7 +6,7 @@ public class PlayerReceivingDamageState : PlayerBaseState {
     public override void OnStateEnter()
     {
         player.animator.SetTrigger("Hit");
-        animationEnded = false;
+        player.animationEnded = false;
         player.canTakeDamage = false;
     }
 
@@ -17,7 +17,7 @@ public class PlayerReceivingDamageState : PlayerBaseState {
 
     public override PlayerBaseState Update()
     {
-        if(animationEnded)
+        if(player.animationEnded)
         {
             return player.idleState;
         }

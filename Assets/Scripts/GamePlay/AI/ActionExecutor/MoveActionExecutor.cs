@@ -6,7 +6,6 @@ public class MoveActionExecutor: BaseExecutor
     private MoveAIAction moveAction;
     private Vector3 direction;
     private float elapsedTime;
-    private float originalAnimationSpeed;
 
     public override void SetAction(AIAction act)
     {
@@ -46,13 +45,13 @@ public class MoveActionExecutor: BaseExecutor
         else
             blackBoard.agent.acceleration = 1000;
 
-        blackBoard.animator.SetBool("walking", true);
-
-        blackBoard.agent.speed = moveAction.speed;
-        originalAnimationSpeed = blackBoard.animator.speed;
-        blackBoard.animator.speed = moveAction.speed / 4;
+        blackBoard.agent.speed = moveAction.speed * rsc.gameInfo.globalEnemySpeedFactor;
         blackBoard.agent.destination = blackBoard.target.transform.position + direction;
         blackBoard.agent.Resume();
+
+        blackBoard.animator.SetFloat("walkSpeed", blackBoard.agent.speed / 4);
+        blackBoard.animator.SetBool("walking", true);
+        
         elapsedTime = 0f;
     }
 
@@ -81,11 +80,10 @@ public class MoveActionExecutor: BaseExecutor
         if ((blackBoard.agent.hasPath && blackBoard.agent.remainingDistance <= 1.5f)
             || (moveAction.maxTime > 0 && elapsedTime > moveAction.maxTime))
         {
-            //Debug.Log(blackBoard.agent.remainingDistance);
             if (!moveAction.inertia)
                 blackBoard.agent.velocity = Vector3.zero;
 
-            blackBoard.animator.speed = originalAnimationSpeed;
+            blackBoard.animator.SetFloat("walkSpeed", 1);
 
             return moveAction.nextAction;
         }

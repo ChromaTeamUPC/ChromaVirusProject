@@ -28,6 +28,13 @@ public class SpiderBiteExecutor : BaseExecutor
             blackBoard.animator.SetTrigger("bite");
             spiderBlackBoard.timeSinceLastAttack = 0f;
             discardedAttack = false;
+
+            SpiderBolt bolt = rsc.poolMng.spiderBoltPool.GetObject();
+            if(bolt != null)
+            {
+                bolt.transform.position = spiderBlackBoard.boltSpawnPoint.position;
+                bolt.Spawn();
+            }
         }
         else
         {

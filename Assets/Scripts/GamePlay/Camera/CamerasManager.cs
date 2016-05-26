@@ -139,7 +139,6 @@ public class CamerasManager : MonoBehaviour {
 
     private Vector3 CalculateDirectionRaycasting(Vector3 originalPosition, Vector3 displacement, int rayCastMask)
     {
-        float magnitude = displacement.magnitude;
         displacement = displacement * 100;
 
         Vector3 screenOriginalPosition = currentCamera.WorldToScreenPoint(originalPosition);
@@ -153,7 +152,6 @@ public class CamerasManager : MonoBehaviour {
             Vector3 direction = raycastHit.point - originalPosition;
             direction.y = 0;
             direction.Normalize();
-            direction *= magnitude;
             return direction;
         }
         else

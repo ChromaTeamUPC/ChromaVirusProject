@@ -10,11 +10,12 @@ public class PlayerFallingState : PlayerBaseState
     {
         //play falling animation
         yOrigin = player.transform.position.y;
-        firstFrame = true;
     }
 
-    public override void OnStateExit() { }
-
+    public override void OnStateExit()
+    {
+        player.currentSpeed = player.speed;
+    }
 
     public override PlayerBaseState Update()
     {
@@ -27,7 +28,26 @@ public class PlayerFallingState : PlayerBaseState
         can he move?
         */
 
-        if (firstFrame)
+        if(player.isGrounded)
+        {
+            float yDestiny = player.transform.position.y;
+            float fallingDistance = yOrigin - yDestiny;
+
+            if (fallingDistance >= player.damageEveryXUnits)
+            {
+                float totalDamage = player.fallDamage * fallingDistance / player.damageEveryXUnits;
+                player.TakeDamage((int)totalDamage);               
+            }
+
+            return player.idleState;
+        }
+
+        //keep falling
+        player.currentSpeed *= 0.95f;
+
+        return null;  
+
+        /*if (firstFrame)
         {
             player.ctrl.Move(new Vector3(0f, 0.01f, 0f)); //To stop inertia
             firstFrame = false;
@@ -51,6 +71,6 @@ public class PlayerFallingState : PlayerBaseState
         }
 
         //keep falling
-        return null;
+        return null;*/
     }
 }

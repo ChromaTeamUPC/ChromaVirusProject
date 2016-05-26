@@ -8,12 +8,7 @@ public class PlayerIdleState : PlayerBaseState {
     public override void OnStateEnter()
     {
         elapsedTime = 0f;
-        //play idle state
     }
-
-    public override void OnStateExit()
-    { }
-
 
     public override PlayerBaseState Update()
     {
@@ -25,19 +20,17 @@ public class PlayerIdleState : PlayerBaseState {
         can he turn?
         can he shoot?
         can he move?
-        */
+        */    
 
-        /*if (!player.ctrl.isGrounded)
-            return player.fallingState;*/
-
-        if(player.isInBorder)
+        if (!player.isGrounded)
+        {
+            return player.fallingState;
+        }
+        else if(player.isInBorder)
         {
             return player.swingingState;
         }
-
-        bool keyPressed = false;
-
-        if (player.SpecialPressed())
+        else if (player.SpecialPressed())
         {
             return player.specialState;
         }
@@ -47,27 +40,30 @@ public class PlayerIdleState : PlayerBaseState {
         }
         else
         {
-            if (player.Turn())
-                keyPressed = true;
+            player.Turn();
 
-            if (player.Shoot())
-                keyPressed = true;
+            player.Shoot();
 
             if (player.Move())
+            {
                 return player.movingState;
+            }
+
+            if (player.keyPressed)
+            {
+                elapsedTime = 0f;
+            }
+            else
+            {
+                elapsedTime += Time.fixedDeltaTime;
+                if (elapsedTime > player.idleRandomAnimTime)
+                    return player.longIdleState;
+            }  
+        
+            return null;
+
         }
 
-        if(keyPressed)
-        {
-            elapsedTime = 0f;
-        }
-        else
-        {
-            elapsedTime += Time.fixedDeltaTime;
-            if (elapsedTime > player.idleRandomAnimTime)
-                return player.longIdleState;
-        }
         
-        return null;
     }
 }
