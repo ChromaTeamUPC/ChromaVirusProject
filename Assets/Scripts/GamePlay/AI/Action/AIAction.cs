@@ -10,8 +10,9 @@ public class AIAction
     public enum OffsetType
     {
         POSITION_ZERO,      // same coordinates as the waypoint
-        AROUND_WORLD_RELATIVE,              // around the target, at some degrees and distance relative to world forward vector
-        AROUND_ENEMY_RELATIVE               // around the target, at some degrees and distance relative to the player-enemy vector
+        AROUND_WORLD_RELATIVE,              // around the target, at some degrees and distance relative to the world's forward vector
+        AROUND_ENEMY_RELATIVE,              // around the target, at some degrees and distance relative to the target-AIAgent's vector
+        AROUND_FORWARD_RELATIVE             // around the target, at some degrees and distance relative to the target's forward vector
     }
 
     public enum FocusType

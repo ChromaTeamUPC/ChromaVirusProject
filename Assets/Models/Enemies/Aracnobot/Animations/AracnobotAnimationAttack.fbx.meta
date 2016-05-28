@@ -111,7 +111,117 @@ ModelImporter:
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Attack
+      takeName: Attack
+      firstFrame: 55
+      lastFrame: 70
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Aracnobot
+        weight: 1
+      - path: Ctrl_General
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/BocaDreta
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/BocaDreta/BocaDretaJuntura
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/BocaDreta/BocaDretaJuntura/BocaDretaPunta
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/BocaEsquerra
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/BocaEsquerra/BocaEsquerraJuntura
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/BocaEsquerra/BocaEsquerraJuntura/BocaEsquerraPunta
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaDretaDebant
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaDretaDebant/EngranatgeDretaDebant
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaDretaDebant/EngranatgeDretaDebant/PuntaDretaDebant
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaDretaMitg
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaDretaMitg/EngranatgeDretaMitg
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaDretaMitg/EngranatgeDretaMitg/PuntaDretaMitg
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaDretaRedera
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaDretaRedera/EngranatgeDretaRedera
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaDretaRedera/EngranatgeDretaRedera/PuntaDretaRedera
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaEsquerraDebant
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaEsquerraDebant/EngranatgeEsquerraDebant
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaEsquerraDebant/EngranatgeEsquerraDebant/PuntaEsquerraDebant
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaEsquerraMitg
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaEsquerraMitg/EngranatgeEsquerraMitg
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaEsquerraMitg/EngranatgeEsquerraMitg/PuntaEsquerraMitg
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaEsquerraRedera
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaEsquerraRedera/EngranatgeEsquerraRedera
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/CamaEsquerraRedera/EngranatgeEsquerraRedera/PuntaEsquerraRedera
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/EngranatgeCentre
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/EngranatgeCentre/Cul1
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/nurbsCircle25
+        weight: 1
+      - path: Ctrl_General/Ctrl_Cos/Centre/nurbsCircle26
+        weight: 1
+      - path: ikHandle1
+        weight: 1
+      - path: ikHandle2
+        weight: 1
+      - path: ikHandle3
+        weight: 1
+      - path: ikHandle4
+        weight: 1
+      - path: ikHandle5
+        weight: 1
+      - path: ikHandle6
+        weight: 1
+      - path: ikHandle7
+        weight: 1
+      - path: ikHandle8
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 40
     isReadable: 1
   meshes:
     lODScreenPercentages: []

@@ -24,17 +24,11 @@ public class SpiderBiteExecutor : BaseExecutor
         if(spiderBlackBoard.timeSinceLastAttack > spiderBiteAction.minimumTimeSinceLastAttack)
         {
             blackBoard.animationEnded = false;
+            blackBoard.animationTrigger = false;
             blackBoard.animator.SetBool("walking", false);
             blackBoard.animator.SetTrigger("bite");
             spiderBlackBoard.timeSinceLastAttack = 0f;
             discardedAttack = false;
-
-            SpiderBolt bolt = rsc.poolMng.spiderBoltPool.GetObject();
-            if(bolt != null)
-            {
-                bolt.transform.position = spiderBlackBoard.boltSpawnPoint.position;
-                bolt.Spawn();
-            }
         }
         else
         {
@@ -45,8 +39,19 @@ public class SpiderBiteExecutor : BaseExecutor
     public override int Execute()
     {
         if (discardedAttack || blackBoard.animationEnded)
+        {
             return action.nextAction;
-        else
-            return AIAction.ACTION_NOT_FINISHED;
+        }
+        else if (blackBoard.animationTrigger)
+        {
+            SpiderBolt bolt = rsc.poolMng.spiderBoltPool.GetObject();
+            if (bolt != null)
+            {
+                bolt.transform.position = spiderBlackBoard.boltSpawnPoint.position;
+                bolt.Spawn();
+            }
+        }
+        
+        return AIAction.ACTION_NOT_FINISHED;
     }
 }

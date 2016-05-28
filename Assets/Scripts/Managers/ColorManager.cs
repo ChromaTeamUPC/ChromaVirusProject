@@ -3,9 +3,15 @@ using System;
 using System.Collections;
 using SynchronizerData;
 
+
 //Helper class to know the first and last colors defined in the enumerator, so we can check for .First or .Last and always will return the proper color even if we reorder the enum
 public class ChromaColorInfo
 {
+    public const int CURRENT_COLOR_OFFSET = -4;
+    public const int CURRENT_COLOR_PLUS1_OFFSET = -3;
+    public const int CURRENT_COLOR_PLUS2_OFFSET = -2;
+    public const int CURRENT_COLOR_PLUS3_OFFSET = -1;
+
     public static ChromaColor First = (ChromaColor)Enum.GetValues(typeof(ChromaColor)).GetValue(0);
     public static ChromaColor Last = (ChromaColor)Enum.GetValues(typeof(ChromaColor)).GetValue(Enum.GetValues(typeof(ChromaColor)).Length - 1);
     public static int Count = Enum.GetValues(typeof(ChromaColor)).Length;

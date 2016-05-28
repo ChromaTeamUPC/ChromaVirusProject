@@ -150,6 +150,10 @@ public class ColoredObjectsManager : MonoBehaviour
     {
         int colorIndex = ((int)currentColor + offset) % ChromaColorInfo.Count;
 
+        //Offset can be negative
+        if (colorIndex < 0)
+            colorIndex = ChromaColorInfo.Count + colorIndex;
+
         ChromaColor color = (ChromaColor)colorIndex;
 
         return GetSpider(color);

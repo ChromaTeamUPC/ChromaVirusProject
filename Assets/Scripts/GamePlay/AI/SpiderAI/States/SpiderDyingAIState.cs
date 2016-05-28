@@ -18,6 +18,9 @@ public class SpiderDyingAIState : SpiderAIBaseState
 
         color = spiderBlackboard.spider.color;
 
+        if (spiderBlackboard.groupInfo != null)
+            spiderBlackboard.groupInfo.groupCount--;
+
         spiderBlackboard.agent.Stop();
         spiderBlackboard.agent.enabled = false;
         movement = spiderBlackboard.lastShotDirection * spiderBlackboard.entity.shotForceModifier;

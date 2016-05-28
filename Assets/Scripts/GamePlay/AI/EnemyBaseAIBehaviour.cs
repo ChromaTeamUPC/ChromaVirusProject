@@ -3,7 +3,7 @@ using System.Collections;
 
 public class EnemyBaseAIBehaviour : MonoBehaviour {
 
-    protected EnemyBaseBlackboard blackboard; //To be instantiated in inherited classes
+    protected EnemyBaseBlackboard blackboard; //To be instantiated in inherited classes 
 
     [Header("Enemy Common Settings")]
     public int maxHealth = 30;
@@ -37,6 +37,11 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     public void AnimationEnded()
     {
         blackboard.animationEnded = true;
+    }
+
+    public void AnimationTrigger()
+    {
+        blackboard.animationTrigger = true;
     }
 
     public void SpawnVoxels()

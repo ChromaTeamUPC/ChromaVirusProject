@@ -20,9 +20,11 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     
     public SpiderAIBaseState spawningState;
     public SpiderAIActionsBaseState entryState;
+    public SpiderAIActionsBaseState attackingPlayerState;
+    public SpiderAIActionsBaseState leadingGroupState;
+    public SpiderAIActionsBaseState followingGroupState;
     public SpiderAIBaseState attackingChipState;
     public SpiderAIBaseState attractedToBarrelState;
-    public SpiderAIActionsBaseState attackingPlayerState;
     public SpiderAIBaseState dyingState;
 
 	// Use this for initialization
@@ -37,9 +39,11 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 
         spawningState = new SpiderSpawningAIState(spiderBlackboard);
         entryState = new SpiderEntryAIState(spiderBlackboard);
-        attackingChipState = new SpiderAttackingChipAIState(spiderBlackboard);
-        attractedToBarrelState = new SpiderAttractedToBarrelAIState(spiderBlackboard);
         attackingPlayerState = new SpiderAttackingPlayerAIState(spiderBlackboard);
+        leadingGroupState = new SpiderLeadingGroupAIState(spiderBlackboard);
+        followingGroupState = new SpiderFollowingGroupAIState(spiderBlackboard);
+        attackingChipState = new SpiderAttackingChipAIState(spiderBlackboard);
+        attractedToBarrelState = new SpiderAttractedToBarrelAIState(spiderBlackboard);  
         dyingState = new SpiderDyingAIState(spiderBlackboard);
     }
 
@@ -64,6 +68,21 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         //Init states with lists
         entryState.Init(entryList);
         attackingPlayerState.Init(attackList);   
+    }
+
+    public void AIInitGroup(SpawnAnimation spawnAnimation, EnemyGroupInfo groupInfo, List<AIAction> leaderList, List<AIAction> followerList, List<AIAction> attackList, bool isLeader = false)
+    {
+        spiderBlackboard.ResetValues();
+        spiderBlackboard.spawnAnimation = spawnAnimation;
+
+        spiderBlackboard.groupInfo = groupInfo;
+        if (isLeader)
+            groupInfo.leader = this;
+
+        //Init states with lists
+        leadingGroupState.Init(leaderList);
+        followingGroupState.Init(followerList);
+        attackingPlayerState.Init(attackList);
     }
 
     public void Spawn(Transform spawnPoint)
