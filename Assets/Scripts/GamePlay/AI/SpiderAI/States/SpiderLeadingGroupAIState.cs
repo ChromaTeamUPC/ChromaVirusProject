@@ -16,6 +16,7 @@ public class SpiderLeadingGroupAIState : SpiderAIActionsBaseState
     public override void OnStateExit()
     {
         spiderBlackboard.groupInfo.leader = null;
+        base.OnStateExit();
     }
 
     public override AIBaseState Update()
@@ -31,7 +32,18 @@ public class SpiderLeadingGroupAIState : SpiderAIActionsBaseState
         if (spiderBlackboard.barrelController != null && spiderBlackboard.barrelController.currentColor == spiderBlackboard.spider.color)
             return spiderBlackboard.spider.attractedToBarrelState;
 
-        //TODO: check group count and attacking enemies
+        spiderBlackboard.initialCheckDelay += Time.deltaTime;
+        spiderBlackboard.checkAttackingSpidersDelay += Time.deltaTime;
+        if (spiderBlackboard.groupInfo.followersCount == 0 && spiderBlackboard.initialCheckDelay >= 3f)
+        {
+            if (spiderBlackboard.checkAttackingSpidersDelay >= 1f) //Check once per second
+            {
+                if (rsc.enemyMng.blackboard.attackingSpiders < spiderBlackboard.spider.spidersAttackingThreshold)
+                    return spiderBlackboard.spider.attackingPlayerState;
+
+                spiderBlackboard.checkAttackingSpidersDelay = 0f;
+            }
+        }
 
         int updateResult = UpdateExecution();
 

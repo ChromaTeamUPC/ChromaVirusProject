@@ -73,7 +73,7 @@ public class SpawnSpiderGroupWaveAction : WaveAction  {
         }
 
         groupInfo = new EnemyGroupInfo();
-        groupInfo.groupCount = followersActions.Length;
+        groupInfo.followersCount = followersActions.Length - 1;
         groupInfo.leaderActionIndex = 0;
 
         spiderIndex = 0;

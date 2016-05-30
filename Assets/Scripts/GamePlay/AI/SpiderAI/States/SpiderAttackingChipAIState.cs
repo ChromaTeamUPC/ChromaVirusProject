@@ -9,11 +9,13 @@ public class SpiderAttackingChipAIState : SpiderAIBaseState {
     public override void OnStateEnter()
     {
         rsc.enemyMng.blackboard.enemiesAttackingDevice.Add(spiderBlackboard.spider);
+        base.OnStateEnter();
     }
 
     public override void OnStateExit()
     {
         rsc.enemyMng.blackboard.enemiesAttackingDevice.Remove(spiderBlackboard.spider);
+        base.OnStateExit();
     }
 
     public override AIBaseState Update()

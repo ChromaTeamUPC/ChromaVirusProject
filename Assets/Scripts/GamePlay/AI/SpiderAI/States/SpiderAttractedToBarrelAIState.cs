@@ -32,6 +32,7 @@ public class SpiderAttractedToBarrelAIState : SpiderAIBaseState
         spiderBlackboard.agent.Resume();
         spiderBlackboard.animator.SetBool("walking", true);
         subState = AttractedToBarrelSubState.GOING;
+        base.OnStateEnter();
     }
 
     public override AIBaseState Update()

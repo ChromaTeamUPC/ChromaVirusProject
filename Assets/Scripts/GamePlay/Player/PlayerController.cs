@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Fire Settings")]
     public float fireRate = 0.25f;
+    public float speedRatioWhileFiring = 0.6f;
     public Transform shotSpawn;
     public Transform muzzlePoint;
 
@@ -65,6 +66,10 @@ public class PlayerController : MonoBehaviour
     //Misc
     [Header("Miscelaneous Settings")]
     public float idleRandomAnimTime = 10f;
+
+    [SerializeField]
+    private ParticleSystem[] dashPSs = new ParticleSystem[4];
+    private Transform dashPSRotator;
 
     //Private atributes
     [HideInInspector]
@@ -83,12 +88,16 @@ public class PlayerController : MonoBehaviour
 
     private bool currentShootingStatus = false;
     private bool newShootingStatus = false;
+    private bool doubleShooting = false;
 
     private ChromaColor currentColor;
 
     [HideInInspector]
     public Animator animator;
-    private Renderer rend;  
+    [SerializeField]
+    private Renderer bodyRend;
+    [SerializeField]
+    private Renderer shieldRend;
     private CharacterController ctrl;
     private ColoredObjectsManager coloredObjMng;
     private VoxelizationClient voxelization;
@@ -117,12 +126,13 @@ public class PlayerController : MonoBehaviour
     public int Energy { get { return (int)currentEnergy; } }
 
     void Awake()
-    {    
-        rend = GetComponentInChildren<Renderer>();
+    {
+        voxelization = GetComponentInChildren<VoxelizationClient>();
         ctrl = GetComponent<CharacterController>();
-        voxelization = GetComponent<VoxelizationClient>();
         blinkController = GetComponent<BlinkController>();
-        animator = GetComponent<Animator>();    
+        animator = GetComponent<Animator>();
+
+        dashPSRotator = transform.Find("DashPSRotation");
 
         spawningState = new PlayerSpawningState();
         idleState = new PlayerIdleState();
@@ -193,22 +203,30 @@ public class PlayerController : MonoBehaviour
 
     private void SetMaterial()
     {
-        Material mat;
+        Material bodyMat;
+        Material shieldMat;
+
         switch (playerId)
         {
             case 1:
-                mat = coloredObjMng.GetPlayer1Material(currentColor);
+                bodyMat = coloredObjMng.GetPlayer1Material(currentColor);
+                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(currentColor);
                 break;
             case 2:
-                mat = coloredObjMng.GetPlayer1Material(currentColor); //TODO: Change to player2 material
+                bodyMat = coloredObjMng.GetPlayer1Material(currentColor); //TODO: Change to player2 material
+                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(currentColor);
                 break;
             default:
-                mat = coloredObjMng.GetPlayer1Material(currentColor);
+                bodyMat = coloredObjMng.GetPlayer1Material(currentColor);
+                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(currentColor);
                 break;
         }
-        Material[] mats = rend.materials;
-        mats[1] = mat;
-        rend.materials = mats;
+        Material[] mats = bodyRend.materials;
+        mats[1] = bodyMat;
+        bodyRend.materials = mats;
+
+        shieldRend.material = shieldMat;
+
         blinkController.InvalidateMaterials();
     }
 
@@ -228,6 +246,7 @@ public class PlayerController : MonoBehaviour
         ChangeState(spawningState);
         currentShootingStatus = false;
         newShootingStatus = false;
+        doubleShooting = false;
         PlayerSpawnedEventInfo.eventInfo.player = this;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNED, PlayerSpawnedEventInfo.eventInfo);
     }
@@ -258,6 +277,8 @@ public class PlayerController : MonoBehaviour
         {
             currentShootingStatus = newShootingStatus;
             animator.SetBool("Shooting", currentShootingStatus);
+            if (!currentShootingStatus)
+                doubleShooting = false;
         }
     }
 
@@ -400,11 +421,23 @@ public class PlayerController : MonoBehaviour
         {
             horizontalDirection = transform.TransformDirection(Vector3.forward);
         }
+
+        dashPSRotator.rotation = Quaternion.LookRotation(horizontalDirection);
+
+    }
+
+    public void SpawnDashParticles()
+    {
+        dashPSs[(int)currentColor].Play();
     }
 
     public void UpdatePosition()
     {
         Vector3 totalDirection = horizontalDirection * currentSpeed;
+
+        if (doubleShooting)
+            totalDirection *= speedRatioWhileFiring;
+
         totalDirection.y = verticalVelocity;
 
         totalDirection *= Time.deltaTime;
@@ -507,6 +540,8 @@ public class PlayerController : MonoBehaviour
                             sideOffsetVariation *= -1;
 
                         shotSideOffset += sideOffsetVariation;
+
+                        doubleShooting = true;
                     }
                 }
             }

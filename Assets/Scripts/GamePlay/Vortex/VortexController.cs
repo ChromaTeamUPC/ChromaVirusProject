@@ -28,10 +28,12 @@ public class VortexController : MonoBehaviour {
     private List<AIAction> attackActions;
 
     private BlinkController blinkController;
+    private Animator anim;
 
     void Awake()
     {
         blinkController = GetComponent<BlinkController>();
+        anim = GetComponent<Animator>();
     }
 
     void Start()
@@ -56,8 +58,9 @@ public class VortexController : MonoBehaviour {
     {
         active = false;
         particleSys.Stop();
+        anim.SetTrigger("Destroyed");
         rsc.eventMng.TriggerEvent(EventManager.EventType.VORTEX_DESTROYED, EventInfo.emptyInfo);
-        Destroy(gameObject, 3f);
+        //Destroy(gameObject, 3f);
     }
 
     public void ImpactedByShot(ChromaColor shotColor, int damage)

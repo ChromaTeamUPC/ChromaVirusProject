@@ -12,14 +12,12 @@ public class SpiderDyingAIState : SpiderAIBaseState
     public override void OnStateEnter()
     {
         spiderBlackboard.entity.mainCollider.enabled = false;
+        spiderBlackboard.entity.dyingCollider.SetActive(true);
         spiderBlackboard.canReceiveDamage = false;
         spiderBlackboard.animationEnded = false;
         spiderBlackboard.animator.SetTrigger("die");
 
-        color = spiderBlackboard.spider.color;
-
-        if (spiderBlackboard.groupInfo != null)
-            spiderBlackboard.groupInfo.groupCount--;
+        color = spiderBlackboard.spider.color;    
 
         spiderBlackboard.agent.Stop();
         spiderBlackboard.agent.enabled = false;
@@ -30,11 +28,13 @@ public class SpiderDyingAIState : SpiderAIBaseState
 
         ColorEventInfo.eventInfo.newColor = color;
         rsc.eventMng.TriggerEvent(EventManager.EventType.ENEMY_DIED, ColorEventInfo.eventInfo);
+        base.OnStateEnter();
     }
 
     public override void OnStateExit()
     {
         spiderBlackboard.agent.enabled = true;
+        base.OnStateExit();
     }
 
     public override AIBaseState Update()
@@ -43,8 +43,7 @@ public class SpiderDyingAIState : SpiderAIBaseState
 
         if (spiderBlackboard.animationEnded)
         {         
-            spiderBlackboard.spider.SpawnVoxels();
-            rsc.poolMng.spiderPool.AddObject(spiderBlackboard.entityGO);
+            spiderBlackboard.spider.SpawnVoxelsAndReturnToPool();
         }
 
         return null;

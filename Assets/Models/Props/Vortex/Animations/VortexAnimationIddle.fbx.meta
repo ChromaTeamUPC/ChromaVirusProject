@@ -1,0 +1,143 @@
+fileFormatVersion: 2
+guid: b15ec651580b5a84c82d008acfd897a2
+timeCreated: 1464587621
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: base
+    100002: box1
+    100004: box10
+    100006: box11
+    100008: box12
+    100010: box13
+    100012: box14
+    100014: box2
+    100016: box3
+    100018: box4
+    100020: box5
+    100022: box6
+    100024: box7
+    100026: box8
+    100028: box9
+    100030: centre
+    100032: ctrl_base
+    100034: ctrl_box1
+    100036: ctrl_box10
+    100038: ctrl_box11
+    100040: ctrl_box12
+    100042: ctrl_box13
+    100044: ctrl_box14
+    100046: ctrl_box2
+    100048: ctrl_box3
+    100050: ctrl_box4
+    100052: ctrl_box5
+    100054: ctrl_box6
+    100056: ctrl_box7
+    100058: ctrl_box8
+    100060: ctrl_box9
+    100062: ctrl_centre
+    100064: VORTEX_LINES
+    100066: //RootNode
+    400000: base
+    400002: box1
+    400004: box10
+    400006: box11
+    400008: box12
+    400010: box13
+    400012: box14
+    400014: box2
+    400016: box3
+    400018: box4
+    400020: box5
+    400022: box6
+    400024: box7
+    400026: box8
+    400028: box9
+    400030: centre
+    400032: ctrl_base
+    400034: ctrl_box1
+    400036: ctrl_box10
+    400038: ctrl_box11
+    400040: ctrl_box12
+    400042: ctrl_box13
+    400044: ctrl_box14
+    400046: ctrl_box2
+    400048: ctrl_box3
+    400050: ctrl_box4
+    400052: ctrl_box5
+    400054: ctrl_box6
+    400056: ctrl_box7
+    400058: ctrl_box8
+    400060: ctrl_box9
+    400062: ctrl_centre
+    400064: VORTEX_LINES
+    400066: //RootNode
+    4300000: VORTEX_LINES
+    7400000: Iddle
+    9500000: //RootNode
+    13700000: VORTEX_LINES
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -6,6 +6,13 @@ public class SpiderFollowingGroupAIState : SpiderAIActionsBaseState
     public SpiderFollowingGroupAIState(SpiderBlackboard bb) : base(bb)
     { }
 
+    public override void OnStateExit()
+    {
+        if (spiderBlackboard.groupInfo != null)
+            spiderBlackboard.groupInfo.followersCount--;
+        base.OnStateExit();
+    }
+
     public override AIBaseState Update()
     {
         /*When spider is in this state could happen this:
@@ -26,7 +33,18 @@ public class SpiderFollowingGroupAIState : SpiderAIActionsBaseState
             return spiderBlackboard.spider.leadingGroupState;
         }
 
-        //TODO: check group count and attacking enemies
+        spiderBlackboard.initialCheckDelay += Time.deltaTime;
+        spiderBlackboard.checkAttackingSpidersDelay += Time.deltaTime;
+        if (spiderBlackboard.initialCheckDelay >= 3f)
+        {         
+            if (spiderBlackboard.checkAttackingSpidersDelay >= 1f) //Check once per second
+            {
+                if (rsc.enemyMng.blackboard.attackingSpiders < spiderBlackboard.spider.spidersAttackingThreshold)
+                    return spiderBlackboard.spider.attackingPlayerState;
+
+                spiderBlackboard.checkAttackingSpidersDelay = 0f;
+            }
+        }
 
         int updateResult = UpdateExecution();
 

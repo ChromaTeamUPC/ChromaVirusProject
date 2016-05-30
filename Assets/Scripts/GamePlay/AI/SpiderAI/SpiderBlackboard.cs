@@ -8,6 +8,9 @@ public class SpiderBlackboard: EnemyBaseBlackboard
     public float timeSinceLastAttack;
     public int currentHealth;
 
+    public float initialCheckDelay;
+    public float checkAttackingSpidersDelay;
+
     public Transform boltSpawnPoint;
 
     public SpiderAIBehaviour.SpawnAnimation spawnAnimation;
@@ -37,6 +40,10 @@ public class SpiderBlackboard: EnemyBaseBlackboard
 
         timeSinceLastAttack = 100f;
         currentHealth = spider.maxHealth;
+
+        initialCheckDelay = 0f;
+        checkAttackingSpidersDelay = 0f;
+
         spawnAnimation = SpiderAIBehaviour.SpawnAnimation.FLOOR;   
     }
 }

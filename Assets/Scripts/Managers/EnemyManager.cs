@@ -336,10 +336,10 @@ public class EnemyManager : MonoBehaviour
         //jordiTestLeader01.Add(new StandingIdleAIAction(0.25f));
 
         jordiTestFollower01_135_5.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3));
-        jordiTestFollower01_135_5.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3, true, 0, 1));
+        jordiTestFollower01_135_5.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3, false, 0, 1));
 
         jordiTestFollower02_225_5.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3));
-        jordiTestFollower02_225_5.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3, true, 0, 1));
+        jordiTestFollower02_225_5.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3, false, 0, 1));
         //END TODO
 
 
@@ -383,30 +383,30 @@ public class EnemyManager : MonoBehaviour
         level01Z01SpiderEntry01.Add(new MoveAIAction("Z01WP03", 10f));
         level01Z01SpiderEntry01.Add(new MoveAIAction("Z01WP06", 8f));
         level01Z01SpiderEntry01.Add(new SelectPlayerAIAction());
-        level01Z01SpiderEntry01.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 20, 5f));
-        level01Z01SpiderEntry01.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 0, 10f));
-        level01Z01SpiderEntry01.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -20, 5f));
-        level01Z01SpiderEntry01.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 0, 10f, true, 0f, 4));
+        level01Z01SpiderEntry01.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 5f));
+        level01Z01SpiderEntry01.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 0, 10f));
+        level01Z01SpiderEntry01.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 5f));
+        level01Z01SpiderEntry01.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 0, 10f, true, 0f, 4));
         
         level01Z01SpiderEntry02.Add(new MoveAIAction("Z01WP04", 10f));
         level01Z01SpiderEntry02.Add(new MoveAIAction("Z01WP05", 10f));
         level01Z01SpiderEntry02.Add(new MoveAIAction("Z01WP03", 10f));
         level01Z01SpiderEntry02.Add(new MoveAIAction("Z01WP06", 8f));
         level01Z01SpiderEntry02.Add(new SelectPlayerAIAction());
-        level01Z01SpiderEntry02.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 20, 5f));
-        level01Z01SpiderEntry02.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 0, 10f));
-        level01Z01SpiderEntry02.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -20, 5f));
-        level01Z01SpiderEntry02.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 0, 10f, true, 0f, 4));
+        level01Z01SpiderEntry02.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 5f));
+        level01Z01SpiderEntry02.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 0, 10f));
+        level01Z01SpiderEntry02.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 5f));
+        level01Z01SpiderEntry02.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 0, 10f, true, 0f, 4));
 
         level01Z01spiderEntry03.Add(new SelectPlayerAIAction());
-        level01Z01spiderEntry03.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 0, 3f));
+        level01Z01spiderEntry03.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 0, 3f));
 
-        level01Z01spiderAttack03.Add(new MoveAIAction(playerTargetTxt, 20.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 20, 6f, false, 1f));
+        level01Z01spiderAttack03.Add(new MoveAIAction(playerTargetTxt, 20.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 6f, false, 1f));
         level01Z01spiderAttack03.Add(new MoveAIAction(playerTargetTxt, 8.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
         level01Z01spiderAttack03.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z01spiderAttack03.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
         level01Z01spiderAttack03.Add(new SelectPlayerAIAction());
-        level01Z01spiderAttack03.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -20, 10f, false, 6f));
+        level01Z01spiderAttack03.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 10f, false, 6f));
 
         level01Z01spiderEntry04.Add(new MoveAIAction("Z01WP07", 10f, true, 0f, AIAction.LIST_FINISHED));
 
@@ -427,19 +427,19 @@ public class EnemyManager : MonoBehaviour
         level01Z01spiderAttack06.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z01spiderAttack06.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
-        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -20, 10f, true, 5f));
-        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -20, 8f, true, 4f));
-        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -20, 6f, true, 4f));
-        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -20, 4f, true, 4f, AIAction.LIST_FINISHED));
+        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 10f, true, 5f));
+        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 8f, true, 4f));
+        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 6f, true, 4f));
+        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 4f, true, 4f, AIAction.LIST_FINISHED));
 
         level01Z01spiderAttack07.Add(new SelectPlayerAIAction());
         level01Z01spiderAttack07.Add(new MoveAIAction(playerTargetTxt, 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.POSITION_ZERO));
         level01Z01spiderAttack07.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z01spiderAttack07.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
-        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -20, 10f, true, 5f));
-        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -20, 8f, true, 4f));
-        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -20, 6f, true, 4f));
-        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -20, 4f, true, 4f));
+        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 10f, true, 5f));
+        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 8f, true, 4f));
+        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 6f, true, 4f));
+        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 4f, true, 4f));
 
 
         // LEVEL 01 ZONE 02-------------------------------------------------------------------------------------------------------------------------------
@@ -507,9 +507,9 @@ public class EnemyManager : MonoBehaviour
 
         // LEVEL 01 ZONE 03-------------------------------------------------------------------------------------------------------------------------------
 
-        level01Z03spiderEntry01a.Add(new MoveAIAction("Z03WP07", 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 20, 8));
+        level01Z03spiderEntry01a.Add(new MoveAIAction("Z03WP07", 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 8));
 
-        level01Z03spiderEntry01b.Add(new MoveAIAction("Z03WP07", 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -20, 10f, true, 3f));
+        level01Z03spiderEntry01b.Add(new MoveAIAction("Z03WP07", 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 10f, true, 3f));
         level01Z03spiderEntry01b.Add(new SelectPlayerAIAction());
         level01Z03spiderEntry01b.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO, 0, 0, true, 6f));
 
@@ -544,23 +544,23 @@ public class EnemyManager : MonoBehaviour
         level01Z03spiderAttack02c.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 270, 10f, true, 0));
 
         //-----------
-        level01Z03spiderEntry03a.Add(new MoveAIAction("Z03WP07", 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 20, 8, true, 2f, AIAction.LIST_FINISHED));
+        level01Z03spiderEntry03a.Add(new MoveAIAction("Z03WP07", 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 8, true, 2f, AIAction.LIST_FINISHED));
 
         level01Z03spiderAttack03a.Add(new SelectPlayerAIAction());
-        level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 0, 5f));
-        level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -90, 6f, false));
-        level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, -90, 6f, false));
+        level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 0, 5f));
+        level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -90, 6f, false));
+        level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -90, 6f, false));
         level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
         level01Z03spiderAttack03a.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z03spiderAttack03a.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
         //-----------
-        level01Z03spiderEntry03b.Add(new MoveAIAction("Z03WP05", 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 20, 8, true, 2f, AIAction.LIST_FINISHED));
+        level01Z03spiderEntry03b.Add(new MoveAIAction("Z03WP05", 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 8, true, 2f, AIAction.LIST_FINISHED));
 
         level01Z03spiderAttack03b.Add(new SelectPlayerAIAction());
-        level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 0, 5f));
-        level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 90, 6f, false));
-        level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_ENEMY_RELATIVE, 90, 6f, false));
+        level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 0, 5f));
+        level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 90, 6f, false));
+        level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 90, 6f, false));
         level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
         level01Z03spiderAttack03b.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z03spiderAttack03b.Add(new StandingIdleAIAction(spiderIdleDefaultTime));

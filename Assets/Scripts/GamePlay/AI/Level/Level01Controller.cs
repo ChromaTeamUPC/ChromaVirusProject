@@ -7,14 +7,12 @@ public class Level01Controller : MonoBehaviour
     public Transform player1StartPoint;
     public Transform player2StartPoint;
 
-    public GameObject wallZone01;
-    public GameObject wallZone02;
-    public GameObject wallZone03;
-
     public GameObject bridgeZone01;
     public GameObject bridgeZone02;
 
-    public GameObject endZone; //TODO: Change it. now its a temporal platform
+    public GameObject uSBTeleport1;   
+
+    public GameObject endZone;
 
     public Transform zone1PlayerSpawnPoint;
     public Transform zone2PlayerSpawnPoint;
@@ -100,14 +98,12 @@ public class Level01Controller : MonoBehaviour
         {
             //open door 01
             case 101:
-                //wallZone01.SetActive(false);
                 bridgeZone01.SetActive(true);
                 break;
 
             case 102:
-                //wallZone02.SetActive(false);
-                //wallZone03.SetActive(false);
-                bridgeZone02.SetActive(true);               
+                bridgeZone02.SetActive(true);
+                uSBTeleport1.SetActive(true);              
                 break;
 
             case 103:

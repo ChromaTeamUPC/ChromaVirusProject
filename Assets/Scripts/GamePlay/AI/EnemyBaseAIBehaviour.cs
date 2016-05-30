@@ -18,6 +18,8 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     public Renderer rend;
     [HideInInspector]
     public Collider mainCollider;
+    [HideInInspector]
+    public GameObject dyingCollider;
 
     protected AIBaseState currentState;
 
@@ -29,6 +31,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         voxelization = GetComponentInChildren<VoxelizationClient>();
         rend = GetComponentInChildren<Renderer>();
         mainCollider = GetComponent<Collider>();
+        dyingCollider = transform.Find("DyingCollider").gameObject;
         blinkController = GetComponent<BlinkController>();
     }
 
@@ -111,4 +114,6 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
             blackboard.barrelController = null;
         }
     }
+
+    public virtual void CollitionOnDie() { }
 }

@@ -41,7 +41,7 @@ public class MoveActionExecutor: BaseExecutor
                     direction = Quaternion.Euler(0, moveAction.angle, 0) * direction;
                     direction *= moveAction.distance;
                     break;
-                case AIAction.OffsetType.AROUND_ENEMY_RELATIVE:
+                case AIAction.OffsetType.AROUND_AGENT_RELATIVE:
                     direction = (blackBoard.agent.transform.position - blackBoard.target.transform.position).normalized;
                     direction = Quaternion.Euler(0, moveAction.angle, 0) * direction;
                     direction *= moveAction.distance;
@@ -90,7 +90,7 @@ public class MoveActionExecutor: BaseExecutor
 
             if (blackBoard.target != null)
             {
-                if (moveAction.offsetType == AIAction.OffsetType.AROUND_ENEMY_RELATIVE)
+                if (moveAction.offsetType == AIAction.OffsetType.AROUND_AGENT_RELATIVE)
                 {
                     direction = (blackBoard.agent.transform.position - blackBoard.target.transform.position).normalized;
                     direction = Quaternion.Euler(0, moveAction.angle, 0) * direction;
@@ -102,6 +102,17 @@ public class MoveActionExecutor: BaseExecutor
                     direction = blackBoard.target.transform.forward;
                     direction = Quaternion.Euler(0, moveAction.angle, 0) * direction;
                     direction *= moveAction.distance;
+
+                    float angleMeWaypoint = Vector3.Angle(blackBoard.agent.transform.forward, blackBoard.target.transform.position + direction - blackBoard.agent.transform.position);
+                    float angleMeTarget = Vector3.Angle(blackBoard.agent.transform.forward, blackBoard.target.transform.position - blackBoard.agent.transform.position);
+
+                    blackBoard.agent.speed = moveAction.speed * rsc.gameInfo.globalEnemySpeedFactor;
+
+                    if (angleMeWaypoint > 30 && angleMeTarget < angleMeWaypoint)
+                    {
+                        direction = new Vector3(0, 0, 0);
+                        blackBoard.agent.speed *= 0.5f; // 50% de la velocidad establecida
+                    }
                 }
 
                 blackBoard.agent.destination = blackBoard.target.transform.position + direction;

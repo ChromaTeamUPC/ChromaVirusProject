@@ -10,6 +10,7 @@ public class SpiderSpawningAIState : SpiderAIBaseState {
     {
         spiderBlackboard.agent.enabled = false;
         spiderBlackboard.entity.mainCollider.enabled = false;
+        spiderBlackboard.entity.dyingCollider.SetActive(false);
         spiderBlackboard.canReceiveDamage = false;
         spiderBlackboard.animationEnded = false;
 
@@ -18,6 +19,7 @@ public class SpiderSpawningAIState : SpiderAIBaseState {
 
         ColorEventInfo.eventInfo.newColor = spiderBlackboard.spider.color;
         rsc.eventMng.TriggerEvent(EventManager.EventType.ENEMY_SPAWNED, ColorEventInfo.eventInfo);
+        base.OnStateEnter();
     }
 
     public override void OnStateExit()
@@ -25,6 +27,7 @@ public class SpiderSpawningAIState : SpiderAIBaseState {
         spiderBlackboard.agent.enabled = true;
         spiderBlackboard.entity.mainCollider.enabled = true;
         spiderBlackboard.canReceiveDamage = true;
+        base.OnStateExit();
     }
 
     public override AIBaseState Update()

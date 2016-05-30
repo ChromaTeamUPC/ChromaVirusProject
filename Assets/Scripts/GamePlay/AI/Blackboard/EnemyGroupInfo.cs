@@ -7,5 +7,5 @@ public class EnemyGroupInfo
 
     public int leaderActionIndex;
 
-    public int groupCount;
+    public int followersCount;
 }

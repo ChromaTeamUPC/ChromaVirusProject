@@ -14,6 +14,10 @@ public class ColoredObjectsManager : MonoBehaviour
     private Material[] player1Mats = new Material[4];
     private Material currentPlayer1;
 
+    [SerializeField]
+    private Material[] player1ShieldMats = new Material[4];
+    private Material currentPlayer1Shield;
+
     //Voxel Materials
     [SerializeField]
     private Material[] voxelMats = new Material[4];
@@ -81,6 +85,7 @@ public class ColoredObjectsManager : MonoBehaviour
         int colorIndex = (int)currentColor;
 
         currentPlayer1 = player1Mats[colorIndex];
+        currentPlayer1Shield = player1ShieldMats[colorIndex];
         currentPlayer1ShotPool = player1ShotPools[colorIndex];
         currentPlayer1MuzzlePool = player1MuzzlePools[colorIndex];
         currentVoxel = voxelMats[colorIndex];
@@ -98,6 +103,11 @@ public class ColoredObjectsManager : MonoBehaviour
     public Material GetPlayer1Material(ChromaColor color)
     {
         return GetMaterial(player1Mats, color);
+    }
+
+    public Material GetPlayer1ShieldMaterial(ChromaColor color)
+    {
+        return GetMaterial(player1ShieldMats, color);
     }
 
     //Player Shot methods

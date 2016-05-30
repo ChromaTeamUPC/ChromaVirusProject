@@ -15,6 +15,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     [Header("Spider Settings")]
     public int biteDamage = 10;
     public float playerDetectionDistance = 5f;
+    public int spidersAttackingThreshold = 3;
 
     public GameObject[] explosionPrefabs = new GameObject[4];  
     
@@ -155,5 +156,16 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
             result = Vector3.Distance(blackboard.entityGO.transform.position, rsc.gameInfo.player2.transform.position) < playerDetectionDistance;
 
         return result;
+    }
+
+    public void SpawnVoxelsAndReturnToPool()
+    {
+        SpawnVoxels();
+        rsc.poolMng.spiderPool.AddObject(gameObject);
+    }
+
+    public override void CollitionOnDie()
+    {
+        SpawnVoxelsAndReturnToPool();
     }
 }
