@@ -3,9 +3,10 @@ using System.Collections;
 
 public class lightScript : MonoBehaviour 
 {
-	bool Impact = false;
-	public float Sqr;
+    public float decayRatio = .0001f;
 
+    private bool Impact = false;
+	private float Sqr;
     private Light flashLight;
 
     void Awake()
@@ -26,7 +27,7 @@ public class lightScript : MonoBehaviour
 	{
 		if (Impact)
 		{
-            flashLight.intensity -= (1.0f / Time.deltaTime) * Sqr * .0001f;
+            flashLight.intensity -= (1.0f / Time.deltaTime) * Sqr * decayRatio;
 			if (flashLight.intensity <= 0)
 			{
                 flashLight.intensity = 0;

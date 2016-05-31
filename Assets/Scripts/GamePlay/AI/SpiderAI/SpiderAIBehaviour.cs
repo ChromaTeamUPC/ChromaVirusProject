@@ -108,13 +108,13 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 	}
 
     //Not to be used outside FSM
-    public override AIBaseState ProcessShotImpact(ChromaColor shotColor, int damage, Vector3 direction)
+    public override AIBaseState ProcessShotImpact(ChromaColor shotColor, int damage, Vector3 direction, PlayerController player)
     {
         if (spiderBlackboard.canReceiveDamage && spiderBlackboard.currentHealth > 0)
         {
             blinkController.Blink();
 
-            if (shotColor == color)
+            /*if (shotColor == color)
             {
                 spiderBlackboard.currentHealth -= damage;
                 if (spiderBlackboard.currentHealth <= 0)
@@ -123,7 +123,19 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
                     return dyingState;
                 }
             }
-            //Else future behaviour like duplicate or increase health
+            //Else future behaviour like duplicate or increase health*/
+            if(shotColor != color)
+            {
+                player.ColorMismatch();
+            }
+
+            spiderBlackboard.currentHealth -= damage;
+            if (spiderBlackboard.currentHealth <= 0)
+            {
+                spiderBlackboard.lastShotDirection = direction;
+                spiderBlackboard.lastShotSameColor = (shotColor == color);
+                return dyingState;
+            }
         }
 
         return null;

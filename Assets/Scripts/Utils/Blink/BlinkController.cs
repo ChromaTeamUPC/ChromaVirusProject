@@ -15,11 +15,13 @@ public class BlinkController : MonoBehaviour {
     private RendMaterials[] rendererMaterials;
 
     private Material white;
+    private Material transparent;
     private bool materialsNeedUpdate;
 
     void Start()
     {
         white = rsc.coloredObjectsMng.WhiteMaterial;
+        transparent = rsc.coloredObjectsMng.TransparentMaterial;
 
         materialsNeedUpdate = false;
 

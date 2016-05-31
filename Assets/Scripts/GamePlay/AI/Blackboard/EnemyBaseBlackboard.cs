@@ -19,8 +19,9 @@ public class EnemyBaseBlackboard
     public BarrelController barrelController;
 
     public Vector3 lastShotDirection;
+    public bool lastShotSameColor;
 
-    public EnemyGroupInfo groupInfo;
+    public EnemyGroupInfo groupInfo;  
 
     public virtual void InitialSetup(GameObject e)
     {     

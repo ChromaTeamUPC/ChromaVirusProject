@@ -6,6 +6,8 @@ public class ColoredObjectsManager : MonoBehaviour
 {
     [SerializeField]
     private Material whiteMaterial;
+    [SerializeField]
+    private Material transparentMaterial;
 
     //Platform 1 Materials
 
@@ -20,7 +22,7 @@ public class ColoredObjectsManager : MonoBehaviour
 
     //Voxel Materials
     [SerializeField]
-    private Material[] voxelMats = new Material[4];
+    private Material[] voxelMats = new Material[6];
     private Material currentVoxel;
 
     //Spider Materials
@@ -99,6 +101,8 @@ public class ColoredObjectsManager : MonoBehaviour
     }
 
     public Material WhiteMaterial { get { return whiteMaterial; } }
+
+    public Material TransparentMaterial { get { return transparentMaterial; } }
 
     public Material GetPlayer1Material(ChromaColor color)
     {
@@ -222,6 +226,16 @@ public class ColoredObjectsManager : MonoBehaviour
     public Material GetVoxelMaterial(ChromaColor color)
     {
         return GetMaterial(voxelMats, color);
+    }
+
+    public Material GetVoxelWhiteMaterial()
+    {
+        return voxelMats[4];
+    }
+
+    public Material GetVoxelGreyMaterial()
+    {
+        return voxelMats[5];
     }
 
     public Material GetVoxelRandomMaterial()

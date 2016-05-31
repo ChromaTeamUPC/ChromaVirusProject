@@ -50,11 +50,14 @@ public class PlayerController : MonoBehaviour
     public float maxEnergy = 100;
     private float currentEnergy;
 
-    [Header("Fire Settings")]
+    [Header("Fire Settings")]   
     public float fireRate = 0.25f;
     public float speedRatioWhileFiring = 0.6f;
     public Transform shotSpawn;
     public Transform muzzlePoint;
+    public int selfDamageOnColorMismatch = 10;
+    public float fireSuppresionTimeOnColorMismatch = 3f;
+    private bool canShoot = true;
 
     private float nextFire;
     private bool isFirstShot = true;
@@ -477,71 +480,77 @@ public class PlayerController : MonoBehaviour
             shooting = true;
             keyPressed = true;
 
-            if (Time.time > nextFire)
+            if (canShoot)
             {
-                nextFire = Time.time + fireRate;
-
-                // check if it's first shot (single projectile)...
-                if (isFirstShot)
+                if (Time.time > nextFire)
                 {
-                    //Get a shot from pool
-                    PlayerShotController shot = coloredObjMng.GetPlayer1Shot();
-                    MuzzleController muzzle = coloredObjMng.GetPlayer1Muzzle();
+                    nextFire = Time.time + fireRate;
 
-                    if (shot != null && muzzle != null)
+                    // check if it's first shot (single projectile)...
+                    if (isFirstShot)
                     {
-                        shot.transform.position = shotSpawn.position;
-                        shot.transform.rotation = shotSpawn.rotation;
-                        shot.damage *= 2;
-                        shot.Shoot();
+                        //Get a shot from pool
+                        PlayerShotController shot = coloredObjMng.GetPlayer1Shot();
+                        MuzzleController muzzle = coloredObjMng.GetPlayer1Muzzle();
 
-                        muzzle.transform.SetParent(muzzlePoint);
-                        muzzle.transform.position = muzzlePoint.position;
-                        muzzle.transform.rotation = muzzlePoint.rotation;
-                        muzzle.Play();
+                        if (shot != null && muzzle != null)
+                        {
+                            shot.transform.position = shotSpawn.position;
+                            shot.transform.rotation = shotSpawn.rotation;
+                            shot.damage *= 2;
+                            shot.Player = this;
+                            shot.Shoot();
+
+                            muzzle.transform.SetParent(muzzlePoint);
+                            muzzle.transform.position = muzzlePoint.position;
+                            muzzle.transform.rotation = muzzlePoint.rotation;
+                            muzzle.Play();
+                        }
+                        isFirstShot = false;
                     }
-                    isFirstShot = false;
-                }
-                // ...or not (double projectile)
-                else
-                {
-                    //Get two shots from pool
-                    PlayerShotController shot1 = coloredObjMng.GetPlayer1Shot();
-                    PlayerShotController shot2 = coloredObjMng.GetPlayer1Shot();
-
-                    MuzzleController muzzle1 = coloredObjMng.GetPlayer1Muzzle();
-                    MuzzleController muzzle2 = coloredObjMng.GetPlayer1Muzzle();
-
-                    if (shot1 != null && shot2 != null && muzzle1 != null && muzzle2 != null)
+                    // ...or not (double projectile)
+                    else
                     {
-                        shot1.transform.rotation = shotSpawn.rotation;
-                        shot1.transform.position = shotSpawn.position;
-                        shot1.transform.Translate(new Vector3(shotSideOffset, 0, 0));
-                        shot1.Shoot();
+                        //Get two shots from pool
+                        PlayerShotController shot1 = coloredObjMng.GetPlayer1Shot();
+                        PlayerShotController shot2 = coloredObjMng.GetPlayer1Shot();
 
-                        muzzle1.transform.position = muzzlePoint.position;
-                        muzzle1.transform.rotation = muzzlePoint.rotation;
-                        muzzle1.transform.SetParent(muzzlePoint);
-                        muzzle1.transform.Translate(new Vector3(shotSideOffset, 0, 0));
-                        muzzle1.Play();
+                        MuzzleController muzzle1 = coloredObjMng.GetPlayer1Muzzle();
+                        MuzzleController muzzle2 = coloredObjMng.GetPlayer1Muzzle();
 
-                        shot2.transform.rotation = shotSpawn.rotation;
-                        shot2.transform.position = shotSpawn.position;
-                        shot2.transform.Translate(new Vector3(-shotSideOffset, 0, 0));
-                        shot2.Shoot();
+                        if (shot1 != null && shot2 != null && muzzle1 != null && muzzle2 != null)
+                        {
+                            shot1.transform.rotation = shotSpawn.rotation;
+                            shot1.transform.position = shotSpawn.position;
+                            shot1.transform.Translate(new Vector3(shotSideOffset, 0, 0));
+                            shot1.Player = this;
+                            shot1.Shoot();
 
-                        muzzle2.transform.position = muzzlePoint.position;
-                        muzzle2.transform.rotation = muzzlePoint.rotation;
-                        muzzle2.transform.SetParent(muzzlePoint);
-                        muzzle2.transform.Translate(new Vector3(-shotSideOffset, 0, 0));
-                        muzzle2.Play();
+                            muzzle1.transform.position = muzzlePoint.position;
+                            muzzle1.transform.rotation = muzzlePoint.rotation;
+                            muzzle1.transform.SetParent(muzzlePoint);
+                            muzzle1.transform.Translate(new Vector3(shotSideOffset, 0, 0));
+                            muzzle1.Play();
 
-                        if (shotSideOffset <= minSideOffset || shotSideOffset >= maxSideOffset)
-                            sideOffsetVariation *= -1;
+                            shot2.transform.rotation = shotSpawn.rotation;
+                            shot2.transform.position = shotSpawn.position;
+                            shot2.transform.Translate(new Vector3(-shotSideOffset, 0, 0));
+                            shot2.Player = this;
+                            shot2.Shoot();
 
-                        shotSideOffset += sideOffsetVariation;
+                            muzzle2.transform.position = muzzlePoint.position;
+                            muzzle2.transform.rotation = muzzlePoint.rotation;
+                            muzzle2.transform.SetParent(muzzlePoint);
+                            muzzle2.transform.Translate(new Vector3(-shotSideOffset, 0, 0));
+                            muzzle2.Play();
 
-                        doubleShooting = true;
+                            if (shotSideOffset <= minSideOffset || shotSideOffset >= maxSideOffset)
+                                sideOffsetVariation *= -1;
+
+                            shotSideOffset += sideOffsetVariation;
+
+                            doubleShooting = true;
+                        }
                     }
                 }
             }
@@ -613,6 +622,37 @@ public class PlayerController : MonoBehaviour
         */
 
         TakeDamage(damage);
+
+    }
+
+    public void ColorMismatch()
+    {
+        TakeDamage(selfDamageOnColorMismatch);       
+
+        StartCoroutine(ColorMismatchHandle());
+    }
+
+    private IEnumerator ColorMismatchHandle()
+    {
+        StartColorMismatch();
+
+        yield return new WaitForSeconds(fireSuppresionTimeOnColorMismatch);
+
+        EndColorMismatch();
+    }
+
+    public void StartColorMismatch()
+    {
+        canShoot = false;
+        PlayerColorMismatchEventInfo.eventInfo.player = this;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_COLOR_MISMATCH_START, PlayerColorMismatchEventInfo.eventInfo);
+    }
+
+    public void EndColorMismatch()
+    {
+        canShoot = true;
+        PlayerColorMismatchEventInfo.eventInfo.player = this;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_COLOR_MISMATCH_END, PlayerColorMismatchEventInfo.eventInfo);
 
     }
 

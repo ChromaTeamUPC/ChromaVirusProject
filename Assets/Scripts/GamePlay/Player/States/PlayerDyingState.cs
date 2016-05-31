@@ -5,6 +5,8 @@ public class PlayerDyingState : PlayerBaseState
 {
     public override void OnStateEnter()
     {
+        player.EndColorMismatch(); //Ensure it is not active
+
         player.canTakeDamage = false;
         player.animator.SetTrigger("Die");
         player.animationEnded = false;      

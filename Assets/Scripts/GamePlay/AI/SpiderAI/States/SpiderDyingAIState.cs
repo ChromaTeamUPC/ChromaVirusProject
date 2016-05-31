@@ -11,24 +11,30 @@ public class SpiderDyingAIState : SpiderAIBaseState
 
     public override void OnStateEnter()
     {
-        spiderBlackboard.entity.mainCollider.enabled = false;
-        spiderBlackboard.entity.dyingCollider.SetActive(true);
-        spiderBlackboard.canReceiveDamage = false;
-        spiderBlackboard.animationEnded = false;
-        spiderBlackboard.animator.SetTrigger("die");
-
-        color = spiderBlackboard.spider.color;    
-
+        base.OnStateEnter();
         spiderBlackboard.agent.Stop();
         spiderBlackboard.agent.enabled = false;
-        movement = spiderBlackboard.lastShotDirection * spiderBlackboard.entity.shotForceModifier;
 
-        GameObject explosion = spiderBlackboard.explosions[(int)color];
-        explosion.SetActive(true);
-
+        color = spiderBlackboard.spider.color;
+            
         ColorEventInfo.eventInfo.newColor = color;
         rsc.eventMng.TriggerEvent(EventManager.EventType.ENEMY_DIED, ColorEventInfo.eventInfo);
-        base.OnStateEnter();
+
+        if (spiderBlackboard.lastShotSameColor)
+        {
+            spiderBlackboard.entity.mainCollider.enabled = false;
+            spiderBlackboard.entity.dyingCollider.SetActive(true);
+            spiderBlackboard.canReceiveDamage = false;
+            spiderBlackboard.animationEnded = false;
+            spiderBlackboard.animator.SetTrigger("die");
+
+            movement = spiderBlackboard.lastShotDirection * spiderBlackboard.entity.shotForceModifier;
+
+            GameObject explosion = spiderBlackboard.explosions[(int)color];
+            explosion.SetActive(true);
+        }
+        else
+            spiderBlackboard.spider.SpawnVoxelsAndReturnToPool();
     }
 
     public override void OnStateExit()

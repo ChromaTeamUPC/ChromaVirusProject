@@ -52,6 +52,13 @@ public class PlayerDiedEventInfo : EventInfo
     public PlayerController player;
 }
 
+public class PlayerColorMismatchEventInfo : EventInfo
+{
+    public static PlayerColorMismatchEventInfo eventInfo = new PlayerColorMismatchEventInfo();
+
+    public PlayerController player;
+}
+
 public class LevelEventInfo : EventInfo
 {
     public static LevelEventInfo eventInfo = new LevelEventInfo();
@@ -86,6 +93,8 @@ public class EventManager : MonoBehaviour {
         PLAYER_DAMAGED,
         PLAYER_DIED,
         PLAYER_WIN,
+        PLAYER_COLOR_MISMATCH_START,
+        PLAYER_COLOR_MISMATCH_END,
 
         ENEMY_SPAWNED,
         ENEMY_DIED,

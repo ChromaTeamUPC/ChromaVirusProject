@@ -100,6 +100,16 @@ public class VoxelizationClient : MonoBehaviour {
         mat = colorObjMng.GetVoxelMaterial(color);
     }
 
+    public void SetGreyMaterial()
+    {
+        mat = colorObjMng.GetVoxelGreyMaterial();
+    }
+
+    public void SetWhiteMaterial()
+    {
+        mat = colorObjMng.GetVoxelWhiteMaterial();
+    }
+
 
     public void CalculateVoxelsGrid()
     {

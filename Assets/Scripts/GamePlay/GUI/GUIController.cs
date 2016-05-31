@@ -9,12 +9,16 @@ public class GUIController : MonoBehaviour
     public Slider player1Energy;
     public GameObject player1ExtraLife1;
     public GameObject player1ExtraLife2;
+    public GameObject player1ColorMismatchTxt;
+    public bool player1ColorMismatch;
 
     public GameObject player2Zone;
     public Slider player2Health;
     public Slider player2Energy;
     public GameObject player2ExtraLife1;
     public GameObject player2ExtraLife2;
+    public GameObject player2ColorMismatchTxt;
+    public bool player2ColorMismatch;
 
     public Text youWinTxt;
     public Text gameOverTxt;
@@ -44,6 +48,11 @@ public class GUIController : MonoBehaviour
         referenceHealthFactor = player1Health.maxValue / player1Controller.maxHealth;
         referenceEnergyFactor = player1Energy.maxValue / player1Controller.maxEnergy;
 
+        player1ColorMismatch = false;
+        player2ColorMismatch = false;
+
+        rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_START, PlayerColorMismatchStart);
+        rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_END, PlayerColorMismatchEnd);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_PAUSED, GamePaused);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESUMED, GameResumed);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameOver);
@@ -54,6 +63,8 @@ public class GUIController : MonoBehaviour
     {
         if (rsc.eventMng != null)
         {
+            rsc.eventMng.StopListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_START, PlayerColorMismatchStart);
+            rsc.eventMng.StopListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_END, PlayerColorMismatchEnd);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_PAUSED, GamePaused);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESUMED, GameResumed);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameOver);
@@ -92,6 +103,47 @@ public class GUIController : MonoBehaviour
             player2ExtraLife2.SetActive(true);
         else
             player2ExtraLife2.SetActive(false);
+
+        int secondFraction = (int)(Time.time * 10) % 10;
+        bool shouldShowTxt = (secondFraction > 0 && secondFraction < 5);
+
+        if (player1ColorMismatch)
+            player1ColorMismatchTxt.SetActive(shouldShowTxt);
+
+        if (player2ColorMismatch)
+            player2ColorMismatchTxt.SetActive(shouldShowTxt);
+    }
+
+    private void PlayerColorMismatchStart(EventInfo eventInfo)
+    {
+        PlayerColorMismatchEventInfo info = (PlayerColorMismatchEventInfo)eventInfo;
+
+        if (info.player.Id == 1)
+        {
+            player1ColorMismatch = true;
+            player1ColorMismatchTxt.SetActive(true);
+        }
+        else
+        {
+            player2ColorMismatch = true;
+            player2ColorMismatchTxt.SetActive(true);
+        }
+    }
+
+    private void PlayerColorMismatchEnd(EventInfo eventInfo)
+    {
+        PlayerColorMismatchEventInfo info = (PlayerColorMismatchEventInfo)eventInfo;
+
+        if (info.player.Id == 1)
+        {
+            player1ColorMismatch = false;
+            player1ColorMismatchTxt.SetActive(false);
+        }
+        else
+        {
+            player2ColorMismatch = false;
+            player2ColorMismatchTxt.SetActive(false);
+        }
     }
 
     private void GamePaused(EventInfo eventInfo)

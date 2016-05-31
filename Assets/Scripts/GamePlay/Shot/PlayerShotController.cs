@@ -3,46 +3,63 @@ using System.Collections;
 
 public class PlayerShotController : MonoBehaviour {
 
-    public ChromaColor color;
+    /*public class PlayerShotInfo{
+        public ChromaColor color;
+        public int damage;
+        public Vector3 direction;
+        public PlayerController player;
+    }
 
-    public int speed;
+    private PlayerShotInfo shotInfo;*/
+
+    [SerializeField]
+    private ChromaColor color;
+
+    [SerializeField]
+    private int speed;
+
     public int damage;
-    public float forceMultiplier = 5f;
 
+    [SerializeField]
+    private float forceMultiplier = 5f;
+
+    [SerializeField]
     [Range(0,20)]
-    public float maxDuration;
+    private float maxDuration;
 
-    public GameObject impactParticlePrefab;
-    public GameObject projectileParticlePrefab;
+    private PlayerController player;
+
+    [SerializeField]
+    private GameObject impactParticlePrefab;
+    [SerializeField]
+    private GameObject projectileParticlePrefab;
 
     private GameObject impactParticle;
     private GameObject projectileParticle;
 
     private Rigidbody rigidBody;
 
-    //private Quaternion impactOriginalRotation;
-    //private Quaternion projectileOriginalRotation;
-
     private SphereCollider shotCollider;
 
     private int defaultDamage;
     private float currentDuration;
 
+    public int Damage { set { damage = value; } }
+    public PlayerController Player { set { player = value; } }
+
     void Awake()
     {
-        defaultDamage = damage;
+        defaultDamage = damage;      
 
         shotCollider = GetComponent<SphereCollider>();
 
         projectileParticle = Instantiate(projectileParticlePrefab, transform.position, transform.rotation) as GameObject;
         projectileParticle.transform.parent = transform;
         projectileParticle.SetActive(false);
-        //projectileOriginalRotation = projectileParticle.transform.rotation;
 
         impactParticle = Instantiate(impactParticlePrefab, transform.position, transform.rotation) as GameObject;
         impactParticle.transform.parent = transform;
         impactParticle.SetActive(false);
-        //impactOriginalRotation = impactParticle.transform.rotation;
 
         rigidBody = GetComponent<Rigidbody>();
     }
@@ -75,7 +92,7 @@ public class PlayerShotController : MonoBehaviour {
         if (collision.collider.tag == "Enemy")
         {
             SpiderAIBehaviour enemy = collision.collider.GetComponent<SpiderAIBehaviour>();
-            enemy.ImpactedByShot(color, damage, transform.forward * forceMultiplier);
+            enemy.ImpactedByShot(color, damage, transform.forward * forceMultiplier, player);
         }
         else if (collision.collider.tag == "Vortex")
         {
@@ -102,7 +119,6 @@ public class PlayerShotController : MonoBehaviour {
     private void ReturnToPool()
     {
         damage = defaultDamage;
-        //projectileParticle.transform.localRotation = Quaternion.identity;
         projectileParticle.SetActive(false);
         impactParticle.transform.localRotation = Quaternion.identity;
         impactParticle.SetActive(false);

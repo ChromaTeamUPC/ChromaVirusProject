@@ -49,7 +49,11 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
 
     public void SpawnVoxels()
     {
-        voxelization.SetMaterial(color);
+        if (blackboard.lastShotSameColor)
+            voxelization.SetMaterial(color);
+        else
+            voxelization.SetGreyMaterial();
+
         voxelization.CalculateVoxelsGrid();
         voxelization.SpawnVoxels();
     }
@@ -69,9 +73,9 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         }
     }
 
-    public void ImpactedByShot(ChromaColor shotColor, int damage, Vector3 direction)
+    public void ImpactedByShot(ChromaColor shotColor, int damage, Vector3 direction, PlayerController player)
     {
-        AIBaseState newState = currentState.ImpactedByShot(shotColor, damage, direction);
+        AIBaseState newState = currentState.ImpactedByShot(shotColor, damage, direction, player);
 
         if (newState != null)
         {
@@ -79,7 +83,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         }
     }
 
-    public virtual AIBaseState ProcessShotImpact(ChromaColor shotColor, int damage, Vector3 direction)
+    public virtual AIBaseState ProcessShotImpact(ChromaColor shotColor, int damage, Vector3 direction, PlayerController player)
     {
         return null;
     }
