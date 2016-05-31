@@ -55,7 +55,7 @@ public class PlayerIdleState : PlayerBaseState {
             }
             else
             {
-                elapsedTime += Time.fixedDeltaTime;
+                elapsedTime += Time.deltaTime;
                 if (elapsedTime > player.idleRandomAnimTime)
                     return player.longIdleState;
             }  

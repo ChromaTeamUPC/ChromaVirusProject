@@ -20,7 +20,7 @@ public class PlayerDashingState : PlayerBaseState
 
     public override void OnStateExit()
     {
-        player.currentSpeed = player.speed;
+        player.currentSpeed = player.walkSpeed;
         if(!player.GetHorizontalDirectionFromInput())
             player.animator.SetBool("Walking", false);
     }
@@ -35,8 +35,8 @@ public class PlayerDashingState : PlayerBaseState
                 return player.fallingState;
         }
 
-        currentDashTime += Time.fixedDeltaTime;
-        player.currentSpeed -= player.dashDeceleration * Time.fixedDeltaTime;
+        currentDashTime += Time.deltaTime;
+        player.currentSpeed -= player.dashDeceleration * Time.deltaTime;
 
         player.Turn();
 

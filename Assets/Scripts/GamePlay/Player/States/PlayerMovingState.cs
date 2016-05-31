@@ -5,7 +5,7 @@ public class PlayerMovingState : PlayerBaseState
 {
     public override void OnStateEnter()
     {
-        player.currentSpeed = player.speed;
+        player.currentSpeed = player.walkSpeed;
         //play moving animation
         player.animator.SetBool("Walking", true);
     }

@@ -12,6 +12,11 @@ public class PlayerDyingState : PlayerBaseState
         player.animationEnded = false;      
     }
 
+    public override void OnStateExit()
+    {
+        player.canTakeDamage = true;
+    }
+
     public override PlayerBaseState Update()
     {
         if (player.animationEnded)

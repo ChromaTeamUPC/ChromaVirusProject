@@ -14,7 +14,7 @@ public class PlayerFallingState : PlayerBaseState
 
     public override void OnStateExit()
     {
-        player.currentSpeed = player.speed;
+        player.currentSpeed = player.walkSpeed;
     }
 
     public override PlayerBaseState Update()
