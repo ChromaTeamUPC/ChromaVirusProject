@@ -19,6 +19,27 @@ public class EnemyManager : MonoBehaviour
     public List<AIAction> jordiTestFollower01_135_5 = new List<AIAction>();
     public List<AIAction> jordiTestFollower02_225_5 = new List<AIAction>();
 
+    // Formation lists
+    public List<AIAction> rolling = new List<AIAction>();
+    public List<AIAction> three_front_1 = new List<AIAction>();
+    public List<AIAction> three_front_2 = new List<AIAction>();
+    public List<AIAction> three_front_3 = new List<AIAction>();
+    public List<AIAction> three_back_1 = new List<AIAction>();
+    public List<AIAction> three_back_2 = new List<AIAction>();
+    public List<AIAction> three_back_3 = new List<AIAction>();
+    public List<AIAction> triangle_1 = new List<AIAction>();
+    public List<AIAction> triangle_2 = new List<AIAction>();
+    public List<AIAction> triangle_3 = new List<AIAction>();
+    public List<AIAction> triangle_4 = new List<AIAction>();
+    //public List<AIAction> four_inside_1 = new List<AIAction>();
+    //public List<AIAction> four_inside_2 = new List<AIAction>();
+    //public List<AIAction> four_inside_3 = new List<AIAction>();
+    //public List<AIAction> four_inside_4 = new List<AIAction>();
+    public List<AIAction> quad_1 = new List<AIAction>();
+    public List<AIAction> quad_2 = new List<AIAction>();
+    public List<AIAction> quad_3 = new List<AIAction>();
+    public List<AIAction> quad_4 = new List<AIAction>();
+
     //Action list for the vortex spawned spiders
     public List<AIAction> defaultSpiderEntry = new List<AIAction>();
     public List<AIAction> defaultSpiderAttack = new List<AIAction>();
@@ -313,25 +334,25 @@ public class EnemyManager : MonoBehaviour
         //public List<AIAction> jordiTestLeader01 = new List<AIAction>();
         //public List<AIAction> jordiTestFollower01_135_5 = new List<AIAction>();
         //public List<AIAction> jordiTestFollower02_225_5 = new List<AIAction>();
-        jordiTestLeader01.Add(new MoveAIAction("Z01WP01", 8f));
+        jordiTestLeader01.Add(new MoveAIAction("Z01WP01", 6f));
         //jordiTestLeader01.Add(new LookAtAIAction("Z01WP08"));
         //jordiTestLeader01.Add(new StandingIdleAIAction(0.25f));
-        jordiTestLeader01.Add(new MoveAIAction("Z01WP08", 8f));
+        jordiTestLeader01.Add(new MoveAIAction("Z01WP08", 6f));
         //jordiTestLeader01.Add(new LookAtAIAction("Z01WP04"));
         //jordiTestLeader01.Add(new StandingIdleAIAction(0.25f));
-        jordiTestLeader01.Add(new MoveAIAction("Z01WP04", 8f));
+        jordiTestLeader01.Add(new MoveAIAction("Z01WP04", 6f));
         //jordiTestLeader01.Add(new LookAtAIAction("Z01WP05"));
         //jordiTestLeader01.Add(new StandingIdleAIAction(0.25f));
-        jordiTestLeader01.Add(new MoveAIAction("Z01WP05", 8f));
+        jordiTestLeader01.Add(new MoveAIAction("Z01WP05", 6f));
         //jordiTestLeader01.Add(new LookAtAIAction("Z01WP06"));
         //jordiTestLeader01.Add(new StandingIdleAIAction(0.25f));
-        jordiTestLeader01.Add(new MoveAIAction("Z01WP06", 8f));
+        jordiTestLeader01.Add(new MoveAIAction("Z01WP06", 6f));
         //jordiTestLeader01.Add(new LookAtAIAction("Z01WP07"));
         //jordiTestLeader01.Add(new StandingIdleAIAction(0.25f));
-        jordiTestLeader01.Add(new MoveAIAction("Z01WP07", 8f));
+        jordiTestLeader01.Add(new MoveAIAction("Z01WP07", 6f));
         //jordiTestLeader01.Add(new LookAtAIAction("Z01WP02"));
         //jordiTestLeader01.Add(new StandingIdleAIAction(0.25f));
-        jordiTestLeader01.Add(new MoveAIAction("Z01WP02", 8f));
+        jordiTestLeader01.Add(new MoveAIAction("Z01WP02", 6f));
         //jordiTestLeader01.Add(new LookAtAIAction("Z01WP01"));
         //jordiTestLeader01.Add(new StandingIdleAIAction(0.25f));
 
@@ -341,6 +362,41 @@ public class EnemyManager : MonoBehaviour
         jordiTestFollower02_225_5.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3));
         jordiTestFollower02_225_5.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3, false, 0, 1));
         //END TODO
+
+        rolling.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
+        rolling.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -30, 4, false, 0, 1));
+
+        three_front_1.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
+        three_front_1.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 0, 5, false, 0, 1));
+        three_front_2.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 2));
+        three_front_2.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 315, 4, false, 0, 1));
+        three_front_3.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
+        three_front_3.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 45, 4, false, 0, 1));
+
+        three_back_1.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3));
+        three_back_1.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3, false, 0, 1));
+        three_back_2.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 4));
+        three_back_2.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 4, false, 0, 1));
+        three_back_3.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3));
+        three_back_3.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3, false, 0, 1));
+
+        triangle_1.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
+        triangle_1.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 0, 5, false, 0, 1));
+        triangle_2.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 120, 3));
+        triangle_2.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 120, 3, false, 0, 1));
+        triangle_3.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 2));
+        triangle_3.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 2, false, 0, 1));
+        triangle_4.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 240, 3));
+        triangle_4.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 240, 3, false, 0, 1));
+
+        quad_1.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 2));
+        quad_1.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 325, 5, false, 0, 1));
+        quad_2.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
+        quad_2.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 35, 5, false, 0, 1));
+        quad_3.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3));
+        quad_3.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3, false, 0, 1));
+        quad_4.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3));
+        quad_4.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3, false, 0, 1));
 
 
         //vortexSpiderEntry has no actions, spider spawns and attacs player
@@ -577,7 +633,18 @@ public class EnemyManager : MonoBehaviour
 
         plan0101.enemiesThreshold = 1;
         List<WaveAction> z01wave01 = new List<WaveAction>();
-        z01wave01.Add(new SpawnSpiderGroupWaveAction("Z01SP01", jordiTestLeader01, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.TEST, new int[] { ChromaColorInfo.CURRENT_COLOR_OFFSET, ChromaColorInfo.CURRENT_COLOR_OFFSET, ChromaColorInfo.CURRENT_COLOR_OFFSET }));
+        //z01wave01.Add(new SpawnSpiderGroupWaveAction("Z01SP01", jordiTestLeader01, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.TEST, new int[] { ChromaColorInfo.CURRENT_COLOR_OFFSET, ChromaColorInfo.CURRENT_COLOR_OFFSET, ChromaColorInfo.CURRENT_COLOR_OFFSET }));
+
+        // z01wave01.Add(new SpawnSpiderGroupWaveAction("Z01SP01", jordiTestLeader01, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.ROLLING, new int[] { ChromaColorInfo.CURRENT_COLOR_OFFSET, (int)ChromaColor.GREEN, (int)ChromaColor.GREEN, (int)ChromaColor.GREEN }));
+
+        //z01wave01.Add(new SpawnSpiderGroupWaveAction("Z01SP01", jordiTestLeader01, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.THREE_FRONT, new int[] { ChromaColorInfo.CURRENT_COLOR_OFFSET, (int)ChromaColor.GREEN, (int)ChromaColor.GREEN, (int)ChromaColor.GREEN }));
+
+        //z01wave01.Add(new SpawnSpiderGroupWaveAction("Z01SP01", jordiTestLeader01, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.THREE_BACK, new int[] { ChromaColorInfo.CURRENT_COLOR_OFFSET, (int)ChromaColor.GREEN, (int)ChromaColor.GREEN, (int)ChromaColor.GREEN }));
+
+        //z01wave01.Add(new SpawnSpiderGroupWaveAction("Z01SP01", jordiTestLeader01, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.TRIANGLE, new int[] { ChromaColorInfo.CURRENT_COLOR_OFFSET, (int)ChromaColor.GREEN, (int)ChromaColor.GREEN, (int)ChromaColor.GREEN, (int)ChromaColor.GREEN }));
+
+        z01wave01.Add(new SpawnSpiderGroupWaveAction("Z01SP01", jordiTestLeader01, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.QUAD, new int[] { ChromaColorInfo.CURRENT_COLOR_OFFSET, (int)ChromaColor.GREEN, (int)ChromaColor.GREEN, (int)ChromaColor.GREEN, (int)ChromaColor.GREEN }));
+
         //z01wave01.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP01", jordiTestEntry01, jordiTestAttack01, 0f, 3, 1f, SpiderAIBehaviour.SpawnAnimation.FLOOR));
         //z01wave01.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", jordiTestEntry01, jordiTestAttack01, 2.5f, 1, 1f, SpiderAIBehaviour.SpawnAnimation.FLOOR));
         //z01wave01.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP01", jordiTestEntry01, jordiTestAttack01, 0.95f, 1, 1f, SpiderAIBehaviour.SpawnAnimation.FLOOR));
