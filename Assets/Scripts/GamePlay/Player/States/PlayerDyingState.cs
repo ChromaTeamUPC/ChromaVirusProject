@@ -7,18 +7,21 @@ public class PlayerDyingState : PlayerBaseState
     {
         player.EndColorMismatch(); //Ensure it is not active
 
+        player.animationEnded = false;      
         player.canTakeDamage = false;
         player.animator.SetTrigger("Die");
-        player.animationEnded = false;      
     }
 
     public override void OnStateExit()
     {
         player.canTakeDamage = true;
+        player.currentSpeed = player.walkSpeed;
     }
 
     public override PlayerBaseState Update()
     {
+        player.currentSpeed *= 0.95f;
+
         if (player.animationEnded)
         {
             player.SpawnVoxels();
