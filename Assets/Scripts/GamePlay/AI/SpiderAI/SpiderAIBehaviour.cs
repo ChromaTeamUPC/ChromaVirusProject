@@ -112,7 +112,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     {
         if (spiderBlackboard.canReceiveDamage && spiderBlackboard.currentHealth > 0)
         {
-            blinkController.Blink();
+            blinkController.BlinkWhiteOnce();
 
             /*if (shotColor == color)
             {
@@ -123,15 +123,16 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
                     return dyingState;
                 }
             }
-            //Else future behaviour like duplicate or increase health*/
-            if(shotColor != color)
-            {
-                player.ColorMismatch();
-            }
+            //Else future behaviour like duplicate or increase health*/          
 
             spiderBlackboard.currentHealth -= damage;
             if (spiderBlackboard.currentHealth <= 0)
             {
+                if (shotColor != color)
+                {
+                    player.ColorMismatch();
+                }
+
                 spiderBlackboard.lastShotDirection = direction;
                 spiderBlackboard.lastShotSameColor = (shotColor == color);
                 return dyingState;
