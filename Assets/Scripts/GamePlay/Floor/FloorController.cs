@@ -9,10 +9,7 @@ public class FloorController : MonoBehaviour {
 
     void Start()
     {
-        coloredObjMng = rsc.coloredObjectsMng;
-        rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
-        currentColor = rsc.colorMng.CurrentColor;
-        SetMaterial();
+        coloredObjMng = rsc.coloredObjectsMng;      
     }
 
     void OnDestroy()
@@ -21,6 +18,13 @@ public class FloorController : MonoBehaviour {
         {
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
         }
+    }
+
+    public void Activate()
+    {
+        rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+        currentColor = rsc.colorMng.CurrentColor;
+        SetMaterial();
     }
 
     void ColorChanged(EventInfo eventInfo)

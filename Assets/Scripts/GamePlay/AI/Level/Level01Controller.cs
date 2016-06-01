@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Level01Controller : MonoBehaviour 
 {
-    private float respawnDelay = 2f;
+    private float respawnDelay = 4f;
     public Transform player1StartPoint;
     public Transform player2StartPoint;
 
@@ -18,6 +18,8 @@ public class Level01Controller : MonoBehaviour
     public Transform zone2PlayerSpawnPoint;
     public Transform zone3PlayerSpawnPoint;
 
+    public FloorController floor;
+
     public VortexController zone2spawner1;
     public VortexController zone3spawner1;
     public VortexController zone3spawner2;
@@ -30,7 +32,7 @@ public class Level01Controller : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
-        rsc.colorMng.Activate();
+        //rsc.colorMng.Activate();
 
         if (rsc.gameInfo.player1Controller.Active)
         {
@@ -73,10 +75,13 @@ public class Level01Controller : MonoBehaviour
     private void ZoneReached(EventInfo eventInfo)
     {
         ZoneReachedInfo info = (ZoneReachedInfo)eventInfo;
-        currentZone = info.zoneId;
-        rsc.enemyMng.StartPlan(currentZone);
+        currentZone = info.zoneId;        
         switch (currentZone)
         {
+            case 101:
+                rsc.colorMng.Activate();
+                floor.Activate();
+                break;
             case 102:
                 zone2spawner1.Activate();
                 bridgeZone01.SetActive(false);
@@ -89,6 +94,7 @@ public class Level01Controller : MonoBehaviour
             default:
                 break;
         }
+        rsc.enemyMng.StartPlan(currentZone);
     }
 
     private void ZonePlanFinished(EventInfo eventInfo)
