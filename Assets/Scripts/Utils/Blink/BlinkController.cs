@@ -10,13 +10,15 @@ public class BlinkController : MonoBehaviour {
     }
 
     [SerializeField]
-    private float blinkSeconds = 0.01f;
+    private const float blinkDefaultSeconds = 0.01f;
 
     private RendMaterials[] rendererMaterials;
 
     private Material white;
     private Material transparent;
     private bool materialsNeedUpdate;
+
+    private bool blinking;
 
     void Start()
     {
@@ -37,7 +39,9 @@ public class BlinkController : MonoBehaviour {
                 rendererMaterials[i].renderer = renderers[i];
                 rendererMaterials[i].materials = rendererMaterials[i].renderer.materials;
             }
-        }       
+        }
+
+        blinking = false;     
     }
 
     public void InvalidateMaterials()
@@ -47,36 +51,46 @@ public class BlinkController : MonoBehaviour {
 
     private void UpdateMaterials()
     {
-        for (int i = 0; i < rendererMaterials.Length; ++i)
+        if (!blinking) //we can not update materials while blinking because we would store the wrong ones
         {
-            rendererMaterials[i].materials = rendererMaterials[i].renderer.materials;
-        }
+            for (int i = 0; i < rendererMaterials.Length; ++i)
+            {
+                rendererMaterials[i].materials = rendererMaterials[i].renderer.materials;
+            }
 
-        materialsNeedUpdate = false;
+            materialsNeedUpdate = false;
+        }
     }
 
-    public void Blink()
+    public void BlinkWhiteOnce(float duration = blinkDefaultSeconds)
     {
         if (materialsNeedUpdate) UpdateMaterials();
-        StartCoroutine(DoBlink());
+        StartCoroutine(DoBlinkOnce(white, duration));
     }
 
-    private IEnumerator DoBlink()
+    public void BlinkTransparentOnce(float duration = blinkDefaultSeconds)
     {
+        if (materialsNeedUpdate) UpdateMaterials();
+        StartCoroutine(DoBlinkOnce(transparent, duration));
+    }
+
+    private IEnumerator DoBlinkOnce(Material mat, float duration)
+    {
+        blinking = true;
         for (int i = 0; i < rendererMaterials.Length; ++i)
         {
             if (rendererMaterials[i].materials.Length == 1)
-                rendererMaterials[i].renderer.material = white;
+                rendererMaterials[i].renderer.material = mat;
             else
             {
                 Material[] mats = rendererMaterials[i].renderer.materials;
                 for (int j = 0; j < mats.Length; ++j)
-                    mats[j] = white;
+                    mats[j] = mat;
                 rendererMaterials[i].renderer.materials = mats;
             }
         }
 
-        yield return new WaitForSeconds(blinkSeconds);
+        yield return new WaitForSeconds(duration);
 
         for (int i = 0; i < rendererMaterials.Length; ++i)
         {
@@ -90,5 +104,6 @@ public class BlinkController : MonoBehaviour {
                 rendererMaterials[i].renderer.materials = mats;
             }
         }
+        blinking = false;
     }
 }
