@@ -52,7 +52,10 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         if (blackboard.lastShotSameColor)
             voxelization.SetMaterial(color);
         else
+        {
             voxelization.SetGreyMaterial();
+            voxelization.SpawnColliderThisTime = false;
+        }
 
         voxelization.CalculateVoxelsGrid();
         voxelization.SpawnVoxels();
