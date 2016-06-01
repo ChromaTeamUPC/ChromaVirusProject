@@ -9,29 +9,39 @@ public class PlayerController : MonoBehaviour
         
     private bool active = false;
 
+    [HideInInspector]
+    public bool canTakeDamage = true;
+
     //Life
     [Header("Health Settings")]
     public int maxLives = 3; 
-    public int maxHealth = 100;
-    public bool canTakeDamage = true;
+    public int maxHealth = 100;    
     private int currentLives;
-    public int currentHealth;
+    private int currentHealth;
 
     public float fallDamage = 10;
-    public float damageEveryXUnits = 10;
+    public float damageEveryXUnits = 10; 
 
     //Movement
     [Header("Movement Settings")]
-    public float speed = 10;
+    public float walkSpeed = 10;
     public float moveThreshold = 0.2f;
     public float angularSpeed = 1080;
     public float aimThreshold = 0.2f;
     public float maxDashTime = 1.0f;
     public float initialDashSpeed = 20.0f;
     public float dashDeceleration = 5f;
-    public bool decelerationRatio = false;
+    public bool isDecelerationRatio = false;
     public float minDashSpeed = 1;
     //public float dashStoppingSpeed = 1.0f;
+
+    public float speedRatioReductionOnContact = 0.1f;
+    public int damageOnContact = 5;
+    public float speedReductionTimeOnContact = 0.3f;
+    public float cooldownTime = 1f;
+    private bool isAffectedByContact = false;
+    private bool isContactCooldown = false;
+
 
     [HideInInspector]
     public float currentSpeed = 0f;
@@ -52,7 +62,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Fire Settings")]   
     public float fireRate = 0.25f;
-    public float speedRatioWhileFiring = 0.6f;
+    public float speedRatioReductionWhileFiring = 0.6f;
     public Transform shotSpawn;
     public Transform muzzlePoint;
     public int selfDamageOnColorMismatch = 10;
@@ -245,11 +255,18 @@ public class PlayerController : MonoBehaviour
         currentHealth = maxHealth;
         currentEnergy = 0;
         verticalVelocity = Physics.gravity.y;
-
-        ChangeState(spawningState);
+               
         currentShootingStatus = false;
         newShootingStatus = false;
         doubleShooting = false;
+        isAffectedByContact = false;
+        isContactCooldown = false;
+        currentSpeed = 0f;
+        isInBorder = false;
+        canShoot = true;
+
+        ChangeState(spawningState);
+
         PlayerSpawnedEventInfo.eventInfo.player = this;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNED, PlayerSpawnedEventInfo.eventInfo);
     }
@@ -439,7 +456,10 @@ public class PlayerController : MonoBehaviour
         Vector3 totalDirection = horizontalDirection * currentSpeed;
 
         if (doubleShooting)
-            totalDirection *= speedRatioWhileFiring;
+            totalDirection *= speedRatioReductionWhileFiring;
+
+        if (isAffectedByContact)
+            totalDirection *= speedRatioReductionOnContact;
 
         totalDirection.y = verticalVelocity;
 
@@ -585,11 +605,11 @@ public class PlayerController : MonoBehaviour
         return false; //TODO: remove false when implemented
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, bool damageAnim = true)
     {
         if (!canTakeDamage) return;
 
-        blinkController.Blink();
+        blinkController.BlinkWhiteOnce(0.03f);
 
         currentHealth -= damage;
 
@@ -607,7 +627,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            ChangeState(receivingDamageState);
+            if(damageAnim)
+                ChangeState(receivingDamageState);
         }
     }
 
@@ -627,7 +648,7 @@ public class PlayerController : MonoBehaviour
 
     public void ColorMismatch()
     {
-        TakeDamage(selfDamageOnColorMismatch);       
+        TakeDamage(selfDamageOnColorMismatch, false);       
 
         StartCoroutine(ColorMismatchHandle());
     }
@@ -664,6 +685,8 @@ public class PlayerController : MonoBehaviour
         }
         else if (other.tag == "DeathZone")
         {
+            if (!canTakeDamage)
+                Debug.Log("SOMETHING IS WRONG. PLAYER CAN NOT TAKE DAMAGE WHEN FALLING");
             TakeDamage(1000);
         }
     }
@@ -676,5 +699,34 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.collider.tag == "Enemy")
+        {
+            //If touched by an enemy, speed reduction and damage take
+            if (!isAffectedByContact && !isContactCooldown)
+            {
+                TakeDamage(damageOnContact, false);
+                StartCoroutine(AffectedByContact());
+            }
+        }
+    }
+
+    private IEnumerator AffectedByContact()
+    {
+        isAffectedByContact = true;
+        Debug.Log("Is slowdown because enemy contact");
+
+        yield return new WaitForSeconds(speedReductionTimeOnContact);
+
+        isAffectedByContact = false;
+        isContactCooldown = true;
+        Debug.Log("Is slowdown cooldown");
+
+        yield return new WaitForSeconds(cooldownTime);
+
+        isContactCooldown = false;
+        Debug.Log("Slowdown cooldown finished");
+    }
 }

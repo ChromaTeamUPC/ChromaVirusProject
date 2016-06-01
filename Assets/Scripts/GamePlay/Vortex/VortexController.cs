@@ -67,7 +67,7 @@ public class VortexController : MonoBehaviour {
     {
         if (!active) return;
 
-        blinkController.Blink();
+        blinkController.BlinkWhiteOnce();
 
         currentHealth -= damage;
 

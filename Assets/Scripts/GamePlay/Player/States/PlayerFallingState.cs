@@ -45,32 +45,6 @@ public class PlayerFallingState : PlayerBaseState
         //keep falling
         player.currentSpeed *= 0.95f;
 
-        return null;  
-
-        /*if (firstFrame)
-        {
-            player.ctrl.Move(new Vector3(0f, 0.01f, 0f)); //To stop inertia
-            firstFrame = false;
-        }
-        else
-        {
-            if (player.ctrl.SimpleMove(Vector3.zero))
-            {
-                float yDestiny = player.transform.position.y;
-                float fallingDistance = yOrigin - yDestiny;
-
-                if (fallingDistance < player.damageEveryXUnits)
-                    return player.idleState;
-                else
-                {
-                    float totalDamage = player.fallDamage * fallingDistance / player.damageEveryXUnits;
-                    player.TakeDamage((int)totalDamage);
-                    return player.idleState;
-                }
-            }
-        }
-
-        //keep falling
-        return null;*/
+        return null;       
     }
 }
