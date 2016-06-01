@@ -7,7 +7,7 @@ public class EnemyManager : MonoBehaviour
     private const string playerTargetTxt = "player";
     private const string leaderTargetTxt = "leader";
     private const float spiderBiteDefaultWaitTime = 2f;
-    private const float spiderIdleDefaultTime = 1f;
+    private const float spiderIdleDefaultTime = 0.75f;
 
     public GlobalAIBlackboard blackboard;
 
