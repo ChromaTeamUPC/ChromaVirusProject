@@ -91,9 +91,9 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         return null;
     }
 
-    public void ImpactedByBarrel(ChromaColor barrelColor, int damage)
+    public void ImpactedByBarrel(ChromaColor barrelColor, int damage, Vector3 direction)
     {
-        AIBaseState newState = currentState.ImpactedByBarrel(barrelColor, damage);
+        AIBaseState newState = currentState.ImpactedByBarrel(barrelColor, damage, direction);
 
         if (newState != null)
         {
@@ -101,7 +101,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         }
     }
 
-    public virtual AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, int damage)
+    public virtual AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, int damage, Vector3 direction)
     {
         return null;
     }
@@ -110,7 +110,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     {
         if (other.tag == "BarrelAttractor")
         {
-            blackboard.barrelController = other.GetComponent<BarrelAttractor>().controller;
+            blackboard.barrelController = other.GetComponent<CapacitorAttractor>().controller;
         }
     }
 

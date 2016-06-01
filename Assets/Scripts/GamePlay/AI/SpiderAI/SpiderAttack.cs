@@ -14,7 +14,7 @@ public class SpiderAttack : MonoBehaviour {
         if(other.tag == "Player1" || other.tag == "Player2")
         {
             PlayerController player = other.GetComponent<PlayerController>();
-            player.TakeDamage(spider.biteDamage, spider.color);
+            player.ReceiveAttack(spider.biteDamage, spider.color);
         }
     }
 }

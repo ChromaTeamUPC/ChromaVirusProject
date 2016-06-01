@@ -50,12 +50,12 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 
     public override void SetMaterials(Material[] materials)
     {
-        Material[] mats = rend.materials;
+        Material[] mats = rend.sharedMaterials;
 
         if (mats[1] != materials[0])
         {
             mats[1] = materials[0];
-            rend.materials = mats;
+            rend.sharedMaterials = mats;
 
             blinkController.InvalidateMaterials();
         }
@@ -143,7 +143,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     }
 
     //Not to be used outside FSM
-    public override AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, int damage)
+    public override AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, int damage, Vector3 direction)
     {
         //Harmless to other colors
         if (barrelColor != color)
@@ -153,7 +153,11 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         {
             spiderBlackboard.currentHealth -= damage;
             if (spiderBlackboard.currentHealth <= 0)
+            {
+                spiderBlackboard.lastShotDirection = direction;
+                spiderBlackboard.lastShotSameColor = (barrelColor == color);
                 return dyingState;
+            }
         }
 
         return null;

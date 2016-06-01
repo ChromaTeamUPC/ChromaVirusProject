@@ -9,6 +9,8 @@ public class Level01Controller : MonoBehaviour
 
     public GameObject bridgeZone01;
     public GameObject bridgeZone02;
+    public BridgeController bridgeCtrlZone1;
+    public BridgeController bridgeCtrlZone2;
 
     public GameObject uSBTeleport1;   
 
@@ -84,12 +86,14 @@ public class Level01Controller : MonoBehaviour
                 break;
             case 102:
                 zone2spawner1.Activate();
-                bridgeZone01.SetActive(false);
+                //bridgeZone01.SetActive(false);
+                bridgeCtrlZone1.Deactivate();
                 break;
             case 103:
                 zone3spawner1.Activate();
                 zone3spawner2.Activate();
-                bridgeZone02.SetActive(false);
+                //bridgeZone02.SetActive(false);
+                bridgeCtrlZone2.Deactivate();
                 break;
             default:
                 break;
@@ -104,11 +108,13 @@ public class Level01Controller : MonoBehaviour
         {
             //open door 01
             case 101:
-                bridgeZone01.SetActive(true);
+                //bridgeZone01.SetActive(true);
+                bridgeCtrlZone1.Activate();
                 break;
 
             case 102:
-                bridgeZone02.SetActive(true);
+                //bridgeZone02.SetActive(true);
+                bridgeCtrlZone2.Activate();
                 uSBTeleport1.SetActive(true);              
                 break;
 

@@ -52,7 +52,7 @@ public class VoxelController : MonoBehaviour {
                             child.transform.localScale = scale;
                             child.transform.rotation = Random.rotation;
                             child.gameObject.SetActive(true);
-                            child.GetComponent<Renderer>().material = GetComponent<Renderer>().material;
+                            child.GetComponent<Renderer>().sharedMaterial = GetComponent<Renderer>().sharedMaterial;
                             child.spawnLevels = spawnLevels - 1;
                         }
                     }

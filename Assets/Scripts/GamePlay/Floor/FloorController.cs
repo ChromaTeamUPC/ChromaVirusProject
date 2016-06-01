@@ -35,8 +35,6 @@ public class FloorController : MonoBehaviour {
 
     private void SetMaterial()
     {
-        Material mat = coloredObjMng.GetFloorMaterial(currentColor);
-
-        rend.material = mat;
+        rend.sharedMaterial = coloredObjMng.GetFloorMaterial(currentColor);
     }
 }

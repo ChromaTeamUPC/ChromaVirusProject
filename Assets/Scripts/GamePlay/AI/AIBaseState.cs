@@ -27,9 +27,9 @@ public class AIBaseState
         return blackboard.entity.ProcessShotImpact(shotColor, damage, direction, player);
     }
 
-    virtual public AIBaseState ImpactedByBarrel(ChromaColor barrelColor, int damage)
+    virtual public AIBaseState ImpactedByBarrel(ChromaColor barrelColor, int damage, Vector3 direction)
     {
-        return blackboard.entity.ProcessBarrelImpact(barrelColor, damage);
+        return blackboard.entity.ProcessBarrelImpact(barrelColor, damage, direction);
     }
 }
 

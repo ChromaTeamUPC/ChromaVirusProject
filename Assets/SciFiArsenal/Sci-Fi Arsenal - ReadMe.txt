@@ -1,28 +1,26 @@
 ------------------
-Sci-Fi Arsenal
+Magic Arsenal v2.1
 ------------------
 
-To use the effects, you need to import the SciFi Arsenal folder to your project.
+To use the effects, you need to import everything except the "KunaiEditor" and "Interactive Demo" to your project.
 
-There are also some folders (and sub-folders) which are not required for the effects to work:
+There are also two optional folders you can import.
 
 "InteractiveDemo" - This contains the web demo as linked to on the Asset Store. 
 
 "KunaiEditor" - This is a tool that lets you scale multiple particle effects at once.
 
-"Sci-Fi Textures" - A teaser pack of sci-fi textures used for the web demo. The full pack is available on the Asset Store.
-
 ------------------
 F.A.Q.:
 ------------------
 
-Q: I'm getting "AABB" errors when testing the demo or importing the effects to my project!
+Q: I'm getting a lot of "AABB" errors when testing the demo or importing the effects to my project
 
-A: There is a bug with some of Unity 5.3 versions, and can be fixed by updating to 5.3.1p2 or later versions.
+A: There is a bug with Unity 5.3, and can be fixed by updating to 5.3.1p2 or later versions.
 
 -
 
-Q: I think this pack is missing something / This pack doesn't have an effect like this!
+Q: I think this pack is missing something / This pack doesn't have an effect like this
 
 A: If you have any suggestions for additional content, feel free to send me an e-mail, and it might just be featured in the next version.
 
@@ -54,6 +52,6 @@ Thanks to Daniel Christy for creating Kunai.
 
 Feedback and questions can be sent to: archanor.work@gmail.com
 
-Enjoying the effects? Please rate and review it at the Unity Asset Store page!
+If you like the particle pack, please rate and review it at the Unity Asset Store page!
 
 https://www.assetstore.unity3d.com/en/#!/content/20869

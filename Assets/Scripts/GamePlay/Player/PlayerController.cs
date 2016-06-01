@@ -20,7 +20,9 @@ public class PlayerController : MonoBehaviour
     private int currentHealth;
 
     public float fallDamage = 10;
-    public float damageEveryXUnits = 10; 
+    public float damageEveryXUnits = 10;
+    public float invulnerabilityTimeAfterHit = 3f;
+    private bool isInvulnerable = false; 
 
     //Movement
     [Header("Movement Settings")]
@@ -234,11 +236,11 @@ public class PlayerController : MonoBehaviour
                 shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(currentColor);
                 break;
         }
-        Material[] mats = bodyRend.materials;
+        Material[] mats = bodyRend.sharedMaterials;
         mats[1] = bodyMat;
-        bodyRend.materials = mats;
+        bodyRend.sharedMaterials = mats;
 
-        shieldRend.material = shieldMat;
+        shieldRend.sharedMaterial = shieldMat;
 
         blinkController.InvalidateMaterials();
     }
@@ -264,6 +266,7 @@ public class PlayerController : MonoBehaviour
         currentSpeed = 0f;
         isInBorder = false;
         canShoot = true;
+        isInvulnerable = false;
 
         ChangeState(spawningState);
 
@@ -607,9 +610,9 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(int damage, bool damageAnim = true)
     {
-        if (!canTakeDamage) return;
+        if (!canTakeDamage || isInvulnerable) return;
 
-        blinkController.BlinkWhiteOnce(0.03f);
+        blinkController.BlinkWhiteOnce(0.03f);       
 
         currentHealth -= damage;
 
@@ -644,6 +647,21 @@ public class PlayerController : MonoBehaviour
 
         TakeDamage(damage);
 
+    }
+
+    public void ReceiveAttack(int damage, ChromaColor color)
+    {
+        TakeDamage(damage);
+        StartCoroutine(HandleAttackReceived());
+    }
+
+    private IEnumerator HandleAttackReceived()
+    {
+        blinkController.BlinkTransparentMultipleTimes(invulnerabilityTimeAfterHit);
+
+        isInvulnerable = true;
+        yield return new WaitForSeconds(invulnerabilityTimeAfterHit);
+        isInvulnerable = false;
     }
 
     public void ColorMismatch()
@@ -705,7 +723,7 @@ public class PlayerController : MonoBehaviour
         if (hit.collider.tag == "Enemy")
         {
             //If touched by an enemy, speed reduction and damage take
-            if (!isAffectedByContact && !isContactCooldown)
+            if (!isAffectedByContact && !isContactCooldown && !isInvulnerable)
             {
                 TakeDamage(damageOnContact, false);
                 StartCoroutine(AffectedByContact());

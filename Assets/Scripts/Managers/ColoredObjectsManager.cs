@@ -14,26 +14,40 @@ public class ColoredObjectsManager : MonoBehaviour
     //Player
     [SerializeField]
     private Material[] player1Mats = new Material[4];
-    private Material currentPlayer1;
+    private Material currentPlayer1Mat;
 
     [SerializeField]
     private Material[] player1ShieldMats = new Material[4];
-    private Material currentPlayer1Shield;
+    private Material currentPlayer1ShieldMat;
 
     //Voxel Materials
     [SerializeField]
     private Material[] voxelMats = new Material[6];
-    private Material currentVoxel;
+    private Material currentVoxelMat;
 
     //Spider Materials
     [SerializeField]
     private Material[] spiderMats = new Material[4];
-    private Material currentSpider;
+    private Material currentSpiderMat;
 
     //Floor Materials
     [SerializeField]
     private Material[] floorMats = new Material[4];
-    private Material currentFloor;
+    private Material currentFloorMat;
+
+    //Floor Materials
+    [SerializeField]
+    private Material[] bridgeMats = new Material[4];
+
+    //Capacitor Materials
+    [SerializeField]
+    private Material[] capacitorEmptyMats = new Material[4];
+    [SerializeField]
+    private Material[] capacitor33Mats = new Material[4];
+    [SerializeField]
+    private Material[] capacitor66Mats = new Material[4];
+    [SerializeField]
+    private Material[] capacitorFullMats = new Material[4];
 
     private ScriptObjectPool<PlayerShotController>[] player1ShotPools = new ScriptObjectPool<PlayerShotController>[4];
     private ScriptObjectPool<PlayerShotController> currentPlayer1ShotPool;
@@ -86,13 +100,13 @@ public class ColoredObjectsManager : MonoBehaviour
     {
         int colorIndex = (int)currentColor;
 
-        currentPlayer1 = player1Mats[colorIndex];
-        currentPlayer1Shield = player1ShieldMats[colorIndex];
+        currentPlayer1Mat = player1Mats[colorIndex];
+        currentPlayer1ShieldMat = player1ShieldMats[colorIndex];
         currentPlayer1ShotPool = player1ShotPools[colorIndex];
         currentPlayer1MuzzlePool = player1MuzzlePools[colorIndex];
-        currentVoxel = voxelMats[colorIndex];
-        currentSpider = spiderMats[colorIndex];
-        currentFloor = floorMats[colorIndex];      
+        currentVoxelMat = voxelMats[colorIndex];
+        currentSpiderMat = spiderMats[colorIndex];
+        currentFloorMat = floorMats[colorIndex];      
     }
 
     private Material GetMaterial(Material[] matArray, ChromaColor color)
@@ -145,9 +159,9 @@ public class ColoredObjectsManager : MonoBehaviour
         {
             SpiderAIBehaviour spiderAI = spider.GetComponent<SpiderAIBehaviour>();
             spiderAI.color = currentColor;
-            Material[] mats = spiderAI.rend.materials;
-            mats[1] = currentSpider;
-            spiderAI.rend.materials = mats;
+            Material[] mats = spiderAI.rend.sharedMaterials;
+            mats[1] = currentSpiderMat;
+            spiderAI.rend.sharedMaterials = mats;
 
             return spiderAI;
         }
@@ -204,7 +218,7 @@ public class ColoredObjectsManager : MonoBehaviour
 
         if (voxel != null)
         {
-            voxel.GetComponent<Renderer>().material = currentVoxel;
+            voxel.GetComponent<Renderer>().sharedMaterial = currentVoxelMat;
         }
 
         return voxel;
@@ -217,7 +231,7 @@ public class ColoredObjectsManager : MonoBehaviour
 
         if (voxel != null)
         {
-            voxel.GetComponent<Renderer>().material = GetMaterial(voxelMats, color);       
+            voxel.GetComponent<Renderer>().sharedMaterial = GetMaterial(voxelMats, color);       
         }
 
         return voxel;
@@ -246,5 +260,31 @@ public class ColoredObjectsManager : MonoBehaviour
     public Material GetFloorMaterial(ChromaColor color)
     {
         return GetMaterial(floorMats, color);
+    }
+
+    public Material GetBridgeMaterial(ChromaColor color)
+    {
+        return GetMaterial(bridgeMats, color);
+    }
+
+    public Material GetCapacitorMaterial(CapacitorController.CapacitorLevel chargeLevel, ChromaColor color)
+    {
+        switch (chargeLevel)
+        {
+            case CapacitorController.CapacitorLevel.EMPTY:
+                return GetMaterial(capacitorEmptyMats, color);
+
+            case CapacitorController.CapacitorLevel.ONE_THIRD:
+                return GetMaterial(capacitor33Mats, color);
+
+            case CapacitorController.CapacitorLevel.TWO_THIRDS:
+                return GetMaterial(capacitor66Mats, color);
+
+            case CapacitorController.CapacitorLevel.FULL:
+                return GetMaterial(capacitorFullMats, color);
+
+            default:
+                return GetMaterial(capacitorEmptyMats, color);
+        }
     }
 }

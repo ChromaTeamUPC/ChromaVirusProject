@@ -199,11 +199,11 @@ public class VoxelizationClient : MonoBehaviour {
                                     voxelTrans.localScale = voxelScale;
                                     if(!randomMaterial)
                                     {
-                                        voxelController.GetComponent<Renderer>().material = mat;
+                                        voxelController.GetComponent<Renderer>().sharedMaterial = mat;
                                     }
                                     else
                                     {
-                                        voxelController.GetComponent<Renderer>().material = colorObjMng.GetVoxelRandomMaterial();
+                                        voxelController.GetComponent<Renderer>().sharedMaterial = colorObjMng.GetVoxelRandomMaterial();
                                     }
                                                                         
                                     voxelController.spawnLevels = 1;

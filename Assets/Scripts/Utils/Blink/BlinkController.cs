@@ -6,11 +6,20 @@ public class BlinkController : MonoBehaviour {
     private struct RendMaterials
     {
         public Renderer renderer;
-        public Material[] materials;
+        public Material[] sharedMaterialsCopy;
     }
 
+    [Header("Blink Once")]
     [SerializeField]
-    private const float blinkDefaultSeconds = 0.01f;
+    private const float blinkOnceDefaultDuration = 0.01f;
+
+    [Header("Blink Multiple Times")]
+    [SerializeField]
+    private const float blinkMultipleIntervalDefaultDuration = 0.1f;
+    [SerializeField]
+    private const float normalMultipleIntervalDefaultDuration = 0.1f;
+    [SerializeField]
+    private const float totalDefaultDuration = 1f;
 
     private RendMaterials[] rendererMaterials;
 
@@ -19,6 +28,7 @@ public class BlinkController : MonoBehaviour {
     private bool materialsNeedUpdate;
 
     private bool blinking;
+    private Material currentBlinkMaterial;
 
     void Start()
     {
@@ -37,7 +47,7 @@ public class BlinkController : MonoBehaviour {
             {
                 rendererMaterials[i] = new RendMaterials();
                 rendererMaterials[i].renderer = renderers[i];
-                rendererMaterials[i].materials = rendererMaterials[i].renderer.materials;
+                rendererMaterials[i].sharedMaterialsCopy = rendererMaterials[i].renderer.sharedMaterials;
             }
         }
 
@@ -46,64 +56,166 @@ public class BlinkController : MonoBehaviour {
 
     public void InvalidateMaterials()
     {
-        materialsNeedUpdate = true;
-    }
-
-    private void UpdateMaterials()
-    {
-        if (!blinking) //we can not update materials while blinking because we would store the wrong ones
+        if(blinking)
         {
+            //If blink is in process update inmediately only changed material and restore blinking one
             for (int i = 0; i < rendererMaterials.Length; ++i)
             {
-                rendererMaterials[i].materials = rendererMaterials[i].renderer.materials;
-            }
+                RendMaterials rendMaterials = rendererMaterials[i];
 
-            materialsNeedUpdate = false;
+                Material[] sharedMaterials = rendMaterials.renderer.sharedMaterials; //This creates a copy of the array, not the materials
+
+                bool modified = false;
+
+                for (int j = 0; j < sharedMaterials.Length; ++j)
+                {
+                    if( (sharedMaterials[j] != currentBlinkMaterial) &&
+                        (sharedMaterials[j] != rendMaterials.sharedMaterialsCopy[j]))
+                    {
+                        rendMaterials.sharedMaterialsCopy[j] = sharedMaterials[j];
+                        sharedMaterials[j] = currentBlinkMaterial;
+                        modified = true;
+                    }
+                }
+
+                if (modified)
+                    rendMaterials.renderer.sharedMaterials = sharedMaterials;
+            }
+        }
+        else
+            materialsNeedUpdate = true;
+    }
+
+    private void SaveMaterials()
+    {
+        for (int i = 0; i < rendererMaterials.Length; ++i)
+        {
+            rendererMaterials[i].sharedMaterialsCopy = rendererMaterials[i].renderer.sharedMaterials;
+        }
+
+        materialsNeedUpdate = false;
+    }
+
+    private void SubstituteMaterials()
+    {
+        for (int i = 0; i < rendererMaterials.Length; ++i)
+        {
+            if (rendererMaterials[i].sharedMaterialsCopy.Length == 1)
+            {
+                rendererMaterials[i].renderer.sharedMaterial = currentBlinkMaterial;
+            }
+            else
+            {
+                Material[] mats = rendererMaterials[i].renderer.sharedMaterials;
+                for (int j = 0; j < mats.Length; ++j)
+                    mats[j] = currentBlinkMaterial;
+                rendererMaterials[i].renderer.sharedMaterials = mats;
+            }
         }
     }
 
-    public void BlinkWhiteOnce(float duration = blinkDefaultSeconds)
+    private void RestoreMaterials()
     {
-        if (materialsNeedUpdate) UpdateMaterials();
+        for (int i = 0; i < rendererMaterials.Length; ++i)
+        {
+            if (rendererMaterials[i].sharedMaterialsCopy.Length == 1)
+            {
+                rendererMaterials[i].renderer.sharedMaterial = rendererMaterials[i].sharedMaterialsCopy[0];
+            }
+            else
+            {
+                rendererMaterials[i].renderer.sharedMaterials = rendererMaterials[i].sharedMaterialsCopy;
+            }
+        }
+    }
+
+    private void StopPreviousBlinkings()
+    {
+        StopAllCoroutines();
+
+        if (blinking)
+        {
+            RestoreMaterials();
+            blinking = false;
+        }
+    }
+
+    public void BlinkWhiteOnce(float duration = blinkMultipleIntervalDefaultDuration)
+    {
+        StopPreviousBlinkings();
         StartCoroutine(DoBlinkOnce(white, duration));
     }
 
-    public void BlinkTransparentOnce(float duration = blinkDefaultSeconds)
+    public void BlinkTransparentOnce(float duration = blinkMultipleIntervalDefaultDuration)
     {
-        if (materialsNeedUpdate) UpdateMaterials();
+        StopPreviousBlinkings();
         StartCoroutine(DoBlinkOnce(transparent, duration));
     }
 
     private IEnumerator DoBlinkOnce(Material mat, float duration)
     {
+        currentBlinkMaterial = mat;
+
+        if (materialsNeedUpdate) SaveMaterials();
+
         blinking = true;
-        for (int i = 0; i < rendererMaterials.Length; ++i)
-        {
-            if (rendererMaterials[i].materials.Length == 1)
-                rendererMaterials[i].renderer.material = mat;
-            else
-            {
-                Material[] mats = rendererMaterials[i].renderer.materials;
-                for (int j = 0; j < mats.Length; ++j)
-                    mats[j] = mat;
-                rendererMaterials[i].renderer.materials = mats;
-            }
-        }
+
+        SubstituteMaterials();
 
         yield return new WaitForSeconds(duration);
 
-        for (int i = 0; i < rendererMaterials.Length; ++i)
+        RestoreMaterials();
+
+        blinking = false;
+    }
+
+    public void BlinkWhiteMultipleTimes(float totalDuration = totalDefaultDuration,
+                                              float blinkInterval = blinkMultipleIntervalDefaultDuration,
+                                              float normalInterval = normalMultipleIntervalDefaultDuration)
+    {
+        StopPreviousBlinkings();
+        StartCoroutine(DoBlinkMultiple(white, blinkInterval, normalInterval, totalDuration));
+    }
+
+    public void BlinkTransparentMultipleTimes(float totalDuration = totalDefaultDuration,
+                                              float blinkInterval = blinkMultipleIntervalDefaultDuration,
+                                              float normalInterval = normalMultipleIntervalDefaultDuration)
+    {
+        StopPreviousBlinkings();
+        StartCoroutine(DoBlinkMultiple(transparent, blinkInterval, normalInterval, totalDuration));
+    }
+
+    private IEnumerator DoBlinkMultiple(Material mat, float blinkInterval, float normalInterval, float totalDuration)
+    {
+        currentBlinkMaterial = mat;
+
+        if (materialsNeedUpdate) SaveMaterials();
+
+        blinking = true;
+
+        float elapsedTime = 0f;
+        bool blink = true;
+
+        while (elapsedTime < totalDuration)
         {
-            if (rendererMaterials[i].materials.Length == 1)
-                rendererMaterials[i].renderer.material = rendererMaterials[i].materials[0];
+            if(blink)
+            {
+                SubstituteMaterials();
+                yield return new WaitForSeconds(blinkInterval);
+                elapsedTime += blinkInterval;
+            }
             else
             {
-                Material[] mats = rendererMaterials[i].renderer.materials;
-                for (int j = 0; j < mats.Length; ++j)
-                    mats[j] = rendererMaterials[i].materials[j];
-                rendererMaterials[i].renderer.materials = mats;
+                RestoreMaterials();
+                yield return new WaitForSeconds(normalInterval);
+                elapsedTime += normalInterval;
             }
+
+            blink = !blink;
         }
+
+        RestoreMaterials();
+
         blinking = false;
     }
 }

@@ -41,7 +41,7 @@ public class SpiderBolt : MonoBehaviour
         {
             boltCollider.enabled = false;
             PlayerController player = other.GetComponent<PlayerController>();
-            player.TakeDamage(damage, color);
+            player.ReceiveAttack(damage, color);
         }
     }
 }

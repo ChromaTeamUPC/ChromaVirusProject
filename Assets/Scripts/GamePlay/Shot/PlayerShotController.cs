@@ -101,7 +101,7 @@ public class PlayerShotController : MonoBehaviour {
         }
         else if (collision.collider.tag == "Barrel")
         {
-            BarrelImpacted barrel = collision.collider.GetComponent<BarrelImpacted>();
+            CapacitorImpacted barrel = collision.collider.GetComponent<CapacitorImpacted>();
             barrel.controller.ImpactedByShot(color);
         }
 
