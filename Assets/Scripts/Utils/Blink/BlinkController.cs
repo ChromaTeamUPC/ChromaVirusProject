@@ -66,7 +66,7 @@ public class BlinkController : MonoBehaviour {
 
     void OnDisable()
     {
-        RestoreMaterials();
+        StopPreviousBlinkings();
     }
 
     public void InvalidateMaterials()

@@ -156,6 +156,10 @@ public class Level01Controller : MonoBehaviour
             case 103:
                 player.transform.position = zone3PlayerSpawnPoint.position;
                 break;
+
+            default:
+                player.transform.position = zone1PlayerSpawnPoint.position;
+                break;
         }
         player.transform.SetParent(null);
         if (!player.gameObject.activeSelf)

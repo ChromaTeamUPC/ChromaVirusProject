@@ -16,7 +16,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     public int biteDamage = 10;
     public float playerDetectionDistance = 5f;
     public int spidersAttackingThreshold = 3;
-    public float wrongColorDamageModifier = 0.6f;
+    public float wrongColorDamageModifier = 0.5f;
 
     public GameObject[] explosionPrefabs = new GameObject[4];  
     
