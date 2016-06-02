@@ -6,7 +6,7 @@ public class SpawnSpiderGroupWaveAction : WaveAction  {
 
     public enum FormationType
     {
-        TEST,
+
 
 
 
@@ -14,7 +14,7 @@ public class SpawnSpiderGroupWaveAction : WaveAction  {
         THREE_FRONT,
         THREE_BACK,
         TRIANGLE,
-        //FOUR_INSIDE, //TODELETE
+
         QUAD
     }
 
@@ -62,9 +62,9 @@ public class SpawnSpiderGroupWaveAction : WaveAction  {
 
         switch (formation)
         {
-            case FormationType.TEST:
-                followersActions = new List<AIAction>[3] { null, enemyMng.jordiTestFollower01_135_5, enemyMng.jordiTestFollower02_225_5 };
-                break;
+
+
+
             case FormationType.ROLLING:
                 followersActions = new List<AIAction>[4] { null, enemyMng.rolling, enemyMng.rolling, enemyMng.rolling };
                 break;
@@ -81,10 +81,10 @@ public class SpawnSpiderGroupWaveAction : WaveAction  {
                 followersActions = new List<AIAction>[5] { null, enemyMng.triangle_1, enemyMng.triangle_2, enemyMng.triangle_3, enemyMng.triangle_4 };
                 break;
 
-            //TODELETE
-            //case FormationType.FOUR_INSIDE:
-            //    followersActions = new List<AIAction>[5] { null, enemyMng.four_inside_1, enemyMng.four_inside_2, enemyMng.four_inside_3, enemyMng.four_inside_4 };
-            //    break;
+
+
+
+
 
             case FormationType.QUAD:
                 followersActions = new List<AIAction>[5] { null, enemyMng.quad_1, enemyMng.quad_2, enemyMng.quad_3, enemyMng.quad_4 };
