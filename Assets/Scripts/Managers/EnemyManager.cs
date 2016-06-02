@@ -41,10 +41,6 @@ public class EnemyManager : MonoBehaviour
     public List<AIAction> triangle_2 = new List<AIAction>();
     public List<AIAction> triangle_3 = new List<AIAction>();
     public List<AIAction> triangle_4 = new List<AIAction>();
-
-
-
-
     public List<AIAction> quad_1 = new List<AIAction>();
     public List<AIAction> quad_2 = new List<AIAction>();
     public List<AIAction> quad_3 = new List<AIAction>();
@@ -109,7 +105,7 @@ public class EnemyManager : MonoBehaviour
 
     //...
 
-    //Example Zone Plans
+    //Zone Plans
     private ZonePlan plan0101;
     private ZonePlan plan0102;
     private ZonePlan plan0103;
@@ -334,49 +330,6 @@ public class EnemyManager : MonoBehaviour
 
     void CreateAIActionLists()
     {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         rolling.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
         rolling.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -30, 4, false, 0, 1));
 
@@ -529,22 +482,10 @@ public class EnemyManager : MonoBehaviour
         level01Z01SpiderEntry01.Add(new MoveAIAction("Z01WP01", 10f));
         level01Z01SpiderEntry01.Add(new MoveAIAction("Z01WP02", 10f));
         level01Z01SpiderEntry01.Add(new MoveAIAction("Z01WP03", 10f, true, 0, AIAction.LIST_FINISHED));
-
-
-
-
-
-
-        
+      
         level01Z01SpiderEntry02.Add(new MoveAIAction("Z01WP04", 10f));
         level01Z01SpiderEntry02.Add(new MoveAIAction("Z01WP05", 10f));
         level01Z01SpiderEntry02.Add(new MoveAIAction("Z01WP06", 10f, true, 0, AIAction.LIST_FINISHED));
-
-
-
-
-
-
 
         level01Z01spiderEntry03.Add(new SelectPlayerAIAction());
         level01Z01spiderEntry03.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 0, 3f));
@@ -716,54 +657,10 @@ public class EnemyManager : MonoBehaviour
         level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
         level01Z03spiderAttack03b.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z03spiderAttack03b.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
-
-
-
-        //spiderCloseList01.Add(new MoveAIAction("WP02", 10f, true, 0, AIAction.LIST_FINISHED));
     }
 
     void CreateZonePlans() 
     {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         //Init zone plans
 
         //plan0101
@@ -823,24 +720,8 @@ public class EnemyManager : MonoBehaviour
         plan0102 = new ZonePlan();
         plan0102.enemiesThreshold = 12;
 
-
-
-
-
         List<WaveAction> z02wave01 = new List<WaveAction>();
         z02wave01.Add(new SpawnSpiderGroupWaveAction("Z02SP01", level01Z02leader1, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.THREE_BACK,
-
-
-
-
-
-
-
-
-
-
-
-
             new int[] { ChromaColorInfo.CURRENT_COLOR_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET }));
 
         z02wave01.Add(new SpawnSpiderGroupWaveAction("Z02SP02", level01Z02leader2, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.ROLLING,
@@ -856,30 +737,16 @@ public class EnemyManager : MonoBehaviour
         plan0102.sequentialWaves.Add(z02wave01);
 
         List<WaveAction> z02wave02 = new List<WaveAction>();
-
-
         z02wave02.Add(new SpawnSpiderGroupWaveAction("Z02SP04", level01Z02leader4, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.THREE_FRONT,
             new int[] { (int)ChromaColor.RED, (int)ChromaColor.BLUE, (int)ChromaColor.YELLOW, (int)ChromaColor.GREEN }));
 
         plan0102.sequentialWaves.Add(z02wave02);
 
         List<WaveAction> z02wave03 = new List<WaveAction>();
-
-
         z02wave03.Add(new SpawnSpiderGroupWaveAction("Z02SP01", level01Z02leader1, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.THREE_FRONT,
             new int[] { (int)ChromaColor.YELLOW, (int)ChromaColor.RED, (int)ChromaColor.GREEN, (int)ChromaColor.BLUE }));
 
         plan0102.sequentialWaves.Add(z02wave03);
-
-
-
-
-
-
-
-
-
-
 
         /* POSIBLEMENTE NO SE USARÁN - TODELETE
          List<WaveAction> z02wave02 = new List<WaveAction>();
@@ -923,12 +790,6 @@ public class EnemyManager : MonoBehaviour
 
         plan0103 = new ZonePlan();
         plan0103.enemiesThreshold = 11;
-
-
-
-
-
-
 
         //List<WaveAction> z03wave01 = new List<WaveAction>();
         //z03wave01.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z03SP01", level01Z03spiderEntry01a, defaultSpiderAttack, 0f, 3, 0.7f));

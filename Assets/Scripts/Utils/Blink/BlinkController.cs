@@ -15,11 +15,21 @@ public class BlinkController : MonoBehaviour {
 
     [Header("Blink Multiple Times")]
     [SerializeField]
+    private const float totalMultipleDefaultDuration = 1f;
+    [SerializeField]
     private const float blinkMultipleIntervalDefaultDuration = 0.1f;
     [SerializeField]
     private const float normalMultipleIntervalDefaultDuration = 0.1f;
+
+    [Header("Blink Incremental")]
     [SerializeField]
-    private const float totalDefaultDuration = 1f;
+    private const float totalIncrementalDefaultDuration = 1f;
+    [SerializeField]
+    private const float blinkIncrementalIntervalDefaultDuration = 0.01f;
+    [SerializeField]
+    private const float normalIncrementalIntervalDefaultDuration = 0.1f;
+    [SerializeField]
+    private const float normalIntervalDefaultReductionRatio = 0.5f;
 
     private RendMaterials[] rendererMaterials;
 
@@ -52,6 +62,11 @@ public class BlinkController : MonoBehaviour {
         }
 
         blinking = false;     
+    }
+
+    void OnDisable()
+    {
+        RestoreMaterials();
     }
 
     public void InvalidateMaterials()
@@ -169,23 +184,23 @@ public class BlinkController : MonoBehaviour {
         blinking = false;
     }
 
-    public void BlinkWhiteMultipleTimes(float totalDuration = totalDefaultDuration,
+    public void BlinkWhiteMultipleTimes(float totalDuration = totalMultipleDefaultDuration,
                                               float blinkInterval = blinkMultipleIntervalDefaultDuration,
                                               float normalInterval = normalMultipleIntervalDefaultDuration)
     {
         StopPreviousBlinkings();
-        StartCoroutine(DoBlinkMultiple(white, blinkInterval, normalInterval, totalDuration));
+        StartCoroutine(DoBlinkMultiple(white, totalDuration, blinkInterval, normalInterval));
     }
 
-    public void BlinkTransparentMultipleTimes(float totalDuration = totalDefaultDuration,
+    public void BlinkTransparentMultipleTimes(float totalDuration = totalMultipleDefaultDuration,
                                               float blinkInterval = blinkMultipleIntervalDefaultDuration,
                                               float normalInterval = normalMultipleIntervalDefaultDuration)
     {
         StopPreviousBlinkings();
-        StartCoroutine(DoBlinkMultiple(transparent, blinkInterval, normalInterval, totalDuration));
+        StartCoroutine(DoBlinkMultiple(transparent, totalDuration, blinkInterval, normalInterval));
     }
 
-    private IEnumerator DoBlinkMultiple(Material mat, float blinkInterval, float normalInterval, float totalDuration)
+    private IEnumerator DoBlinkMultiple(Material mat, float totalDuration, float blinkInterval, float normalInterval)
     {
         currentBlinkMaterial = mat;
 
@@ -209,6 +224,66 @@ public class BlinkController : MonoBehaviour {
                 RestoreMaterials();
                 yield return new WaitForSeconds(normalInterval);
                 elapsedTime += normalInterval;
+            }
+
+            blink = !blink;
+        }
+
+        RestoreMaterials();
+
+        blinking = false;
+    }
+
+    public void BlinkWhiteIncremental(float totalDuration = totalIncrementalDefaultDuration,
+                                      float blinkInterval = blinkIncrementalIntervalDefaultDuration,
+                                      float initialNormalInterval = normalIncrementalIntervalDefaultDuration,
+                                      float normalIntervalReductionRatio = normalIntervalDefaultReductionRatio)
+    {
+        StopPreviousBlinkings();
+        StartCoroutine(DoBlinkIncremental(white, totalDuration, blinkInterval, initialNormalInterval, normalIntervalReductionRatio));
+    }
+
+    public void BlinkTransparentIncremental(float totalDuration = totalIncrementalDefaultDuration,
+                                      float blinkInterval = blinkIncrementalIntervalDefaultDuration,
+                                      float initialNormalInterval = normalIncrementalIntervalDefaultDuration,
+                                      float normalIntervalReductionRatio = normalIntervalDefaultReductionRatio)
+    {
+        StopPreviousBlinkings();
+        StartCoroutine(DoBlinkIncremental(transparent, totalDuration, blinkInterval, initialNormalInterval, normalIntervalReductionRatio));
+    }
+
+    private IEnumerator DoBlinkIncremental(Material mat, float totalDuration, float blinkInterval, float initialNormalInterval, float normalIntervalReductionRatio)
+    {
+        currentBlinkMaterial = mat;
+
+        if (materialsNeedUpdate) SaveMaterials();
+
+        blinking = true;
+
+        float elapsedTime = 0f;
+        bool blink = true;
+        float currentNormalInterval = initialNormalInterval;
+        float halfTime = totalDuration / 2;
+
+        while (elapsedTime < totalDuration)
+        {
+            if (blink)
+            {
+                SubstituteMaterials();
+                yield return new WaitForSeconds(blinkInterval);
+                elapsedTime += blinkInterval;
+            }
+            else
+            {
+                RestoreMaterials();
+                yield return new WaitForSeconds(currentNormalInterval);
+                elapsedTime += currentNormalInterval;
+            }
+
+            if(elapsedTime > halfTime)
+            {
+                currentNormalInterval *= normalIntervalReductionRatio;
+                halfTime += ((totalDuration - halfTime) / 2);
             }
 
             blink = !blink;

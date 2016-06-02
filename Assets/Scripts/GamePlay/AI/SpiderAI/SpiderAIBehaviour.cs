@@ -16,6 +16,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     public int biteDamage = 10;
     public float playerDetectionDistance = 5f;
     public int spidersAttackingThreshold = 3;
+    public float wrongColorDamageModifier = 0.6f;
 
     public GameObject[] explosionPrefabs = new GameObject[4];  
     
@@ -123,9 +124,17 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
                     return dyingState;
                 }
             }
-            //Else future behaviour like duplicate or increase health*/          
+            //Else future behaviour like duplicate or increase health*/
 
-            spiderBlackboard.currentHealth -= damage;
+            if (shotColor != color)
+            {
+                spiderBlackboard.currentHealth -= (int)(damage * wrongColorDamageModifier);
+            }
+            else
+            {
+                spiderBlackboard.currentHealth -= damage;
+            }
+
             if (spiderBlackboard.currentHealth <= 0)
             {
                 if (shotColor != color)

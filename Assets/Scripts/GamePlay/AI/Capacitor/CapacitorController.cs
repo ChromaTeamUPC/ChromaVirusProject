@@ -27,8 +27,10 @@ public class CapacitorController : MonoBehaviour {
 
     public SphereCollider attractingCollider;
     public float attractingColliderRange;
+    public ParticleSystem attractingDome;
     public SphereCollider damageCollider;
     public float damageColliderRange;
+    public GameObject[] explosionBlast = new GameObject[4];
 
     public Renderer rend;
 
@@ -40,10 +42,15 @@ public class CapacitorController : MonoBehaviour {
     public ChromaColor currentColor;
     private int currentCharge;
     private float elapsedTime;
+    private float timeToExplodeMinus2;
 
     private HashSet<EnemyBaseAIBehaviour> enemiesInRange;
 
     private ColoredObjectsManager colorObjMng;
+
+    private BlinkController blinkController;
+
+    private GameObject model;
 
 
     void Awake()
@@ -58,7 +65,11 @@ public class CapacitorController : MonoBehaviour {
         charge33 = maxCharge / 100 * 33;
         charge66 = maxCharge / 100 * 66;
 
+        timeToExplodeMinus2 = timeToExplode -2;
+
         enemiesInRange = new HashSet<EnemyBaseAIBehaviour>();
+        blinkController = GetComponent<BlinkController>();
+        model = transform.Find("Model").gameObject;
     }
 
     void Start()
@@ -76,26 +87,44 @@ public class CapacitorController : MonoBehaviour {
                     attractingCollider.enabled = true;
                     damageCollider.enabled = true;
                     state = State.CHARGED;
-                    //TODO: start "warning" animation
+                    attractingDome.Play();
+                    blinkController.BlinkWhiteIncremental(timeToExplode, 0.03f, 0.5f);
+                    elapsedTime = 0f;
                     Debug.Log("Moving to Charged state");
                 }
                 break;
             case State.CHARGED:
                 elapsedTime += Time.deltaTime;
+
                 if(elapsedTime >= timeToExplode)
-                {
+                {                    
+                    model.SetActive(false);
+                    explosionBlast[(int)currentColor].SetActive(true);
                     state = State.EXPLODING;
                     //TODO: start explosion animation
                     Debug.Log("Moving to Exploding state");
                     StartCoroutine(Exploding());
                 }
+                else if (elapsedTime >= timeToExplodeMinus2)
+                {
+                    attractingDome.Stop();
+                }
+
                 break;
             case State.EXPLODING:
-                DestroyObject(gameObject, 3f); //TODO: Adjust time to allow exploding animation to finish;
+                DestroyObject(gameObject, 5f); //TODO: Adjust time to allow exploding animation to finish;
                 break;
             default:
                 break;
         }
+    }
+
+    private void SetMaterial(Material mat)
+    {
+        Material[] mats = rend.sharedMaterials;
+        mats[0] = mat;
+        rend.sharedMaterials = mats;
+        blinkController.InvalidateMaterials();
     }
 
     public void ImpactedByShot(ChromaColor shotColor)
@@ -106,7 +135,7 @@ public class CapacitorController : MonoBehaviour {
                 state = State.IDLE;               
                 currentCharge += chargePerShot;
                 currentColor = shotColor;
-                rend.sharedMaterial = colorObjMng.GetCapacitorMaterial(CapacitorLevel.EMPTY, currentColor);
+                SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.EMPTY, currentColor));
                 Debug.Log("Received first shot.");
                 Debug.Log("Current Color = " + ChromaColorInfo.GetColorName(currentColor) + ". Current charge = " + currentCharge);
                 Debug.Log("Moving to Idle state");
@@ -124,19 +153,18 @@ public class CapacitorController : MonoBehaviour {
                             currentCharge = maxCharge;
 
                         if (previousCharge < maxCharge && currentCharge == maxCharge)
-                            rend.sharedMaterial = colorObjMng.GetCapacitorMaterial(CapacitorLevel.FULL, currentColor);
+                            SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.FULL, currentColor));
                         else if (previousCharge < charge66 && currentCharge >= charge66)
-                            rend.sharedMaterial = colorObjMng.GetCapacitorMaterial(CapacitorLevel.TWO_THIRDS, currentColor);
+                            SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.TWO_THIRDS, currentColor));
                         else if (previousCharge < charge33 && currentCharge >= charge33)
-                            rend.sharedMaterial = colorObjMng.GetCapacitorMaterial(CapacitorLevel.ONE_THIRD, currentColor);
-                       
+                            SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.ONE_THIRD, currentColor));                       
                     }
                 }
                 else
                 {
                     currentCharge = 0;
                     currentColor = shotColor;
-                    rend.sharedMaterial = colorObjMng.GetCapacitorMaterial(CapacitorLevel.EMPTY, currentColor);
+                    SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.EMPTY, currentColor));
                 }
                 Debug.Log("Current Color = " + ChromaColorInfo.GetColorName(currentColor) + ". Current charge = " + currentCharge);
                 break;
@@ -155,7 +183,7 @@ public class CapacitorController : MonoBehaviour {
 
     private IEnumerator Exploding()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.1f);
         DamageEnemies();
     }
 

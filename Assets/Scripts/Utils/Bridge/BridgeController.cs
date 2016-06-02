@@ -55,6 +55,8 @@ public class BridgeController : MonoBehaviour
         for(int i = 0; i < fragments.Length; ++i)
         {
             fragments[i].SetActive(true);
+            Animator anim = fragments[i].GetComponentInChildren<Animator>();
+            anim.SetTrigger("EnterNow");
             yield return new WaitForSeconds(0.4f);
         }
 
@@ -67,9 +69,33 @@ public class BridgeController : MonoBehaviour
 
     public void Deactivate()
     {
-        /*StartCoroutine(ExitFragments())
-            {
+        StartCoroutine(ExitFragments());
+           
+    }
 
-        }*/
+    private IEnumerator ExitFragments()
+    {
+        for (int i = 0; i < fragments.Length; ++i)
+        {
+            fragments[i].SetActive(true);           
+            Animator anim = fragments[i].GetComponentInChildren<Animator>();
+            anim.SetTrigger("WaitNow");
+        }
+
+        model.SetActive(false);
+
+        yield return new WaitForSeconds(0.4f);
+
+        for (int i = 0; i < fragments.Length; ++i)
+        {
+            Animator anim = fragments[i].GetComponentInChildren<Animator>();
+            anim.SetTrigger("ExitNow");
+            yield return new WaitForSeconds(0.4f);
+        }
+
+        yield return new WaitForSeconds(0.43f);
+
+        for (int i = 0; i < fragments.Length; ++i)
+            fragments[i].SetActive(false);
     }
 }
