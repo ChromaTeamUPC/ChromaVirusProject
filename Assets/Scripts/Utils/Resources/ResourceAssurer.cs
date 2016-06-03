@@ -21,7 +21,7 @@ public class ResourceAssurer : MonoBehaviour {
         else
         {
             resourcesForced = false;
-        }
+        }     
     }
 
 	// Use this for initialization
@@ -30,6 +30,7 @@ public class ResourceAssurer : MonoBehaviour {
 	    if(resourcesForced)
         {
             rsc.gameMng.InitPlayers(numberOfPlayers);
+            rsc.gameMng.SetGameStartedDEBUG();
         }
 	}
 }

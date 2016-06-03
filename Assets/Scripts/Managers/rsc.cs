@@ -23,7 +23,7 @@ public class rsc : MonoBehaviour
     private static bool objectsInitialized = false;
     public static bool ObjectsInitialized { get { return objectsInitialized; } }
 
-    public static bool LoadResources()
+    /*public static bool LoadResources()
     {
         if (!objectsInitialized)
         {
@@ -37,12 +37,9 @@ public class rsc : MonoBehaviour
         }
 
         return false;
-    }
+    }*/
 
     //Objects created in every scene
-    /*public static CameraManager cameraManager;
-    */
-
     [SerializeField]
     private DebugManager debugManager;
     [SerializeField]
@@ -157,6 +154,10 @@ public class rsc : MonoBehaviour
             }
 
             objectsInitialized = true;
+        }
+        else
+        {
+            DestroyImmediate(gameObject);
         }
     }
 }

@@ -22,48 +22,46 @@ public class PlayerIdleState : PlayerBaseState {
         can he move?
         */    
 
-        if (!player.isGrounded)
+        if (!blackboard.isGrounded)
         {
-            return player.fallingState;
+            return blackboard.fallingState;
         }
-        else if(player.isInBorder)
+        else if(blackboard.isInBorder)
         {
-            return player.swingingState;
+            return blackboard.swingingState;
         }
-        else if (player.SpecialPressed())
+        else if (SpecialPressed())
         {
-            return player.specialState;
+            return blackboard.specialState;
         }
-        else if (player.DashPressed())
+        else if (DashPressed())
         {
-            return player.dashingState;
+            return blackboard.dashingState;
         }
         else
         {
-            player.Turn();
+            Turn();
 
-            player.Shoot();
+            Shoot();
 
-            if (player.Move())
+            if (Move())
             {
-                return player.movingState;
+                return blackboard.movingState;
             }
 
-            if (player.keyPressed)
+            if (blackboard.keyPressed)
             {
                 elapsedTime = 0f;
             }
             else
             {
                 elapsedTime += Time.deltaTime;
-                if (elapsedTime > player.idleRandomAnimTime)
-                    return player.longIdleState;
+                if (elapsedTime > blackboard.player.idleRandomAnimTime)
+                    return blackboard.longIdleState;
             }  
         
             return null;
 
-        }
-
-        
+        }        
     }
 }

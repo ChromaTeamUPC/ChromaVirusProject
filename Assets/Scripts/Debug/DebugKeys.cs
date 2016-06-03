@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class DebugKeys : MonoBehaviour {
+    public KeyCode toggleGodMode;
     public KeyCode mainCameraFollowPlayersKey;
     public KeyCode mainCameraActivationKey;
     public KeyCode godCameraActivationKey;

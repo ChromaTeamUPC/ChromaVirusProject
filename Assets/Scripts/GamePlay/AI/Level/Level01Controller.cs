@@ -56,6 +56,7 @@ public class Level01Controller : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.ZONE_REACHED, ZoneReached);
         rsc.eventMng.StartListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanFinished);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
+        rsc.eventMng.StartListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
 
         //Ensure all resources are in place (ie, enemies back to pool)
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
@@ -71,6 +72,7 @@ public class Level01Controller : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.ZONE_REACHED, ZoneReached);
             rsc.eventMng.StopListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanFinished);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
+            rsc.eventMng.StopListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
         }
     }
 
@@ -124,10 +126,19 @@ public class Level01Controller : MonoBehaviour
         }
     }
 
+    //This function will reposition player in the battleground in case he fell and god mode was active
+    private void PlayerOutOfZone(EventInfo eventInfo)
+    {
+        //Get player
+        PlayerController player = ((PlayerEventInfo)eventInfo).player;
+
+        PositionPlayer(player);
+    }
+
     private void PlayerDied(EventInfo eventInfo)
     {
         //Get player
-        PlayerController player = ((PlayerDiedEventInfo)eventInfo).player;
+        PlayerController player = ((PlayerEventInfo)eventInfo).player;
 
         //Check player remaining lives
         if (player.Lives > 0)
@@ -138,10 +149,8 @@ public class Level01Controller : MonoBehaviour
         }
     }
 
-    private IEnumerator RespawnPlayer(PlayerController player)
+    private void PositionPlayer(PlayerController player)
     {
-        yield return new WaitForSeconds(respawnDelay);
-
         switch (currentZone)
         {
             //open door 01
@@ -162,6 +171,14 @@ public class Level01Controller : MonoBehaviour
                 break;
         }
         player.transform.SetParent(null);
+    }
+
+    private IEnumerator RespawnPlayer(PlayerController player)
+    {
+        yield return new WaitForSeconds(respawnDelay);
+
+        PositionPlayer(player);
+        
         if (!player.gameObject.activeSelf)
             player.gameObject.SetActive(true);
 

@@ -7,65 +7,46 @@ public class PlayerLongIdleState : PlayerBaseState
     public override void OnStateEnter()
     {
         //select random idle animation
-        player.animator.SetTrigger("LongIdle");
-        player.animationEnded = false;
+        blackboard.animator.SetTrigger("LongIdle");
+        blackboard.animationEnded = false;
     }
 
     public override void OnStateExit()
     {
-        if(player.keyPressed)
-            player.animator.SetTrigger("KeyPressed");
+        if(blackboard.keyPressed)
+            blackboard.animator.SetTrigger("KeyPressed");
     }
 
     public override PlayerBaseState Update()
     {
-        if (player.SpecialPressed())
+        if (SpecialPressed())
         {
-            return player.specialState;
+            return blackboard.specialState;
         }
-        else if (player.DashPressed())
+        else if (DashPressed())
         {
-            return player.dashingState;
+            return blackboard.dashingState;
         }
         else
-        {
-            /*bool keyPressed = false;
+        {            
+            Turn();
 
-            if (player.Turn())
-                keyPressed = true;
+            Shoot();
 
-            if (player.Shoot())
-                keyPressed = true;
-
-            if (player.UpdateHorizontalDirectionFromInput())
-                return player.movingState;
-            //if (player.Move())
-            //   return player.movingState;
-
-            if (keyPressed)
+            if (Move())
             {
-                player.animator.SetTrigger("KeyPressed");
-                return player.idleState;
-            }*/
-
-            player.Turn();
-
-            player.Shoot();
-
-            if (player.Move())
-            {
-                return player.movingState;
+                return blackboard.movingState;
             }
 
-            if (player.keyPressed)
+            if (blackboard.keyPressed)
             {            
-                return player.idleState;
+                return blackboard.idleState;
             }
         }
 
-        if (player.animationEnded)
+        if (blackboard.animationEnded)
         {
-            return player.idleState;
+            return blackboard.idleState;
         }
         
         return null;

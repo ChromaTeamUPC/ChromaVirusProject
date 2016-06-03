@@ -5,32 +5,40 @@ public class PlayerDyingState : PlayerBaseState
 {
     public override void OnStateEnter()
     {
-        player.EndColorMismatch(); //Ensure it is not active
+        EndColorMismatch(); //Ensure it is not active
 
-        player.animationEnded = false;      
-        player.canTakeDamage = false;
-        player.animator.SetTrigger("Die");
+        blackboard.animationEnded = false;
+        blackboard.animator.SetTrigger("Die");
+
+        PlayerEventInfo.eventInfo.player = blackboard.player;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DYING, PlayerEventInfo.eventInfo);
     }
 
     public override void OnStateExit()
     {
-        player.canTakeDamage = true;
-        player.currentSpeed = player.walkSpeed;
+        blackboard.currentSpeed = blackboard.player.walkSpeed;
     }
 
     public override PlayerBaseState Update()
     {
-        player.currentSpeed *= 0.95f;
+        blackboard.currentSpeed *= 0.95f;
 
-        if (player.animationEnded)
+        if (blackboard.animationEnded)
         {
-            player.SpawnVoxels();
-            PlayerDiedEventInfo.eventInfo.player = player;
-            rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DIED, PlayerDiedEventInfo.eventInfo);
-            player.gameObject.SetActive(false);
+            blackboard.blinkController.StopPreviousBlinkings();
+            blackboard.player.SpawnVoxels();
+            PlayerEventInfo.eventInfo.player = blackboard.player;
+            rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DIED, PlayerEventInfo.eventInfo);
+            blackboard.player.gameObject.SetActive(false);
             return null;
         }
         else
             return null;  
+    }
+
+    public override PlayerBaseState TakeDamage(int damage, bool triggerDamageAnim = true, bool whiteBlink = true)
+    {
+        //can not take damage during this state
+        return null;
     }
 }

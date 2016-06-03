@@ -20,18 +20,18 @@ public class PlayerSwingingState : PlayerBaseState
         can he move?
         */
 
-        if (!player.isGrounded)
+        if (!blackboard.isGrounded)
         {
-            return player.fallingState;
+            return blackboard.fallingState;
         }
-        else if (!player.isInBorder)
+        else if (!blackboard.isInBorder)
         {
-            return player.idleState;
+            return blackboard.idleState;
         }
         else
         {
-            player.Turn();
-            player.Move();
+            Turn();
+            Move();
 
             return null;
         }

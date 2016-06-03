@@ -14,6 +14,8 @@ public class DebugManager : MonoBehaviour {
     private bool statsVisible = false;
     private bool calculateTriangles = false;
 
+    public bool godMode = false;
+
     // Update is called once per frame
     void Update()
     {
@@ -21,6 +23,11 @@ public class DebugManager : MonoBehaviour {
         {
             statsVisible = !statsVisible;
             if (statsVisible) calculateTriangles = true;
+        }
+        
+        if(Input.GetKeyDown(keys.toggleGodMode))
+        {
+            godMode = !godMode;
         }
     }
 

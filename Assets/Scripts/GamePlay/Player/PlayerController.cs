@@ -3,26 +3,19 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
-
     [SerializeField]
     private int playerId = 0;
         
-    private bool active = false;
+    private bool active = false; //Player is participating in current game (not necesarily alive)
+    private bool alive = false; //Player is alive at the moment
 
-    [HideInInspector]
-    public bool canTakeDamage = true;
+    private PlayerBlackboard blackboard = new PlayerBlackboard();
 
     //Life
     [Header("Health Settings")]
     public int maxLives = 3; 
     public int maxHealth = 100;    
-    private int currentLives;
-    private int currentHealth;
-
-    public float fallDamage = 10;
-    public float damageEveryXUnits = 10;
     public float invulnerabilityTimeAfterHit = 3f;
-    private bool isInvulnerable = false; 
 
     //Movement
     [Header("Movement Settings")]
@@ -41,26 +34,13 @@ public class PlayerController : MonoBehaviour
     public int damageOnContact = 5;
     public float speedReductionTimeOnContact = 0.3f;
     public float cooldownTime = 1f;
-    private bool isAffectedByContact = false;
-    private bool isContactCooldown = false;
 
-
-    [HideInInspector]
-    public float currentSpeed = 0f;
-    [HideInInspector]
-    public bool isGrounded = true;
-    [HideInInspector]
-    public bool isInBorder;
-    private float verticalVelocity = 0f;
-    private Vector3 horizontalDirection = Vector3.zero;
-    private Vector3 aimingDirection = Vector3.zero;    
-
-    private int playerRayCastMask;
+    private float verticalVelocity = 0f; 
 
     //Attack
     [Header("Energy Settings")]
     public float maxEnergy = 100;
-    private float currentEnergy;
+
 
     [Header("Fire Settings")]   
     public float fireRate = 0.25f;
@@ -69,14 +49,6 @@ public class PlayerController : MonoBehaviour
     public Transform muzzlePoint;
     public int selfDamageOnColorMismatch = 10;
     public float fireSuppresionTimeOnColorMismatch = 3f;
-    private bool canShoot = true;
-
-    private float nextFire;
-    private bool isFirstShot = true;
-    private const float maxSideOffset = 0.4f;
-    private const float minSideOffset = 0.2f;
-    private float shotSideOffset = minSideOffset;
-    private float sideOffsetVariation = -0.05f;
 
     //Misc
     [Header("Miscelaneous Settings")]
@@ -84,31 +56,9 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private ParticleSystem[] dashPSs = new ParticleSystem[4];
-    private Transform dashPSRotator;
-
-    //Private atributes
-    [HideInInspector]
-    public bool keyPressed = false;
-
-    private string moveHorizontal;
-    private string moveVertical;
-    private string aimHorizontal;
-    private string aimVertical;
-    private string fire;
-    private string dash;
-    private string special;
-
-    [HideInInspector]
-    public bool animationEnded;
-
-    private bool currentShootingStatus = false;
-    private bool newShootingStatus = false;
-    private bool doubleShooting = false;
 
     private ChromaColor currentColor;
 
-    [HideInInspector]
-    public Animator animator;
     [SerializeField]
     private Renderer bodyRend;
     [SerializeField]
@@ -116,79 +66,23 @@ public class PlayerController : MonoBehaviour
     private CharacterController ctrl;
     private ColoredObjectsManager coloredObjMng;
     private VoxelizationClient voxelization;
-    
-    private BlinkController blinkController;
-
-    //Player states
-    public PlayerSpawningState spawningState;
-    public PlayerIdleState idleState;
-    public PlayerLongIdleState longIdleState;
-    public PlayerMovingState movingState;
-    public PlayerDashingState dashingState;
-    public PlayerSpecialState specialState;
-    public PlayerSwingingState swingingState;
-    public PlayerReceivingDamageState receivingDamageState;
-    public PlayerFallingState fallingState;
-    public PlayerDyingState dyingState;
-
-    private PlayerBaseState currentState;  
+   
+    private PlayerBaseState currentState;
 
     //Properties
     public bool Active { get { return active; } set { active = value; } }
+    public bool Alive { get { return alive; } }
     public int Id { get { return playerId; } }
-    public int Lives {  get { return currentLives; } }
-    public int Health { get { return currentHealth; } }
-    public int Energy { get { return (int)currentEnergy; } }
+    public int Lives { get { return blackboard.currentLives; } }
+    public int Health { get { return blackboard.currentHealth; } }
+    public int Energy { get { return (int)blackboard.currentEnergy; } }
 
     void Awake()
     {
+        blackboard.Init(this);
+        
         voxelization = GetComponentInChildren<VoxelizationClient>();
-        ctrl = GetComponent<CharacterController>();
-        blinkController = GetComponent<BlinkController>();
-        animator = GetComponent<Animator>();
-
-        dashPSRotator = transform.Find("DashPSRotation");
-
-        spawningState = new PlayerSpawningState();
-        idleState = new PlayerIdleState();
-        longIdleState = new PlayerLongIdleState();
-        movingState = new PlayerMovingState();
-        dashingState = new PlayerDashingState();
-        specialState = new PlayerSpecialState();
-        swingingState = new PlayerSwingingState();
-        receivingDamageState = new PlayerReceivingDamageState();
-        fallingState = new PlayerFallingState();
-        dyingState = new PlayerDyingState();
-
-        spawningState.Init(this);
-        idleState.Init(this);
-        longIdleState.Init(this);
-        movingState.Init(this);
-        dashingState.Init(this);
-        specialState.Init(this);
-        swingingState.Init(this);
-        receivingDamageState.Init(this);
-        fallingState.Init(this);
-        dyingState.Init(this);
-
-        currentState = spawningState;
-
-        string player = "";
-        switch (playerId)
-        {
-            case 1: player = "P1"; break;
-            case 2: player = "P2"; break;
-        }
-
-        moveHorizontal = player + "_Horizontal";
-        moveVertical = player + "_Vertical";
-        aimHorizontal = player + "_AimHorizontal";
-        aimVertical = player + "_AimVertical";
-        fire = player + "_Fire";
-        dash = player + "_Dash";
-        special = player + "_Special";
-
-        playerRayCastMask = LayerMask.GetMask(player + "RayCast");
+        ctrl = GetComponent<CharacterController>();   
 
         Debug.Log("Player " + playerId + " created.");
     }
@@ -242,66 +136,90 @@ public class PlayerController : MonoBehaviour
 
         shieldRend.sharedMaterial = shieldMat;
 
-        blinkController.InvalidateMaterials();
-    }
-
-    public void ResetPlayer()
-    {
-        currentLives = maxLives;
-        currentHealth = maxHealth;
-        currentEnergy = 0;
-    }
-
-    public void Spawn()
-    {
-        currentHealth = maxHealth;
-        currentEnergy = 0;
-        verticalVelocity = Physics.gravity.y;
-               
-        currentShootingStatus = false;
-        newShootingStatus = false;
-        doubleShooting = false;
-        isAffectedByContact = false;
-        isContactCooldown = false;
-        currentSpeed = 0f;
-        isInBorder = false;
-        canShoot = true;
-        isInvulnerable = false;
-
-        ChangeState(spawningState);
-
-        PlayerSpawnedEventInfo.eventInfo.player = this;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNED, PlayerSpawnedEventInfo.eventInfo);
+        blackboard.blinkController.InvalidateMaterials();
     }
 
     public void AnimationEnded()
     {
-        animationEnded = true;
+        blackboard.animationEnded = true;
+    }
+
+    public void Reset()
+    {
+        blackboard.ResetGameVariables();
+    }
+
+    public void Spawn()
+    {
+        blackboard.ResetLifeVariables();
+
+        verticalVelocity = Physics.gravity.y;
+
+        ChangeState(blackboard.spawningState);       
     }
 
     void Update()
     {
-        //Reset flags
-        keyPressed = false;
-        newShootingStatus = false;
-
-        if (currentState != null)
+        if (active)
         {
-            PlayerBaseState newState = currentState.Update();
-            if (newState != null)
+            //Reset flags
+            blackboard.ResetFlagVariables();
+
+            if (currentState != null)
             {
-                ChangeState(newState);
+                PlayerBaseState newState = currentState.Update();
+                if (newState != null)
+                {
+                    ChangeState(newState);
+                }
+            }
+
+            UpdatePosition();
+
+            if (blackboard.currentShootingStatus != blackboard.newShootingStatus)
+            {
+                blackboard.currentShootingStatus = blackboard.newShootingStatus;
+                blackboard.animator.SetBool("Shooting", blackboard.currentShootingStatus);
+                if (!blackboard.currentShootingStatus)
+                    blackboard.doubleShooting = false;
             }
         }
+    }
 
-        UpdatePosition();
+    public void UpdatePosition()
+    {
+        Vector3 totalDirection = blackboard.horizontalDirection * blackboard.currentSpeed;
 
-        if(currentShootingStatus != newShootingStatus)
+        float otherModifier = 0f;
+        if (blackboard.doubleShooting)
+            otherModifier = Mathf.Max(otherModifier, speedRatioReductionWhileFiring);
+
+        if (blackboard.isAffectedByContact)
+            otherModifier = Mathf.Max(otherModifier, speedRatioReductionOnContact);
+
+        if(otherModifier > 0)
+            totalDirection *= otherModifier;
+
+        totalDirection.y = verticalVelocity;
+
+        totalDirection *= Time.deltaTime;
+
+        ctrl.Move(totalDirection);
+
+        blackboard.isGrounded = ctrl.isGrounded;
+
+        UpdateVerticalVelocity();
+    }
+
+    private void UpdateVerticalVelocity()
+    {
+        if (blackboard.isGrounded)
         {
-            currentShootingStatus = newShootingStatus;
-            animator.SetBool("Shooting", currentShootingStatus);
-            if (!currentShootingStatus)
-                doubleShooting = false;
+            verticalVelocity = Physics.gravity.y * Time.deltaTime;
+        }
+        else
+        {
+            verticalVelocity += Physics.gravity.y * Time.deltaTime;
         }
     }
 
@@ -326,386 +244,59 @@ public class PlayerController : MonoBehaviour
         voxelization.SpawnVoxels();
     }
 
-    public bool GetAimingDirectionFromInput()
-    {
-        float h = Input.GetAxisRaw(aimHorizontal);
-        float v = Input.GetAxisRaw(aimVertical);
-
-        aimingDirection = Vector3.zero;
-        bool result = false;
-
-        if (Mathf.Abs(v) >= aimThreshold || Mathf.Abs(h) >= aimThreshold)
-        {
-            aimingDirection.x = h;
-            aimingDirection.y = v;
-
-            aimingDirection = GetScreenRelativeDirection(aimingDirection);
-            keyPressed = true;
-            result = true;
-        }
-
-        return result;
-    }
-
-    public void UpdateLookAt()
-    {
-        if (aimingDirection != Vector3.zero)
-        {
-            Quaternion newRotation = Quaternion.LookRotation(aimingDirection);
-            newRotation = Quaternion.RotateTowards(transform.rotation, newRotation, angularSpeed * Time.deltaTime);
-            transform.rotation = newRotation;
-        }
-    }
-
-    public bool Turn()
-    {
-        bool result = GetAimingDirectionFromInput();
-        UpdateLookAt();
-
-        return result;
-    }
-
-    public bool GetHorizontalDirectionFromInput()
-    {
-        float h = Input.GetAxisRaw(moveHorizontal);
-        float v = Input.GetAxisRaw(moveVertical);
-
-        horizontalDirection = Vector3.zero;
-        bool result = false;
-
-        if (Mathf.Abs(v) > 0 || Mathf.Abs(h) > 0)
-        {
-            horizontalDirection.x = h;
-            horizontalDirection.y = v;
-
-            horizontalDirection = GetScreenRelativeDirection(horizontalDirection);
-            keyPressed = true;
-            result = true;
-        }
-
-        return result;
-    }
-
-    public void UpdateMovingAnimatorFlags()
-    {
-        if (horizontalDirection != Vector3.zero)
-        {
-            //If we are not aiming, rotate towards direction
-            if (aimingDirection == Vector3.zero)
-            {
-                Quaternion newRotation = Quaternion.LookRotation(horizontalDirection);
-                newRotation = Quaternion.RotateTowards(transform.rotation, newRotation, angularSpeed * Time.deltaTime);
-                transform.rotation = newRotation;
-                animator.SetBool("WalkingAiming", false);
-            }
-            else
-            {
-                int angleBetweenSticks = AngleBetween360(aimingDirection, horizontalDirection);
-
-                float angleRad = angleBetweenSticks * Mathf.Deg2Rad;
-                float forward = Mathf.Cos(angleRad);
-                float lateral = Mathf.Sin(angleRad);
-                animator.SetFloat("Forward", forward);
-                animator.SetFloat("Lateral", lateral);
-
-                animator.SetBool("WalkingAiming", true);
-
-                //Debug.Log("Moving: " + horizontalDirection + " // Aiming: " + aimingDirection);
-                //Debug.Log("Angle: " + angleBetweenSticks + " // Forward: " + forward + " // Lateral: " + lateral);
-            }
-        }
-    }
-
-    public bool Move()
-    {
-        bool result = GetHorizontalDirectionFromInput();
-        UpdateMovingAnimatorFlags();
-
-        return result;
-    }
-
-    private int AngleBetween360(Vector3 v1, Vector3 v2)
-    {
-        Vector3 n = new Vector3(0, 1, 0);
-
-        float signedAngle = Mathf.Atan2(Vector3.Dot(n, Vector3.Cross(v1, v2)), Vector3.Dot(v1, v2)) * Mathf.Rad2Deg;
-
-        if (signedAngle >= 0)
-            return (int)signedAngle;
-        else
-            return (int)(360 + signedAngle);
-    }
-
-    public void SetDashDirection()
-    {
-        GetHorizontalDirectionFromInput();
-
-        if (horizontalDirection == Vector3.zero)
-        {
-            horizontalDirection = transform.TransformDirection(Vector3.forward);
-        }
-
-        dashPSRotator.rotation = Quaternion.LookRotation(horizontalDirection);
-
-    }
-
     public void SpawnDashParticles()
     {
         dashPSs[(int)currentColor].Play();
     }
 
-    public void UpdatePosition()
+    public void TakeDamage(int damage, bool triggerDamageAnim = true)
     {
-        Vector3 totalDirection = horizontalDirection * currentSpeed;
-
-        if (doubleShooting)
-            totalDirection *= speedRatioReductionWhileFiring;
-
-        if (isAffectedByContact)
-            totalDirection *= speedRatioReductionOnContact;
-
-        totalDirection.y = verticalVelocity;
-
-        totalDirection *= Time.deltaTime;
-
-        ctrl.Move(totalDirection);
-
-        isGrounded = ctrl.isGrounded;
-
-        UpdateVerticalVelocity();
-    }
-
-    private void UpdateVerticalVelocity()
-    {
-        if (isGrounded)
+        PlayerBaseState newState = currentState.TakeDamage(damage, triggerDamageAnim);
+        if (newState != null)
         {
-            verticalVelocity = Physics.gravity.y * Time.deltaTime;
-        }
-        else
+            ChangeState(newState);
+        }     
+    }
+
+    public void TakeDamage(int damage, ChromaColor color, bool triggerDamageAnim = true)
+    {
+        PlayerBaseState newState = currentState.TakeDamage(damage, color, triggerDamageAnim);
+        if (newState != null)
         {
-            verticalVelocity += Physics.gravity.y * Time.deltaTime;
+            ChangeState(newState);
         }
-    }
-
-
-    public Vector3 GetScreenRelativeDirection(Vector3 direction)
-    {
-        return rsc.camerasMng.GetDirection(transform.position, direction, playerRayCastMask);
-    }
-
-
-    public bool Shoot()
-    {
-        bool shooting = false;
-
-        if (Input.GetAxisRaw(fire) > 0.1f)
-        { 
-            shooting = true;
-            keyPressed = true;
-
-            if (canShoot)
-            {
-                if (Time.time > nextFire)
-                {
-                    nextFire = Time.time + fireRate;
-
-                    // check if it's first shot (single projectile)...
-                    if (isFirstShot)
-                    {
-                        //Get a shot from pool
-                        PlayerShotController shot = coloredObjMng.GetPlayer1Shot();
-                        MuzzleController muzzle = coloredObjMng.GetPlayer1Muzzle();
-
-                        if (shot != null && muzzle != null)
-                        {
-                            shot.transform.position = shotSpawn.position;
-                            shot.transform.rotation = shotSpawn.rotation;
-                            shot.damage *= 2;
-                            shot.Player = this;
-                            shot.Shoot();
-
-                            muzzle.transform.SetParent(muzzlePoint);
-                            muzzle.transform.position = muzzlePoint.position;
-                            muzzle.transform.rotation = muzzlePoint.rotation;
-                            muzzle.Play();
-                        }
-                        isFirstShot = false;
-                    }
-                    // ...or not (double projectile)
-                    else
-                    {
-                        //Get two shots from pool
-                        PlayerShotController shot1 = coloredObjMng.GetPlayer1Shot();
-                        PlayerShotController shot2 = coloredObjMng.GetPlayer1Shot();
-
-                        MuzzleController muzzle1 = coloredObjMng.GetPlayer1Muzzle();
-                        MuzzleController muzzle2 = coloredObjMng.GetPlayer1Muzzle();
-
-                        if (shot1 != null && shot2 != null && muzzle1 != null && muzzle2 != null)
-                        {
-                            shot1.transform.rotation = shotSpawn.rotation;
-                            shot1.transform.position = shotSpawn.position;
-                            shot1.transform.Translate(new Vector3(shotSideOffset, 0, 0));
-                            shot1.Player = this;
-                            shot1.Shoot();
-
-                            muzzle1.transform.position = muzzlePoint.position;
-                            muzzle1.transform.rotation = muzzlePoint.rotation;
-                            muzzle1.transform.SetParent(muzzlePoint);
-                            muzzle1.transform.Translate(new Vector3(shotSideOffset, 0, 0));
-                            muzzle1.Play();
-
-                            shot2.transform.rotation = shotSpawn.rotation;
-                            shot2.transform.position = shotSpawn.position;
-                            shot2.transform.Translate(new Vector3(-shotSideOffset, 0, 0));
-                            shot2.Player = this;
-                            shot2.Shoot();
-
-                            muzzle2.transform.position = muzzlePoint.position;
-                            muzzle2.transform.rotation = muzzlePoint.rotation;
-                            muzzle2.transform.SetParent(muzzlePoint);
-                            muzzle2.transform.Translate(new Vector3(-shotSideOffset, 0, 0));
-                            muzzle2.Play();
-
-                            if (shotSideOffset <= minSideOffset || shotSideOffset >= maxSideOffset)
-                                sideOffsetVariation *= -1;
-
-                            shotSideOffset += sideOffsetVariation;
-
-                            doubleShooting = true;
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            isFirstShot = true;
-        }
-
-        newShootingStatus = shooting;
-
-        return shooting;
-    }
-
-    public bool DashPressed()
-    {
-        bool result = Input.GetButtonDown(dash);
-
-        if (result)
-            keyPressed = true;
-
-        return result;
-    }
-
-    public bool SpecialPressed()
-    {
-        bool result = Input.GetButtonDown(special);
-
-        if (result)
-            keyPressed = true;
-
-        return false; //TODO: remove false when implemented
-    }
-
-    public void TakeDamage(int damage, bool damageAnim = true)
-    {
-        if (!canTakeDamage || isInvulnerable) return;
-
-        blinkController.BlinkWhiteOnce(0.03f);       
-
-        currentHealth -= damage;
-
-        if (currentHealth <= 0) currentHealth = 0;
-
-        //Send event
-        PlayerDamagedEventInfo.eventInfo.damage = damage;
-        PlayerDamagedEventInfo.eventInfo.currentHealth = currentHealth;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DAMAGED, PlayerDamagedEventInfo.eventInfo);
-
-        if (currentHealth == 0)
-        {
-            currentLives--;
-            ChangeState(dyingState);
-        }
-        else
-        {
-            if(damageAnim)
-                ChangeState(receivingDamageState);
-        }
-    }
-
-    public void TakeDamage(int damage, ChromaColor color)
-    {
-        // only for enemy bullets
-        /*
-        if(color != currentColor)
-        {
-            TakeDamage(damage);
-        }
-        */
-
-        TakeDamage(damage);
 
     }
 
     public void ReceiveAttack(int damage, ChromaColor color)
     {
-        TakeDamage(damage);
-        StartCoroutine(HandleAttackReceived());
-    }
-
-    private IEnumerator HandleAttackReceived()
-    {
-        blinkController.BlinkTransparentMultipleTimes(invulnerabilityTimeAfterHit);
-
-        isInvulnerable = true;
-        yield return new WaitForSeconds(invulnerabilityTimeAfterHit);
-        isInvulnerable = false;
+        PlayerBaseState newState = currentState.AttackReceived(damage, color);
+        if (newState != null)
+        {
+            ChangeState(newState);
+        }
     }
 
     public void ColorMismatch()
     {
-        TakeDamage(selfDamageOnColorMismatch, false);       
-
-        StartCoroutine(ColorMismatchHandle());
-    }
-
-    private IEnumerator ColorMismatchHandle()
-    {
-        StartColorMismatch();
-
-        yield return new WaitForSeconds(fireSuppresionTimeOnColorMismatch);
-
-        EndColorMismatch();
-    }
-
-    public void StartColorMismatch()
-    {
-        canShoot = false;
-        PlayerColorMismatchEventInfo.eventInfo.player = this;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_COLOR_MISMATCH_START, PlayerColorMismatchEventInfo.eventInfo);
-    }
-
-    public void EndColorMismatch()
-    {
-        canShoot = true;
-        PlayerColorMismatchEventInfo.eventInfo.player = this;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_COLOR_MISMATCH_END, PlayerColorMismatchEventInfo.eventInfo);
-
+        currentState.ColorMismatch();
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Border")
         {
-            isInBorder = true;
+            blackboard.isInBorder = true;
         }
         else if (other.tag == "DeathZone")
-        {
-            if (!canTakeDamage)
-                Debug.Log("SOMETHING IS WRONG. PLAYER CAN NOT TAKE DAMAGE WHEN FALLING");
-            TakeDamage(1000);
+        {           
+            if(rsc.debugMng.godMode)
+            {
+                PlayerEventInfo.eventInfo.player = blackboard.player;
+                rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerEventInfo.eventInfo);
+            }
+            else
+                TakeDamage(1000);
         }
     }
 
@@ -713,7 +304,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.tag == "Border")
         {
-            isInBorder = false;
+            blackboard.isInBorder = false;
         }
     }
 
@@ -722,29 +313,7 @@ public class PlayerController : MonoBehaviour
     {
         if (hit.collider.tag == "Enemy")
         {
-            //If touched by an enemy, speed reduction and damage take
-            if (!isAffectedByContact && !isContactCooldown && !isInvulnerable)
-            {
-                TakeDamage(damageOnContact, false);
-                StartCoroutine(AffectedByContact());
-            }
+            currentState.EnemyTouched();
         }
-    }
-
-    private IEnumerator AffectedByContact()
-    {
-        isAffectedByContact = true;
-        Debug.Log("Is slowdown because enemy contact");
-
-        yield return new WaitForSeconds(speedReductionTimeOnContact);
-
-        isAffectedByContact = false;
-        isContactCooldown = true;
-        Debug.Log("Is slowdown cooldown");
-
-        yield return new WaitForSeconds(cooldownTime);
-
-        isContactCooldown = false;
-        Debug.Log("Slowdown cooldown finished");
     }
 }

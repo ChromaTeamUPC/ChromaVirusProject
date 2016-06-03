@@ -4,44 +4,64 @@ using System.Collections;
 public class PlayerDashingState : PlayerBaseState
 {
     private Vector3 dashDirection;
+    private Transform dashPSRotator;
+
     private float currentDashSpeed;
     private float currentDashTime;
 
+    public override void Init(PlayerBlackboard bb)
+    {
+        base.Init(bb);
+        dashPSRotator = blackboard.player.transform.Find("DashPSRotation");
+    }
 
     public override void OnStateEnter()
     {
-        player.SetDashDirection();
+        SetDashDirection();
         currentDashTime = 0f;
-        player.currentSpeed = player.initialDashSpeed;
-        player.SpawnDashParticles();
+        blackboard.currentSpeed = blackboard.player.initialDashSpeed;
+        blackboard.player.SpawnDashParticles();
 
-        player.animator.SetBool("Walking", true);
+        blackboard.animator.SetBool("Walking", true);
     }
 
     public override void OnStateExit()
     {
-        player.currentSpeed = player.walkSpeed;
-        if(!player.GetHorizontalDirectionFromInput())
-            player.animator.SetBool("Walking", false);
+        blackboard.currentSpeed = blackboard.player.walkSpeed;
+        if(!GetHorizontalDirectionFromInput())
+            blackboard.animator.SetBool("Walking", false);
     }
 
     public override PlayerBaseState Update()
     {      
-        if(currentDashTime > player.maxDashTime || player.currentSpeed < player.minDashSpeed)
+        if(currentDashTime > blackboard.player.maxDashTime || blackboard.currentSpeed < blackboard.player.minDashSpeed)
         {
-            if (player.isGrounded)
-                return player.idleState;
+            if (blackboard.isGrounded)
+                return blackboard.idleState;
             else
-                return player.fallingState;
+                return blackboard.fallingState;
         }
 
         currentDashTime += Time.deltaTime;
-        player.currentSpeed -= player.dashDeceleration * Time.deltaTime;
+        blackboard.currentSpeed -= blackboard.player.dashDeceleration * Time.deltaTime;
 
-        player.Turn();
+        Turn();
 
-        player.Shoot();
+        Shoot();
 
         return null;
+    }
+
+    private void SetDashDirection()
+    {
+        GetHorizontalDirectionFromInput();
+
+        if (blackboard.horizontalDirection == Vector3.zero)
+        {
+            blackboard.horizontalDirection = blackboard.player.transform.TransformDirection(Vector3.forward);
+        }
+
+        dashPSRotator.rotation = Quaternion.LookRotation(blackboard.horizontalDirection);
+
     }
 }

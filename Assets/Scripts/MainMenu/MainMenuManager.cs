@@ -30,6 +30,7 @@ public class MainMenuManager : MonoBehaviour {
     public GameObject help;
     public GameObject playerSelection;
     private AsyncOperation loadResources;
+    private bool loadingResources;
     private AsyncOperation loadLevel;
 
     private int playersNumber = 1;
@@ -37,7 +38,15 @@ public class MainMenuManager : MonoBehaviour {
     void Awake()
     {
         //Loading of managers, players, and various resources
-        loadResources = SceneManager.LoadSceneAsync("LoadingScene", LoadSceneMode.Additive);
+        if (!rsc.ObjectsInitialized)
+        {
+            loadResources = SceneManager.LoadSceneAsync("LoadingScene", LoadSceneMode.Additive);
+            loadingResources = true;
+        }
+        else
+        {
+            loadingResources = false;
+        }
     }
 
     void Start()
@@ -93,6 +102,11 @@ public class MainMenuManager : MonoBehaviour {
                 break;
         }
     }
+    private void FadeOut()
+    {
+        fadeScript.StartFadingToColor(2f);
+        rsc.audioMng.FadeOutMainMenuMusic(1.5f);
+    }
 
     private void EnableMainButtons()
     {
@@ -110,7 +124,7 @@ public class MainMenuManager : MonoBehaviour {
         creditsBtn.interactable = false;
         exitBtn.interactable = false;
     }
-
+    
     private void EnablePlayerSelectionButtons()
     {      
         p1Btn.interactable = true;
@@ -135,23 +149,25 @@ public class MainMenuManager : MonoBehaviour {
 
     public void OnClickStart()
     {
-        if (loadResources.isDone)
+        if (!loadingResources || loadResources.isDone)
         {
-            rsc.gameMng.StartPreloadingFirstLevel();
-            DisableMainButtons();
-            playerSelection.SetActive(true);
-            EnablePlayerSelectionButtons();
-            currentState = MainMenuState.SelectingPlayers;
+            if (Input.GetJoystickNames().Length > 1)
+            {
+                DisableMainButtons();
+                playerSelection.SetActive(true);
+                EnablePlayerSelectionButtons();
+                currentState = MainMenuState.SelectingPlayers;
+            }
+            else
+            {
+                playersNumber = 1;
+                currentState = MainMenuState.FadingToGame;
+                FadeOut();
+            }          
         }
     }
 
-    private void FadeOut()
-    {
-        fadeScript.StartFadingToColor(2f);
-        rsc.audioMng.FadeOutMainMenuMusic(1.5f);
-    }
-
-    public void Select1Player()
+    public void OnClick1Player()
     {
         playersNumber = 1;
         DisablePlayerSelectionButtons();
@@ -159,7 +175,7 @@ public class MainMenuManager : MonoBehaviour {
         FadeOut();
     }
 
-    public void Select2Players()
+    public void OnClick2Players()
     {
         playersNumber = 2;
         DisablePlayerSelectionButtons();

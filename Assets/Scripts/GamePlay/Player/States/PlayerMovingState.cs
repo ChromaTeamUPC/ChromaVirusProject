@@ -5,15 +5,13 @@ public class PlayerMovingState : PlayerBaseState
 {
     public override void OnStateEnter()
     {
-        player.currentSpeed = player.walkSpeed;
-        //play moving animation
-        player.animator.SetBool("Walking", true);
+        blackboard.currentSpeed = blackboard.player.walkSpeed;
+        blackboard.animator.SetBool("Walking", true);
     }
 
     public override void OnStateExit()
     {
-        //Stop trail
-        player.animator.SetBool("Walking", false);
+        blackboard.animator.SetBool("Walking", false);
     }
 
 
@@ -28,27 +26,27 @@ public class PlayerMovingState : PlayerBaseState
         can he move?
         */
 
-        if (!player.isGrounded)
+        if (!blackboard.isGrounded)
         {
-            return player.fallingState;
+            return blackboard.fallingState;
         }
-        else if (player.SpecialPressed())
+        else if (SpecialPressed())
         {
-            return player.specialState;
+            return blackboard.specialState;
         }
-        else if (player.DashPressed())
+        else if (DashPressed())
         {
-            return player.dashingState;
+            return blackboard.dashingState;
         }
         else
         {
-            player.Turn();
+            Turn();
 
-            player.Shoot();
+            Shoot();
 
-            if(!player.Move())
+            if(!Move())
             {
-                return player.idleState;
+                return blackboard.idleState;
             }
 
             return null;

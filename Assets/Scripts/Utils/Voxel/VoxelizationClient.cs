@@ -130,7 +130,7 @@ public class VoxelizationClient : MonoBehaviour {
 
             if (rend != null)
             {
-                aABCGrids.Add(VoxelizationServer.Create1Grid1Object(transf, meshFilter.mesh, rend, voxelSideSize, fillVoxelShell));
+                aABCGrids.Add(VoxelizationServer.Create1Grid1Object(transf, meshFilter.sharedMesh, rend, voxelSideSize, fillVoxelShell));
             }
             else if (sRend != null)
             {
@@ -152,7 +152,7 @@ public class VoxelizationClient : MonoBehaviour {
                 }
                 else
                 {
-                    meshes.Add(meshFilters[i].mesh);
+                    meshes.Add(meshFilters[i].sharedMesh);
                 }
             }
 

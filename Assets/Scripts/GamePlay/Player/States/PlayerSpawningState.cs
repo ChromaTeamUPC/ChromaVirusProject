@@ -6,12 +6,8 @@ public class PlayerSpawningState : PlayerBaseState {
     public override void OnStateEnter()
     {
         //trigger spawning animation
-        player.canTakeDamage = false;
-    }
-
-    public override void OnStateExit()
-    {
-        player.canTakeDamage = true;
+        PlayerEventInfo.eventInfo.player = blackboard.player;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNING, PlayerEventInfo.eventInfo);
     }
 
     public override PlayerBaseState Update()
@@ -20,6 +16,15 @@ public class PlayerSpawningState : PlayerBaseState {
         else return null*/
         //return player.idleState;
 
-        return player.idleState;
+        PlayerEventInfo.eventInfo.player = blackboard.player;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNED, PlayerEventInfo.eventInfo);
+
+        return blackboard.idleState;
+    }
+
+    public override PlayerBaseState TakeDamage(int damage, bool triggerDamageAnim = true, bool whiteBlink = true)
+    {
+        //can not take damage during this state
+        return null;
     }
 }

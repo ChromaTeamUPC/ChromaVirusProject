@@ -30,9 +30,9 @@ public class ZonePlanEndedInfo : EventInfo
     public int planId;
 }
 
-public class PlayerSpawnedEventInfo : EventInfo
+public class PlayerEventInfo : EventInfo
 {
-    public static PlayerSpawnedEventInfo eventInfo = new PlayerSpawnedEventInfo();
+    public static PlayerEventInfo eventInfo = new PlayerEventInfo();
 
     public PlayerController player;
 }
@@ -43,20 +43,6 @@ public class PlayerDamagedEventInfo : EventInfo
 
     public int damage;
     public int currentHealth;
-}
-
-public class PlayerDiedEventInfo : EventInfo
-{
-    public static PlayerDiedEventInfo eventInfo = new PlayerDiedEventInfo();
-
-    public PlayerController player;
-}
-
-public class PlayerColorMismatchEventInfo : EventInfo
-{
-    public static PlayerColorMismatchEventInfo eventInfo = new PlayerColorMismatchEventInfo();
-
-    public PlayerController player;
 }
 
 public class LevelEventInfo : EventInfo
@@ -89,12 +75,15 @@ public class EventManager : MonoBehaviour {
         LEVEL_STARTED,
         LEVEL_CLEARED,
 
+        PLAYER_SPAWNING,
         PLAYER_SPAWNED,
         PLAYER_DAMAGED,
+        PLAYER_DYING,
         PLAYER_DIED,
         PLAYER_WIN,
         PLAYER_COLOR_MISMATCH_START,
         PLAYER_COLOR_MISMATCH_END,
+        PLAYER_OUT_OF_ZONE,
 
         ENEMY_SPAWNED,
         ENEMY_DIED,

@@ -144,11 +144,11 @@ public class BlinkController : MonoBehaviour {
         }
     }
 
-    private void StopPreviousBlinkings()
+    public void StopPreviousBlinkings()
     {
         StopAllCoroutines();
 
-        if (blinking)
+        //if (blinking)
         {
             RestoreMaterials();
             blinking = false;

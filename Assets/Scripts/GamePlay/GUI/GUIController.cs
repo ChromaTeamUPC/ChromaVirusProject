@@ -10,7 +10,7 @@ public class GUIController : MonoBehaviour
     public GameObject player1ExtraLife1;
     public GameObject player1ExtraLife2;
     public GameObject player1ColorMismatchTxt;
-    public bool player1ColorMismatch;
+    private bool player1ColorMismatch;
 
     public GameObject player2Zone;
     public Slider player2Health;
@@ -18,12 +18,15 @@ public class GUIController : MonoBehaviour
     public GameObject player2ExtraLife1;
     public GameObject player2ExtraLife2;
     public GameObject player2ColorMismatchTxt;
-    public bool player2ColorMismatch;
+    private bool player2ColorMismatch;
 
     public Text youWinTxt;
     public Text gameOverTxt;
     public Text pauseTxt;
+    public Text godModeTxt;
 
+    //private GameObject player1;
+    //private GameObject player2;
     private PlayerController player1Controller;
     private PlayerController player2Controller;
 
@@ -76,33 +79,39 @@ public class GUIController : MonoBehaviour
 	void Update ()
     {
         //Player 1 update
-        player1Health.value = player1Controller.Health * referenceHealthFactor;
-        player1Energy.value = player1Controller.Energy * referenceEnergyFactor;
+        if (player1Controller.Active)
+        {
+            player1Health.value = player1Controller.Health * referenceHealthFactor;
+            player1Energy.value = player1Controller.Energy * referenceEnergyFactor;
 
-        if (player1Controller.Lives > 1)
-            player1ExtraLife1.SetActive(true);
-        else
-            player1ExtraLife1.SetActive(false);
+            if (player1Controller.Lives > 1)
+                player1ExtraLife1.SetActive(true);
+            else
+                player1ExtraLife1.SetActive(false);
 
-        if (player1Controller.Lives > 2)
-            player1ExtraLife2.SetActive(true);
-        else
-            player1ExtraLife2.SetActive(false);
+            if (player1Controller.Lives > 2)
+                player1ExtraLife2.SetActive(true);
+            else
+                player1ExtraLife2.SetActive(false);
+        }
 
 
         //Player 2 update
-        player2Health.value = player2Controller.Health * referenceHealthFactor;
-        player2Energy.value = player2Controller.Energy * referenceEnergyFactor;
+        if (player2Controller.Active)
+        {
+            player2Health.value = player2Controller.Health * referenceHealthFactor;
+            player2Energy.value = player2Controller.Energy * referenceEnergyFactor;
 
-        if (player2Controller.Lives > 1)
-            player2ExtraLife1.SetActive(true);
-        else
-            player2ExtraLife1.SetActive(false);
+            if (player2Controller.Lives > 1)
+                player2ExtraLife1.SetActive(true);
+            else
+                player2ExtraLife1.SetActive(false);
 
-        if (player2Controller.Lives > 2)
-            player2ExtraLife2.SetActive(true);
-        else
-            player2ExtraLife2.SetActive(false);
+            if (player2Controller.Lives > 2)
+                player2ExtraLife2.SetActive(true);
+            else
+                player2ExtraLife2.SetActive(false);
+        }
 
         int secondFraction = (int)(Time.time * 10) % 10;
         bool shouldShowTxt = (secondFraction > 0 && secondFraction < 5);
@@ -112,11 +121,16 @@ public class GUIController : MonoBehaviour
 
         if (player2ColorMismatch)
             player2ColorMismatchTxt.SetActive(shouldShowTxt);
+
+        if (rsc.debugMng.godMode)
+            godModeTxt.enabled = shouldShowTxt;
+        else
+            godModeTxt.enabled = false;
     }
 
     private void PlayerColorMismatchStart(EventInfo eventInfo)
     {
-        PlayerColorMismatchEventInfo info = (PlayerColorMismatchEventInfo)eventInfo;
+        PlayerEventInfo info = (PlayerEventInfo)eventInfo;
 
         if (info.player.Id == 1)
         {
@@ -132,7 +146,7 @@ public class GUIController : MonoBehaviour
 
     private void PlayerColorMismatchEnd(EventInfo eventInfo)
     {
-        PlayerColorMismatchEventInfo info = (PlayerColorMismatchEventInfo)eventInfo;
+        PlayerEventInfo info = (PlayerEventInfo)eventInfo;
 
         if (info.player.Id == 1)
         {

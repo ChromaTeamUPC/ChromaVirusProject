@@ -6,19 +6,18 @@ public class PlayerSpecialState : PlayerBaseState {
     public override void OnStateEnter()
     {
         //play special animation
-        player.canTakeDamage = false;
     }
-
-    public override void OnStateExit()
-    {
-        player.canTakeDamage = true;
-    }
-
 
     public override PlayerBaseState Update()
     {
         //if special done, return idle state
         //else return null
-        return player.idleState;
+        return blackboard.idleState;
+    }
+
+    public override PlayerBaseState TakeDamage(int damage, bool triggerDamageAnim = true, bool whiteBlink = true)
+    {
+        //can not take damage during this state
+        return null;
     }
 }
