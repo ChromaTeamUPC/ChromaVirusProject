@@ -11,7 +11,7 @@ public class BlinkController : MonoBehaviour {
 
     [Header("Blink Once")]
     [SerializeField]
-    private const float blinkOnceDefaultDuration = 0.01f;
+    private const float blinkOnceDefaultDuration = 0.001f;
 
     [Header("Blink Multiple Times")]
     [SerializeField]
@@ -148,7 +148,7 @@ public class BlinkController : MonoBehaviour {
     {
         StopAllCoroutines();
 
-        //if (blinking)
+        if (blinking)
         {
             RestoreMaterials();
             blinking = false;

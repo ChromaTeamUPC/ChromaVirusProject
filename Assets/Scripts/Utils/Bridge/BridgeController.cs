@@ -46,8 +46,11 @@ public class BridgeController : MonoBehaviour
 
     public void Activate()
     {
-        //if(!active)
-        StartCoroutine(EnterFragments());   
+        if (!active)
+        {
+            active = true;
+            StartCoroutine(EnterFragments());
+        } 
     }
 
     private IEnumerator EnterFragments()
@@ -69,7 +72,11 @@ public class BridgeController : MonoBehaviour
 
     public void Deactivate()
     {
-        StartCoroutine(ExitFragments());
+        if (active)
+        {
+            active = false;
+            StartCoroutine(ExitFragments());          
+        }
            
     }
 

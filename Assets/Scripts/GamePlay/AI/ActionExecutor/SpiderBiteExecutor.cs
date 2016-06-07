@@ -48,6 +48,9 @@ public class SpiderBiteExecutor : BaseExecutor
             if (bolt != null)
             {
                 bolt.transform.position = spiderBlackBoard.boltSpawnPoint.position;
+                bolt.color = spiderBlackBoard.spider.color;
+                bolt.damage = spiderBlackBoard.spider.biteDamage;
+                bolt.origin = spiderBlackBoard.spider.transform.position;
                 bolt.Spawn();
             }
         }

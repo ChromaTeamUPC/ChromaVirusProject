@@ -32,6 +32,18 @@ public class SpiderDyingAIState : SpiderAIBaseState
 
             GameObject explosion = spiderBlackboard.explosions[(int)color];
             explosion.SetActive(true);
+
+            /*Vector3 pos = spiderBlackboard.spider.transform.position;
+            ScriptObjectPool<EnergyVoxelController> pool = rsc.poolMng.energyVoxelPool;
+            for (int i = 0; i < spiderBlackboard.spider.energyVoxelsSpawnedOnDie; ++i)
+            {
+                EnergyVoxelController voxel = pool.GetObject();
+                if (voxel != null)
+                {
+                    voxel.transform.position = pos;
+                    voxel.transform.rotation = Random.rotation;
+                }
+            }*/
         }
         else
             spiderBlackboard.spider.SpawnVoxelsAndReturnToPool();
@@ -48,7 +60,19 @@ public class SpiderDyingAIState : SpiderAIBaseState
         spiderBlackboard.spider.transform.position += movement * Time.deltaTime;
 
         if (spiderBlackboard.animationEnded)
-        {         
+        {
+            Vector3 pos = spiderBlackboard.spider.transform.position;
+            ScriptObjectPool<EnergyVoxelController> pool = rsc.poolMng.energyVoxelPool;
+            for (int i = 0; i < spiderBlackboard.spider.energyVoxelsSpawnedOnDie; ++i)
+            {
+                EnergyVoxelController voxel = pool.GetObject();
+                if (voxel != null)
+                {
+                    voxel.transform.position = pos;
+                    voxel.transform.rotation = Random.rotation;
+                }
+            }
+
             spiderBlackboard.spider.SpawnVoxelsAndReturnToPool();
         }
 

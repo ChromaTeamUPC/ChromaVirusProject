@@ -12,6 +12,7 @@ public class PlayerDyingState : PlayerBaseState
 
         PlayerEventInfo.eventInfo.player = blackboard.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DYING, PlayerEventInfo.eventInfo);
+        blackboard.alive = false;
     }
 
     public override void OnStateExit()
@@ -36,7 +37,7 @@ public class PlayerDyingState : PlayerBaseState
             return null;  
     }
 
-    public override PlayerBaseState TakeDamage(int damage, bool triggerDamageAnim = true, bool whiteBlink = true)
+    public override PlayerBaseState TakeDamage(float damage, bool triggerDamageAnim = true, bool whiteBlink = true)
     {
         //can not take damage during this state
         return null;

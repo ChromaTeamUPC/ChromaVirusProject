@@ -10,6 +10,8 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
 
     public float shotForceModifier = 1f;
 
+    public int energyVoxelsSpawnedOnDie = 0;
+
     [HideInInspector]
     public ChromaColor color;
 

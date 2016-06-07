@@ -36,6 +36,7 @@ public class AIActionsBaseState : AIBaseState
     override public void OnStateEnter()
     {
         currentActionIndex = 0;
+        currentExecutor = null;
         UpdateExecutor();
     }
 

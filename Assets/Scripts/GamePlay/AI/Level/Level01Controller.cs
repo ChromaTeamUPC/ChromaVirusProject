@@ -12,7 +12,8 @@ public class Level01Controller : MonoBehaviour
     public BridgeController bridgeCtrlZone1;
     public BridgeController bridgeCtrlZone2;
 
-    public GameObject uSBTeleport1;   
+    public GameObject uSBTeleport1;
+    public GameObject uSBTeleport2;
 
     public GameObject endZone;
 
@@ -57,6 +58,8 @@ public class Level01Controller : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanFinished);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameFinished);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameFinished);
 
         //Ensure all resources are in place (ie, enemies back to pool)
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
@@ -73,13 +76,18 @@ public class Level01Controller : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanFinished);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameFinished);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameFinished);
         }
     }
 
     private void ZoneReached(EventInfo eventInfo)
     {
         ZoneReachedInfo info = (ZoneReachedInfo)eventInfo;
-        currentZone = info.zoneId;        
+        currentZone = info.zoneId;
+
+        rsc.enemyMng.StartPlan(currentZone); //Call to enemy manager start plan BEFORE activating any vortex or turret, because start plan resets counters
+
         switch (currentZone)
         {
             case 101:
@@ -99,8 +107,7 @@ public class Level01Controller : MonoBehaviour
                 break;
             default:
                 break;
-        }
-        rsc.enemyMng.StartPlan(currentZone);
+        }     
     }
 
     private void ZonePlanFinished(EventInfo eventInfo)
@@ -117,7 +124,8 @@ public class Level01Controller : MonoBehaviour
             case 102:
                 //bridgeZone02.SetActive(true);
                 bridgeCtrlZone2.Activate();
-                uSBTeleport1.SetActive(true);              
+                uSBTeleport1.SetActive(true);
+                uSBTeleport2.SetActive(true);
                 break;
 
             case 103:
@@ -183,5 +191,17 @@ public class Level01Controller : MonoBehaviour
             player.gameObject.SetActive(true);
 
         player.Spawn();
+    }
+
+    private void GameFinished(EventInfo eventInfo)
+    {
+        StartCoroutine(FadeOut());
+    }
+
+    private IEnumerator FadeOut()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        fadeScript.StartFadingToColor(1.5f);
     }
 }

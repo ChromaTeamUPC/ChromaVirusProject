@@ -33,7 +33,6 @@ public class ColoredObjectsManager : MonoBehaviour
     //Floor Materials
     [SerializeField]
     private Material[] floorMats = new Material[4];
-    private Material currentFloorMat;
 
     //Floor Materials
     [SerializeField]
@@ -105,8 +104,7 @@ public class ColoredObjectsManager : MonoBehaviour
         currentPlayer1ShotPool = player1ShotPools[colorIndex];
         currentPlayer1MuzzlePool = player1MuzzlePools[colorIndex];
         currentVoxelMat = voxelMats[colorIndex];
-        currentSpiderMat = spiderMats[colorIndex];
-        currentFloorMat = floorMats[colorIndex];      
+        currentSpiderMat = spiderMats[colorIndex];     
     }
 
     private Material GetMaterial(Material[] matArray, ChromaColor color)

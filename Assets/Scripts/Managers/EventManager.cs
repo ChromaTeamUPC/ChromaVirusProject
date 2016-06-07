@@ -41,8 +41,8 @@ public class PlayerDamagedEventInfo : EventInfo
 {
     public static PlayerDamagedEventInfo eventInfo = new PlayerDamagedEventInfo();
 
-    public int damage;
-    public int currentHealth;
+    public float damage;
+    public float currentHealth;
 }
 
 public class LevelEventInfo : EventInfo

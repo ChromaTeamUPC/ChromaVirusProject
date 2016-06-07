@@ -285,6 +285,7 @@ public class EnemyManager : MonoBehaviour
         {
             if(PlanEnded())
             {
+                Debug.Log("PLAN ENDED");
                 ZonePlanEndedInfo.eventInfo.planId = currentPlanId;
                 rsc.eventMng.TriggerEvent(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanEndedInfo.eventInfo);
                 currentPlan = null;

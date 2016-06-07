@@ -3,8 +3,9 @@ using System.Collections;
 
 public class SpiderBolt : MonoBehaviour
 {
-    public int damage;
+    public float damage;
     public float duration;
+    public Vector3 origin;
 
     public ChromaColor color;
 
@@ -41,7 +42,7 @@ public class SpiderBolt : MonoBehaviour
         {
             boltCollider.enabled = false;
             PlayerController player = other.GetComponent<PlayerController>();
-            player.ReceiveAttack(damage, color);
+            player.ReceiveAttack(damage, color, origin);
         }
     }
 }

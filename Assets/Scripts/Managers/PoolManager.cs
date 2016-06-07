@@ -57,6 +57,11 @@ public class PoolManager : MonoBehaviour
     public ScriptObjectPool<VoxelController> voxelPool;
     public ObjectPool voxelColliderPool;
 
+    [SerializeField]
+    private ScriptObjectPoolDefiner energyVoxelPoolDefiner;
+    [HideInInspector]
+    public ScriptObjectPool<EnergyVoxelController> energyVoxelPool;
+
     void Awake()
     {
         player1ShotRedPool = CreateScriptObjectPool<PlayerShotController>(player1ShotRedPool, player1ShotRedPoolDefiner);
@@ -72,6 +77,7 @@ public class PoolManager : MonoBehaviour
         spiderBoltPool = CreateScriptObjectPool<SpiderBolt>(spiderBoltPool, spiderBoltPoolDefiner);
 
         voxelPool = CreateScriptObjectPool<VoxelController>(voxelPool, voxelPoolDefiner);
+        energyVoxelPool = CreateScriptObjectPool<EnergyVoxelController>(energyVoxelPool, energyVoxelPoolDefiner);
     }
 
     void Start()

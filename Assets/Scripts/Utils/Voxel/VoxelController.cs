@@ -35,13 +35,14 @@ public class VoxelController : MonoBehaviour {
     {
         realDuration -= Time.deltaTime;
         if (realDuration <= 0.0f)
-        {
-            Vector3 scale = gameObject.transform.localScale / 2;
-            Vector3 position = gameObject.transform.position;
+        {            
             if (spawnLevels > 0)
             {
                 if (Random.Range(0, 101) <= spawnChildrenChance)
                 {
+                    Vector3 scale = gameObject.transform.localScale / 2;
+                    Vector3 position = gameObject.transform.position;
+
                     VoxelController child;
                     for (int i = 0; i < spawnChildrenCount; ++i)
                     {

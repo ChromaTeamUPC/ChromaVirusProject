@@ -20,8 +20,12 @@ public class PlayerBlackboard
     public PlayerReceivingDamageState receivingDamageState;
     public PlayerFallingState fallingState;
     public PlayerDyingState dyingState;
-    
+    public PlayerBlockedState blockedState;
+    public PlayerInvisibleState invisibleState;
+
     //State control variables
+    public bool active;     //Player is participating in current game (not necesarily alive)
+    public bool alive;      //Player is alive at the moment
     public bool animationEnded;
     public bool keyPressed;
     public bool isGrounded;
@@ -29,9 +33,10 @@ public class PlayerBlackboard
 
     //Health variables
     public int currentLives;
-    public int currentHealth;
+    public float currentHealth;
     public float currentEnergy;
     public bool isInvulnerable;
+    public ChromaColor currentColor;
 
     //Movement variables
     public Vector3 horizontalDirection;
@@ -39,6 +44,8 @@ public class PlayerBlackboard
     public float currentSpeed;
     public bool isAffectedByContact;
     public bool isContactCooldown;
+    public bool updateVerticalPosition;
+    public bool walkingAiming;
 
     //Shoot variables
     public bool canShoot;
@@ -63,6 +70,8 @@ public class PlayerBlackboard
         receivingDamageState = new PlayerReceivingDamageState();
         fallingState = new PlayerFallingState();
         dyingState = new PlayerDyingState();
+        blockedState = new PlayerBlockedState();
+        invisibleState = new PlayerInvisibleState();
 
         spawningState.Init(this);
         idleState.Init(this);
@@ -74,6 +83,8 @@ public class PlayerBlackboard
         receivingDamageState.Init(this);
         fallingState.Init(this);
         dyingState.Init(this);
+        blockedState.Init(this);
+        invisibleState.Init(this);
 
         ResetLifeVariables();
     }
@@ -81,6 +92,8 @@ public class PlayerBlackboard
     //This variables have to be reset every game
     public void ResetGameVariables()
     {
+        active = false;
+        alive = false;
         currentLives = player.maxLives;       
     }
 
@@ -100,6 +113,7 @@ public class PlayerBlackboard
         currentSpeed = 0f;
         isAffectedByContact = false;
         isContactCooldown = false;
+        updateVerticalPosition = true;
 
         canShoot = true;
         currentShootingStatus = false;
@@ -111,5 +125,6 @@ public class PlayerBlackboard
     {
         keyPressed = false;
         newShootingStatus = false;
+        walkingAiming = false;
     }
 }

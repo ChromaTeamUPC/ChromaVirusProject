@@ -133,6 +133,8 @@ public class GameManager : MonoBehaviour {
 
         yield return new WaitForSeconds(3.0f);
 
+        //Ensure all resources are in place (ie, enemies back to pool)
+        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
         SceneManager.LoadScene("MainMenu");
     }
 
@@ -142,6 +144,8 @@ public class GameManager : MonoBehaviour {
 
         yield return new WaitForSeconds(3.0f);
 
+        //Ensure all resources are in place (ie, enemies back to pool)
+        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
         SceneManager.LoadScene("Credits");
     }
 }

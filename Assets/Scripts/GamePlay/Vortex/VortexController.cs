@@ -60,7 +60,6 @@ public class VortexController : MonoBehaviour {
         particleSys.Stop();
         anim.SetTrigger("Destroyed");
         rsc.eventMng.TriggerEvent(EventManager.EventType.VORTEX_DESTROYED, EventInfo.emptyInfo);
-        //Destroy(gameObject, 3f);
     }
 
     public void ImpactedByShot(ChromaColor shotColor, int damage)

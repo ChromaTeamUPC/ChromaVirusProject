@@ -30,7 +30,7 @@ public class PlayerReceivingDamageState : PlayerBaseState {
         return null;
     }
 
-    public override PlayerBaseState TakeDamage(int damage, bool triggerDamageAnim = true, bool whiteBlink = true)
+    public override PlayerBaseState TakeDamage(float damage, bool triggerDamageAnim = true, bool whiteBlink = true)
     {
         //can not take more damage during this state
         return null;

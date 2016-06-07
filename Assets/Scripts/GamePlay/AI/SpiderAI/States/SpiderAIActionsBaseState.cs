@@ -33,6 +33,8 @@ public class SpiderAIActionsBaseState : AIActionsBaseState
                     base.UpdateExecutor();
                     break;
             }
-        }     
+        }
+        else
+            base.UpdateExecutor();     
     }
 }

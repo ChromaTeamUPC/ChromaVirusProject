@@ -90,7 +90,7 @@ public class CapacitorController : MonoBehaviour {
                     attractingDome.Play();
                     blinkController.BlinkWhiteIncremental(timeToExplode, 0.03f, 0.5f);
                     elapsedTime = 0f;
-                    Debug.Log("Moving to Charged state");
+                    //Debug.Log("Moving to Charged state");
                 }
                 break;
             case State.CHARGED:
@@ -101,8 +101,7 @@ public class CapacitorController : MonoBehaviour {
                     model.SetActive(false);
                     explosionBlast[(int)currentColor].SetActive(true);
                     state = State.EXPLODING;
-                    //TODO: start explosion animation
-                    Debug.Log("Moving to Exploding state");
+                    //Debug.Log("Moving to Exploding state");
                     StartCoroutine(Exploding());
                 }
                 else if (elapsedTime >= timeToExplodeMinus2)
@@ -136,9 +135,9 @@ public class CapacitorController : MonoBehaviour {
                 currentCharge += chargePerShot;
                 currentColor = shotColor;
                 SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.EMPTY, currentColor));
-                Debug.Log("Received first shot.");
-                Debug.Log("Current Color = " + ChromaColorInfo.GetColorName(currentColor) + ". Current charge = " + currentCharge);
-                Debug.Log("Moving to Idle state");
+                //Debug.Log("Received first shot.");
+                //Debug.Log("Current Color = " + ChromaColorInfo.GetColorName(currentColor) + ". Current charge = " + currentCharge);
+                //Debug.Log("Moving to Idle state");
                 break;
 
             case State.IDLE:
@@ -166,7 +165,7 @@ public class CapacitorController : MonoBehaviour {
                     currentColor = shotColor;
                     SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.EMPTY, currentColor));
                 }
-                Debug.Log("Current Color = " + ChromaColorInfo.GetColorName(currentColor) + ". Current charge = " + currentCharge);
+                //Debug.Log("Current Color = " + ChromaColorInfo.GetColorName(currentColor) + ". Current charge = " + currentCharge);
                 break;
         }
     }

@@ -5,17 +5,16 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField]
     private int playerId = 0;
-        
-    private bool active = false; //Player is participating in current game (not necesarily alive)
-    private bool alive = false; //Player is alive at the moment
-
+       
     private PlayerBlackboard blackboard = new PlayerBlackboard();
 
     //Life
     [Header("Health Settings")]
     public int maxLives = 3; 
-    public int maxHealth = 100;    
+    public float maxHealth = 100f;    
     public float invulnerabilityTimeAfterHit = 3f;
+    public float maxAngleToShieldBlocking = 30f;
+    public float damageRatioWhenBlockedWrongColor = 0.75f; 
 
     //Movement
     [Header("Movement Settings")]
@@ -40,6 +39,7 @@ public class PlayerController : MonoBehaviour
     //Attack
     [Header("Energy Settings")]
     public float maxEnergy = 100;
+    public float energyIncreaseWhenBlockedCorrectColor = 10f;
 
 
     [Header("Fire Settings")]   
@@ -56,8 +56,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private ParticleSystem[] dashPSs = new ParticleSystem[4];
-
-    private ChromaColor currentColor;
+    [SerializeField]
+    private ParticleSystem electricPS;
 
     [SerializeField]
     private Renderer bodyRend;
@@ -70,12 +70,12 @@ public class PlayerController : MonoBehaviour
     private PlayerBaseState currentState;
 
     //Properties
-    public bool Active { get { return active; } set { active = value; } }
-    public bool Alive { get { return alive; } }
+    public bool Active { get { return blackboard.active; } set { blackboard.active = value; } }
+    public bool Alive { get { return blackboard.alive; } }
     public int Id { get { return playerId; } }
     public int Lives { get { return blackboard.currentLives; } }
-    public int Health { get { return blackboard.currentHealth; } }
-    public int Energy { get { return (int)blackboard.currentEnergy; } }
+    public float Health { get { return blackboard.currentHealth; } }
+    public float Energy { get { return blackboard.currentEnergy; } }
 
     void Awake()
     {
@@ -91,7 +91,9 @@ public class PlayerController : MonoBehaviour
     {
         coloredObjMng = rsc.coloredObjectsMng;
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
-        currentColor = rsc.colorMng.CurrentColor;
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameStopped);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameStopped);
+        blackboard.currentColor = rsc.colorMng.CurrentColor;
         SetMaterial();
     }
 
@@ -104,9 +106,14 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Player " + playerId + " destroyed.");
     }
 
-    void ColorChanged(EventInfo eventInfo)
+    private void GameStopped(EventInfo eventInfo)
     {
-        currentColor = ((ColorEventInfo)eventInfo).newColor;
+        ChangeState(blackboard.blockedState);
+    }
+
+    private void ColorChanged(EventInfo eventInfo)
+    {
+        blackboard.currentColor = ((ColorEventInfo)eventInfo).newColor;
         SetMaterial();
     }
 
@@ -118,16 +125,16 @@ public class PlayerController : MonoBehaviour
         switch (playerId)
         {
             case 1:
-                bodyMat = coloredObjMng.GetPlayer1Material(currentColor);
-                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(currentColor);
+                bodyMat = coloredObjMng.GetPlayer1Material(blackboard.currentColor);
+                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(blackboard.currentColor);
                 break;
             case 2:
-                bodyMat = coloredObjMng.GetPlayer1Material(currentColor); //TODO: Change to player2 material
-                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(currentColor);
+                bodyMat = coloredObjMng.GetPlayer1Material(blackboard.currentColor); //TODO: Change to player2 material
+                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(blackboard.currentColor);
                 break;
             default:
-                bodyMat = coloredObjMng.GetPlayer1Material(currentColor);
-                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(currentColor);
+                bodyMat = coloredObjMng.GetPlayer1Material(blackboard.currentColor);
+                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(blackboard.currentColor);
                 break;
         }
         Material[] mats = bodyRend.sharedMaterials;
@@ -139,6 +146,27 @@ public class PlayerController : MonoBehaviour
         blackboard.blinkController.InvalidateMaterials();
     }
 
+    public void RechargeEnergy(float energy)
+    {
+        if (blackboard.currentEnergy == blackboard.player.maxEnergy) return;
+
+        blackboard.currentEnergy += energy;
+        if (blackboard.currentEnergy > blackboard.player.maxEnergy)
+            blackboard.currentEnergy = blackboard.player.maxEnergy;
+    }
+
+    public void MakeVisible()
+    {
+        bodyRend.enabled = true;
+        shieldRend.enabled = true;
+    }
+
+    public void MakeInvisible()
+    {
+        bodyRend.enabled = false;
+        shieldRend.enabled = false;
+    }
+
     public void AnimationEnded()
     {
         blackboard.animationEnded = true;
@@ -146,6 +174,7 @@ public class PlayerController : MonoBehaviour
 
     public void Reset()
     {
+        blackboard.animator.Rebind();
         blackboard.ResetGameVariables();
     }
 
@@ -160,7 +189,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (active)
+        if (blackboard.active)
         {
             //Reset flags
             blackboard.ResetFlagVariables();
@@ -200,9 +229,12 @@ public class PlayerController : MonoBehaviour
         if(otherModifier > 0)
             totalDirection *= otherModifier;
 
-        totalDirection.y = verticalVelocity;
+        if (blackboard.updateVerticalPosition)
+        {
+            totalDirection.y = verticalVelocity;
 
-        totalDirection *= Time.deltaTime;
+            totalDirection *= Time.deltaTime;
+        }
 
         ctrl.Move(totalDirection);
 
@@ -227,13 +259,13 @@ public class PlayerController : MonoBehaviour
     {
         if (currentState != null)
         {
-            Debug.Log("Player " + playerId + " Exiting: " + currentState.GetType().Name);
+            //Debug.Log("Player " + playerId + " Exiting: " + currentState.GetType().Name);
             currentState.OnStateExit();
         }
         currentState = newState;
         if (currentState != null)
         {
-            Debug.Log("Player " + playerId + " Entering: " + currentState.GetType().Name);
+            //Debug.Log("Player " + playerId + " Entering: " + currentState.GetType().Name);
             currentState.OnStateEnter();
         }
     }
@@ -246,10 +278,10 @@ public class PlayerController : MonoBehaviour
 
     public void SpawnDashParticles()
     {
-        dashPSs[(int)currentColor].Play();
+        dashPSs[(int)blackboard.currentColor].Play();
     }
 
-    public void TakeDamage(int damage, bool triggerDamageAnim = true)
+    public void TakeDamage(float damage, bool triggerDamageAnim = true)
     {
         PlayerBaseState newState = currentState.TakeDamage(damage, triggerDamageAnim);
         if (newState != null)
@@ -258,7 +290,7 @@ public class PlayerController : MonoBehaviour
         }     
     }
 
-    public void TakeDamage(int damage, ChromaColor color, bool triggerDamageAnim = true)
+    public void TakeDamage(float damage, ChromaColor color, bool triggerDamageAnim = true)
     {
         PlayerBaseState newState = currentState.TakeDamage(damage, color, triggerDamageAnim);
         if (newState != null)
@@ -268,9 +300,9 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void ReceiveAttack(int damage, ChromaColor color)
+    public void ReceiveAttack(float damage, ChromaColor color, Vector3 origin)
     {
-        PlayerBaseState newState = currentState.AttackReceived(damage, color);
+        PlayerBaseState newState = currentState.AttackReceived(damage, color, origin);
         if (newState != null)
         {
             ChangeState(newState);
@@ -296,7 +328,7 @@ public class PlayerController : MonoBehaviour
                 rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerEventInfo.eventInfo);
             }
             else
-                TakeDamage(1000);
+                TakeDamage(1000f);
         }
     }
 
@@ -315,5 +347,17 @@ public class PlayerController : MonoBehaviour
         {
             currentState.EnemyTouched();
         }
+    }
+
+    public void EnteredUSB()
+    {
+        ChangeState(blackboard.invisibleState);
+        electricPS.Play();
+    }
+
+    public void ExitedUSB()
+    {
+        electricPS.Stop();
+        ChangeState(blackboard.idleState);
     }
 }

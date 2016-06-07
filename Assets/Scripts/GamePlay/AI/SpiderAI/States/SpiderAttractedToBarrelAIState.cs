@@ -66,7 +66,7 @@ public class SpiderAttractedToBarrelAIState : SpiderAIBaseState
                 //...Make sure we look at the barrel
                 if (Vector3.Angle(direction, spiderBlackboard.agent.transform.forward) < 5)
                 {
-                    spiderBlackboard.animator.SetBool("Walking", false);
+                    spiderBlackboard.animator.SetBool("walking", false);
                     subState = AttractedToBarrelSubState.WAITING;
                 }
                 else

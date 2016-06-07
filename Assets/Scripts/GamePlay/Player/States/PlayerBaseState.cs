@@ -6,6 +6,8 @@ public class PlayerBaseState
     protected PlayerBlackboard blackboard;
 
     private int playerRayCastMask;
+    private int playerPhysicsLayer;
+    private int enemyPhysicsPlayer;
 
     //Controller mapped attributes
     public string moveHorizontal;
@@ -46,6 +48,8 @@ public class PlayerBaseState
         special = playerStr + "_Special";
 
         playerRayCastMask = LayerMask.GetMask(playerStr + "RayCast");
+        playerPhysicsLayer = LayerMask.NameToLayer("Player");
+        enemyPhysicsPlayer = LayerMask.NameToLayer("Enemy");
 
         coloredObjMng = rsc.coloredObjectsMng;
     }
@@ -151,7 +155,7 @@ public class PlayerBaseState
                 Quaternion newRotation = Quaternion.LookRotation(blackboard.horizontalDirection);
                 newRotation = Quaternion.RotateTowards(blackboard.player.transform.rotation, newRotation, blackboard.player.angularSpeed * Time.deltaTime);
                 blackboard.player.transform.rotation = newRotation;
-                blackboard.animator.SetBool("WalkingAiming", false);
+                blackboard.animator.SetBool("WalkingAiming", false);               
             }
             else
             {
@@ -164,6 +168,7 @@ public class PlayerBaseState
                 blackboard.animator.SetFloat("Lateral", lateral);
 
                 blackboard.animator.SetBool("WalkingAiming", true);
+                blackboard.walkingAiming = true;
 
                 //Debug.Log("Moving: " + horizontalDirection + " // Aiming: " + aimingDirection);
                 //Debug.Log("Angle: " + angleBetweenSticks + " // Forward: " + forward + " // Lateral: " + lateral);
@@ -302,7 +307,7 @@ public class PlayerBaseState
         return shooting;
     }
 
-    public virtual PlayerBaseState TakeDamage(int damage, bool triggerDamageAnim = true, bool whiteBlink = true)
+    public virtual PlayerBaseState TakeDamage(float damage, bool triggerDamageAnim = true, bool whiteBlink = true)
     {
         if (rsc.debugMng.godMode || blackboard.isInvulnerable) return null;
 
@@ -331,19 +336,56 @@ public class PlayerBaseState
         return null;
     }
 
-    public virtual PlayerBaseState TakeDamage(int damage, ChromaColor color, bool triggerDamageAnim = true, bool whiteBlink = true)
+    public virtual PlayerBaseState TakeDamage(float damage, ChromaColor color, bool triggerDamageAnim = true, bool whiteBlink = true)
     {
         //Check color if needed
 
         return TakeDamage(damage, triggerDamageAnim);
     }
 
-    public virtual PlayerBaseState AttackReceived(int damage, ChromaColor color)
+    public virtual PlayerBaseState AttackReceived(float damage, ChromaColor color, Vector3 origin)
     {
-        if (!blackboard.isInvulnerable)
+        if (rsc.debugMng.godMode || blackboard.isInvulnerable) return null;
+
+        //Shield will be deployed either while shooting or if we are moving and aiming at the same time
+        bool isShieldDeployed = blackboard.currentShootingStatus || blackboard.walkingAiming;
+
+        bool shouldTakeDamage = true;
+        bool shouldRechargeEnergy = false;
+        float damageRatio = 1f;
+
+        if(isShieldDeployed)
         {
-            PlayerBaseState result = TakeDamage(damage, color, true, false);
-            if(blackboard.isAffectedByContact || blackboard.isContactCooldown)
+            Vector3 forward = blackboard.player.transform.forward;
+            forward.y = 0;
+            Vector3 playerEnemy = origin - blackboard.player.transform.position;
+            playerEnemy.y = 0;
+
+            float angle = Vector3.Angle(forward, playerEnemy);
+
+            if(angle < blackboard.player.maxAngleToShieldBlocking)
+            {
+                if(color == blackboard.currentColor)
+                {
+                    shouldTakeDamage = false;
+                    shouldRechargeEnergy = true;
+                }
+                else
+                {
+                    damageRatio = blackboard.player.damageRatioWhenBlockedWrongColor;
+                }
+            }
+        }
+
+        if (shouldRechargeEnergy)
+        {
+            blackboard.player.RechargeEnergy(blackboard.player.energyIncreaseWhenBlockedCorrectColor);
+        }
+
+        if (shouldTakeDamage)
+        {
+            PlayerBaseState result = TakeDamage((int)(damage * damageRatio), color, true, false);
+            if (blackboard.isAffectedByContact || blackboard.isContactCooldown)
             {
                 blackboard.player.StopCoroutine(HandleEnemyTouched());
                 blackboard.isAffectedByContact = false;
@@ -361,13 +403,19 @@ public class PlayerBaseState
         blackboard.blinkController.BlinkTransparentMultipleTimes(blackboard.player.invulnerabilityTimeAfterHit);
 
         blackboard.isInvulnerable = true;
+        Physics.IgnoreLayerCollision(playerPhysicsLayer, enemyPhysicsPlayer, true);
+
         yield return new WaitForSeconds(blackboard.player.invulnerabilityTimeAfterHit);
+
+        Physics.IgnoreLayerCollision(playerPhysicsLayer, enemyPhysicsPlayer, false);
         blackboard.isInvulnerable = false;
     }
 
 
     public virtual void EnemyTouched()
     {
+        if (rsc.debugMng.godMode) return;
+
         //If touched by an enemy, speed reduction and damage take
         if (!blackboard.isAffectedByContact && !blackboard.isContactCooldown && !blackboard.isInvulnerable)
         {

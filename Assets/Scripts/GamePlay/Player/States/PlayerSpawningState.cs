@@ -8,6 +8,7 @@ public class PlayerSpawningState : PlayerBaseState {
         //trigger spawning animation
         PlayerEventInfo.eventInfo.player = blackboard.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNING, PlayerEventInfo.eventInfo);
+        blackboard.alive = true;
     }
 
     public override PlayerBaseState Update()
@@ -22,7 +23,7 @@ public class PlayerSpawningState : PlayerBaseState {
         return blackboard.idleState;
     }
 
-    public override PlayerBaseState TakeDamage(int damage, bool triggerDamageAnim = true, bool whiteBlink = true)
+    public override PlayerBaseState TakeDamage(float damage, bool triggerDamageAnim = true, bool whiteBlink = true)
     {
         //can not take damage during this state
         return null;
