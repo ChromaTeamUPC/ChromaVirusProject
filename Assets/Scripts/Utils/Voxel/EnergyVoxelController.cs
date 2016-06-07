@@ -4,6 +4,7 @@ using System.Collections;
 public class EnergyVoxelController : MonoBehaviour {
     private enum State
     {
+        ENTRY,
         IDLE,
         BLINKING,
         ATTRACTED
@@ -35,7 +36,7 @@ public class EnergyVoxelController : MonoBehaviour {
     {
         target = null;
         elapsedTime = 0f;
-        state = State.IDLE;
+        state = State.ENTRY;
         blinkingTime = duration * startBlinkingRatio;
         rigid.isKinematic = false;
     }
@@ -52,20 +53,32 @@ public class EnergyVoxelController : MonoBehaviour {
 
         switch (state)
         {
+            case State.ENTRY:
+                //First second can not be attracted
+                if (elapsedTime >= 1f)
+                    state = State.IDLE;
+                break;
             case State.IDLE:
-                if (elapsedTime >= blinkingTime)
+                if (!CheckTarget())
                 {
-                    blinkController.BlinkTransparentIncremental(duration - blinkingTime);
-                    state = State.BLINKING;
-                }
-                else if (elapsedTime >= duration)
-                {
-                    rsc.poolMng.energyVoxelPool.AddObject(this);
+                    if (elapsedTime >= blinkingTime)
+                    {
+                        blinkController.BlinkTransparentIncremental(duration - blinkingTime);
+                        state = State.BLINKING;
+                    }
+                    else if (elapsedTime >= duration)
+                    {
+                        rsc.poolMng.energyVoxelPool.AddObject(this);
+                    }
                 }
                 break;
 
             case State.BLINKING:
-                if (elapsedTime >= duration)
+                if(CheckTarget())
+                {
+                    blinkController.StopPreviousBlinkings();
+                }
+                else if (elapsedTime >= duration)
                 {
                     rsc.poolMng.energyVoxelPool.AddObject(this);
                 }
@@ -101,6 +114,18 @@ public class EnergyVoxelController : MonoBehaviour {
         }
     }
 
+    private bool CheckTarget()
+    {
+        if(target != null)
+        {
+            rigid.isKinematic = true;
+            state = State.ATTRACTED;
+            return true;
+        }
+
+        return false;
+    }
+
     void OnTriggerEnter(Collider other)
     {
         if (state == State.ATTRACTED) return;
@@ -110,21 +135,7 @@ public class EnergyVoxelController : MonoBehaviour {
             PlayerController player = other.gameObject.GetComponent<PlayerController>();
 
             if(player.Active && player.Alive)
-            {
-                switch (state)
-                {
-                    case State.IDLE:
-                        target = player;
-                        rigid.isKinematic = true;
-                        state = State.ATTRACTED;
-                        break;
-                    case State.BLINKING:
-                        blinkController.StopPreviousBlinkings();
-                        rigid.isKinematic = true;
-                        target = player;
-                        state = State.ATTRACTED;
-                        break;
-                }
+            {               
                 target = player;
             }
         }

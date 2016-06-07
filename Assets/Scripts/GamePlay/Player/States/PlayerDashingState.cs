@@ -12,7 +12,7 @@ public class PlayerDashingState : PlayerBaseState
     public override void Init(PlayerBlackboard bb)
     {
         base.Init(bb);
-        dashPSRotator = blackboard.player.transform.Find("DashPSRotation");
+        dashPSRotator = blackboard.player.transform.Find("ParticleSystems/DashPSRotation");
     }
 
     public override void OnStateEnter()

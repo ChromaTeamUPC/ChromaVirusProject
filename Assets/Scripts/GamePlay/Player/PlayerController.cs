@@ -38,8 +38,9 @@ public class PlayerController : MonoBehaviour
 
     //Attack
     [Header("Energy Settings")]
-    public float maxEnergy = 100;
+    public float maxEnergy = 100f;
     public float energyIncreaseWhenBlockedCorrectColor = 10f;
+    public float specialAttackNecessaryEnergy = 50f;
 
 
     [Header("Fire Settings")]   
@@ -50,14 +51,18 @@ public class PlayerController : MonoBehaviour
     public int selfDamageOnColorMismatch = 10;
     public float fireSuppresionTimeOnColorMismatch = 3f;
 
-    //Misc
-    [Header("Miscelaneous Settings")]
-    public float idleRandomAnimTime = 10f;
-
+    [Header("Particle Systems")]
     [SerializeField]
     private ParticleSystem[] dashPSs = new ParticleSystem[4];
     [SerializeField]
     private ParticleSystem electricPS;
+    [SerializeField]
+    private ParticleSystem chargePS;
+
+    //Misc
+    [Header("Miscelaneous Settings")]
+    public float idleRandomAnimTime = 10f;
+
 
     [SerializeField]
     private Renderer bodyRend;
@@ -153,6 +158,15 @@ public class PlayerController : MonoBehaviour
         blackboard.currentEnergy += energy;
         if (blackboard.currentEnergy > blackboard.player.maxEnergy)
             blackboard.currentEnergy = blackboard.player.maxEnergy;
+    }
+
+    public void SpendEnergy(float energy)
+    {
+        if (blackboard.currentEnergy == 0) return;
+
+        blackboard.currentEnergy -= energy;
+        if (blackboard.currentEnergy < 0)
+            blackboard.currentEnergy = 0;
     }
 
     public void MakeVisible()
@@ -359,5 +373,15 @@ public class PlayerController : MonoBehaviour
     {
         electricPS.Stop();
         ChangeState(blackboard.idleState);
+    }
+
+    public void StartSpecialEnergyCharging()
+    {
+        chargePS.Play();
+    }
+
+    public void StopSpecialEnergyCharging()
+    {
+        chargePS.Stop();
     }
 }

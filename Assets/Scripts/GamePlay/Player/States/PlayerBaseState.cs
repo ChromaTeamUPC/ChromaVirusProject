@@ -205,7 +205,9 @@ public class PlayerBaseState
         if (result)
             blackboard.keyPressed = true;
 
-        return false; //TODO: remove false when implemented
+        return result &&
+            ((blackboard.currentEnergy >= blackboard.player.specialAttackNecessaryEnergy) ||
+            rsc.debugMng.godMode);
     }
 
     protected bool Shoot()
