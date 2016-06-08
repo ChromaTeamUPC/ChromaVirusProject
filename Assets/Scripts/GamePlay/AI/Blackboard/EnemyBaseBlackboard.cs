@@ -21,7 +21,9 @@ public class EnemyBaseBlackboard
     public Vector3 lastShotDirection;
     public bool lastShotSameColor;
 
-    public EnemyGroupInfo groupInfo;  
+    public EnemyGroupInfo groupInfo;
+
+    public float currentHealth;
 
     public virtual void InitialSetup(GameObject e)
     {     

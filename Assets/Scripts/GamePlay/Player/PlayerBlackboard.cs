@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 //Class to encapsulate all variables and objects that needs to be shared between PlayerController and its states
 public class PlayerBlackboard
@@ -53,12 +54,20 @@ public class PlayerBlackboard
     public bool newShootingStatus = false;
     public bool doubleShooting = false;
 
+    //Special attack variables
+    public List<EnemyBaseAIBehaviour> enemiesInRange = new List<EnemyBaseAIBehaviour>();
+    public SphereCollider specialAttackCollider;
+
+
     public void Init(PlayerController pl)
     {
         player = pl;
         blinkController = player.GetComponent<BlinkController>();
 
         animator = player.GetComponent<Animator>();
+
+        specialAttackCollider = player.GetComponent<SphereCollider>();
+        specialAttackCollider.radius = player.specialAttackAffectationRadius;
 
         spawningState = new PlayerSpawningState();
         idleState = new PlayerIdleState();
@@ -118,6 +127,9 @@ public class PlayerBlackboard
         canShoot = true;
         currentShootingStatus = false;
         doubleShooting = false;
+
+        enemiesInRange.Clear();
+        specialAttackCollider.enabled = false;
 }
 
     //This variables have to be reset every update

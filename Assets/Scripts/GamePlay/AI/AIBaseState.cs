@@ -22,12 +22,17 @@ public class AIBaseState
         return null;
     }
 
-    virtual public AIBaseState ImpactedByShot(ChromaColor shotColor, int damage, Vector3 direction, PlayerController player)
+    virtual public AIBaseState ImpactedByShot(ChromaColor shotColor, float damage, Vector3 direction, PlayerController player)
     {
         return blackboard.entity.ProcessShotImpact(shotColor, damage, direction, player);
     }
 
-    virtual public AIBaseState ImpactedByBarrel(ChromaColor barrelColor, int damage, Vector3 direction)
+    virtual public AIBaseState ImpactedBySpecial(float damage, Vector3 direction)
+    {
+        return blackboard.entity.ProcessSpecialImpact(damage, direction);
+    }
+
+    virtual public AIBaseState ImpactedByBarrel(ChromaColor barrelColor, float damage, Vector3 direction)
     {
         return blackboard.entity.ProcessBarrelImpact(barrelColor, damage, direction);
     }

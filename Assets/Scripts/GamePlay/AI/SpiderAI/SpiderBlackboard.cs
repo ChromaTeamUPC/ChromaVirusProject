@@ -5,8 +5,7 @@ public class SpiderBlackboard: EnemyBaseBlackboard
 {
     public SpiderAIBehaviour spider;
 
-    public float timeSinceLastAttack;
-    public int currentHealth;
+    public float timeSinceLastAttack;   
 
     public float initialCheckDelay;
     public float checkAttackingSpidersDelay;

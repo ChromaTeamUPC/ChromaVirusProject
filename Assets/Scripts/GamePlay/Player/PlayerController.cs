@@ -51,6 +51,12 @@ public class PlayerController : MonoBehaviour
     public int selfDamageOnColorMismatch = 10;
     public float fireSuppresionTimeOnColorMismatch = 3f;
 
+    [Header("Special Attack Settings")]
+    public float specialAttackDamage = 30f;
+    public float specialAttackAffectationRadius = 6f;
+    public float forceMultiplierAtDistance1 = 10;
+    public float forceAttenuationByDistance = 1.25f;
+
     [Header("Particle Systems")]
     [SerializeField]
     private ParticleSystem[] dashPSs = new ParticleSystem[4];
@@ -334,6 +340,10 @@ public class PlayerController : MonoBehaviour
         {
             blackboard.isInBorder = true;
         }
+        else if (other.tag == "Enemy")
+        {
+            blackboard.enemiesInRange.Add(other.GetComponent<EnemyBaseAIBehaviour>());
+        }
         else if (other.tag == "DeathZone")
         {           
             if(rsc.debugMng.godMode)
@@ -351,6 +361,10 @@ public class PlayerController : MonoBehaviour
         if (other.tag == "Border")
         {
             blackboard.isInBorder = false;
+        }
+        else if (other.tag == "Enemy")
+        {
+            blackboard.enemiesInRange.Remove(other.GetComponent<EnemyBaseAIBehaviour>());
         }
     }
 

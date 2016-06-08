@@ -6,7 +6,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     protected EnemyBaseBlackboard blackboard; //To be instantiated in inherited classes 
 
     [Header("Enemy Common Settings")]
-    public int maxHealth = 30;
+    public float maxHealth = 30;
 
     public float shotForceModifier = 1f;
 
@@ -78,7 +78,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         }
     }
 
-    public void ImpactedByShot(ChromaColor shotColor, int damage, Vector3 direction, PlayerController player)
+    public void ImpactedByShot(ChromaColor shotColor, float damage, Vector3 direction, PlayerController player)
     {
         AIBaseState newState = currentState.ImpactedByShot(shotColor, damage, direction, player);
 
@@ -88,12 +88,28 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         }
     }
 
-    public virtual AIBaseState ProcessShotImpact(ChromaColor shotColor, int damage, Vector3 direction, PlayerController player)
+    public virtual AIBaseState ProcessShotImpact(ChromaColor shotColor, float damage, Vector3 direction, PlayerController player)
     {
         return null;
     }
 
-    public void ImpactedByBarrel(ChromaColor barrelColor, int damage, Vector3 direction)
+
+    public virtual void ImpactedBySpecial(float damage, Vector3 direction)
+    {
+        AIBaseState newState = currentState.ImpactedBySpecial(damage, direction);
+
+        if (newState != null)
+        {
+            ChangeState(newState);
+        }
+    }
+
+    public virtual AIBaseState ProcessSpecialImpact(float damage, Vector3 direction)
+    {
+        return null;
+    }
+
+    public void ImpactedByBarrel(ChromaColor barrelColor, float damage, Vector3 direction)
     {
         AIBaseState newState = currentState.ImpactedByBarrel(barrelColor, damage, direction);
 
@@ -103,7 +119,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         }
     }
 
-    public virtual AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, int damage, Vector3 direction)
+    public virtual AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, float damage, Vector3 direction)
     {
         return null;
     }

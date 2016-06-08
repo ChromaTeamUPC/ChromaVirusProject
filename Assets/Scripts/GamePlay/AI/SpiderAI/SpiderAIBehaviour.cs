@@ -109,7 +109,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 	}
 
     //Not to be used outside FSM
-    public override AIBaseState ProcessShotImpact(ChromaColor shotColor, int damage, Vector3 direction, PlayerController player)
+    public override AIBaseState ProcessShotImpact(ChromaColor shotColor, float damage, Vector3 direction, PlayerController player)
     {
         if (spiderBlackboard.canReceiveDamage && spiderBlackboard.currentHealth > 0)
         {
@@ -128,7 +128,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 
             if (shotColor != color)
             {
-                spiderBlackboard.currentHealth -= (int)(damage * wrongColorDamageModifier);
+                spiderBlackboard.currentHealth -= damage * wrongColorDamageModifier;
             }
             else
             {
@@ -152,7 +152,25 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     }
 
     //Not to be used outside FSM
-    public override AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, int damage, Vector3 direction)
+    public override AIBaseState ProcessSpecialImpact(float damage, Vector3 direction)
+    {
+        if (spiderBlackboard.canReceiveDamage && spiderBlackboard.currentHealth > 0)
+        {
+            spiderBlackboard.currentHealth -= damage;
+            if (spiderBlackboard.currentHealth <= 0)
+            {
+                spiderBlackboard.lastShotDirection = direction;
+                spiderBlackboard.lastShotSameColor = true;
+                return dyingState;
+            }
+        }
+
+        return null;
+    }
+
+
+    //Not to be used outside FSM
+    public override AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, float damage, Vector3 direction)
     {
         //Harmless to other colors
         if (barrelColor != color)
