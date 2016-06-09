@@ -23,8 +23,8 @@ public class SpiderBiteExecutor : BaseExecutor
 
         if(spiderBlackBoard.timeSinceLastAttack > spiderBiteAction.minimumTimeSinceLastAttack)
         {
-            blackBoard.animationEnded = false;
-            blackBoard.animationTrigger = false;
+            blackBoard.attackAnimationEnded = false;
+            blackBoard.attackAnimationTrigger = false;
             blackBoard.animator.SetBool("walking", false);
             blackBoard.animator.SetTrigger("bite");
             spiderBlackBoard.timeSinceLastAttack = 0f;
@@ -38,11 +38,11 @@ public class SpiderBiteExecutor : BaseExecutor
 
     public override int Execute()
     {
-        if (discardedAttack || blackBoard.animationEnded)
+        if (discardedAttack || blackBoard.attackAnimationEnded)
         {
             return action.nextAction;
         }
-        else if (blackBoard.animationTrigger)
+        else if (blackBoard.attackAnimationTrigger)
         {
             SpiderBolt bolt = rsc.poolMng.spiderBoltPool.GetObject();
             if (bolt != null)

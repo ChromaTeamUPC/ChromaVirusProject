@@ -202,8 +202,23 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         return result;
     }
 
-    public void SpawnVoxelsAndReturnToPool()
+    public void SpawnVoxelsAndReturnToPool(bool spawnEnergyVoxels = true)
     {
+        if (spawnEnergyVoxels)
+        {
+            Vector3 pos = transform.position;
+            ScriptObjectPool<EnergyVoxelController> pool = rsc.poolMng.energyVoxelPool;
+            for (int i = 0; i < energyVoxelsSpawnedOnDie; ++i)
+            {
+                EnergyVoxelController voxel = pool.GetObject();
+                if (voxel != null)
+                {
+                    voxel.transform.position = pos;
+                    voxel.transform.rotation = Random.rotation;
+                }
+            }
+        }
+
         SpawnVoxels();
         rsc.poolMng.spiderPool.AddObject(gameObject);
     }

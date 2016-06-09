@@ -25,28 +25,16 @@ public class SpiderDyingAIState : SpiderAIBaseState
             spiderBlackboard.entity.mainCollider.enabled = false;
             spiderBlackboard.entity.dyingCollider.SetActive(true);
             spiderBlackboard.canReceiveDamage = false;
-            spiderBlackboard.animationEnded = false;
+            spiderBlackboard.dieAnimationEnded = false;
             spiderBlackboard.animator.SetTrigger("die");
 
             movement = spiderBlackboard.lastShotDirection * spiderBlackboard.entity.shotForceModifier;
 
             GameObject explosion = spiderBlackboard.explosions[(int)color];
             explosion.SetActive(true);
-
-            /*Vector3 pos = spiderBlackboard.spider.transform.position;
-            ScriptObjectPool<EnergyVoxelController> pool = rsc.poolMng.energyVoxelPool;
-            for (int i = 0; i < spiderBlackboard.spider.energyVoxelsSpawnedOnDie; ++i)
-            {
-                EnergyVoxelController voxel = pool.GetObject();
-                if (voxel != null)
-                {
-                    voxel.transform.position = pos;
-                    voxel.transform.rotation = Random.rotation;
-                }
-            }*/
         }
         else
-            spiderBlackboard.spider.SpawnVoxelsAndReturnToPool();
+            spiderBlackboard.spider.SpawnVoxelsAndReturnToPool(false);
     }
 
     public override void OnStateExit()
@@ -59,20 +47,8 @@ public class SpiderDyingAIState : SpiderAIBaseState
     {
         spiderBlackboard.spider.transform.position += movement * Time.deltaTime;
 
-        if (spiderBlackboard.animationEnded)
+        if (spiderBlackboard.dieAnimationEnded)
         {
-            Vector3 pos = spiderBlackboard.spider.transform.position;
-            ScriptObjectPool<EnergyVoxelController> pool = rsc.poolMng.energyVoxelPool;
-            for (int i = 0; i < spiderBlackboard.spider.energyVoxelsSpawnedOnDie; ++i)
-            {
-                EnergyVoxelController voxel = pool.GetObject();
-                if (voxel != null)
-                {
-                    voxel.transform.position = pos;
-                    voxel.transform.rotation = Random.rotation;
-                }
-            }
-
             spiderBlackboard.spider.SpawnVoxelsAndReturnToPool();
         }
 

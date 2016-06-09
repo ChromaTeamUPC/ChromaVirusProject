@@ -3,7 +3,16 @@ using System.Collections;
 
 public class PlayerSpecialState : PlayerBaseState {
 
+    private const float EXPLODING_WAIT_TIME = 0.5f;
+    private enum State
+    {
+        MOVING,
+        EXPLODING
+    }
+
     private Vector3 currentPos;
+    private State state;
+    private float elapsedTime;
 
     public override void OnStateEnter()
     {
@@ -16,25 +25,39 @@ public class PlayerSpecialState : PlayerBaseState {
         if(!rsc.debugMng.godMode)
             blackboard.player.SpendEnergy(blackboard.player.specialAttackNecessaryEnergy);
         blackboard.player.StartSpecialEnergyCharging();
+        state = State.MOVING;
+        elapsedTime = 0f;
     }
 
     public override PlayerBaseState Update()
     {
-        if(blackboard.animationEnded)
+        switch (state)
         {
-            blackboard.player.StopSpecialEnergyCharging();
-            //play explosion
+            case State.MOVING:
+                if (blackboard.animationEnded)
+                {
+                    blackboard.player.StopSpecialEnergyCharging();
+                    blackboard.player.StartSpecial();
 
-            currentPos = blackboard.player.transform.position;
+                    currentPos = blackboard.player.transform.position;
 
-            blackboard.player.StartCoroutine(SpecialExplosion());
+                    blackboard.player.StartCoroutine(SpecialExplosion());
 
-            return blackboard.idleState;
+                    state = State.EXPLODING;
+                }
+
+                return null;
+
+            case State.EXPLODING:
+                elapsedTime += Time.deltaTime;
+
+                if (elapsedTime > EXPLODING_WAIT_TIME)
+                    return blackboard.idleState;
+                else
+                    return null;
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
     public override PlayerBaseState TakeDamage(float damage, bool triggerDamageAnim = true, bool whiteBlink = true)
@@ -61,13 +84,14 @@ public class PlayerSpecialState : PlayerBaseState {
         return;
     }
 
+
+    //TODO: FPS drop when lots of enemies exploding at once
     private IEnumerator SpecialExplosion()
     {
-        //yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.1f);
         DamageEnemies();
         blackboard.specialAttackCollider.enabled = false;
         blackboard.enemiesInRange.Clear();
-        yield return null;
     }
 
     private void DamageEnemies()

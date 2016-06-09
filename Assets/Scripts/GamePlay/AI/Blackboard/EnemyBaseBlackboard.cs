@@ -9,8 +9,11 @@ public class EnemyBaseBlackboard
     public NavMeshAgent agent;
 
     public Animator animator;
-    public bool animationEnded;
-    public bool animationTrigger;
+
+    public bool spawnAnimationEnded;
+    public bool attackAnimationTrigger;
+    public bool attackAnimationEnded;
+    public bool dieAnimationEnded;
 
     public bool canReceiveDamage;
 
@@ -32,8 +35,11 @@ public class EnemyBaseBlackboard
         agent = entityGO.GetComponent<NavMeshAgent>();
         animator = entityGO.GetComponent<Animator>();
 
-        animationEnded = true;
-        animationTrigger = false;
+        spawnAnimationEnded = true;
+        attackAnimationEnded = true;
+        attackAnimationTrigger = false;
+        dieAnimationEnded = true;
+
         canReceiveDamage = false;      
         target = null;
         targetIsPlayer = false;
@@ -44,8 +50,11 @@ public class EnemyBaseBlackboard
 
     public virtual void ResetValues()
     {
-        animationEnded = true;
-        animationTrigger = false;
+        spawnAnimationEnded = true;
+        attackAnimationTrigger = false;
+        attackAnimationEnded = true;
+        dieAnimationEnded = true;
+
         canReceiveDamage = false;
         target = null;
         targetIsPlayer = false;

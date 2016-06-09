@@ -64,6 +64,8 @@ public class PlayerController : MonoBehaviour
     private ParticleSystem electricPS;
     [SerializeField]
     private ParticleSystem chargePS;
+    [SerializeField]
+    private ParticleSystem specialPS;
 
     //Misc
     [Header("Miscelaneous Settings")]
@@ -296,11 +298,6 @@ public class PlayerController : MonoBehaviour
         voxelization.SpawnVoxels();
     }
 
-    public void SpawnDashParticles()
-    {
-        dashPSs[(int)blackboard.currentColor].Play();
-    }
-
     public void TakeDamage(float damage, bool triggerDamageAnim = true)
     {
         PlayerBaseState newState = currentState.TakeDamage(damage, triggerDamageAnim);
@@ -377,6 +374,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //Particle Systems methods
+
+    public void SpawnDashParticles()
+    {
+        dashPSs[(int)blackboard.currentColor].Play();
+    }
+
     public void EnteredUSB()
     {
         ChangeState(blackboard.invisibleState);
@@ -397,5 +401,10 @@ public class PlayerController : MonoBehaviour
     public void StopSpecialEnergyCharging()
     {
         chargePS.Stop();
+    }
+
+    public void StartSpecial()
+    {
+        specialPS.Play();
     }
 }

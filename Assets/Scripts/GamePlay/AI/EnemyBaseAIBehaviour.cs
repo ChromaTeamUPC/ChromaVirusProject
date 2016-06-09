@@ -39,15 +39,26 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
 
     public virtual void SetMaterials(Material[] materials) { }
 
-    public void AnimationEnded()
+    public void SpawnAnimationEnded()
     {
-        blackboard.animationEnded = true;
+        blackboard.spawnAnimationEnded = true;
     }
 
-    public void AnimationTrigger()
+    public void AttackAnimationTrigger()
     {
-        blackboard.animationTrigger = true;
+        blackboard.attackAnimationTrigger = true;
     }
+
+    public void AttackAnimationEnded()
+    {
+        blackboard.attackAnimationEnded = true;
+    }
+
+    public void DieAnimationEnded()
+    {
+        blackboard.dieAnimationEnded = true;
+    }
+
 
     public void SpawnVoxels()
     {

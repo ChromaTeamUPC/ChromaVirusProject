@@ -12,7 +12,7 @@ public class SpiderSpawningAIState : SpiderAIBaseState {
         spiderBlackboard.entity.mainCollider.enabled = false;
         spiderBlackboard.entity.dyingCollider.SetActive(false);
         spiderBlackboard.canReceiveDamage = false;
-        spiderBlackboard.animationEnded = false;
+        spiderBlackboard.spawnAnimationEnded = false;
 
         spiderBlackboard.animator.Rebind(); //Restart state machine
         spiderBlackboard.animator.SetInteger("spawnAnimation", (int)spiderBlackboard.spawnAnimation);
@@ -32,7 +32,7 @@ public class SpiderSpawningAIState : SpiderAIBaseState {
 
     public override AIBaseState Update()
     {
-        if (!spiderBlackboard.animationEnded)
+        if (!spiderBlackboard.spawnAnimationEnded)
             return null;
         else
         {
