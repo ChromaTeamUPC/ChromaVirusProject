@@ -79,6 +79,7 @@ public class PlayerController : MonoBehaviour
     private CharacterController ctrl;
     private ColoredObjectsManager coloredObjMng;
     private VoxelizationClient voxelization;
+    private TrailRenderer trail;
    
     private PlayerBaseState currentState;
 
@@ -95,7 +96,9 @@ public class PlayerController : MonoBehaviour
         blackboard.Init(this);
         
         voxelization = GetComponentInChildren<VoxelizationClient>();
-        ctrl = GetComponent<CharacterController>();   
+        ctrl = GetComponent<CharacterController>();
+
+        trail = GetComponentInChildren<TrailRenderer>();
 
         Debug.Log("Player " + playerId + " created.");
     }
@@ -157,6 +160,8 @@ public class PlayerController : MonoBehaviour
         shieldRend.sharedMaterial = shieldMat;
 
         blackboard.blinkController.InvalidateMaterials();
+
+        trail.sharedMaterial = coloredObjMng.GetPlayer1TrailMaterial(blackboard.currentColor);
     }
 
     public void RechargeEnergy(float energy)
@@ -384,12 +389,14 @@ public class PlayerController : MonoBehaviour
     public void EnteredUSB()
     {
         ChangeState(blackboard.invisibleState);
+        trail.enabled = false;
         electricPS.Play();
     }
 
     public void ExitedUSB()
     {
         electricPS.Stop();
+        trail.enabled = true;
         ChangeState(blackboard.idleState);
     }
 

@@ -52,10 +52,17 @@ public class LevelEventInfo : EventInfo
     public int levelId;
 }
 
-
 public class CameraEventInfo : EventInfo
 {
     public Camera newCamera;
+}
+
+
+public class DeviceEventInfo : EventInfo
+{
+    public static DeviceEventInfo eventInfo = new DeviceEventInfo();
+
+    public DeviceController device;
 }
 
 [System.Serializable]
@@ -98,7 +105,11 @@ public class EventManager : MonoBehaviour {
         ZONE_PLAN_FINISHED,
 
         COLOR_CHANGED,
-        CAMERA_CHANGED
+        CAMERA_CHANGED,
+
+        DEVICE_ACTIVATED,
+        DEVICE_DEACTIVATED,
+        DEVICE_INFECTION_LEVEL_CHANGED
     }
 
     private Dictionary<EventType, CustomEvent> eventDictionary;

@@ -101,8 +101,12 @@ public class PlayerBaseState
 
             blackboard.aimingDirection = GetScreenRelativeDirection(blackboard.aimingDirection);
             blackboard.keyPressed = true;
+            blackboard.animator.SetBool("Aiming", true);
+
             result = true;
         }
+        else
+            blackboard.animator.SetBool("Aiming", false);
 
         return result;
     }
