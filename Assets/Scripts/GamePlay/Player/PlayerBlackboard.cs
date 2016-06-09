@@ -47,6 +47,7 @@ public class PlayerBlackboard
     public bool isContactCooldown;
     public bool updateVerticalPosition;
     public bool walkingAiming;
+    public bool aiming;
 
     //Shoot variables
     public bool canShoot;
@@ -138,5 +139,6 @@ public class PlayerBlackboard
         keyPressed = false;
         newShootingStatus = false;
         walkingAiming = false;
+        aiming = false;
     }
 }

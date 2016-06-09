@@ -102,7 +102,7 @@ public class PlayerBaseState
             blackboard.aimingDirection = GetScreenRelativeDirection(blackboard.aimingDirection);
             blackboard.keyPressed = true;
             blackboard.animator.SetBool("Aiming", true);
-
+            blackboard.aiming = true;
             result = true;
         }
         else
@@ -354,7 +354,7 @@ public class PlayerBaseState
         if (rsc.debugMng.godMode || blackboard.isInvulnerable) return null;
 
         //Shield will be deployed either while shooting or if we are moving and aiming at the same time
-        bool isShieldDeployed = blackboard.currentShootingStatus || blackboard.walkingAiming;
+        bool isShieldDeployed = blackboard.currentShootingStatus || blackboard.walkingAiming || blackboard.aiming;
 
         bool shouldTakeDamage = true;
         bool shouldRechargeEnergy = false;
