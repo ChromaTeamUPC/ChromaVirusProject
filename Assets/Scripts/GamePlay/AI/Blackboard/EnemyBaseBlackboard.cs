@@ -19,6 +19,7 @@ public class EnemyBaseBlackboard
 
     public GameObject target;
     public bool targetIsPlayer;
+
     public CapacitorController barrelController;
 
     public Vector3 lastShotDirection;
@@ -61,5 +62,6 @@ public class EnemyBaseBlackboard
         barrelController = null;
 
         groupInfo = null;
+        currentHealth = entity.maxHealth;
     }
 }

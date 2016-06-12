@@ -26,7 +26,7 @@ public class MoveActionExecutor: BaseExecutor
         }
         else if ((blackBoard.target == null) || (!blackBoard.target.activeSelf))
         {
-            blackBoard.target = rsc.enemyMng.SelectTarget(blackBoard.entityGO);
+            blackBoard.target = rsc.enemyMng.SelectPlayer(blackBoard.entityGO);
         }
 
         if (blackBoard.target != null)
@@ -85,7 +85,7 @@ public class MoveActionExecutor: BaseExecutor
             }
             if(moveAction.targetId == "player" && ((blackBoard.target == null) || (!blackBoard.target.activeSelf)))
             {
-                blackBoard.target = rsc.enemyMng.SelectTarget(blackBoard.entityGO);
+                blackBoard.target = rsc.enemyMng.SelectPlayer(blackBoard.entityGO);
             }
 
             if (blackBoard.target != null)

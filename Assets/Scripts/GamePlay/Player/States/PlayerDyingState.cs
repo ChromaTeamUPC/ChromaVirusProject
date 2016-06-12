@@ -7,17 +7,20 @@ public class PlayerDyingState : PlayerBaseState
     {
         EndColorMismatch(); //Ensure it is not active
 
-        blackboard.animationEnded = false;
+        blackboard.player.StopTrail();
+        blackboard.shield.SetActive(false);
         blackboard.animator.SetTrigger("Die");
+        blackboard.animationEnded = false;
 
         PlayerEventInfo.eventInfo.player = blackboard.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DYING, PlayerEventInfo.eventInfo);
-        blackboard.alive = false;
     }
 
     public override void OnStateExit()
     {
-        blackboard.currentSpeed = blackboard.player.walkSpeed;
+        //blackboard.shield.SetActive(true);
+        //blackboard.player.StartTrail();
+        //blackboard.currentSpeed = blackboard.player.walkSpeed;
     }
 
     public override PlayerBaseState Update()
@@ -26,11 +29,13 @@ public class PlayerDyingState : PlayerBaseState
 
         if (blackboard.animationEnded)
         {
+            blackboard.alive = false;
+            blackboard.currentLives--;
             blackboard.blinkController.StopPreviousBlinkings();
             blackboard.player.SpawnVoxels();
             PlayerEventInfo.eventInfo.player = blackboard.player;
             rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DIED, PlayerEventInfo.eventInfo);
-            blackboard.player.gameObject.SetActive(false);
+            //blackboard.player.gameObject.SetActive(false);
             return null;
         }
         else

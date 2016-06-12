@@ -9,6 +9,7 @@ public class PlayerBlackboard
     public PlayerController player;
     public BlinkController blinkController;
     public Animator animator;
+    public GameObject shield;
 
     //Player states
     public PlayerSpawningState spawningState;
@@ -139,6 +140,8 @@ public class PlayerBlackboard
         keyPressed = false;
         newShootingStatus = false;
         walkingAiming = false;
+        animator.SetBool("WalkingAiming", false);
         aiming = false;
+        animator.SetBool("Aiming", false);
     }
 }

@@ -93,7 +93,7 @@ public class SpawnSpiderWaveAction : WaveAction
                 break;
 
             case ColorMode.RANDOM:
-                spider = rsc.coloredObjectsMng.GetSpiderRandomColor();
+                spider = rsc.coloredObjectsMng.GetSpider(true);
                 break;
 
             default:

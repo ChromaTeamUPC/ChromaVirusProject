@@ -105,8 +105,6 @@ public class PlayerBaseState
             blackboard.aiming = true;
             result = true;
         }
-        else
-            blackboard.animator.SetBool("Aiming", false);
 
         return result;
     }
@@ -159,7 +157,7 @@ public class PlayerBaseState
                 Quaternion newRotation = Quaternion.LookRotation(blackboard.horizontalDirection);
                 newRotation = Quaternion.RotateTowards(blackboard.player.transform.rotation, newRotation, blackboard.player.angularSpeed * Time.deltaTime);
                 blackboard.player.transform.rotation = newRotation;
-                blackboard.animator.SetBool("WalkingAiming", false);               
+                //blackboard.animator.SetBool("WalkingAiming", false);               
             }
             else
             {
@@ -317,7 +315,7 @@ public class PlayerBaseState
     {
         if (rsc.debugMng.godMode || blackboard.isInvulnerable) return null;
 
-        blackboard.blinkController.BlinkWhiteOnce(0.03f);
+        blackboard.blinkController.BlinkWhiteOnce();
 
         blackboard.currentHealth -= damage;
 
@@ -329,8 +327,7 @@ public class PlayerBaseState
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DAMAGED, PlayerDamagedEventInfo.eventInfo);
 
         if (blackboard.currentHealth == 0)
-        {
-            blackboard.currentLives--;
+        {           
             return blackboard.dyingState;
         }
         else

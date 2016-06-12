@@ -151,9 +151,10 @@ public class MainMenuManager : MonoBehaviour {
     {
         if (!loadingResources || loadResources.isDone)
         {
+            DisableMainButtons();
+
             if (Input.GetJoystickNames().Length > 1)
             {
-                DisableMainButtons();
                 playerSelection.SetActive(true);
                 EnablePlayerSelectionButtons();
                 currentState = MainMenuState.SelectingPlayers;

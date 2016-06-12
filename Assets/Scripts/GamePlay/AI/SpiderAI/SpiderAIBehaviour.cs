@@ -16,18 +16,8 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     public float biteDamage = 10f;
     public float playerDetectionDistance = 5f;
     public int spidersAttackingThreshold = 3;
-    public float wrongColorDamageModifier = 0.5f;
 
-    public GameObject[] explosionPrefabs = new GameObject[4];  
-    
-    public SpiderAIBaseState spawningState;
-    public SpiderAIActionsBaseState entryState;
-    public SpiderAIActionsBaseState attackingPlayerState;
-    public SpiderAIActionsBaseState leadingGroupState;
-    public SpiderAIActionsBaseState followingGroupState;
-    public SpiderAIBaseState attackingChipState;
-    public SpiderAIBaseState attractedToBarrelState;
-    public SpiderAIBaseState dyingState;
+    public GameObject[] explosionPrefabs = new GameObject[4];     
 
 	// Use this for initialization
 	protected override void Awake ()
@@ -38,15 +28,6 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         spiderBlackboard.InitialSetup(gameObject);
 
         blackboard = spiderBlackboard;
-
-        spawningState = new SpiderSpawningAIState(spiderBlackboard);
-        entryState = new SpiderEntryAIState(spiderBlackboard);
-        attackingPlayerState = new SpiderAttackingPlayerAIState(spiderBlackboard);
-        leadingGroupState = new SpiderLeadingGroupAIState(spiderBlackboard);
-        followingGroupState = new SpiderFollowingGroupAIState(spiderBlackboard);
-        attackingChipState = new SpiderAttackingChipAIState(spiderBlackboard);
-        attractedToBarrelState = new SpiderAttractedToBarrelAIState(spiderBlackboard);  
-        dyingState = new SpiderDyingAIState(spiderBlackboard);
     }
 
     public override void SetMaterials(Material[] materials)
@@ -68,8 +49,8 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         spiderBlackboard.spawnAnimation = spawnAnimation;
 
         //Init states with lists
-        entryState.Init(entryList);
-        attackingPlayerState.Init(attackList);   
+        spiderBlackboard.entryState.Init(entryList);
+        spiderBlackboard.attackingPlayerState.Init(attackList);   
     }
 
     public void AIInitGroup(SpawnAnimation spawnAnimation, EnemyGroupInfo groupInfo, List<AIAction> leaderList, List<AIAction> followerList, List<AIAction> attackList, bool isLeader = false)
@@ -82,30 +63,25 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
             groupInfo.leader = this;
 
         //Init states with lists
-        leadingGroupState.Init(leaderList);
-        followingGroupState.Init(followerList);
-        attackingPlayerState.Init(attackList);
+        spiderBlackboard.leadingGroupState.Init(leaderList);
+        spiderBlackboard.followingGroupState.Init(followerList);
+        spiderBlackboard.attackingPlayerState.Init(attackList);
     }
 
     public void Spawn(Transform spawnPoint)
     {
         transform.position = spawnPoint.position;
         transform.rotation = spawnPoint.rotation;
-        ChangeState(spawningState);      
+        ChangeState(spiderBlackboard.spawningState);      
     }
 
 
     // Update is called once per frame
-    void Update ()
+    protected override void Update ()
     {
         spiderBlackboard.timeSinceLastAttack += Time.deltaTime;
 
-        AIBaseState newState = currentState.Update();
-
-        if(newState != null)
-        {
-            ChangeState(newState);
-        }
+        base.Update();
 	}
 
     //Not to be used outside FSM
@@ -144,7 +120,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 
                 spiderBlackboard.lastShotDirection = direction;
                 spiderBlackboard.lastShotSameColor = (shotColor == color);
-                return dyingState;
+                return spiderBlackboard.dyingState;
             }
         }
 
@@ -161,7 +137,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
             {
                 spiderBlackboard.lastShotDirection = direction;
                 spiderBlackboard.lastShotSameColor = true;
-                return dyingState;
+                return spiderBlackboard.dyingState;
             }
         }
 
@@ -183,7 +159,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
             {
                 spiderBlackboard.lastShotDirection = direction;
                 spiderBlackboard.lastShotSameColor = (barrelColor == color);
-                return dyingState;
+                return spiderBlackboard.dyingState;
             }
         }
 
@@ -207,7 +183,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         if (spawnEnergyVoxels)
         {
             Vector3 pos = transform.position;
-            ScriptObjectPool<EnergyVoxelController> pool = rsc.poolMng.energyVoxelPool;
+            EnergyVoxelPool pool = rsc.poolMng.energyVoxelPool;
             for (int i = 0; i < energyVoxelsSpawnedOnDie; ++i)
             {
                 EnergyVoxelController voxel = pool.GetObject();
@@ -220,7 +196,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         }
 
         SpawnVoxels();
-        rsc.poolMng.spiderPool.AddObject(gameObject);
+        rsc.poolMng.spiderPool.AddObject(this);
     }
 
     public override void CollitionOnDie()

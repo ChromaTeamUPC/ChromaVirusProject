@@ -64,11 +64,6 @@ public class GameManager : MonoBehaviour {
 
     public void InitPlayers(int numPlayers)
     {
-        rsc.gameInfo.player1Controller.Active = false;
-        rsc.gameInfo.player1.SetActive(false);
-        rsc.gameInfo.player2Controller.Active = false;
-        rsc.gameInfo.player2.SetActive(false);
-
         rsc.gameInfo.numberOfPlayers = numPlayers;
 
         rsc.gameInfo.player1.SetActive(true);
@@ -95,7 +90,7 @@ public class GameManager : MonoBehaviour {
         else
         {
             if (rsc.gameInfo.player1Controller.Lives + rsc.gameInfo.player2Controller.Lives == 0)
-            {
+            {            
                 GameOver();
             }
         }
@@ -133,6 +128,9 @@ public class GameManager : MonoBehaviour {
 
         yield return new WaitForSeconds(3.0f);
 
+        rsc.gameInfo.player1Controller.Active = false;
+        rsc.gameInfo.player2Controller.Active = false;
+
         //Ensure all resources are in place (ie, enemies back to pool)
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
         SceneManager.LoadScene("MainMenu");
@@ -143,6 +141,9 @@ public class GameManager : MonoBehaviour {
         rsc.audioMng.FadeOutMainMusic(2.5f);
 
         yield return new WaitForSeconds(3.0f);
+
+        rsc.gameInfo.player1Controller.Active = false;
+        rsc.gameInfo.player2Controller.Active = false;
 
         //Ensure all resources are in place (ie, enemies back to pool)
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);

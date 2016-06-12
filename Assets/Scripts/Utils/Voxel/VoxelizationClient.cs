@@ -19,7 +19,7 @@ public class VoxelizationClient : MonoBehaviour {
     private List<VoxelizationServer.AABCGrid> aABCGrids;
 
     private ColoredObjectsManager colorObjMng;
-    private ScriptObjectPool<VoxelController> voxelPool;
+    private VoxelPool voxelPool;
     private ObjectPool voxelColliderPool;
     private VoxelController voxelController;
 

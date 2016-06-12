@@ -9,8 +9,6 @@ public class ColoredObjectsManager : MonoBehaviour
     [SerializeField]
     private Material transparentMaterial;
 
-    //Platform 1 Materials
-
     //Player
     [SerializeField]
     private Material[] player1Mats = new Material[4];
@@ -31,11 +29,16 @@ public class ColoredObjectsManager : MonoBehaviour
     private Material[] spiderMats = new Material[4];
     private Material currentSpiderMat;
 
+    //Mosquito Materials
+    [SerializeField]
+    private Material[] mosquitoMats = new Material[4];
+    private Material currentMosquitoMat;
+
     //Floor Materials
     [SerializeField]
     private Material[] floorMats = new Material[4];
 
-    //Floor Materials
+    //Bridge Materials
     [SerializeField]
     private Material[] bridgeMats = new Material[4];
 
@@ -49,14 +52,16 @@ public class ColoredObjectsManager : MonoBehaviour
     [SerializeField]
     private Material[] capacitorFullMats = new Material[4];
 
-    private ScriptObjectPool<PlayerShotController>[] player1ShotPools = new ScriptObjectPool<PlayerShotController>[4];
-    private ScriptObjectPool<PlayerShotController> currentPlayer1ShotPool;
+    private PlayerShotPool[] player1ShotPools = new PlayerShotPool[4];
+    private PlayerShotPool currentPlayer1ShotPool;
 
-    private ScriptObjectPool<MuzzleController>[] player1MuzzlePools = new ScriptObjectPool<MuzzleController>[4];
-    private ScriptObjectPool<MuzzleController> currentPlayer1MuzzlePool;
+    private PlayerMuzzlePool[] player1MuzzlePools = new PlayerMuzzlePool[4];
+    private PlayerMuzzlePool currentPlayer1MuzzlePool;
 
-    private ObjectPool spiderPool;
-    private ScriptObjectPool<VoxelController> voxelPool;
+    private SpiderPool spiderPool;
+    private MosquitoPool mosquitoPool;
+    private MosquitoWeakShotPool[] mosquitoWeakShotPools = new MosquitoWeakShotPool[4];
+    private VoxelPool voxelPool;
 
     private ChromaColor currentColor;
 
@@ -75,6 +80,13 @@ public class ColoredObjectsManager : MonoBehaviour
         player1MuzzlePools[3] = rsc.poolMng.player1MuzzleYellowPool;
 
         spiderPool = rsc.poolMng.spiderPool;
+        mosquitoPool = rsc.poolMng.mosquitoPool;
+
+        mosquitoWeakShotPools[0] = rsc.poolMng.mosquitoWeakShotRedPool;
+        mosquitoWeakShotPools[1] = rsc.poolMng.mosquitoWeakShotGreenPool;
+        mosquitoWeakShotPools[2] = rsc.poolMng.mosquitoWeakShotBluePool;
+        mosquitoWeakShotPools[3] = rsc.poolMng.mosquitoWeakShotYellowPool;
+
         voxelPool = rsc.poolMng.voxelPool;
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
         currentColor = rsc.colorMng.CurrentColor;
@@ -103,7 +115,8 @@ public class ColoredObjectsManager : MonoBehaviour
         currentPlayer1ShotPool = player1ShotPools[colorIndex];
         currentPlayer1MuzzlePool = player1MuzzlePools[colorIndex];
         currentVoxelMat = voxelMats[colorIndex];
-        currentSpiderMat = spiderMats[colorIndex];     
+        currentSpiderMat = spiderMats[colorIndex];
+        currentMosquitoMat = mosquitoMats[colorIndex];    
     }
 
     private Material GetMaterial(Material[] matArray, ChromaColor color)
@@ -152,28 +165,22 @@ public class ColoredObjectsManager : MonoBehaviour
     }
 
     //Spider methods
-    public SpiderAIBehaviour GetSpider()
+    public SpiderAIBehaviour GetSpider(bool random = false)
     {
+        if(random)
+            return GetSpider(ChromaColorInfo.Random);
+
         //Get a spider from pool
-        GameObject spider = spiderPool.GetObject();       
+        SpiderAIBehaviour spider = spiderPool.GetObject();       
 
         if (spider != null)
         {
-            SpiderAIBehaviour spiderAI = spider.GetComponent<SpiderAIBehaviour>();
-            spiderAI.color = currentColor;
-            Material[] mats = spiderAI.rend.sharedMaterials;
-            mats[1] = currentSpiderMat;
-            spiderAI.rend.sharedMaterials = mats;
-
-            return spiderAI;
+            spider.color = currentColor;
+            spider.SetMaterials(new[] { currentSpiderMat });
+            return spider;
         }
 
         return null;
-    }
-
-    public SpiderAIBehaviour GetSpiderRandomColor()
-    {
-        return GetSpider(ChromaColorInfo.Random);
     }
 
     public SpiderAIBehaviour GetSpider(int offset)
@@ -192,24 +199,73 @@ public class ColoredObjectsManager : MonoBehaviour
     public SpiderAIBehaviour GetSpider(ChromaColor color)
     {
         //Get a spider from pool
-        GameObject spider = spiderPool.GetObject();
+        SpiderAIBehaviour spider = spiderPool.GetObject();
 
         if (spider != null)
         {
-            SpiderAIBehaviour spiderAI = spider.GetComponent<SpiderAIBehaviour>();
-            spiderAI.color = color;
+            spider.color = color;
 
-            spiderAI.SetMaterials(new[] { GetMaterial(spiderMats, color) });
+            spider.SetMaterials(new[] { GetMaterial(spiderMats, color) });
 
-            return spiderAI;
+            return spider;
         }
 
         return null;
     }
 
-    public Material GetSpiderMaterial(ChromaColor color)
+
+    //Mosquito methods
+    public MosquitoAIBehaviour GetMosquito(bool random = false)
     {
-        return GetMaterial(spiderMats, color);
+        if (random)
+            return GetMosquito(ChromaColorInfo.Random);
+
+        //Get a mosquito from pool
+        MosquitoAIBehaviour mosquito = mosquitoPool.GetObject();
+
+        if (mosquito != null)
+        {
+            mosquito.color = currentColor;
+            mosquito.SetMaterials(new[] { currentMosquitoMat });
+            return mosquito;
+        }
+
+        return null;
+    }
+
+    public MosquitoAIBehaviour GetMosquito(int offset)
+    {
+        int colorIndex = ((int)currentColor + offset) % ChromaColorInfo.Count;
+
+        //Offset can be negative
+        if (colorIndex < 0)
+            colorIndex = ChromaColorInfo.Count + colorIndex;
+
+        ChromaColor color = (ChromaColor)colorIndex;
+
+        return GetMosquito(color);
+    }
+
+    public MosquitoAIBehaviour GetMosquito(ChromaColor color)
+    {
+        //Get a mosquito from pool
+        MosquitoAIBehaviour mosquito = mosquitoPool.GetObject();
+
+        if (mosquito != null)
+        {
+            mosquito.color = color;
+
+            mosquito.SetMaterials(new[] { GetMaterial(mosquitoMats, color) });
+
+            return mosquito;
+        }
+
+        return null;
+    }
+
+    public MosquitoWeakShotController GetMosquitoWeakShot(ChromaColor color)
+    {
+        return mosquitoWeakShotPools[(int)color].GetObject();
     }
 
     //Voxel methods

@@ -49,7 +49,7 @@ public class SpiderAttractedToBarrelAIState : SpiderAIBaseState
         */
 
         if (spiderBlackboard.barrelController == null)
-            return spiderBlackboard.spider.attackingPlayerState;
+            return spiderBlackboard.attackingPlayerState;
 
         switch (subState)
         {

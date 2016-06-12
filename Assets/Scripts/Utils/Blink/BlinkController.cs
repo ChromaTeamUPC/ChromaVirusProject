@@ -11,7 +11,7 @@ public class BlinkController : MonoBehaviour {
 
     [Header("Blink Once")]
     [SerializeField]
-    private const float blinkOnceDefaultDuration = 0.001f;
+    private const float blinkOnceDefaultDuration = 0.045f;
 
     [Header("Blink Multiple Times")]
     [SerializeField]
@@ -47,7 +47,7 @@ public class BlinkController : MonoBehaviour {
 
         materialsNeedUpdate = false;
 
-        GameObject model = transform.Find("Model").gameObject;
+        GameObject model = transform.FindDeepChild("Model").gameObject;
         Renderer[] renderers = model.GetComponentsInChildren<Renderer>();
 
         if (renderers.Length > 0)
@@ -155,13 +155,14 @@ public class BlinkController : MonoBehaviour {
         }
     }
 
-    public void BlinkWhiteOnce(float duration = blinkMultipleIntervalDefaultDuration)
+    public void BlinkWhiteOnce(float duration = blinkOnceDefaultDuration)
     {
         StopPreviousBlinkings();
+
         StartCoroutine(DoBlinkOnce(white, duration));
     }
 
-    public void BlinkTransparentOnce(float duration = blinkMultipleIntervalDefaultDuration)
+    public void BlinkTransparentOnce(float duration = blinkOnceDefaultDuration)
     {
         StopPreviousBlinkings();
         StartCoroutine(DoBlinkOnce(transparent, duration));
@@ -180,7 +181,6 @@ public class BlinkController : MonoBehaviour {
         yield return new WaitForSeconds(duration);
 
         RestoreMaterials();
-
         blinking = false;
     }
 

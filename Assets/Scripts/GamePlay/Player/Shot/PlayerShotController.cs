@@ -91,7 +91,7 @@ public class PlayerShotController : MonoBehaviour {
 
         if (collision.collider.tag == "Enemy")
         {
-            SpiderAIBehaviour enemy = collision.collider.GetComponent<SpiderAIBehaviour>();
+            EnemyBaseAIBehaviour enemy = collision.collider.GetComponent<EnemyBaseAIBehaviour>();
             enemy.ImpactedByShot(color, damage, transform.forward * forceMultiplier, player);
         }
         else if (collision.collider.tag == "Vortex")

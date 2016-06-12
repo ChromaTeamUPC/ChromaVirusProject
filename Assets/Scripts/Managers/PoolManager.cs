@@ -1,99 +1,70 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
+
+[Serializable] public class PlayerShotPool : MonoBehaviourObjectPool<PlayerShotController> { }
+[Serializable] public class PlayerMuzzlePool : MonoBehaviourObjectPool<MuzzleController> { }
+[Serializable] public class VoxelPool : MonoBehaviourObjectPool<VoxelController> { }
+[Serializable] public class EnergyVoxelPool : MonoBehaviourObjectPool<EnergyVoxelController> { }
+[Serializable] public class SpiderPool : MonoBehaviourObjectPool<SpiderAIBehaviour> { }
+[Serializable] public class SpiderBoltPool : MonoBehaviourObjectPool<SpiderBolt> { }
+[Serializable] public class MosquitoPool : MonoBehaviourObjectPool<MosquitoAIBehaviour> { }
+[Serializable] public class MosquitoWeakShotPool : MonoBehaviourObjectPool<MosquitoWeakShotController> { }
 
 //Just a container for the different pools we have in the game
 public class PoolManager : MonoBehaviour
-{   
-    [SerializeField]
-    private ScriptObjectPoolDefiner player1ShotRedPoolDefiner;
-    [HideInInspector]
-    public ScriptObjectPool<PlayerShotController> player1ShotRedPool;
+{
+    public GameObject poolContainerPrefab;
 
-    [SerializeField]
-    private ScriptObjectPoolDefiner player1ShotGreenPoolDefiner;
-    [HideInInspector]
-    public ScriptObjectPool<PlayerShotController> player1ShotGreenPool;
+    public PlayerShotPool player1ShotRedPool = new PlayerShotPool();
+    public PlayerShotPool player1ShotGreenPool = new PlayerShotPool();
+    public PlayerShotPool player1ShotBluePool = new PlayerShotPool();
+    public PlayerShotPool player1ShotYellowPool = new PlayerShotPool();
 
-    [SerializeField]
-    private ScriptObjectPoolDefiner player1ShotBluePoolDefiner;
-    [HideInInspector]
-    public ScriptObjectPool<PlayerShotController> player1ShotBluePool;
+    public PlayerMuzzlePool player1MuzzleRedPool = new PlayerMuzzlePool();
+    public PlayerMuzzlePool player1MuzzleGreenPool = new PlayerMuzzlePool();
+    public PlayerMuzzlePool player1MuzzleBluePool = new PlayerMuzzlePool();
+    public PlayerMuzzlePool player1MuzzleYellowPool = new PlayerMuzzlePool();
 
-    [SerializeField]
-    private ScriptObjectPoolDefiner player1ShotYellowPoolDefiner;
-    [HideInInspector]
-    public ScriptObjectPool<PlayerShotController> player1ShotYellowPool;
+    public VoxelPool voxelPool = new VoxelPool();
+    public EnergyVoxelPool energyVoxelPool = new EnergyVoxelPool();
+    public ObjectPool voxelColliderPool = new ObjectPool();
 
-    [SerializeField]
-    private ScriptObjectPoolDefiner player1MuzzleRedPoolDefiner;
-    [HideInInspector]
-    public ScriptObjectPool<MuzzleController> player1MuzzleRedPool;
+    public SpiderPool spiderPool = new SpiderPool();
+    public SpiderBoltPool spiderBoltPool = new SpiderBoltPool();
 
-    [SerializeField]
-    private ScriptObjectPoolDefiner player1MuzzleGreenPoolDefiner;
-    [HideInInspector]
-    public ScriptObjectPool<MuzzleController> player1MuzzleGreenPool;
-
-    [SerializeField]
-    private ScriptObjectPoolDefiner player1MuzzleBluePoolDefiner;
-    [HideInInspector]
-    public ScriptObjectPool<MuzzleController> player1MuzzleBluePool;
-
-    [SerializeField]
-    private ScriptObjectPoolDefiner player1MuzzleYellowPoolDefiner;
-    [HideInInspector]
-    public ScriptObjectPool<MuzzleController> player1MuzzleYellowPool;
-
-    public ObjectPool spiderPool;
-
-    [SerializeField]
-    private ScriptObjectPoolDefiner spiderBoltPoolDefiner;
-    [HideInInspector]
-    public ScriptObjectPool<SpiderBolt> spiderBoltPool;
-
-    [SerializeField]
-    private ScriptObjectPoolDefiner voxelPoolDefiner;
-    [HideInInspector]
-    public ScriptObjectPool<VoxelController> voxelPool;
-    public ObjectPool voxelColliderPool;
-
-    [SerializeField]
-    private ScriptObjectPoolDefiner energyVoxelPoolDefiner;
-    [HideInInspector]
-    public ScriptObjectPool<EnergyVoxelController> energyVoxelPool;
-
-    void Awake()
-    {
-        player1ShotRedPool = CreateScriptObjectPool<PlayerShotController>(player1ShotRedPool, player1ShotRedPoolDefiner);
-        player1ShotGreenPool = CreateScriptObjectPool<PlayerShotController>(player1ShotGreenPool, player1ShotGreenPoolDefiner);
-        player1ShotBluePool = CreateScriptObjectPool<PlayerShotController>(player1ShotBluePool, player1ShotBluePoolDefiner);
-        player1ShotYellowPool = CreateScriptObjectPool<PlayerShotController>(player1ShotYellowPool, player1ShotYellowPoolDefiner);
-
-        player1MuzzleRedPool = CreateScriptObjectPool<MuzzleController>(player1MuzzleRedPool, player1MuzzleRedPoolDefiner);
-        player1MuzzleGreenPool = CreateScriptObjectPool<MuzzleController>(player1MuzzleGreenPool, player1MuzzleGreenPoolDefiner);
-        player1MuzzleBluePool = CreateScriptObjectPool<MuzzleController>(player1MuzzleBluePool, player1MuzzleBluePoolDefiner);
-        player1MuzzleYellowPool = CreateScriptObjectPool<MuzzleController>(player1MuzzleYellowPool, player1MuzzleYellowPoolDefiner);
-
-        spiderBoltPool = CreateScriptObjectPool<SpiderBolt>(spiderBoltPool, spiderBoltPoolDefiner);
-
-        voxelPool = CreateScriptObjectPool<VoxelController>(voxelPool, voxelPoolDefiner);
-        energyVoxelPool = CreateScriptObjectPool<EnergyVoxelController>(energyVoxelPool, energyVoxelPoolDefiner);
-    }
+    public MosquitoPool mosquitoPool = new MosquitoPool();
+    public MosquitoWeakShotPool mosquitoWeakShotRedPool = new MosquitoWeakShotPool();
+    public MosquitoWeakShotPool mosquitoWeakShotGreenPool = new MosquitoWeakShotPool();
+    public MosquitoWeakShotPool mosquitoWeakShotBluePool = new MosquitoWeakShotPool();
+    public MosquitoWeakShotPool mosquitoWeakShotYellowPool = new MosquitoWeakShotPool();
 
     void Start()
     {
+        player1ShotRedPool.Init(gameObject, poolContainerPrefab);
+        player1ShotGreenPool.Init(gameObject, poolContainerPrefab);
+        player1ShotBluePool.Init(gameObject, poolContainerPrefab);
+        player1ShotYellowPool.Init(gameObject, poolContainerPrefab);
+
+        player1MuzzleRedPool.Init(gameObject, poolContainerPrefab);
+        player1MuzzleGreenPool.Init(gameObject, poolContainerPrefab);
+        player1MuzzleBluePool.Init(gameObject, poolContainerPrefab);
+        player1MuzzleYellowPool.Init(gameObject, poolContainerPrefab);
+
+        voxelPool.Init(gameObject, poolContainerPrefab);
+        energyVoxelPool.Init(gameObject, poolContainerPrefab);
+        voxelColliderPool.Init(gameObject, poolContainerPrefab);
+
+        spiderPool.Init(gameObject, poolContainerPrefab);
+        spiderBoltPool.Init(gameObject, poolContainerPrefab);
+
+        mosquitoPool.Init(gameObject, poolContainerPrefab);
+        mosquitoWeakShotRedPool.Init(gameObject, poolContainerPrefab);
+        mosquitoWeakShotGreenPool.Init(gameObject, poolContainerPrefab);
+        mosquitoWeakShotBluePool.Init(gameObject, poolContainerPrefab);
+        mosquitoWeakShotYellowPool.Init(gameObject, poolContainerPrefab);
+
         Debug.Log("Pool Manager created");
-    }
-
-    private ScriptObjectPool<T> CreateScriptObjectPool<T>(ScriptObjectPool<T> scriptObjectPool, ScriptObjectPoolDefiner objectPoolDefiner) where T : MonoBehaviour
-    {
-        scriptObjectPool = new ScriptObjectPool<T>();
-        scriptObjectPool.objectsParent = objectPoolDefiner.gameObject;
-        scriptObjectPool.poolSize = objectPoolDefiner.poolSize;
-        scriptObjectPool.objectWhereScriptIs = objectPoolDefiner.objectWhereScriptIs;
-        scriptObjectPool.Init();
-
-        return scriptObjectPool;
     }
 
     void OnDestroy()

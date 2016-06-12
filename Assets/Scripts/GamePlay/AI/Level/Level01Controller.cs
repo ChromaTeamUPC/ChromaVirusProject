@@ -148,6 +148,8 @@ public class Level01Controller : MonoBehaviour
         //Get player
         PlayerController player = ((PlayerEventInfo)eventInfo).player;
 
+        player.gameObject.SetActive(false);
+
         //Check player remaining lives
         if (player.Lives > 0)
         {
@@ -155,6 +157,18 @@ public class Level01Controller : MonoBehaviour
             //spawn player in last activated zone
             StartCoroutine(RespawnPlayer(player));
         }
+    }
+
+    private IEnumerator RespawnPlayer(PlayerController player)
+    {
+        yield return new WaitForSeconds(respawnDelay);
+
+        PositionPlayer(player);
+        
+        if (!player.gameObject.activeSelf)
+            player.gameObject.SetActive(true);
+
+        player.Spawn();
     }
 
     private void PositionPlayer(PlayerController player)
@@ -179,18 +193,6 @@ public class Level01Controller : MonoBehaviour
                 break;
         }
         player.transform.SetParent(null);
-    }
-
-    private IEnumerator RespawnPlayer(PlayerController player)
-    {
-        yield return new WaitForSeconds(respawnDelay);
-
-        PositionPlayer(player);
-        
-        if (!player.gameObject.activeSelf)
-            player.gameObject.SetActive(true);
-
-        player.Spawn();
     }
 
     private void GameFinished(EventInfo eventInfo)

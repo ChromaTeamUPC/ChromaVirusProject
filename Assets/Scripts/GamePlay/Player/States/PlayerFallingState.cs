@@ -6,11 +6,16 @@ public class PlayerFallingState : PlayerBaseState
     public override void OnStateEnter()
     {
         //play falling animation
+        blackboard.player.StopTrail();
+        blackboard.animator.SetBool("Walking", false);
+        blackboard.animator.SetBool("Falling", true);
     }
 
     public override void OnStateExit()
     {
         blackboard.currentSpeed = blackboard.player.walkSpeed;
+        blackboard.player.StartTrail();
+        blackboard.animator.SetBool("Falling", false);
     }
 
     public override PlayerBaseState Update()

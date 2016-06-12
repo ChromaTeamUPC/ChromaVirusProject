@@ -14,7 +14,7 @@ public class SelectPlayerExecutor: BaseExecutor
     public override int Execute()
     {
         if((blackBoard.target == null) || (!blackBoard.target.activeSelf) || selectAction.overrideValidPlayer)
-            blackBoard.target = rsc.enemyMng.SelectTarget(blackBoard.entityGO);
+            blackBoard.target = rsc.enemyMng.SelectPlayer(blackBoard.entityGO);
         return action.nextAction;
     }
 }

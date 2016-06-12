@@ -1,45 +1,55 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
-public class ObjectPool : MonoBehaviour {
+[Serializable]
+public class ObjectPool {
 
-    public GameObject pooledObject;
+    public GameObject pooledPrefab;
     public int poolSize = 100;
+    public bool grow = false; //Use with extreme caution
 
+    private GameObject objectsParent;
     private Queue<GameObject> pool;
     private List<GameObject> auxList; //Used to maintain a permanent reference to every pooled object
 
-	// Use this for initialization
-	void Awake ()
+    public ObjectPool()
     {
-        Transform trans = transform;
+        Debug.Log("Object Pool created");
+    }
+
+    ~ObjectPool()
+    {
+        if (rsc.eventMng != null)
+        {
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, RecallObjects);
+        }
+        Debug.Log("Object Pool destroyed");
+    }
+
+    public void Init(GameObject poolParent, GameObject poolContainer)
+    {
+        objectsParent = GameObject.Instantiate(poolContainer) as GameObject;
+
+        objectsParent.transform.SetParent(poolParent.transform);
+        objectsParent.name = pooledPrefab.name + "Pool";
+
+        Transform trans = objectsParent.transform;
         GameObject aux;
+
         pool = new Queue<GameObject>(poolSize);
         auxList = new List<GameObject>();
         for (int i = 0; i < poolSize; ++i)
         {
-            aux = Instantiate(pooledObject);
+            aux = GameObject.Instantiate(pooledPrefab) as GameObject;
             aux.SetActive(false);
             aux.transform.SetParent(trans);
             pool.Enqueue(aux);
             auxList.Add(aux);
         }
-        Debug.Log("Object Pool created");
-    }
-
-    void Start()
-    {
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, RecallObjects);
-    }
-
-    void OnDestroy()
-    {
-        if(rsc.eventMng != null)
-        {
-            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, RecallObjects);
-        }
-        Debug.Log("Object Pool destroyed");
+        Debug.Log("Object Pool initialized");
     }
 
     private void RecallObjects(EventInfo eventInfo)
@@ -61,6 +71,15 @@ public class ObjectPool : MonoBehaviour {
             pooledObject.SetActive(true);
             return pooledObject;
         }
+        else if (grow)
+        {
+            //Grow will happen not now but when all the objects will be enqueued again and capacity will be full
+            GameObject aux = GameObject.Instantiate(pooledPrefab) as GameObject;
+            aux.SetActive(false);
+            aux.transform.SetParent(objectsParent.transform);
+            auxList.Add(aux);
+            return aux;
+        }
         else
             return null;
     }
@@ -68,6 +87,7 @@ public class ObjectPool : MonoBehaviour {
     public void AddObject(GameObject pooledObject)
     {
         pooledObject.SetActive(false);
+        pooledObject.transform.SetParent(objectsParent.transform);
         pool.Enqueue(pooledObject);
     }
 

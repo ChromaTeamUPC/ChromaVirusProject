@@ -30,16 +30,17 @@ public class SpiderLeadingGroupAIState : SpiderAIActionsBaseState
             Loop action list
         */
         if (spiderBlackboard.barrelController != null && spiderBlackboard.barrelController.currentColor == spiderBlackboard.spider.color)
-            return spiderBlackboard.spider.attractedToBarrelState;
+            return spiderBlackboard.attractedToBarrelState;
 
         spiderBlackboard.initialCheckDelay += Time.deltaTime;
         spiderBlackboard.checkAttackingSpidersDelay += Time.deltaTime;
         if (spiderBlackboard.groupInfo.followersCount == 0 && spiderBlackboard.initialCheckDelay >= 3f)
         {
-            if (spiderBlackboard.checkAttackingSpidersDelay >= 1f) //Check once per second
+            if ((spiderBlackboard.checkAttackingSpidersDelay >= 1f) //Check once per second
+                && (rsc.enemyMng.blackboard.timeRemainingToNextPlayerAttack == 0f))
             {
-                if (rsc.enemyMng.blackboard.attackingSpiders < spiderBlackboard.spider.spidersAttackingThreshold)
-                    return spiderBlackboard.spider.attackingPlayerState;
+                if (rsc.enemyMng.blackboard.attackingPlayerSpiders < spiderBlackboard.spider.spidersAttackingThreshold)
+                    return spiderBlackboard.attackingPlayerState;
 
                 spiderBlackboard.checkAttackingSpidersDelay = 0f;
             }
@@ -48,7 +49,7 @@ public class SpiderLeadingGroupAIState : SpiderAIActionsBaseState
         int updateResult = UpdateExecution();
 
         if (updateResult == AIAction.LIST_FINISHED)
-            return spiderBlackboard.spider.attackingPlayerState; //Should not happen because the list has to loop
+            return spiderBlackboard.attackingPlayerState; //Should not happen because the list has to loop
         else
         {
             AIBaseState result = ProcessUpdateExecutionResult(updateResult);

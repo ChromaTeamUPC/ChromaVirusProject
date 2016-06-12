@@ -16,6 +16,15 @@ public class SpiderBlackboard: EnemyBaseBlackboard
 
     public GameObject[] explosions = new GameObject[4];
 
+    public SpiderAIBaseState spawningState;
+    public SpiderAIActionsBaseState entryState;
+    public SpiderAIActionsBaseState attackingPlayerState;
+    public SpiderAIActionsBaseState leadingGroupState;
+    public SpiderAIActionsBaseState followingGroupState;
+    public SpiderAIBaseState attackingChipState;
+    public SpiderAIBaseState attractedToBarrelState;
+    public SpiderAIBaseState dyingState;
+
     public override void InitialSetup(GameObject e)
     {
         base.InitialSetup(e);
@@ -29,6 +38,15 @@ public class SpiderBlackboard: EnemyBaseBlackboard
             explosions[i].transform.parent = spider.transform;
             explosions[i].SetActive(false);
         }
+
+        spawningState = new SpiderSpawningAIState(this);
+        entryState = new SpiderEntryAIState(this);
+        attackingPlayerState = new SpiderAttackingPlayerAIState(this);
+        leadingGroupState = new SpiderLeadingGroupAIState(this);
+        followingGroupState = new SpiderFollowingGroupAIState(this);
+        attackingChipState = new SpiderAttackingChipAIState(this);
+        attractedToBarrelState = new SpiderAttractedToBarrelAIState(this);
+        dyingState = new SpiderDyingAIState(this);
 
         ResetValues();
     }

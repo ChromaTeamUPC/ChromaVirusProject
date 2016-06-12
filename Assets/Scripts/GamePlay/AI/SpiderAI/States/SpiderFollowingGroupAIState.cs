@@ -26,21 +26,22 @@ public class SpiderFollowingGroupAIState : SpiderAIActionsBaseState
             Loop action list
         */
         if (spiderBlackboard.barrelController != null && spiderBlackboard.barrelController.currentColor == spiderBlackboard.spider.color)
-            return spiderBlackboard.spider.attractedToBarrelState;
+            return spiderBlackboard.attractedToBarrelState;
 
         if(spiderBlackboard.groupInfo.leader == null || !spiderBlackboard.groupInfo.leader.gameObject.activeSelf)
         {
-            return spiderBlackboard.spider.leadingGroupState;
+            return spiderBlackboard.leadingGroupState;
         }
 
         spiderBlackboard.initialCheckDelay += Time.deltaTime;
         spiderBlackboard.checkAttackingSpidersDelay += Time.deltaTime;
         if (spiderBlackboard.initialCheckDelay >= 3f)
-        {         
-            if (spiderBlackboard.checkAttackingSpidersDelay >= 1f) //Check once per second
+        {
+            if ((spiderBlackboard.checkAttackingSpidersDelay >= 1f) //Check once per second
+                && (rsc.enemyMng.blackboard.timeRemainingToNextPlayerAttack == 0f))
             {
-                if (rsc.enemyMng.blackboard.attackingSpiders < spiderBlackboard.spider.spidersAttackingThreshold)
-                    return spiderBlackboard.spider.attackingPlayerState;
+                if (rsc.enemyMng.blackboard.attackingPlayerSpiders < spiderBlackboard.spider.spidersAttackingThreshold)
+                    return spiderBlackboard.attackingPlayerState;
 
                 spiderBlackboard.checkAttackingSpidersDelay = 0f;
             }
@@ -49,7 +50,7 @@ public class SpiderFollowingGroupAIState : SpiderAIActionsBaseState
         int updateResult = UpdateExecution();
 
         if (updateResult == AIAction.LIST_FINISHED)
-            return spiderBlackboard.spider.attackingPlayerState; //Should not happen because the list has to loop
+            return spiderBlackboard.attackingPlayerState; //Should not happen because the list has to loop
         else
         {
             return ProcessUpdateExecutionResult(updateResult);

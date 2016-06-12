@@ -21,7 +21,7 @@ public class LookAtExecutor : BaseExecutor
         }
         else if ((blackBoard.target == null) || (!blackBoard.target.activeSelf))
         {
-            blackBoard.target = rsc.enemyMng.SelectTarget(blackBoard.entityGO);
+            blackBoard.target = rsc.enemyMng.SelectPlayer(blackBoard.entityGO);
         }
 
         direction = blackBoard.target.transform.position - blackBoard.agent.transform.position;

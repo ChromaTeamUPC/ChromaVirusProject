@@ -21,7 +21,7 @@ public class SpiderAttackingChipAIState : SpiderAIBaseState {
     public override AIBaseState Update()
     {
         if (spiderBlackboard.barrelController != null && spiderBlackboard.barrelController.currentColor == spiderBlackboard.spider.color)
-            return spiderBlackboard.spider.attractedToBarrelState;
+            return spiderBlackboard.attractedToBarrelState;
 
         return null;
     }

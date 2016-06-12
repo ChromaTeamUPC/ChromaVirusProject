@@ -47,7 +47,7 @@ public class PlayerDashingState : PlayerBaseState
 
         Turn();
 
-        Shoot();
+        //Shoot();
 
         return null;
     }

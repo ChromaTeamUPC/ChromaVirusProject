@@ -2,34 +2,53 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class ScriptObjectPool<T> where T : MonoBehaviour
+public class MonoBehaviourObjectPool<T> where T : MonoBehaviour
 {
-    //This defines which game object will be the parent of the pooled objects so they don't fill the hierarchy root
-    public GameObject objectsParent;
-    //This defines which kind of GameObject has the script attached to, so we know what to instantiate
-    public GameObject objectWhereScriptIs; 
-    
+    public GameObject prefabWhereBehaviourIsIn;
     public int poolSize = 100;
+    public bool grow = false; //Use with extreme caution
 
-    //Use with caution
-    public bool grow = false;
-
+    private GameObject objectsParent;
     private Queue<T> pool;
-    private List<T> auxList;
+    private List<T> auxList; //Used to maintain a permanent reference to every pooled object
 
-    public ScriptObjectPool()
+    public MonoBehaviourObjectPool()
     {
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, RecallObjects);
-        Debug.Log("Script Object Pool created");
+        Debug.Log("MonoBehaviour Object Pool created");
     }
 
-    ~ScriptObjectPool()
+    ~MonoBehaviourObjectPool()
     {
         if (rsc.eventMng != null)
         {
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, RecallObjects);
         }
-        Debug.Log("Script Object Pool destroyed");
+        Debug.Log("MonoBehaviour Object Pool destroyed");
+    }
+
+    public void Init(GameObject poolParent, GameObject poolContainer)
+    {
+        objectsParent = GameObject.Instantiate(poolContainer) as GameObject;
+
+        objectsParent.transform.SetParent(poolParent.transform);
+        objectsParent.name = prefabWhereBehaviourIsIn.name + "Pool";
+
+        Transform trans = objectsParent.transform;
+        GameObject aux;
+
+        pool = new Queue<T>(poolSize);
+        auxList = new List<T>();
+        for (int i = 0; i < poolSize; ++i)
+        {
+            aux = GameObject.Instantiate(prefabWhereBehaviourIsIn) as GameObject;
+            aux.SetActive(false);
+            aux.transform.SetParent(trans);
+            T comp = aux.GetComponent<T>();
+            pool.Enqueue(comp);
+            auxList.Add(comp);
+        }
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, RecallObjects);
+        Debug.Log("MonoBehaviour Object Pool initialized");
     }
 
     private void RecallObjects(EventInfo eventInfo)
@@ -40,25 +59,6 @@ public class ScriptObjectPool<T> where T : MonoBehaviour
             {
                 AddObject(obj);
             }
-        }
-    }
-
-    // Use this for initialization
-    public void Init()
-    {
-        Transform trans = objectsParent.transform;
-        GameObject aux;
-
-        pool = new Queue<T>(poolSize);
-        auxList = new List<T>();
-        for (int i = 0; i < poolSize; ++i)
-        {
-            aux = GameObject.Instantiate(objectWhereScriptIs);
-            aux.SetActive(false);
-            aux.transform.SetParent(trans);
-            T comp = aux.GetComponent<T>();
-            pool.Enqueue(comp);
-            auxList.Add(comp);
         }
     }
 
@@ -73,10 +73,12 @@ public class ScriptObjectPool<T> where T : MonoBehaviour
         else if (grow)
         {
             //Grow will happen not now but when all the objects will be enqueued again and capacity will be full
-            GameObject aux = GameObject.Instantiate(objectWhereScriptIs);
+            GameObject aux = GameObject.Instantiate(prefabWhereBehaviourIsIn) as GameObject;
             aux.SetActive(false);
             aux.transform.SetParent(objectsParent.transform);
-            return aux.GetComponent<T>();
+            T comp = aux.GetComponent<T>();
+            auxList.Add(comp);
+            return comp;
         }
         else
             return null;

@@ -19,19 +19,16 @@ public class SpiderEntryAIState : SpiderAIActionsBaseState {
         If none of above keep same state
         */
         if (spiderBlackboard.barrelController != null && spiderBlackboard.barrelController.currentColor == spiderBlackboard.spider.color)
-            return spiderBlackboard.spider.attractedToBarrelState;
+            return spiderBlackboard.attractedToBarrelState;
 
         if (spiderBlackboard.spider.CheckPlayersDistance())
-            return spiderBlackboard.spider.attackingPlayerState;
+            return spiderBlackboard.attackingPlayerState;
 
         int updateResult = UpdateExecution();
 
         if (updateResult == AIAction.LIST_FINISHED)
-            return spiderBlackboard.spider.attackingPlayerState;
+            return spiderBlackboard.attackingPlayerState;
         else
             return ProcessUpdateExecutionResult(updateResult);
     }
-
-
-    
 }

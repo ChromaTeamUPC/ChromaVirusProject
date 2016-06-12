@@ -10,12 +10,13 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
 
     public float shotForceModifier = 1f;
 
+    public float wrongColorDamageModifier = 0.5f;
     public int energyVoxelsSpawnedOnDie = 0;
 
     [HideInInspector]
     public ChromaColor color;
 
-    private VoxelizationClient voxelization;
+    protected VoxelizationClient voxelization;
     [HideInInspector]
     public Renderer rend;
     [HideInInspector]
@@ -33,7 +34,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         voxelization = GetComponentInChildren<VoxelizationClient>();
         rend = GetComponentInChildren<Renderer>();
         mainCollider = GetComponent<Collider>();
-        dyingCollider = transform.Find("DyingCollider").gameObject;
+        dyingCollider = transform.FindDeepChild("DyingCollider").gameObject;
         blinkController = GetComponent<BlinkController>();
     }
 
@@ -59,6 +60,15 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         blackboard.dieAnimationEnded = true;
     }
 
+    protected virtual void Update()
+    {
+        AIBaseState newState = currentState.Update();
+
+        if (newState != null)
+        {
+            ChangeState(newState);
+        }
+    }
 
     public void SpawnVoxels()
     {

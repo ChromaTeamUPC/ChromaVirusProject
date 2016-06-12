@@ -75,6 +75,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Renderer bodyRend;
     [SerializeField]
+    private GameObject shield;
     private Renderer shieldRend;
     private CharacterController ctrl;
     private ColoredObjectsManager coloredObjMng;
@@ -94,7 +95,8 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         blackboard.Init(this);
-        
+        blackboard.shield = shield;
+        shieldRend = shield.GetComponent<Renderer>();
         voxelization = GetComponentInChildren<VoxelizationClient>();
         ctrl = GetComponent<CharacterController>();
 
@@ -120,6 +122,12 @@ public class PlayerController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
         }
         Debug.Log("Player " + playerId + " destroyed.");
+    }
+
+    void OnDisable()
+    {
+        currentState = null;
+        blackboard.animator.Rebind();
     }
 
     private void GameStopped(EventInfo eventInfo)
@@ -216,7 +224,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (blackboard.active)
+        if (blackboard.active && blackboard.alive)
         {
             //Reset flags
             blackboard.ResetFlagVariables();
@@ -230,7 +238,8 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            UpdatePosition();
+            if(gameObject.activeSelf) //Check to avoid a warning trying to update CharacterController if we just died and deactivated gameObject
+                UpdatePosition();
 
             if (blackboard.currentShootingStatus != blackboard.newShootingStatus)
             {
@@ -322,6 +331,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
+
     public void ReceiveAttack(float damage, ChromaColor color, Vector3 origin)
     {
         PlayerBaseState newState = currentState.AttackReceived(damage, color, origin);
@@ -379,8 +389,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //Particle Systems methods
+    public void ActivateShield()
+    {
+        blackboard.shield.SetActive(true);
+    }
 
+    public void DeactivateShield()
+    {
+        blackboard.shield.SetActive(false);
+    }
+
+    //Particle Systems methods
     public void SpawnDashParticles()
     {
         dashPSs[(int)blackboard.currentColor].Play();
@@ -398,6 +417,16 @@ public class PlayerController : MonoBehaviour
         electricPS.Stop();
         trail.enabled = true;
         ChangeState(blackboard.idleState);
+    }
+
+    public void StartTrail()
+    {
+        trail.enabled = true;
+    }
+
+    public void StopTrail()
+    {
+        trail.enabled = false;
     }
 
     public void StartSpecialEnergyCharging()

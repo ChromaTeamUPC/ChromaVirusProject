@@ -13,8 +13,13 @@ public class GlobalAIBlackboard
     public float timeSinceLastDeviceAttack;
     public HashSet<EnemyBaseAIBehaviour> enemiesAttackingDevice;
 
-    public int attackingEnemies;
-    public int attackingSpiders;
+    public const float timeBetweenPlayerAttacks = 1f;
+    public int attackingPlayerEnemies;
+    public int attackingPlayerSpiders;
+    public int attackingPlayerMosquitoes;
+    public int activeMosquitoShots;
+
+    public float timeRemainingToNextPlayerAttack;
 
     public void InitValues()
     {
@@ -27,19 +32,55 @@ public class GlobalAIBlackboard
         timeSinceLastDeviceAttack = 0f;
         enemiesAttackingDevice = new HashSet<EnemyBaseAIBehaviour>();
 
-        attackingEnemies = 0;
-        attackingSpiders = 0;
+        attackingPlayerEnemies = 0;
+        attackingPlayerSpiders = 0;
+        attackingPlayerMosquitoes = 0;
+        activeMosquitoShots = 0;
+        timeRemainingToNextPlayerAttack = 0f;
     }
 
     public void SpiderStartsAttacking()
     {
-        ++attackingEnemies;
-        ++attackingSpiders;
+        ++attackingPlayerEnemies;
+        ++attackingPlayerSpiders;
+        timeRemainingToNextPlayerAttack = timeBetweenPlayerAttacks;
     }
 
     public void SpiderStopsAttacking()
     {
-        --attackingEnemies;
-        --attackingSpiders;
+        --attackingPlayerEnemies;
+        --attackingPlayerSpiders;
+    }
+
+    public void MosquitoStartsAttacking()
+    {
+        ++attackingPlayerEnemies;
+        ++attackingPlayerMosquitoes;
+    }
+
+    public void MosquitoStopsAttacking()
+    {
+        --attackingPlayerEnemies;
+        --attackingPlayerMosquitoes;
+    }
+
+    public void MosquitoShotSpawned()
+    {
+        ++activeMosquitoShots;
+    }
+
+    public void MosquitoShotDestroyed()
+    {
+        --activeMosquitoShots;
+    }
+
+    public void DecrementTimes()
+    {
+        if (timeRemainingToNextPlayerAttack > 0f)
+        {
+            timeRemainingToNextPlayerAttack -= Time.deltaTime;
+            if (timeRemainingToNextPlayerAttack < 0f)
+                timeRemainingToNextPlayerAttack = 0f;
+        }
     }
 }

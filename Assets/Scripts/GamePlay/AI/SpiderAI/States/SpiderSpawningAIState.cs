@@ -38,13 +38,13 @@ public class SpiderSpawningAIState : SpiderAIBaseState {
         {
             //If spider is in no group, go to entry state
             if (spiderBlackboard.groupInfo == null)
-                return spiderBlackboard.spider.entryState;
+                return spiderBlackboard.entryState;
             //Else if spider is leader, go to leading group state
             else if (spiderBlackboard.groupInfo.leader == spiderBlackboard.spider)
-                return spiderBlackboard.spider.leadingGroupState;
+                return spiderBlackboard.leadingGroupState;
             //else return following group state
             else
-                return spiderBlackboard.spider.followingGroupState;
+                return spiderBlackboard.followingGroupState;
 
         }
        

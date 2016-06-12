@@ -9,6 +9,9 @@ public class PlayerSpawningState : PlayerBaseState {
         PlayerEventInfo.eventInfo.player = blackboard.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNING, PlayerEventInfo.eventInfo);
         blackboard.alive = true;
+        blackboard.shield.SetActive(true);
+        blackboard.player.StartTrail();
+        blackboard.currentSpeed = blackboard.player.walkSpeed;
     }
 
     public override PlayerBaseState Update()
