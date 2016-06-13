@@ -5,7 +5,6 @@ public class MosquitoBlackboard : EnemyBaseBlackboard
 {
     public MosquitoAIBehaviour mosquito;
 
-    public GameObject player;
     public float checkPlayerElapsedTime;
 
     public float timeSinceLastAttack;

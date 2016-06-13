@@ -92,17 +92,23 @@ public class PlayerShotController : MonoBehaviour {
         if (collision.collider.tag == "Enemy")
         {
             EnemyBaseAIBehaviour enemy = collision.collider.GetComponent<EnemyBaseAIBehaviour>();
-            enemy.ImpactedByShot(color, damage, transform.forward * forceMultiplier, player);
+            if (enemy == null) 
+                enemy = collision.collider.GetComponentInParent<EnemyBaseAIBehaviour>();
+
+            if (enemy != null)
+                enemy.ImpactedByShot(color, damage, transform.forward * forceMultiplier, player);
         }
         else if (collision.collider.tag == "Vortex")
         {
             VortexController vortex = collision.collider.GetComponent<VortexController>();
-            vortex.ImpactedByShot(color, damage);
+            if (vortex != null)
+                vortex.ImpactedByShot(color, damage);
         }
         else if (collision.collider.tag == "Barrel")
         {
             CapacitorImpacted barrel = collision.collider.GetComponent<CapacitorImpacted>();
-            barrel.controller.ImpactedByShot(color);
+            if (barrel != null)
+                barrel.controller.ImpactedByShot(color);
         }
 
         shotCollider.enabled = false;

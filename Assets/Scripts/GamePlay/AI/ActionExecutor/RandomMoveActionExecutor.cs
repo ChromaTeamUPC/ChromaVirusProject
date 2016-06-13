@@ -1,0 +1,132 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class RandomMoveActionExecutor : BaseExecutor
+{
+    private RandomMoveAIAction randomMoveAction;
+
+    private float speed;
+    private int totalDisplacements;
+    private float waitTime;
+    private float elapsedTime;
+    private float distance;
+    private float angle;
+    private Vector3 direction;
+
+    public override void SetAction(AIAction act)
+    {
+        base.SetAction(act);
+        randomMoveAction = (RandomMoveAIAction)act;       
+
+        //Decide the number of displacements
+        if (randomMoveAction.totalDisplacementsMin == randomMoveAction.totalDisplacementsMax)
+            totalDisplacements = randomMoveAction.totalDisplacementsMax;
+        else
+            totalDisplacements = Random.Range(randomMoveAction.totalDisplacementsMin, randomMoveAction.totalDisplacementsMax + 1);
+
+        if (totalDisplacements > 0)
+            SetNewParameters();
+    }
+
+    private void SetNewParameters()
+    {
+        //Calculate speed
+        if (randomMoveAction.speedMin == randomMoveAction.speedMax)
+            speed = randomMoveAction.speedMax;
+        else
+            speed = Random.Range(randomMoveAction.speedMin, randomMoveAction.speedMax);
+
+        //Calculate pause
+        if (randomMoveAction.pauseBetweenDisplacementsMin == randomMoveAction.pauseBetweenDisplacementsMax)
+            waitTime = randomMoveAction.pauseBetweenDisplacementsMax;
+        else
+            waitTime = Random.Range(randomMoveAction.pauseBetweenDisplacementsMin, randomMoveAction.pauseBetweenDisplacementsMax);
+
+        //Calculate distance
+        if (randomMoveAction.distanceMin == randomMoveAction.distanceMax)
+            distance = randomMoveAction.distanceMax;
+        else
+            distance = Random.Range(randomMoveAction.distanceMin, randomMoveAction.distanceMax);
+
+        //Calculate angle
+        if (randomMoveAction.angleMin == randomMoveAction.angleMax)
+            angle = randomMoveAction.angleMax;
+        else
+            angle = Random.Range(randomMoveAction.angleMin, randomMoveAction.angleMax);
+
+        if (Random.Range(0f, 1f) < 0.5f)
+            angle *= -1;
+
+        direction = Vector3.zero;
+        if(randomMoveAction.reference == RandomMoveAIAction.Reference.PLAYER)
+        {
+            if (blackBoard.player != null && blackBoard.player.activeSelf)
+                direction = blackBoard.player.transform.position - blackBoard.entityGO.transform.position;
+        }
+        else
+        {
+            if (blackBoard.target != null && blackBoard.target.activeSelf)
+                direction = blackBoard.target.transform.position - blackBoard.entityGO.transform.position;
+        }
+
+        if(direction != Vector3.zero)
+        {
+            direction.y = 0f;
+            direction.Normalize();
+            direction = Quaternion.Euler(0, angle, 0) * direction;
+            direction *= distance;
+
+            blackBoard.agent.speed = speed * rsc.gameInfo.globalEnemySpeedFactor;
+            blackBoard.agent.destination = blackBoard.entityGO.transform.position + direction;
+
+            //blackBoard.animator.SetFloat("walkSpeed", blackBoard.agent.speed / 4);
+            //blackBoard.animator.SetBool("walking", true);
+
+            blackBoard.agent.Resume();
+        }
+    }
+
+
+    public override int Execute()
+    {
+        if(totalDisplacements > 0)
+        {
+            /*If arrived
+             *  decrement displacements
+             *  if displacement > 0
+             *      wait time
+             *      set new parameters
+             *  else
+             *      return action finished
+             */
+
+            if ((blackBoard.agent.hasPath && blackBoard.agent.remainingDistance <= 1.5f))
+            {
+                blackBoard.agent.velocity = Vector3.zero;
+
+                //blackBoard.animator.SetFloat("walkSpeed", 1);
+
+                --totalDisplacements;
+                if(totalDisplacements > 0)
+                {
+                    SetNewParameters();
+
+                    return AIAction.ACTION_NOT_FINISHED;
+                }
+                else
+                {
+                    return randomMoveAction.nextAction;
+                }
+            }
+            else
+            {
+                return AIAction.ACTION_NOT_FINISHED;
+            }
+        }
+        else
+        {
+            return randomMoveAction.nextAction;
+        }
+    }
+
+}

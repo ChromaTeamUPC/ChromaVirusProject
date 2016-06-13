@@ -7,26 +7,13 @@ public class AIAction
     public const int ACTION_NOT_FINISHED = -2;
     public const int LIST_FINISHED = -3;
 
-    public enum OffsetType
-    {
-        POSITION_ZERO,      // same coordinates as the waypoint
-        AROUND_WORLD_RELATIVE,              // around the target, at some degrees and distance relative to the world's forward vector
-        AROUND_AGENT_RELATIVE,              // around the target, at some degrees and distance relative to the target-AIAgent's vector
-        AROUND_FORWARD_RELATIVE             // around the target, at some degrees and distance relative to the target's forward vector
-    }
-
-    public enum FocusType
-    {
-        FIXED,              // the waypoint is calculated only the first time
-        CONTINUOUS          // the waypoint calculation is refreshed every frame
-    }
-
     public enum Type
     {
         NONE,
         SELECT_PLAYER,
         STANDING_IDLE,
         MOVE,
+        RANDOM_MOVE,
         LOOK_AT,
         SPIDER_BITE
     }
@@ -63,6 +50,20 @@ public class StandingIdleAIAction : AIAction
 
 public class MoveAIAction : AIAction
 {
+    public enum OffsetType
+    {
+        POSITION_ZERO,                      // same coordinates as the waypoint
+        AROUND_WORLD_RELATIVE,              // around the target, at some degrees and distance relative to the world's forward vector
+        AROUND_AGENT_RELATIVE,              // around the target, at some degrees and distance relative to the target-AIAgent's vector
+        AROUND_FORWARD_RELATIVE             // around the target, at some degrees and distance relative to the target's forward vector
+    }
+
+    public enum FocusType
+    {
+        FIXED,              // the waypoint is calculated only the first time
+        CONTINUOUS          // the waypoint calculation is refreshed every frame
+    }
+
     public string targetId;
     public float speed;
     public FocusType focusType;
@@ -87,6 +88,49 @@ public class MoveAIAction : AIAction
         inertia = ine;
         maxTime = maxT;
     }
+}
+
+public class RandomMoveAIAction : AIAction
+{
+    public enum Reference
+    {
+        DESTINATION,
+        PLAYER
+    }
+
+    public float speedMin;
+    public float speedMax;
+    public int totalDisplacementsMin;
+    public int totalDisplacementsMax;
+    public float pauseBetweenDisplacementsMin;
+    public float pauseBetweenDisplacementsMax;
+    public float distanceMin;
+    public float distanceMax;
+    public float angleMin;
+    public float angleMax;
+    public Reference reference;
+
+    public RandomMoveAIAction(float spMin, float spMax, int totalDispMin, int totalDispMax, float pauseMin, float pauseMax, float distMin, float distMax, float angMin, float angMax, Reference refer = Reference.PLAYER, int next = AIAction.NEXT_ACTION) : base(Type.RANDOM_MOVE, next)
+    {
+        speedMin = spMin;
+        speedMax = spMax;
+        totalDisplacementsMin = totalDispMin;
+        totalDisplacementsMax = totalDispMax;
+        pauseBetweenDisplacementsMin = pauseMin;
+        pauseBetweenDisplacementsMax = pauseMax;
+        distanceMin = distMin;
+        distanceMax = distMax;
+        angleMin = angMin;
+        angleMax = angMax;
+        reference = refer;
+    }
+
+
+    public RandomMoveAIAction(float sp, int totalDisp = 3, float pause = 0.5f, float dist = 3f, float angMin = 10f, float angMax = 90f, Reference refer = Reference.PLAYER, int next = AIAction.NEXT_ACTION) : 
+        this (sp, sp, totalDisp, totalDisp, pause, pause, dist, dist, angMin, angMax, refer, next)
+    {
+    }
+
 }
 
 public class LookAtAIAction: AIAction

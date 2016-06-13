@@ -12,6 +12,7 @@ public class AIActionsBaseState : AIBaseState
     protected StandingIdleExecutor standIdleExecutor;
     protected LookAtExecutor lookAtExecutor;
     protected MoveActionExecutor moveExecutor;
+    protected RandomMoveActionExecutor randomMoveExecutor;
     
 
     public AIActionsBaseState(EnemyBaseBlackboard bb): base(bb)
@@ -23,7 +24,9 @@ public class AIActionsBaseState : AIBaseState
         lookAtExecutor = new LookAtExecutor();
         lookAtExecutor.Init(blackboard);
         moveExecutor = new MoveActionExecutor();
-        moveExecutor.Init(blackboard);    
+        moveExecutor.Init(blackboard);
+        randomMoveExecutor = new RandomMoveActionExecutor();
+        randomMoveExecutor.Init(blackboard);
     }
 
     virtual public void Init(List<AIAction> actions)
@@ -104,6 +107,10 @@ public class AIActionsBaseState : AIBaseState
 
                 case AIAction.Type.MOVE:
                     currentExecutor = moveExecutor;
+                    break;
+
+                case AIAction.Type.RANDOM_MOVE:
+                    currentExecutor = randomMoveExecutor;
                     break;
             }
 

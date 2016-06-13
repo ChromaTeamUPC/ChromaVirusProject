@@ -33,20 +33,20 @@ public class MoveActionExecutor: BaseExecutor
         {
             switch (moveAction.offsetType)
             {
-                case AIAction.OffsetType.POSITION_ZERO:
+                case MoveAIAction.OffsetType.POSITION_ZERO:
                     direction = new Vector3(0, 0, 0);
                     break;
-                case AIAction.OffsetType.AROUND_WORLD_RELATIVE:
+                case MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE:
                     direction = new Vector3(0, 0, 1);
                     direction = Quaternion.Euler(0, moveAction.angle, 0) * direction;
                     direction *= moveAction.distance;
                     break;
-                case AIAction.OffsetType.AROUND_AGENT_RELATIVE:
+                case MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE:
                     direction = (blackBoard.agent.transform.position - blackBoard.target.transform.position).normalized;
                     direction = Quaternion.Euler(0, moveAction.angle, 0) * direction;
                     direction *= moveAction.distance;
                     break;
-                case AIAction.OffsetType.AROUND_FORWARD_RELATIVE:
+                case MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE:
                     direction = blackBoard.target.transform.forward;
                     direction = Quaternion.Euler(0, moveAction.angle, 0) * direction;
                     direction *= moveAction.distance;
@@ -74,7 +74,7 @@ public class MoveActionExecutor: BaseExecutor
     {
         elapsedTime += Time.deltaTime;
 
-        if (moveAction.focusType == AIAction.FocusType.CONTINUOUS)
+        if (moveAction.focusType == MoveAIAction.FocusType.CONTINUOUS)
         {
             if(moveAction.targetId == "leader")
             {
@@ -90,14 +90,14 @@ public class MoveActionExecutor: BaseExecutor
 
             if (blackBoard.target != null)
             {
-                if (moveAction.offsetType == AIAction.OffsetType.AROUND_AGENT_RELATIVE)
+                if (moveAction.offsetType == MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE)
                 {
                     direction = (blackBoard.agent.transform.position - blackBoard.target.transform.position).normalized;
                     direction = Quaternion.Euler(0, moveAction.angle, 0) * direction;
                     direction *= moveAction.distance;
                 }
 
-                if (moveAction.offsetType == AIAction.OffsetType.AROUND_FORWARD_RELATIVE)
+                if (moveAction.offsetType == MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE)
                 {
                     direction = blackBoard.target.transform.forward;
                     direction = Quaternion.Euler(0, moveAction.angle, 0) * direction;

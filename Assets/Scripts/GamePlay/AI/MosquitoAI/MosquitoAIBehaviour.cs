@@ -40,6 +40,7 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
         blackboard = mosquitoBlackboard;
 
         rotationObject = transform.Find("RotationObject");
+        mainCollider = rotationObject.GetComponent<Collider>();
     }
 
     public override void SetMaterials(Material[] materials)

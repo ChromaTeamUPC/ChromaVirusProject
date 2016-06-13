@@ -342,40 +342,40 @@ public class EnemyManager : MonoBehaviour
 
     void CreateAIActionLists()
     {
-        rolling.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
-        rolling.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -30, 4, false, 0, 1));
+        rolling.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
+        rolling.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -30, 4, false, 0, 1));
 
-        three_front_1.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
-        three_front_1.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 0, 5, false, 0, 1));
-        three_front_2.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 2));
-        three_front_2.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 315, 4, false, 0, 1));
-        three_front_3.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
-        three_front_3.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 45, 4, false, 0, 1));
+        three_front_1.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
+        three_front_1.Add(new MoveAIAction(leaderTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 0, 5, false, 0, 1));
+        three_front_2.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 2));
+        three_front_2.Add(new MoveAIAction(leaderTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 315, 4, false, 0, 1));
+        three_front_3.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
+        three_front_3.Add(new MoveAIAction(leaderTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 45, 4, false, 0, 1));
 
-        three_back_1.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3));
-        three_back_1.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3, false, 0, 1));
-        three_back_2.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 4));
-        three_back_2.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 4, false, 0, 1));
-        three_back_3.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3));
-        three_back_3.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3, false, 0, 1));
+        three_back_1.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3));
+        three_back_1.Add(new MoveAIAction(leaderTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3, false, 0, 1));
+        three_back_2.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 4));
+        three_back_2.Add(new MoveAIAction(leaderTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 4, false, 0, 1));
+        three_back_3.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3));
+        three_back_3.Add(new MoveAIAction(leaderTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3, false, 0, 1));
 
-        triangle_1.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
-        triangle_1.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 0, 5, false, 0, 1));
-        triangle_2.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 120, 3));
-        triangle_2.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 120, 3, false, 0, 1));
-        triangle_3.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 2));
-        triangle_3.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 2, false, 0, 1));
-        triangle_4.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 240, 3));
-        triangle_4.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 240, 3, false, 0, 1));
+        triangle_1.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
+        triangle_1.Add(new MoveAIAction(leaderTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 0, 5, false, 0, 1));
+        triangle_2.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 120, 3));
+        triangle_2.Add(new MoveAIAction(leaderTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 120, 3, false, 0, 1));
+        triangle_3.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 2));
+        triangle_3.Add(new MoveAIAction(leaderTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 2, false, 0, 1));
+        triangle_4.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 240, 3));
+        triangle_4.Add(new MoveAIAction(leaderTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 240, 3, false, 0, 1));
 
-        quad_1.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 2));
-        quad_1.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 325, 5, false, 0, 1));
-        quad_2.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
-        quad_2.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 35, 5, false, 0, 1));
-        quad_3.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3));
-        quad_3.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3, false, 0, 1));
-        quad_4.Add(new MoveAIAction(leaderTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3));
-        quad_4.Add(new MoveAIAction(leaderTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3, false, 0, 1));
+        quad_1.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 180, 2));
+        quad_1.Add(new MoveAIAction(leaderTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 325, 5, false, 0, 1));
+        quad_2.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
+        quad_2.Add(new MoveAIAction(leaderTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 35, 5, false, 0, 1));
+        quad_3.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3));
+        quad_3.Add(new MoveAIAction(leaderTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 135, 3, false, 0, 1));
+        quad_4.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3));
+        quad_4.Add(new MoveAIAction(leaderTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 225, 3, false, 0, 1));
 
         // Leader action lists
         level01Z02leader1.Add(new MoveAIAction("Z02WP01", 6f));
@@ -450,42 +450,42 @@ public class EnemyManager : MonoBehaviour
 
         //default spider attack: select player and go straight to it, bite, wait and repeat
         defaultSpiderAttack.Add(new SelectPlayerAIAction());
-        defaultSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        defaultSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         defaultSpiderAttack.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         defaultSpiderAttack.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
         defaultSpiderAttack2.Add(new SelectPlayerAIAction());
-        defaultSpiderAttack2.Add(new MoveAIAction(playerTargetTxt, 9.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        defaultSpiderAttack2.Add(new MoveAIAction(playerTargetTxt, 9.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         defaultSpiderAttack2.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         defaultSpiderAttack2.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
         defaultSpiderAttack3.Add(new SelectPlayerAIAction());
-        defaultSpiderAttack3.Add(new MoveAIAction(playerTargetTxt, 10.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        defaultSpiderAttack3.Add(new MoveAIAction(playerTargetTxt, 10.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         defaultSpiderAttack3.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         defaultSpiderAttack3.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
         // default spider attack by color
         defaultRedSpiderAttack.Add(new SelectPlayerAIAction());
-        defaultRedSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 0, 5));
-        defaultRedSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        defaultRedSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 0, 5));
+        defaultRedSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         defaultRedSpiderAttack.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         defaultRedSpiderAttack.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
         defaultGreenSpiderAttack.Add(new SelectPlayerAIAction());
-        defaultGreenSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 90, 5));
-        defaultGreenSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        defaultGreenSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 90, 5));
+        defaultGreenSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         defaultGreenSpiderAttack.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         defaultGreenSpiderAttack.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
         defaultBlueSpiderAttack.Add(new SelectPlayerAIAction());
-        defaultBlueSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 180, 5));
-        defaultBlueSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        defaultBlueSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 180, 5));
+        defaultBlueSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         defaultBlueSpiderAttack.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         defaultBlueSpiderAttack.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
         defaultYellowSpiderAttack.Add(new SelectPlayerAIAction());
-        defaultYellowSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 270, 5));
-        defaultYellowSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        defaultYellowSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 270, 5));
+        defaultYellowSpiderAttack.Add(new MoveAIAction(playerTargetTxt, 8.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         defaultYellowSpiderAttack.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         defaultYellowSpiderAttack.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
@@ -500,107 +500,108 @@ public class EnemyManager : MonoBehaviour
         level01Z01SpiderEntry02.Add(new MoveAIAction("Z01WP06", 10f, true, 0, AIAction.LIST_FINISHED));
 
         level01Z01spiderEntry03.Add(new SelectPlayerAIAction());
-        level01Z01spiderEntry03.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 0, 3f));
+        level01Z01spiderEntry03.Add(new MoveAIAction(playerTargetTxt, 7.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, 0, 3f));
 
-        level01Z01spiderAttack03.Add(new MoveAIAction(playerTargetTxt, 20.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 6f, false, 1f));
-        level01Z01spiderAttack03.Add(new MoveAIAction(playerTargetTxt, 8.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z01spiderAttack03.Add(new MoveAIAction(playerTargetTxt, 20.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 6f, false, 1f));
+        level01Z01spiderAttack03.Add(new MoveAIAction(playerTargetTxt, 8.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z01spiderAttack03.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z01spiderAttack03.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
         level01Z01spiderAttack03.Add(new SelectPlayerAIAction());
-        level01Z01spiderAttack03.Add(new MoveAIAction(playerTargetTxt, 7.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 10f, false, 6f));
+        level01Z01spiderAttack03.Add(new MoveAIAction(playerTargetTxt, 7.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 10f, false, 6f));
 
         level01Z01spiderEntry04.Add(new MoveAIAction("Z01WP07", 10f, true, 0f, AIAction.LIST_FINISHED));
 
         level01Z01spiderAttack04.Add(new SelectPlayerAIAction());
-        level01Z01spiderAttack04.Add(new MoveAIAction(playerTargetTxt, 8.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z01spiderAttack04.Add(new MoveAIAction(playerTargetTxt, 8.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z01spiderAttack04.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z01spiderAttack04.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
         level01Z01spiderEntry05.Add(new MoveAIAction("Z01WP08", 10f, true, 0f, AIAction.LIST_FINISHED));
 
         level01Z01spiderAttack05.Add(new SelectPlayerAIAction());
-        level01Z01spiderAttack05.Add(new MoveAIAction(playerTargetTxt, 8.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z01spiderAttack05.Add(new MoveAIAction(playerTargetTxt, 8.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z01spiderAttack05.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z01spiderAttack05.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
         level01Z01spiderAttack06.Add(new SelectPlayerAIAction());
-        level01Z01spiderAttack06.Add(new MoveAIAction(playerTargetTxt, 6.0f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z01spiderAttack06.Add(new MoveAIAction(playerTargetTxt, 6.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z01spiderAttack06.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z01spiderAttack06.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
-        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 10f, true, 5f));
-        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 8f, true, 4f));
-        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 6f, true, 4f));
-        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 4f, true, 4f, AIAction.LIST_FINISHED));
+        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 10f, true, 5f));
+        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 8f, true, 4f));
+        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 6f, true, 4f));
+        level01Z01spiderEntry07.Add(new MoveAIAction("Z01WP03", 14f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 4f, true, 4f, AIAction.LIST_FINISHED));
 
         level01Z01spiderAttack07.Add(new SelectPlayerAIAction());
-        level01Z01spiderAttack07.Add(new MoveAIAction(playerTargetTxt, 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.POSITION_ZERO));
+        level01Z01spiderAttack07.Add(new MoveAIAction(playerTargetTxt, 20f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z01spiderAttack07.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z01spiderAttack07.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
-        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 10f, true, 5f));
-        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 8f, true, 4f));
-        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 6f, true, 4f));
-        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 4f, true, 4f));
+        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 10f, true, 5f));
+        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 8f, true, 4f));
+        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 6f, true, 4f));
+        level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 4f, true, 4f));
 
         level01Z01MosquitoPatrol01.Add(new MoveAIAction("Z01SWP02", 7f));
         level01Z01MosquitoPatrol01.Add(new MoveAIAction("Z01SWP03", 7f));
         level01Z01MosquitoPatrol01.Add(new MoveAIAction("Z01SWP04", 7f));
         level01Z01MosquitoPatrol01.Add(new MoveAIAction("Z01SWP01", 7f));
+        level01Z01MosquitoPatrol01.Add(new RandomMoveAIAction(10f, 15f, 3, 6, 0f, 0f, 5f, 10f, 10, 90));
 
         // LEVEL 01 ZONE 02-------------------------------------------------------------------------------------------------------------------------------
 
 
         // SERPENTINAS: de momento no se usarán en la zona 2
         /*
-        level01Z02spiderEntry01a.Add(new MoveAIAction("Z02WP01", 12f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 45, 5f));
+        level01Z02spiderEntry01a.Add(new MoveAIAction("Z02WP01", 12f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 45, 5f));
         level01Z02spiderEntry01a.Add(new MoveAIAction("Z02WP01", 12f));
-        level01Z02spiderEntry01a.Add(new MoveAIAction("Z02WP01", 12f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 135, 5f));
-        level01Z02spiderEntry01a.Add(new MoveAIAction("Z02WP02", 12f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_WORLD_RELATIVE, -135, 5f));
+        level01Z02spiderEntry01a.Add(new MoveAIAction("Z02WP01", 12f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 135, 5f));
+        level01Z02spiderEntry01a.Add(new MoveAIAction("Z02WP02", 12f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, -135, 5f));
         level01Z02spiderEntry01a.Add(new MoveAIAction("Z02WP02", 12f));
-        level01Z02spiderEntry01a.Add(new MoveAIAction("Z02WP02", 12f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_WORLD_RELATIVE, -45, 5f));
+        level01Z02spiderEntry01a.Add(new MoveAIAction("Z02WP02", 12f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, -45, 5f));
 
-        level01Z02spiderEntry02a.Add(new MoveAIAction("Z02WP01", 15f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_WORLD_RELATIVE, -20, 10f));
+        level01Z02spiderEntry02a.Add(new MoveAIAction("Z02WP01", 15f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, -20, 10f));
         level01Z02spiderEntry02a.Add(new MoveAIAction("Z02WP01", 15f, true, 0f, AIAction.LIST_FINISHED));
 
         level01Z02spiderAttack02a.Add(new SelectPlayerAIAction());
-        level01Z02spiderAttack02a.Add(new MoveAIAction(playerTargetTxt, 6f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 0, 4f));
-        level01Z02spiderAttack02a.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z02spiderAttack02a.Add(new MoveAIAction(playerTargetTxt, 6f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 0, 4f));
+        level01Z02spiderAttack02a.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z02spiderAttack02a.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z02spiderAttack02a.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
-        level01Z02spiderEntry02b.Add(new MoveAIAction("Z02WP01", 15f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_WORLD_RELATIVE, -20, 10f));
+        level01Z02spiderEntry02b.Add(new MoveAIAction("Z02WP01", 15f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, -20, 10f));
         level01Z02spiderEntry02b.Add(new MoveAIAction("Z02WP01", 15f, true, 0f, AIAction.LIST_FINISHED));
 
         level01Z02spiderAttack02b.Add(new SelectPlayerAIAction());
-        level01Z02spiderAttack02b.Add(new MoveAIAction(playerTargetTxt, 6f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 180, 4f));
-        level01Z02spiderAttack02b.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z02spiderAttack02b.Add(new MoveAIAction(playerTargetTxt, 6f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 180, 4f));
+        level01Z02spiderAttack02b.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z02spiderAttack02b.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z02spiderAttack02b.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
         level01Z02spiderEntry03a.Add(new MoveAIAction("Z02WP01", 15f));
-        level01Z02spiderEntry03a.Add(new MoveAIAction("Z02WP01", 15f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 135, 7f));
-        level01Z02spiderEntry03a.Add(new MoveAIAction("Z02WP01", 15f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 90, 10f, true, 0f, AIAction.LIST_FINISHED));
+        level01Z02spiderEntry03a.Add(new MoveAIAction("Z02WP01", 15f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 135, 7f));
+        level01Z02spiderEntry03a.Add(new MoveAIAction("Z02WP01", 15f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 90, 10f, true, 0f, AIAction.LIST_FINISHED));
 
         level01Z02spiderAttack03a.Add(new SelectPlayerAIAction());
-        level01Z02spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 6f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 90, 4f));
-        level01Z02spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z02spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 6f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 90, 4f));
+        level01Z02spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z02spiderAttack03a.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z02spiderAttack03a.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
         level01Z02spiderEntry03b.Add(new MoveAIAction("Z02WP01", 15f));
-        level01Z02spiderEntry03b.Add(new MoveAIAction("Z02WP01", 15f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 135, 7f));
-        level01Z02spiderEntry03b.Add(new MoveAIAction("Z02WP01", 15f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 90, 10f, true, 0f, AIAction.LIST_FINISHED));
+        level01Z02spiderEntry03b.Add(new MoveAIAction("Z02WP01", 15f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 135, 7f));
+        level01Z02spiderEntry03b.Add(new MoveAIAction("Z02WP01", 15f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 90, 10f, true, 0f, AIAction.LIST_FINISHED));
 
         level01Z02spiderAttack03b.Add(new SelectPlayerAIAction());
-        level01Z02spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 6f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 270, 4f));
-        level01Z02spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z02spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 6f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 270, 4f));
+        level01Z02spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z02spiderAttack03b.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z02spiderAttack03b.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
         level01Z02spiderEntry04a.Add(new MoveAIAction("Z02WP02", 13f, true, 2f, AIAction.LIST_FINISHED));
 
         level01Z02spiderAttack04a.Add(new SelectPlayerAIAction());
-        level01Z02spiderAttack04a.Add(new MoveAIAction(playerTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z02spiderAttack04a.Add(new MoveAIAction(playerTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z02spiderAttack04a.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z02spiderAttack04a.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
         level01Z02spiderAttack04a.Add(new MoveAIAction("Z02WP02", 13f, true, 2f));
@@ -608,7 +609,7 @@ public class EnemyManager : MonoBehaviour
         level01Z02spiderEntry04b.Add(new MoveAIAction("Z02WP01", 13f, true, 2f, AIAction.LIST_FINISHED));
 
         level01Z02spiderAttack04b.Add(new SelectPlayerAIAction());
-        level01Z02spiderAttack04b.Add(new MoveAIAction(playerTargetTxt, 10f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z02spiderAttack04b.Add(new MoveAIAction(playerTargetTxt, 10f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z02spiderAttack04b.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z02spiderAttack04b.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
         level01Z02spiderAttack04b.Add(new MoveAIAction("Z02WP01", 13f, true, 2f));
@@ -616,61 +617,61 @@ public class EnemyManager : MonoBehaviour
 
         // LEVEL 01 ZONE 03-------------------------------------------------------------------------------------------------------------------------------
 
-        level01Z03spiderEntry01a.Add(new MoveAIAction("Z03WP07", 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 8));
+        level01Z03spiderEntry01a.Add(new MoveAIAction("Z03WP07", 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 8));
 
-        level01Z03spiderEntry01b.Add(new MoveAIAction("Z03WP07", 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 10f, true, 3f));
+        level01Z03spiderEntry01b.Add(new MoveAIAction("Z03WP07", 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 10f, true, 3f));
         level01Z03spiderEntry01b.Add(new SelectPlayerAIAction());
-        level01Z03spiderEntry01b.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO, 0, 0, true, 6f));
+        level01Z03spiderEntry01b.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO, 0, 0, true, 6f));
 
         //-----------
-        level01Z03spiderEntry02a.Add(new MoveAIAction("Z03WP03", 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.POSITION_ZERO, 0, 0f, true, 0f, AIAction.LIST_FINISHED));
+        level01Z03spiderEntry02a.Add(new MoveAIAction("Z03WP03", 20f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.POSITION_ZERO, 0, 0f, true, 0f, AIAction.LIST_FINISHED));
 
         level01Z03spiderAttack02a.Add(new SelectPlayerAIAction());
-        level01Z03spiderAttack02a.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 180, 5f));
-        level01Z03spiderAttack02a.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z03spiderAttack02a.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 180, 5f));
+        level01Z03spiderAttack02a.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z03spiderAttack02a.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z03spiderAttack02a.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
-        level01Z03spiderAttack02a.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 90, 10f, true, 0));
+        level01Z03spiderAttack02a.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 90, 10f, true, 0));
 
         //-----------
-        level01Z03spiderEntry02b.Add(new MoveAIAction("Z03WP02", 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.POSITION_ZERO, 0, 0f, true, 0f, AIAction.LIST_FINISHED));
+        level01Z03spiderEntry02b.Add(new MoveAIAction("Z03WP02", 20f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.POSITION_ZERO, 0, 0f, true, 0f, AIAction.LIST_FINISHED));
 
         level01Z03spiderAttack02b.Add(new SelectPlayerAIAction());
-        level01Z03spiderAttack02b.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 270, 5f));
-        level01Z03spiderAttack02b.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z03spiderAttack02b.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 270, 5f));
+        level01Z03spiderAttack02b.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z03spiderAttack02b.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z03spiderAttack02b.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
-        level01Z03spiderAttack02b.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 0, 10f, true, 0));
+        level01Z03spiderAttack02b.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 0, 10f, true, 0));
 
         //-----------
-        level01Z03spiderEntry02c.Add(new MoveAIAction("Z03WP01", 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.POSITION_ZERO, 0, 0f, true, 0f, AIAction.LIST_FINISHED));
+        level01Z03spiderEntry02c.Add(new MoveAIAction("Z03WP01", 20f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.POSITION_ZERO, 0, 0f, true, 0f, AIAction.LIST_FINISHED));
 
         level01Z03spiderAttack02c.Add(new SelectPlayerAIAction());
-        level01Z03spiderAttack02c.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 0, 5f));
-        level01Z03spiderAttack02c.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z03spiderAttack02c.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 0, 5f));
+        level01Z03spiderAttack02c.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z03spiderAttack02c.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z03spiderAttack02c.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
-        level01Z03spiderAttack02c.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_WORLD_RELATIVE, 270, 10f, true, 0));
+        level01Z03spiderAttack02c.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 270, 10f, true, 0));
 
         //-----------
-        level01Z03spiderEntry03a.Add(new MoveAIAction("Z03WP07", 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 8, true, 2f, AIAction.LIST_FINISHED));
+        level01Z03spiderEntry03a.Add(new MoveAIAction("Z03WP07", 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 8, true, 2f, AIAction.LIST_FINISHED));
 
         level01Z03spiderAttack03a.Add(new SelectPlayerAIAction());
-        level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 0, 5f));
-        level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -90, 6f, false));
-        level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_AGENT_RELATIVE, -90, 6f, false));
-        level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, 0, 5f));
+        level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 20f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -90, 6f, false));
+        level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 20f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -90, 6f, false));
+        level01Z03spiderAttack03a.Add(new MoveAIAction(playerTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z03spiderAttack03a.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z03spiderAttack03a.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
         //-----------
-        level01Z03spiderEntry03b.Add(new MoveAIAction("Z03WP05", 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 8, true, 2f, AIAction.LIST_FINISHED));
+        level01Z03spiderEntry03b.Add(new MoveAIAction("Z03WP05", 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 8, true, 2f, AIAction.LIST_FINISHED));
 
         level01Z03spiderAttack03b.Add(new SelectPlayerAIAction());
-        level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 8f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 0, 5f));
-        level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 90, 6f, false));
-        level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 20f, AIAction.FocusType.FIXED, AIAction.OffsetType.AROUND_AGENT_RELATIVE, 90, 6f, false));
-        level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 15f, AIAction.FocusType.CONTINUOUS, AIAction.OffsetType.POSITION_ZERO));
+        level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 8f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, 0, 5f));
+        level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 20f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, 90, 6f, false));
+        level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 20f, MoveAIAction.FocusType.FIXED, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, 90, 6f, false));
+        level01Z03spiderAttack03b.Add(new MoveAIAction(playerTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.POSITION_ZERO));
         level01Z03spiderAttack03b.Add(new SpiderBiteAIAction(spiderBiteDefaultWaitTime));
         level01Z03spiderAttack03b.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
     }
@@ -689,12 +690,12 @@ public class EnemyManager : MonoBehaviour
         z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.GREEN, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01 ,1f));
         z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.BLUE, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01, 1f));
         z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01, 1f));
-        plan0101.sequentialWaves.Add(z01wave01);
-        /*z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01SpiderEntry01, defaultSpiderAttack, 0f, 6, 1f)); 
+
+        z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01SpiderEntry01, defaultSpiderAttack, 0f, 6, 1f)); 
         plan0101.sequentialWaves.Add(z01wave01);
 
         
-        List<WaveAction> z01wave02 = new List<WaveAction>();
+        /*List<WaveAction> z01wave02 = new List<WaveAction>();
         z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01SpiderEntry02, defaultSpiderAttack, 0f, 6, 1f));
         plan0101.sequentialWaves.Add(z01wave02);
 
@@ -734,7 +735,7 @@ public class EnemyManager : MonoBehaviour
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", level01Z01spiderEntry07, defaultGreenSpiderAttack, 0.7f, 2, 0.7f));
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP01", level01Z01spiderEntry07, defaultRedSpiderAttack, 0.7f, 2, 0.7f));
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP01", level01Z01spiderEntry07, defaultYellowSpiderAttack, 0.7f, 2, 0.7f));
-        plan0101.sequentialWaves.Add(z01wave07);*/
+        plan0101.sequentialWaves.Add(z01wave07);/*
 
 
         ////plan0102---------------------------------------------------------------------------------------------------------------

@@ -18,7 +18,8 @@ public class EnemyBaseBlackboard
     public bool canReceiveDamage;
 
     public GameObject target;
-    public bool targetIsPlayer;
+    //public bool targetIsPlayer;
+    public GameObject player;
 
     public CapacitorController barrelController;
 
@@ -43,7 +44,8 @@ public class EnemyBaseBlackboard
 
         canReceiveDamage = false;      
         target = null;
-        targetIsPlayer = false;
+        //targetIsPlayer = false;
+        player = null;
         barrelController = null;
 
         groupInfo = null;
@@ -58,7 +60,8 @@ public class EnemyBaseBlackboard
 
         canReceiveDamage = false;
         target = null;
-        targetIsPlayer = false;
+        //targetIsPlayer = false;
+        player = null;
         barrelController = null;
 
         groupInfo = null;
