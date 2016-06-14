@@ -9,7 +9,7 @@ public class PlayerSpeedBumpState : PlayerBaseState
     {
         elapsedTime = 0f;
 
-        blackboard.currentSpeed = blackboard.player.initialDashSpeed;
+        blackboard.currentSpeed = blackboard.player.fastMovingSpeed;
 
         blackboard.animator.SetBool("Walking", true);
     }

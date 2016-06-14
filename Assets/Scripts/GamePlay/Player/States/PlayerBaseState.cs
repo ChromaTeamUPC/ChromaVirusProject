@@ -338,6 +338,8 @@ public class PlayerBaseState
 
             float angle = Vector3.Angle(forward, playerEnemy);
 
+            Debug.Log("Angle: " + angle + " // Attack color: " + ChromaColorInfo.GetColorName(color) + " // Current color: " + ChromaColorInfo.GetColorName(blackboard.currentColor));
+
             if(angle < blackboard.player.maxAngleToShieldBlocking)
             {
                 if(color == blackboard.currentColor)
