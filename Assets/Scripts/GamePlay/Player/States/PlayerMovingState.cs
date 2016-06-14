@@ -36,7 +36,8 @@ public class PlayerMovingState : PlayerBaseState
         }
         else if (DashPressed())
         {
-            return blackboard.dashingState;
+            //return blackboard.dashingState;
+            return blackboard.speedBumpState;
         }
         else
         {

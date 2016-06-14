@@ -22,6 +22,18 @@ public class PlayerController : MonoBehaviour
     public float moveThreshold = 0.2f;
     public float angularSpeed = 1080;
     public float aimThreshold = 0.2f;
+
+    public float speedRatioReductionOnContact = 0.1f;
+    public int damageOnContact = 5;
+    public float speedReductionTimeOnContact = 0.3f;
+    public float cooldownTime = 1f;
+
+    [Header("Fast Moving & Dash Settings")]
+    public float movingRechargeXSecond = 33.3f;
+    public float fastMovingCostXSecond = 100f;
+    public float fastMovingSpeed = 20f;
+    public float dashCost = 25f;
+    public float dashDetectionThreshold = 0.2f;
     public float maxDashTime = 1.0f;
     public float initialDashSpeed = 20.0f;
     public float dashDeceleration = 5f;
@@ -29,17 +41,12 @@ public class PlayerController : MonoBehaviour
     public float minDashSpeed = 1;
     //public float dashStoppingSpeed = 1.0f;
 
-    public float speedRatioReductionOnContact = 0.1f;
-    public int damageOnContact = 5;
-    public float speedReductionTimeOnContact = 0.3f;
-    public float cooldownTime = 1f;
-
     private float verticalVelocity = 0f; 
 
     //Attack
     [Header("Energy Settings")]
     public float maxEnergy = 100f;
-    public float energyIncreaseWhenBlockedCorrectColor = 10f;
+    public float energyIncreaseWhenBlockedCorrectColor = 1f;
     public float specialAttackNecessaryEnergy = 50f;
 
 
@@ -66,6 +73,11 @@ public class PlayerController : MonoBehaviour
     private ParticleSystem chargePS;
     [SerializeField]
     private ParticleSystem specialPS;
+    [SerializeField]
+    private ParticleSystem noShootPS;
+    private GameObject noShootPSGO;
+    [SerializeField]
+    private ParticleSystem attackBlockedPS;
 
     //Misc
     [Header("Miscelaneous Settings")]
@@ -101,6 +113,8 @@ public class PlayerController : MonoBehaviour
         ctrl = GetComponent<CharacterController>();
 
         trail = GetComponentInChildren<TrailRenderer>();
+
+        noShootPSGO = noShootPS.gameObject;
 
         Debug.Log("Player " + playerId + " created.");
     }
@@ -228,6 +242,7 @@ public class PlayerController : MonoBehaviour
         {
             //Reset flags
             blackboard.ResetFlagVariables();
+            RechargeMovingCharge();
 
             if (currentState != null)
             {
@@ -246,8 +261,19 @@ public class PlayerController : MonoBehaviour
                 blackboard.currentShootingStatus = blackboard.newShootingStatus;
                 blackboard.animator.SetBool("Shooting", blackboard.currentShootingStatus);
                 if (!blackboard.currentShootingStatus)
+                {
                     blackboard.doubleShooting = false;
+                    StopNoShoot();
+                }
             }
+        }
+    }
+
+    private void RechargeMovingCharge()
+    {
+        if (blackboard.fastMovementCharge < 100f)
+        {
+            blackboard.fastMovementCharge += Time.deltaTime * movingRechargeXSecond;
         }
     }
 
@@ -442,5 +468,20 @@ public class PlayerController : MonoBehaviour
     public void StartSpecial()
     {
         specialPS.Play();
+    }
+
+    public void StartNoShoot()
+    {
+        noShootPSGO.SetActive(true);
+    }
+
+    public void StopNoShoot()
+    {
+        noShootPSGO.SetActive(false);
+    }
+
+    public void PlayAttackBlocked()
+    {
+        attackBlockedPS.Play();
     }
 }

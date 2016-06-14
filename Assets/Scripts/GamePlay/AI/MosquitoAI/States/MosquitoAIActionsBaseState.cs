@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MosquitoAIActionsBaseState : AIActionsBaseState
 {
-    //protected SpiderBiteExecutor spiderBiteExecutor;
+    protected MosquitoShotExecutor mosquitoShotExecutor;
 
     protected MosquitoBlackboard mosquitoBlackboard;
 
@@ -11,8 +11,8 @@ public class MosquitoAIActionsBaseState : AIActionsBaseState
     {
         mosquitoBlackboard = bb;
 
-        //spiderBiteExecutor = new SpiderBiteExecutor();
-        //spiderBiteExecutor.Init(spiderBlackboard);
+        mosquitoShotExecutor = new MosquitoShotExecutor();
+        mosquitoShotExecutor.Init(mosquitoBlackboard);
     }
 
 
@@ -24,10 +24,10 @@ public class MosquitoAIActionsBaseState : AIActionsBaseState
 
             switch (action.actionType)
             {
-                /*case AIAction.Type.SPIDER_BITE:
-                    currentExecutor = spiderBiteExecutor;
+                case AIAction.Type.MOSQUITO_ATTACK:
+                    currentExecutor = mosquitoShotExecutor;
                     currentExecutor.SetAction(action);
-                    break;*/
+                    break;
 
                 default:
                     base.UpdateExecutor();

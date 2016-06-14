@@ -5,19 +5,6 @@ public class PlayerBaseState
 {   
     protected PlayerBlackboard blackboard;
 
-    private int playerRayCastMask;
-    private int playerPhysicsLayer;
-    private int enemyPhysicsPlayer;
-
-    //Controller mapped attributes
-    public string moveHorizontal;
-    public string moveVertical;
-    public string aimHorizontal;
-    public string aimVertical;
-    public string fire;
-    public string dash;
-    public string special;
-
     //Shoot variables
     private float nextFire;
     private bool isFirstShot = true;
@@ -31,25 +18,6 @@ public class PlayerBaseState
     public virtual void Init(PlayerBlackboard bb)
     {
         blackboard = bb;
-
-        string playerStr = "";
-        switch (blackboard.player.Id)
-        {
-            case 1: playerStr = "P1"; break;
-            case 2: playerStr = "P2"; break;
-        }
-
-        moveHorizontal = playerStr + "_Horizontal";
-        moveVertical = playerStr + "_Vertical";
-        aimHorizontal = playerStr + "_AimHorizontal";
-        aimVertical = playerStr + "_AimVertical";
-        fire = playerStr + "_Fire";
-        dash = playerStr + "_Dash";
-        special = playerStr + "_Special";
-
-        playerRayCastMask = LayerMask.GetMask(playerStr + "RayCast");
-        playerPhysicsLayer = LayerMask.NameToLayer("Player");
-        enemyPhysicsPlayer = LayerMask.NameToLayer("Enemy");
 
         coloredObjMng = rsc.coloredObjectsMng;
     }
@@ -75,7 +43,7 @@ public class PlayerBaseState
 
     private Vector3 GetScreenRelativeDirection(Vector3 direction)
     {
-        return rsc.camerasMng.GetDirection(blackboard.player.transform.position, direction, playerRayCastMask);
+        return rsc.camerasMng.GetDirection(blackboard.player.transform.position, direction, blackboard.playerRayCastMask);
     }
 
     protected bool Turn()
@@ -88,8 +56,8 @@ public class PlayerBaseState
 
     private bool GetAimingDirectionFromInput()
     {
-        float h = Input.GetAxisRaw(aimHorizontal);
-        float v = Input.GetAxisRaw(aimVertical);
+        float h = Input.GetAxisRaw(blackboard.aimHorizontal);
+        float v = Input.GetAxisRaw(blackboard.aimVertical);
 
         blackboard.aimingDirection = Vector3.zero;
         bool result = false;
@@ -128,8 +96,8 @@ public class PlayerBaseState
     }
     protected bool GetHorizontalDirectionFromInput()
     {
-        float h = Input.GetAxisRaw(moveHorizontal);
-        float v = Input.GetAxisRaw(moveVertical);
+        float h = Input.GetAxisRaw(blackboard.moveHorizontal);
+        float v = Input.GetAxisRaw(blackboard.moveVertical);
 
         blackboard.horizontalDirection = Vector3.zero;
         bool result = false;
@@ -192,7 +160,7 @@ public class PlayerBaseState
 
     protected bool DashPressed()
     {
-        bool result = Input.GetButtonDown(dash);
+        bool result = Input.GetButtonDown(blackboard.dash);
 
         if (result)
             blackboard.keyPressed = true;
@@ -202,7 +170,7 @@ public class PlayerBaseState
 
     protected bool SpecialPressed()
     {
-        bool result = Input.GetButtonDown(special);
+        bool result = Input.GetButtonDown(blackboard.special);
 
         if (result)
             blackboard.keyPressed = true;
@@ -216,7 +184,7 @@ public class PlayerBaseState
     {
         bool shooting = false;
 
-        if (Input.GetAxisRaw(fire) > 0.1f)
+        if (Input.GetAxisRaw(blackboard.fire) > 0.1f)
         {
             shooting = true;
             blackboard.keyPressed = true;
@@ -300,6 +268,10 @@ public class PlayerBaseState
                     }
                 }
             }
+            else
+            {
+                blackboard.player.StartNoShoot();
+            }
         }
         else
         {
@@ -382,6 +354,7 @@ public class PlayerBaseState
 
         if (shouldRechargeEnergy)
         {
+            blackboard.player.PlayAttackBlocked();
             blackboard.player.RechargeEnergy(blackboard.player.energyIncreaseWhenBlockedCorrectColor);
         }
 
@@ -406,11 +379,11 @@ public class PlayerBaseState
         blackboard.blinkController.BlinkTransparentMultipleTimes(blackboard.player.invulnerabilityTimeAfterHit);
 
         blackboard.isInvulnerable = true;
-        Physics.IgnoreLayerCollision(playerPhysicsLayer, enemyPhysicsPlayer, true);
+        Physics.IgnoreLayerCollision(blackboard.playerPhysicsLayer, blackboard.enemyPhysicsPlayer, true);
 
         yield return new WaitForSeconds(blackboard.player.invulnerabilityTimeAfterHit);
 
-        Physics.IgnoreLayerCollision(playerPhysicsLayer, enemyPhysicsPlayer, false);
+        Physics.IgnoreLayerCollision(blackboard.playerPhysicsLayer, blackboard.enemyPhysicsPlayer, false);
         blackboard.isInvulnerable = false;
     }
 
@@ -476,6 +449,7 @@ public class PlayerBaseState
     protected void EndColorMismatch()
     {
         blackboard.canShoot = true;
+        blackboard.player.StopNoShoot();
         PlayerEventInfo.eventInfo.player = blackboard.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_COLOR_MISMATCH_END, PlayerEventInfo.eventInfo);
 

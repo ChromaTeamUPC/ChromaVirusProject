@@ -7,6 +7,7 @@ public class RandomMoveActionExecutor : BaseExecutor
 
     private float speed;
     private int totalDisplacements;
+    private bool waiting;
     private float waitTime;
     private float elapsedTime;
     private float distance;
@@ -30,6 +31,9 @@ public class RandomMoveActionExecutor : BaseExecutor
 
     private void SetNewParameters()
     {
+        waiting = false;
+        elapsedTime = 0f;
+
         //Calculate speed
         if (randomMoveAction.speedMin == randomMoveAction.speedMax)
             speed = randomMoveAction.speedMax;
@@ -89,43 +93,63 @@ public class RandomMoveActionExecutor : BaseExecutor
 
     public override int Execute()
     {
-        if(totalDisplacements > 0)
+        elapsedTime += Time.deltaTime;
+
+        if (waiting)
         {
-            /*If arrived
-             *  decrement displacements
-             *  if displacement > 0
-             *      wait time
-             *      set new parameters
-             *  else
-             *      return action finished
-             */
-
-            if ((blackBoard.agent.hasPath && blackBoard.agent.remainingDistance <= 1.5f))
+            if (elapsedTime > waitTime)
             {
-                blackBoard.agent.velocity = Vector3.zero;
+                waiting = false;
+                elapsedTime = 0f;
+                SetNewParameters();
+            }
 
-                //blackBoard.animator.SetFloat("walkSpeed", 1);
+            return AIAction.ACTION_NOT_FINISHED;
+        }
+        else
+        {
+            if (totalDisplacements > 0)
+            {
+                /*If arrived
+                 *  decrement displacements
+                 *  if displacement > 0
+                 *      wait time
+                 *      set new parameters
+                 *  else
+                 *      return action finished
+                 */
 
-                --totalDisplacements;
-                if(totalDisplacements > 0)
+
+                if ((blackBoard.agent.hasPath && blackBoard.agent.remainingDistance <= 1f)
+                    || elapsedTime > randomMoveAction.maxTime)
                 {
-                    SetNewParameters();
+                    blackBoard.agent.velocity = Vector3.zero;
+                    //blackBoard.agent.Stop();
+                    
+                    //blackBoard.animator.SetFloat("walkSpeed", 1);
 
-                    return AIAction.ACTION_NOT_FINISHED;
+                    --totalDisplacements;
+                    if (totalDisplacements > 0)
+                    {
+                        
+                        waiting = true;
+                        elapsedTime = 0f;
+                        return AIAction.ACTION_NOT_FINISHED;
+                    }
+                    else
+                    {
+                        return randomMoveAction.nextAction;
+                    }
                 }
                 else
                 {
-                    return randomMoveAction.nextAction;
+                    return AIAction.ACTION_NOT_FINISHED;
                 }
             }
             else
             {
-                return AIAction.ACTION_NOT_FINISHED;
+                return randomMoveAction.nextAction;
             }
-        }
-        else
-        {
-            return randomMoveAction.nextAction;
         }
     }
 

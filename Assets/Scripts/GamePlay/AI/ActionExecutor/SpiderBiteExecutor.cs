@@ -11,7 +11,7 @@ public class SpiderBiteExecutor : BaseExecutor
     public override void Init(EnemyBaseBlackboard bb)
     {
         base.Init(bb);
-        spiderBlackBoard = (SpiderBlackboard)bb;      
+        spiderBlackBoard = (SpiderBlackboard)bb;
     }
 
     public override void SetAction(AIAction act)
@@ -44,6 +44,7 @@ public class SpiderBiteExecutor : BaseExecutor
         }
         else if (blackBoard.attackAnimationTrigger)
         {
+            blackBoard.attackAnimationTrigger = false;
             SpiderBolt bolt = rsc.poolMng.spiderBoltPool.GetObject();
             if (bolt != null)
             {

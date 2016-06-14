@@ -11,12 +11,17 @@ public class PlayerBlackboard
     public Animator animator;
     public GameObject shield;
 
+    public int playerRayCastMask;
+    public int playerPhysicsLayer;
+    public int enemyPhysicsPlayer;
+
     //Player states
     public PlayerSpawningState spawningState;
     public PlayerIdleState idleState;
     public PlayerLongIdleState longIdleState;
     public PlayerMovingState movingState;
     public PlayerDashingState dashingState;
+    public PlayerSpeedBumpState speedBumpState;
     public PlayerSpecialState specialState;
     public PlayerSwingingState swingingState;
     public PlayerReceivingDamageState receivingDamageState;
@@ -24,6 +29,15 @@ public class PlayerBlackboard
     public PlayerDyingState dyingState;
     public PlayerBlockedState blockedState;
     public PlayerInvisibleState invisibleState;
+
+    //Controller mapped attributes
+    public string moveHorizontal;
+    public string moveVertical;
+    public string aimHorizontal;
+    public string aimVertical;
+    public string fire;
+    public string dash;
+    public string special;
 
     //State control variables
     public bool active;     //Player is participating in current game (not necesarily alive)
@@ -49,6 +63,7 @@ public class PlayerBlackboard
     public bool updateVerticalPosition;
     public bool walkingAiming;
     public bool aiming;
+    public float fastMovementCharge;
 
     //Shoot variables
     public bool canShoot;
@@ -76,6 +91,7 @@ public class PlayerBlackboard
         longIdleState = new PlayerLongIdleState();
         movingState = new PlayerMovingState();
         dashingState = new PlayerDashingState();
+        speedBumpState = new PlayerSpeedBumpState();
         specialState = new PlayerSpecialState();
         swingingState = new PlayerSwingingState();
         receivingDamageState = new PlayerReceivingDamageState();
@@ -89,6 +105,7 @@ public class PlayerBlackboard
         longIdleState.Init(this);
         movingState.Init(this);
         dashingState.Init(this);
+        speedBumpState.Init(this);
         specialState.Init(this);
         swingingState.Init(this);
         receivingDamageState.Init(this);
@@ -96,6 +113,25 @@ public class PlayerBlackboard
         dyingState.Init(this);
         blockedState.Init(this);
         invisibleState.Init(this);
+
+        string playerStr = "";
+        switch (player.Id)
+        {
+            case 1: playerStr = "P1"; break;
+            case 2: playerStr = "P2"; break;
+        }
+
+        moveHorizontal = playerStr + "_Horizontal";
+        moveVertical = playerStr + "_Vertical";
+        aimHorizontal = playerStr + "_AimHorizontal";
+        aimVertical = playerStr + "_AimVertical";
+        fire = playerStr + "_Fire";
+        dash = playerStr + "_Dash";
+        special = playerStr + "_Special";
+
+        playerRayCastMask = LayerMask.GetMask(playerStr + "RayCast");
+        playerPhysicsLayer = LayerMask.NameToLayer("Player");
+        enemyPhysicsPlayer = LayerMask.NameToLayer("Enemy");
 
         ResetLifeVariables();
     }
@@ -125,6 +161,7 @@ public class PlayerBlackboard
         isAffectedByContact = false;
         isContactCooldown = false;
         updateVerticalPosition = true;
+        fastMovementCharge = 0f;
 
         canShoot = true;
         currentShootingStatus = false;

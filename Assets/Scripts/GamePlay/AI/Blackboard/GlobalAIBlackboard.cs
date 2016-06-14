@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class GlobalAIBlackboard
 {
     public int activeEnemies;
-    public int activeSpiders;
+    //public int activeSpiders;
     public int activeVortex;
     public int activeTurrets;
 
@@ -24,7 +24,7 @@ public class GlobalAIBlackboard
     public void InitValues()
     {
         activeEnemies = 0;
-        activeSpiders = 0;
+        //activeSpiders = 0;
         activeVortex = 0;
         activeTurrets = 0;
 

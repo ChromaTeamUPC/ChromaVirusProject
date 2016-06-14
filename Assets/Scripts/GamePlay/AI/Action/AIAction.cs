@@ -15,7 +15,9 @@ public class AIAction
         MOVE,
         RANDOM_MOVE,
         LOOK_AT,
-        SPIDER_BITE
+        SPIDER_BITE,
+        MOSQUITO_ATTACK,
+        MOSQUITO_ATTACK_COLOR
     }
 
     public Type actionType;
@@ -109,8 +111,9 @@ public class RandomMoveAIAction : AIAction
     public float angleMin;
     public float angleMax;
     public Reference reference;
+    public float maxTime;
 
-    public RandomMoveAIAction(float spMin, float spMax, int totalDispMin, int totalDispMax, float pauseMin, float pauseMax, float distMin, float distMax, float angMin, float angMax, Reference refer = Reference.PLAYER, int next = AIAction.NEXT_ACTION) : base(Type.RANDOM_MOVE, next)
+    public RandomMoveAIAction(float spMin, float spMax, int totalDispMin, int totalDispMax, float pauseMin, float pauseMax, float distMin, float distMax, float angMin, float angMax, float maxT = 2f, Reference refer = Reference.PLAYER, int next = AIAction.NEXT_ACTION) : base(Type.RANDOM_MOVE, next)
     {
         speedMin = spMin;
         speedMax = spMax;
@@ -123,11 +126,12 @@ public class RandomMoveAIAction : AIAction
         angleMin = angMin;
         angleMax = angMax;
         reference = refer;
+        maxTime = maxT;
     }
 
 
-    public RandomMoveAIAction(float sp, int totalDisp = 3, float pause = 0.5f, float dist = 3f, float angMin = 10f, float angMax = 90f, Reference refer = Reference.PLAYER, int next = AIAction.NEXT_ACTION) : 
-        this (sp, sp, totalDisp, totalDisp, pause, pause, dist, dist, angMin, angMax, refer, next)
+    public RandomMoveAIAction(float sp, int totalDisp = 3, float pause = 0.5f, float dist = 3f, float angMin = 10f, float angMax = 90f, float maxT = 2f, Reference refer = Reference.PLAYER, int next = AIAction.NEXT_ACTION) : 
+        this (sp, sp, totalDisp, totalDisp, pause, pause, dist, dist, angMin, angMax, maxT, refer, next)
     {
     }
 
@@ -150,5 +154,15 @@ public class SpiderBiteAIAction: AIAction
     public SpiderBiteAIAction(float minTime, int next = AIAction.NEXT_ACTION) : base (Type.SPIDER_BITE, next)
     {
         minimumTimeSinceLastAttack = minTime;
+    }
+}
+
+public class MosquitoShotAIAction: AIAction
+{
+    public int numberOfProjectiles;
+
+    public MosquitoShotAIAction(int numProj = 1, int next = AIAction.NEXT_ACTION) : base(Type.MOSQUITO_ATTACK, next)
+    {
+        numberOfProjectiles = numProj;
     }
 }

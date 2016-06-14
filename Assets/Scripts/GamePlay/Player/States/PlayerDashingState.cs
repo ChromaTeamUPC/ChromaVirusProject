@@ -17,6 +17,7 @@ public class PlayerDashingState : PlayerBaseState
 
     public override void OnStateEnter()
     {
+        blackboard.fastMovementCharge -= blackboard.player.dashCost;
         SetDashDirection();
         currentDashTime = 0f;
         blackboard.currentSpeed = blackboard.player.initialDashSpeed;

@@ -45,7 +45,7 @@ public class MosquitoPatrolingAIState : MosquitoAIActionsBaseState
 
                 if (RollADice(chances))
                 {
-                    //return mosquitoBlackboard.attackingPlayerState;
+                    return mosquitoBlackboard.attackingPlayerState;
                 }
             }
         }

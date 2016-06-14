@@ -75,7 +75,8 @@ public class ColorManager : MonoBehaviour
     void Start()
     {    
         rsc.eventMng.StartListening(EventManager.EventType.ENEMY_SPAWNED, EnemySpawned);
-        rsc.eventMng.StartListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
+        rsc.eventMng.StartListening(EventManager.EventType.ENEMY_DIED, EnemyDied); 
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
     }
 
     void OnDestroy()
@@ -84,6 +85,7 @@ public class ColorManager : MonoBehaviour
         {
             rsc.eventMng.StopListening(EventManager.EventType.ENEMY_SPAWNED, EnemySpawned);
             rsc.eventMng.StopListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
         }
         Debug.Log("Color Manager destroyed");
     }
@@ -101,6 +103,15 @@ public class ColorManager : MonoBehaviour
     public void Deactivate()
     {
         active = false;
+    }
+
+    private void GameReset(EventInfo eventInfo)
+    {
+        Deactivate();
+        for(int i = 0; i < colorCount.Length; ++i)
+        {
+            colorCount[i] = 0;
+        }
     }
 
     public void EnemySpawned(EventInfo eventInfo)

@@ -25,7 +25,8 @@ public class PlayerLongIdleState : PlayerBaseState
         }
         else if (DashPressed())
         {
-            return blackboard.dashingState;
+            //return blackboard.dashingState;
+            return blackboard.speedBumpState;
         }
         else
         {            
