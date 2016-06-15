@@ -73,6 +73,7 @@ public class PlayerController : MonoBehaviour
     private ParticleSystem chargePS;
     [SerializeField]
     private ParticleSystem specialPS;
+    private AudioSource specialSoundFX;
     [SerializeField]
     private ParticleSystem noShootPS;
     private GameObject noShootPSGO;
@@ -114,6 +115,7 @@ public class PlayerController : MonoBehaviour
 
         trail = GetComponentInChildren<TrailRenderer>();
 
+        specialSoundFX = specialPS.GetComponent<AudioSource>();
         noShootPSGO = noShootPS.gameObject;
 
         Debug.Log("Player " + playerId + " created.");
@@ -521,16 +523,19 @@ public class PlayerController : MonoBehaviour
     public void StartSpecial()
     {
         specialPS.Play();
+        specialSoundFX.Play();
     }
 
     public void StartNoShoot()
     {
-        noShootPSGO.SetActive(true);
+        if(!noShootPSGO.activeSelf)
+            noShootPSGO.SetActive(true);
     }
 
     public void StopNoShoot()
     {
-        noShootPSGO.SetActive(false);
+        if (noShootPSGO.activeSelf)
+            noShootPSGO.SetActive(false);
     }
 
     public void PlayAttackBlocked()
