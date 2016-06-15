@@ -7,7 +7,6 @@ public class PlayerFallingState : PlayerBaseState
     {
         //play falling animation
         blackboard.player.StopTrail();
-        blackboard.animator.SetBool("Walking", false);
         blackboard.animator.SetBool("Falling", true);
     }
 
