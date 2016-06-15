@@ -193,6 +193,7 @@ public class MainMenuManager : MonoBehaviour {
 
     public void OnClickCredits()
     {
+        DisableMainButtons();
         currentState = MainMenuState.FadingToCredits;
         FadeOut();
     }
