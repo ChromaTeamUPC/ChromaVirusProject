@@ -10,14 +10,11 @@ public class PlayerSpeedBumpState : PlayerBaseState
         elapsedTime = 0f;
 
         blackboard.currentSpeed = blackboard.player.fastMovingSpeed;
-        //blackboard.animator.SetBool("Walking", true);
     }
 
     public override void OnStateExit()
     {
         blackboard.currentSpeed = blackboard.player.walkSpeed;
-        //if (!blackboard.movePressed)
-            //blackboard.animator.SetBool("Walking", false);
     }
 
     public override PlayerBaseState Update()
