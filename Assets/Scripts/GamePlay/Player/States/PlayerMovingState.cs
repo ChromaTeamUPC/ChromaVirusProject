@@ -6,12 +6,11 @@ public class PlayerMovingState : PlayerBaseState
     public override void OnStateEnter()
     {
         blackboard.currentSpeed = blackboard.player.walkSpeed;
-        blackboard.animator.SetBool("Walking", true);
+        Move();
     }
 
     public override void OnStateExit()
     {
-        blackboard.animator.SetBool("Walking", false);
     }
 
 
@@ -30,14 +29,18 @@ public class PlayerMovingState : PlayerBaseState
         {
             return blackboard.fallingState;
         }
-        else if (SpecialPressed())
+        else if (CanDoSpecial())
         {
             return blackboard.specialState;
         }
-        else if (DashPressed())
+        else if (blackboard.dashPressed)
         {
             return blackboard.dashingState;
             //return blackboard.speedBumpState;
+        }
+        else if (!blackboard.movePressed)
+        {
+            return blackboard.idleState;
         }
         else
         {
@@ -45,10 +48,7 @@ public class PlayerMovingState : PlayerBaseState
 
             Shoot();
 
-            if(!Move())
-            {
-                return blackboard.idleState;
-            }
+            Move();           
 
             return null;
         }

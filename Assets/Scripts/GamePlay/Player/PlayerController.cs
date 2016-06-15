@@ -242,6 +242,8 @@ public class PlayerController : MonoBehaviour
         {
             //Reset flags
             blackboard.ResetFlagVariables();
+
+            RetrieveInput();
             RechargeMovingCharge();
 
             if (currentState != null)
@@ -255,17 +257,68 @@ public class PlayerController : MonoBehaviour
 
             if(gameObject.activeSelf) //Check to avoid a warning trying to update CharacterController if we just died and deactivated gameObject
                 UpdatePosition();
+        }
+    }
 
-            if (blackboard.currentShootingStatus != blackboard.newShootingStatus)
-            {
-                blackboard.currentShootingStatus = blackboard.newShootingStatus;
-                blackboard.animator.SetBool("Shooting", blackboard.currentShootingStatus);
-                if (!blackboard.currentShootingStatus)
-                {
-                    blackboard.doubleShooting = false;
-                    StopNoShoot();
-                }
-            }
+    private void RetrieveInput()
+    {
+        //Movement
+        float h = Input.GetAxisRaw(blackboard.moveHorizontal);
+        float v = Input.GetAxisRaw(blackboard.moveVertical);
+
+        blackboard.moveVector = Vector3.zero;
+
+        if (Mathf.Abs(v) > 0 || Mathf.Abs(h) > 0)
+        {
+            blackboard.moveVector.x = h;
+            blackboard.moveVector.y = v;
+
+            blackboard.movePressed = true;
+            blackboard.animator.SetBool("Walking", true);
+            blackboard.keyPressed = true;
+        }
+
+        //Aiming
+        h = Input.GetAxisRaw(blackboard.aimHorizontal);
+        v = Input.GetAxisRaw(blackboard.aimVertical);
+
+        blackboard.aimVector = Vector3.zero;
+
+        if (Mathf.Abs(v) >= blackboard.player.aimThreshold || Mathf.Abs(h) >= blackboard.player.aimThreshold)
+        {
+            blackboard.aimVector.x = h;
+            blackboard.aimVector.y = v;
+
+            blackboard.aimPressed = true;           
+            blackboard.animator.SetBool("Aiming", true);
+            blackboard.keyPressed = true;
+        }
+
+        //Shoot
+        if (Input.GetAxisRaw(blackboard.fire) > 0.1f)
+        {
+            blackboard.shootPressed = true;
+            blackboard.keyPressed = true;
+            blackboard.animator.SetBool("Shooting", true);
+        }
+        else
+        {
+            blackboard.firstShot = true;
+            StopNoShoot();
+        }
+
+        //Dash
+        if (Input.GetButtonDown(blackboard.dash))
+        {
+            blackboard.dashPressed = true;
+            blackboard.keyPressed = true;
+        }
+
+        //Special
+        if (Input.GetButtonDown(blackboard.special))
+        {
+            blackboard.specialPressed = true;
+            blackboard.keyPressed = true;
         }
     }
 
@@ -282,7 +335,7 @@ public class PlayerController : MonoBehaviour
         Vector3 totalDirection = blackboard.horizontalDirection * blackboard.currentSpeed;
 
         float otherModifier = 0f;
-        if (blackboard.doubleShooting)
+        if (!blackboard.firstShot)
             otherModifier = Mathf.Max(otherModifier, speedRatioReductionWhileFiring);
 
         if (blackboard.isAffectedByContact)

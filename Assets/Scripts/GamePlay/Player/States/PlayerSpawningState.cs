@@ -5,6 +5,9 @@ public class PlayerSpawningState : PlayerBaseState {
 
     public override void OnStateEnter()
     {
+        blackboard.horizontalDirection = Vector3.zero;
+
+        blackboard.animator.Rebind();
         //trigger spawning animation
         PlayerEventInfo.eventInfo.player = blackboard.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNING, PlayerEventInfo.eventInfo);

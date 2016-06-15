@@ -7,6 +7,7 @@ public class PlayerIdleState : PlayerBaseState {
 
     public override void OnStateEnter()
     {
+        blackboard.horizontalDirection = Vector3.zero;
         elapsedTime = 0f;
     }
 
@@ -30,25 +31,24 @@ public class PlayerIdleState : PlayerBaseState {
         {
             return blackboard.swingingState;
         }
-        else if (SpecialPressed())
+        else if (CanDoSpecial())
         {
             return blackboard.specialState;
         }
-        else if (DashPressed())
+        else if (blackboard.dashPressed)
         {
             return blackboard.dashingState;
             //return blackboard.speedBumpState;
+        }
+        else if (blackboard.movePressed)
+        {
+            return blackboard.movingState;
         }
         else
         {
             Turn();
 
             Shoot();
-
-            if (Move())
-            {
-                return blackboard.movingState;
-            }
 
             if (blackboard.keyPressed)
             {

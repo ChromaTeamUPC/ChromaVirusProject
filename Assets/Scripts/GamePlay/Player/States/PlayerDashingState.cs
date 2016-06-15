@@ -22,15 +22,11 @@ public class PlayerDashingState : PlayerBaseState
         currentDashTime = 0f;
         blackboard.currentSpeed = blackboard.player.initialDashSpeed;
         blackboard.player.SpawnDashParticles();
-
-        blackboard.animator.SetBool("Walking", true);
     }
 
     public override void OnStateExit()
     {
         blackboard.currentSpeed = blackboard.player.walkSpeed;
-        if(!GetHorizontalDirectionFromInput())
-            blackboard.animator.SetBool("Walking", false);
     }
 
     public override PlayerBaseState Update()
@@ -54,10 +50,13 @@ public class PlayerDashingState : PlayerBaseState
     }
 
     private void SetDashDirection()
-    {
-        GetHorizontalDirectionFromInput();
-
-        if (blackboard.horizontalDirection == Vector3.zero)
+    { 
+        if(blackboard.movePressed)
+        {
+            blackboard.moveVector = GetScreenRelativeDirection(blackboard.moveVector);
+            blackboard.horizontalDirection = blackboard.moveVector;
+        }
+        else
         {
             blackboard.horizontalDirection = blackboard.player.transform.TransformDirection(Vector3.forward);
         }

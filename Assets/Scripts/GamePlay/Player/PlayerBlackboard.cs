@@ -39,11 +39,20 @@ public class PlayerBlackboard
     public string dash;
     public string special;
 
+    //Input variables
+    public bool keyPressed;
+    public Vector3 moveVector;
+    public bool movePressed;
+    public Vector3 aimVector;
+    public bool aimPressed;
+    public bool shootPressed;
+    public bool dashPressed;
+    public bool specialPressed;
+
     //State control variables
     public bool active;     //Player is participating in current game (not necesarily alive)
     public bool alive;      //Player is alive at the moment
     public bool animationEnded;
-    public bool keyPressed;
     public bool isGrounded;
     public bool isInBorder;
 
@@ -56,20 +65,15 @@ public class PlayerBlackboard
 
     //Movement variables
     public Vector3 horizontalDirection;
-    public Vector3 aimingDirection;
     public float currentSpeed;
     public bool isAffectedByContact;
     public bool isContactCooldown;
     public bool updateVerticalPosition;
-    public bool walkingAiming;
-    public bool aiming;
     public float fastMovementCharge;
 
     //Shoot variables
     public bool canShoot;
-    public bool currentShootingStatus = false;
-    public bool newShootingStatus = false;
-    public bool doubleShooting = false;
+    public bool firstShot;
 
     //Special attack variables
     public List<EnemyBaseAIBehaviour> enemiesInRange = new List<EnemyBaseAIBehaviour>();
@@ -156,7 +160,6 @@ public class PlayerBlackboard
         isInvulnerable = false;
 
         horizontalDirection = Vector3.zero;
-        aimingDirection = Vector3.zero;
         currentSpeed = 0f;
         isAffectedByContact = false;
         isContactCooldown = false;
@@ -164,21 +167,24 @@ public class PlayerBlackboard
         fastMovementCharge = 0f;
 
         canShoot = true;
-        currentShootingStatus = false;
-        doubleShooting = false;
+        firstShot = true;
 
         enemiesInRange.Clear();
         specialAttackCollider.enabled = false;
-}
+    }
 
     //This variables have to be reset every update
     public void ResetFlagVariables()
     {
         keyPressed = false;
-        newShootingStatus = false;
-        walkingAiming = false;
-        animator.SetBool("WalkingAiming", false);
-        aiming = false;
+        movePressed = false;
+        aimPressed = false;
+        shootPressed = false;
+        dashPressed = false;
+        specialPressed = false;
+
+        animator.SetBool("Walking", false);
         animator.SetBool("Aiming", false);
+        animator.SetBool("Shooting", false);
     }
 }

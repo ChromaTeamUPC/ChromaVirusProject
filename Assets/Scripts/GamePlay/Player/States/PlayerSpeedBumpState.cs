@@ -10,15 +10,14 @@ public class PlayerSpeedBumpState : PlayerBaseState
         elapsedTime = 0f;
 
         blackboard.currentSpeed = blackboard.player.fastMovingSpeed;
-
-        blackboard.animator.SetBool("Walking", true);
+        //blackboard.animator.SetBool("Walking", true);
     }
 
     public override void OnStateExit()
     {
         blackboard.currentSpeed = blackboard.player.walkSpeed;
-        if (!GetHorizontalDirectionFromInput())
-            blackboard.animator.SetBool("Walking", false);
+        //if (!blackboard.movePressed)
+            //blackboard.animator.SetBool("Walking", false);
     }
 
     public override PlayerBaseState Update()
@@ -54,7 +53,7 @@ public class PlayerSpeedBumpState : PlayerBaseState
             {
                 return blackboard.fallingState;
             }
-            else if (SpecialPressed())
+            else if (CanDoSpecial())
             {
                 return blackboard.specialState;
             }
@@ -64,7 +63,11 @@ public class PlayerSpeedBumpState : PlayerBaseState
 
                 Shoot();
 
-                if (!Move())
+                if (blackboard.movePressed)
+                {
+                    Move();
+                }
+                else
                 {
                     return blackboard.idleState;
                 }
@@ -76,7 +79,7 @@ public class PlayerSpeedBumpState : PlayerBaseState
 
     private PlayerBaseState ReturnIdleOrMoving()
     {
-        if (GetHorizontalDirectionFromInput())
+        if (blackboard.movePressed)
             return blackboard.movingState;
         else
             return blackboard.idleState;

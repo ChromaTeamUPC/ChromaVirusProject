@@ -5,8 +5,8 @@ public class PlayerInvisibleState : PlayerBaseState {
 
     public override void OnStateEnter()
     {
-        blackboard.blinkController.StopPreviousBlinkings();
         blackboard.horizontalDirection = Vector3.zero;
+        blackboard.blinkController.StopPreviousBlinkings();
         blackboard.updateVerticalPosition = false;
         blackboard.player.MakeInvisible();
     }

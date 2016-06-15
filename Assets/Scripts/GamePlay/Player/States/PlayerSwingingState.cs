@@ -6,6 +6,7 @@ public class PlayerSwingingState : PlayerBaseState
     public override void OnStateEnter()
     {
         //play swinging animation
+        blackboard.horizontalDirection = Vector3.zero;
     }
 
     public override PlayerBaseState Update()

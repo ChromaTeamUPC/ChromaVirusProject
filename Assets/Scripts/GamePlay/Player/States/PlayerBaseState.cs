@@ -41,108 +41,24 @@ public class PlayerBaseState
         return null;
     }
 
-    private Vector3 GetScreenRelativeDirection(Vector3 direction)
+    protected Vector3 GetScreenRelativeDirection(Vector3 direction)
     {
         return rsc.camerasMng.GetDirection(blackboard.player.transform.position, direction, blackboard.playerRayCastMask);
     }
 
-    protected bool Turn()
+    private void LookAt(Vector3 destination)
     {
-        bool result = GetAimingDirectionFromInput();
-        UpdateLookAt();
-
-        return result;
+        Quaternion newRotation = Quaternion.LookRotation(destination);
+        newRotation = Quaternion.RotateTowards(blackboard.player.transform.rotation, newRotation, blackboard.player.angularSpeed * Time.deltaTime);
+        blackboard.player.transform.rotation = newRotation;
     }
 
-    private bool GetAimingDirectionFromInput()
+    protected void Turn()
     {
-        float h = Input.GetAxisRaw(blackboard.aimHorizontal);
-        float v = Input.GetAxisRaw(blackboard.aimVertical);
-
-        blackboard.aimingDirection = Vector3.zero;
-        bool result = false;
-
-        if (Mathf.Abs(v) >= blackboard.player.aimThreshold || Mathf.Abs(h) >= blackboard.player.aimThreshold)
+        if (blackboard.aimPressed)
         {
-            blackboard.aimingDirection.x = h;
-            blackboard.aimingDirection.y = v;
-
-            blackboard.aimingDirection = GetScreenRelativeDirection(blackboard.aimingDirection);
-            blackboard.keyPressed = true;
-            blackboard.animator.SetBool("Aiming", true);
-            blackboard.aiming = true;
-            result = true;
-        }
-
-        return result;
-    }
-
-    private void UpdateLookAt()
-    {
-        if (blackboard.aimingDirection != Vector3.zero)
-        {
-            Quaternion newRotation = Quaternion.LookRotation(blackboard.aimingDirection);
-            newRotation = Quaternion.RotateTowards(blackboard.player.transform.rotation, newRotation, blackboard.player.angularSpeed * Time.deltaTime);
-            blackboard.player.transform.rotation = newRotation;
-        }
-    }
-
-    protected bool Move()
-    {
-        bool result = GetHorizontalDirectionFromInput();
-        UpdateMovingAnimatorFlags();
-
-        return result;
-    }
-    protected bool GetHorizontalDirectionFromInput()
-    {
-        float h = Input.GetAxisRaw(blackboard.moveHorizontal);
-        float v = Input.GetAxisRaw(blackboard.moveVertical);
-
-        blackboard.horizontalDirection = Vector3.zero;
-        bool result = false;
-
-        if (Mathf.Abs(v) > 0 || Mathf.Abs(h) > 0)
-        {
-            blackboard.horizontalDirection.x = h;
-            blackboard.horizontalDirection.y = v;
-
-            blackboard.horizontalDirection = GetScreenRelativeDirection(blackboard.horizontalDirection);
-            blackboard.keyPressed = true;
-            result = true;
-        }
-
-        return result;
-    }
-
-    private void UpdateMovingAnimatorFlags()
-    {
-        if (blackboard.horizontalDirection != Vector3.zero)
-        {
-            //If we are not aiming, rotate towards direction
-            if (blackboard.aimingDirection == Vector3.zero)
-            {
-                Quaternion newRotation = Quaternion.LookRotation(blackboard.horizontalDirection);
-                newRotation = Quaternion.RotateTowards(blackboard.player.transform.rotation, newRotation, blackboard.player.angularSpeed * Time.deltaTime);
-                blackboard.player.transform.rotation = newRotation;
-                //blackboard.animator.SetBool("WalkingAiming", false);               
-            }
-            else
-            {
-                int angleBetweenSticks = AngleBetween360(blackboard.aimingDirection, blackboard.horizontalDirection);
-
-                float angleRad = angleBetweenSticks * Mathf.Deg2Rad;
-                float forward = Mathf.Cos(angleRad);
-                float lateral = Mathf.Sin(angleRad);
-                blackboard.animator.SetFloat("Forward", forward);
-                blackboard.animator.SetFloat("Lateral", lateral);
-
-                blackboard.animator.SetBool("WalkingAiming", true);
-                blackboard.walkingAiming = true;
-
-                //Debug.Log("Moving: " + horizontalDirection + " // Aiming: " + aimingDirection);
-                //Debug.Log("Angle: " + angleBetweenSticks + " // Forward: " + forward + " // Lateral: " + lateral);
-            }
+            blackboard.aimVector = GetScreenRelativeDirection(blackboard.aimVector);
+            LookAt(blackboard.aimVector);
         }
     }
 
@@ -158,37 +74,44 @@ public class PlayerBaseState
             return (int)(360 + signedAngle);
     }
 
-    protected bool DashPressed()
+    protected bool Move()
     {
-        bool result = Input.GetButtonDown(blackboard.dash);
+        if(blackboard.movePressed)
+        {
+            blackboard.moveVector = GetScreenRelativeDirection(blackboard.moveVector);
+            blackboard.horizontalDirection = blackboard.moveVector;
 
-        if (result)
-            blackboard.keyPressed = true;
+            //If we are not aiming, rotate towards direction
+            if (!blackboard.aimPressed)
+            {
+                LookAt(blackboard.moveVector);
+            }
+            else
+            {
+                int angleBetweenSticks = AngleBetween360(blackboard.aimVector, blackboard.moveVector);
 
-        return result;
+                float angleRad = angleBetweenSticks * Mathf.Deg2Rad;
+                float forward = Mathf.Cos(angleRad);
+                float lateral = Mathf.Sin(angleRad);
+                blackboard.animator.SetFloat("Forward", forward);
+                blackboard.animator.SetFloat("Lateral", lateral);
+            }
+        }
+
+        return blackboard.movePressed;
     }
 
-    protected bool SpecialPressed()
+    protected bool CanDoSpecial()
     {
-        bool result = Input.GetButtonDown(blackboard.special);
-
-        if (result)
-            blackboard.keyPressed = true;
-
-        return result &&
+        return blackboard.specialPressed &&
             ((blackboard.currentEnergy >= blackboard.player.specialAttackNecessaryEnergy) ||
             rsc.debugMng.godMode);
     }
 
-    protected bool Shoot()
+    protected void Shoot()
     {
-        bool shooting = false;
-
-        if (Input.GetAxisRaw(blackboard.fire) > 0.1f)
+        if (blackboard.shootPressed)
         {
-            shooting = true;
-            blackboard.keyPressed = true;
-
             if (blackboard.canShoot)
             {
                 if (Time.time > nextFire)
@@ -196,7 +119,7 @@ public class PlayerBaseState
                     nextFire = Time.time + blackboard.player.fireRate;
 
                     // check if it's first shot (single projectile)...
-                    if (isFirstShot)
+                    if (blackboard.firstShot)
                     {
                         //Get a shot from pool
                         PlayerShotController shot = coloredObjMng.GetPlayer1Shot();
@@ -217,7 +140,7 @@ public class PlayerBaseState
                             muzzle.transform.rotation = muzzlePoint.rotation;
                             muzzle.Play();
                         }
-                        isFirstShot = false;
+                        blackboard.firstShot = false;
                     }
                     // ...or not (double projectile)
                     else
@@ -262,8 +185,6 @@ public class PlayerBaseState
                                 sideOffsetVariation *= -1;
 
                             shotSideOffset += sideOffsetVariation;
-
-                            blackboard.doubleShooting = true;
                         }
                     }
                 }
@@ -273,14 +194,6 @@ public class PlayerBaseState
                 blackboard.player.StartNoShoot();
             }
         }
-        else
-        {
-            isFirstShot = true;
-        }
-
-        blackboard.newShootingStatus = shooting;
-
-        return shooting;
     }
 
     public virtual PlayerBaseState TakeDamage(float damage, bool triggerDamageAnim = true, bool whiteBlink = true)
@@ -322,14 +235,14 @@ public class PlayerBaseState
     {
         if (rsc.debugMng.godMode || blackboard.isInvulnerable) return null;
 
-        //Shield will be deployed either while shooting or if we are moving and aiming at the same time
-        bool isShieldDeployed = blackboard.currentShootingStatus || blackboard.walkingAiming || blackboard.aiming;
+        //Shield will be deployed either while shooting or while aiming
+        bool isShieldDeployed = blackboard.shootPressed || blackboard.aimPressed;
 
         bool shouldTakeDamage = true;
         bool shouldRechargeEnergy = false;
         float damageRatio = 1f;
 
-        if(isShieldDeployed)
+        if (isShieldDeployed)
         {
             Vector3 forward = blackboard.player.transform.forward;
             forward.y = 0;
@@ -340,9 +253,9 @@ public class PlayerBaseState
 
             Debug.Log("Angle: " + angle + " // Attack color: " + ChromaColorInfo.GetColorName(color) + " // Current color: " + ChromaColorInfo.GetColorName(blackboard.currentColor));
 
-            if(angle < blackboard.player.maxAngleToShieldBlocking)
+            if (angle < blackboard.player.maxAngleToShieldBlocking)
             {
-                if(color == blackboard.currentColor)
+                if (color == blackboard.currentColor)
                 {
                     shouldTakeDamage = false;
                     shouldRechargeEnergy = true;
