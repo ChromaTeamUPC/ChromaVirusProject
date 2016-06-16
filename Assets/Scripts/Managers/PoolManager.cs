@@ -10,6 +10,7 @@ using System;
 [Serializable] public class SpiderBoltPool : MonoBehaviourObjectPool<SpiderBolt> { }
 [Serializable] public class MosquitoPool : MonoBehaviourObjectPool<MosquitoAIBehaviour> { }
 [Serializable] public class MosquitoWeakShotPool : MonoBehaviourObjectPool<MosquitoWeakShotController> { }
+[Serializable] public class MosquitoMainAttackPool : MonoBehaviourObjectPool<MosquitoMainAttackControllerBase> { }
 
 //Just a container for the different pools we have in the game
 public class PoolManager : MonoBehaviour
@@ -38,6 +39,10 @@ public class PoolManager : MonoBehaviour
     public MosquitoWeakShotPool mosquitoWeakShotGreenPool = new MosquitoWeakShotPool();
     public MosquitoWeakShotPool mosquitoWeakShotBluePool = new MosquitoWeakShotPool();
     public MosquitoWeakShotPool mosquitoWeakShotYellowPool = new MosquitoWeakShotPool();
+    public MosquitoMainAttackPool mosquitoSingleProjectilePool = new MosquitoMainAttackPool();
+    public MosquitoMainAttackPool mosquitoFanProjectilePool = new MosquitoMainAttackPool();
+    public MosquitoMainAttackPool mosquitoMultipleProjectilePool = new MosquitoMainAttackPool();
+    public MosquitoMainAttackPool mosquitoHomingProjectilePool = new MosquitoMainAttackPool();
 
     void Start()
     {
@@ -63,6 +68,10 @@ public class PoolManager : MonoBehaviour
         mosquitoWeakShotGreenPool.Init(gameObject, poolContainerPrefab);
         mosquitoWeakShotBluePool.Init(gameObject, poolContainerPrefab);
         mosquitoWeakShotYellowPool.Init(gameObject, poolContainerPrefab);
+        mosquitoSingleProjectilePool.Init(gameObject, poolContainerPrefab);
+        mosquitoFanProjectilePool.Init(gameObject, poolContainerPrefab);
+        mosquitoMultipleProjectilePool.Init(gameObject, poolContainerPrefab);
+        mosquitoHomingProjectilePool.Init(gameObject, poolContainerPrefab);
 
         Debug.Log("Pool Manager created");
     }

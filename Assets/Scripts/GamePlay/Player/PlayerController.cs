@@ -97,6 +97,8 @@ public class PlayerController : MonoBehaviour
    
     private PlayerBaseState currentState;
 
+    private Vector3 totalHorizontalDirection;
+
     //Properties
     public bool Active { get { return blackboard.active; } set { blackboard.active = value; } }
     public bool Alive { get { return blackboard.alive; } }
@@ -188,6 +190,11 @@ public class PlayerController : MonoBehaviour
         trail.sharedMaterial = coloredObjMng.GetPlayer1TrailMaterial(blackboard.currentColor);
     }
 
+    public Vector3 PositionPrediction(float secondsPrediction = 1f)
+    {
+        return transform.position + (totalHorizontalDirection * secondsPrediction);
+    }
+
     public void RechargeEnergy(float energy)
     {
         if (blackboard.currentEnergy == blackboard.player.maxEnergy) return;
@@ -274,6 +281,8 @@ public class PlayerController : MonoBehaviour
         {
             blackboard.moveVector.x = h;
             blackboard.moveVector.y = v;
+            if (blackboard.moveVector.magnitude > 1f)
+                blackboard.moveVector.Normalize();
 
             blackboard.movePressed = true;
             blackboard.animator.SetBool("Walking", true);
@@ -334,7 +343,7 @@ public class PlayerController : MonoBehaviour
 
     public void UpdatePosition()
     {
-        Vector3 totalDirection = blackboard.horizontalDirection * blackboard.currentSpeed;
+        totalHorizontalDirection = blackboard.horizontalDirection * blackboard.currentSpeed;
 
         float otherModifier = 0f;
         if (!blackboard.firstShot)
@@ -344,16 +353,18 @@ public class PlayerController : MonoBehaviour
             otherModifier = Mathf.Max(otherModifier, speedRatioReductionOnContact);
 
         if(otherModifier > 0)
-            totalDirection *= otherModifier;
+            totalHorizontalDirection *= otherModifier;
+
+        Vector3 currentFrameDirection = totalHorizontalDirection;
 
         if (blackboard.updateVerticalPosition)
         {
-            totalDirection.y = verticalVelocity;
-
-            totalDirection *= Time.deltaTime;
+            currentFrameDirection.y = verticalVelocity;
         }
 
-        ctrl.Move(totalDirection);
+        currentFrameDirection *= Time.deltaTime;
+
+        ctrl.Move(currentFrameDirection);
 
         blackboard.isGrounded = ctrl.isGrounded;
 

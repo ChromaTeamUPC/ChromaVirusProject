@@ -18,8 +18,9 @@ public class EnemyBaseBlackboard
     public bool canReceiveDamage;
 
     public GameObject target;
-    //public bool targetIsPlayer;
+
     public GameObject player;
+    public PlayerController playerController;
 
     public CapacitorController barrelController;
 
@@ -44,8 +45,9 @@ public class EnemyBaseBlackboard
 
         canReceiveDamage = false;      
         target = null;
-        //targetIsPlayer = false;
-        player = null;
+
+        SetPlayer(null);
+
         barrelController = null;
 
         groupInfo = null;
@@ -60,11 +62,21 @@ public class EnemyBaseBlackboard
 
         canReceiveDamage = false;
         target = null;
-        //targetIsPlayer = false;
-        player = null;
+
+        SetPlayer(null);
+
         barrelController = null;
 
         groupInfo = null;
         currentHealth = entity.maxHealth;
+    }
+
+    public void SetPlayer(GameObject p)
+    {
+        player = p;
+        if (player != null)
+            playerController = player.GetComponent<PlayerController>();
+        else
+            playerController = null;
     }
 }

@@ -120,7 +120,7 @@ public class MoveActionExecutor: BaseExecutor
         }
 
 
-        if ((blackBoard.agent.hasPath && blackBoard.agent.remainingDistance <= 1.5f)
+        if ((/*blackBoard.agent.hasPath && */blackBoard.agent.remainingDistance <= 1.5f)
             || (moveAction.maxTime > 0 && elapsedTime > moveAction.maxTime))
         {
             if (!moveAction.inertia)

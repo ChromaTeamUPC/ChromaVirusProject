@@ -29,6 +29,16 @@ public class DebugManager : MonoBehaviour {
         {
             godMode = !godMode;
         }
+
+        if(Input.GetKeyDown(keys.doubleSpeed))
+        {
+            Time.timeScale *= 2;
+        }
+
+        if(Input.GetKeyDown(keys.halfSpeed))
+        {
+            Time.timeScale /= 2;
+        }
     }
 
     void OnGUI()

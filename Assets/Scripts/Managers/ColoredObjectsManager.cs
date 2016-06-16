@@ -254,7 +254,6 @@ public class ColoredObjectsManager : MonoBehaviour
         if (mosquito != null)
         {
             mosquito.color = color;
-
             mosquito.SetMaterials(new[] { GetMaterial(mosquitoMats, color) });
 
             return mosquito;

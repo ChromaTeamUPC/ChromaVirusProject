@@ -70,7 +70,8 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
     {
         transform.position = spawnPoint.position;
         transform.rotation = spawnPoint.rotation;
-        mosquitoBlackboard.player = rsc.enemyMng.SelectPlayer(gameObject);
+        mosquitoBlackboard.SetPlayer( rsc.enemyMng.SelectPlayer(gameObject) );
+
         ChangeState(mosquitoBlackboard.spawningState);
     }
 
@@ -81,7 +82,7 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
         if(mosquitoBlackboard.checkPlayerElapsedTime >= checkTargetEverySeconds)
         {
             mosquitoBlackboard.checkPlayerElapsedTime = 0f;
-            mosquitoBlackboard.player = rsc.enemyMng.SelectPlayer(gameObject);
+            mosquitoBlackboard.SetPlayer(rsc.enemyMng.SelectPlayer(gameObject));
         }
 
         //If player is valid, look at it

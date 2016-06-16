@@ -78,7 +78,10 @@ public class PlayerBaseState
     {
         if(blackboard.movePressed)
         {
-            blackboard.moveVector = GetScreenRelativeDirection(blackboard.moveVector);
+            float magnitude = blackboard.moveVector.magnitude;
+
+            blackboard.moveVector = GetScreenRelativeDirection(blackboard.moveVector) * magnitude;
+
             blackboard.horizontalDirection = blackboard.moveVector;
 
             //If we are not aiming, rotate towards direction
