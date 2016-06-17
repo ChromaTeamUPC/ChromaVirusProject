@@ -120,9 +120,9 @@ public class EnemyManager : MonoBehaviour
 
     void Awake()
     {
-        Debug.Log("Enemy Manager created");
+        //Debug.Log("Enemy Manager created");
         blackboard = new GlobalAIBlackboard();
-        blackboard.InitValues();
+        blackboard.Init();
 
         currentPlan = null;
         currentPlanId = -1;
@@ -142,7 +142,8 @@ public class EnemyManager : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.VORTEX_ACTIVATED, VortexActivated);
         rsc.eventMng.StartListening(EventManager.EventType.VORTEX_DESTROYED, VortexDestroyed);
 
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameOver);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameOver); 
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
     }
 
     void OnDestroy()
@@ -159,9 +160,20 @@ public class EnemyManager : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.VORTEX_DESTROYED, VortexDestroyed);
 
             rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameOver);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
         }
 
-        Debug.Log("Color Manager destroyed");
+        //Debug.Log("Color Manager destroyed");
+    }
+
+    private void GameReset(EventInfo eventInfo)
+    {
+        currentPlan = null;
+        currentPlanId = -1;
+        executingWaves = 0;
+        sequentialWavesIndex = 0;
+
+        blackboard.ResetValues();
     }
 
     private void EnemySpawned(EventInfo eventInfo)
@@ -189,13 +201,13 @@ public class EnemyManager : MonoBehaviour
     private void VortexActivated(EventInfo eventInfo)
     {
         ++blackboard.activeVortex;
-        Debug.Log("Vortex++ = " + blackboard.activeVortex);
+        //Debug.Log("Vortex++ = " + blackboard.activeVortex);
     }
 
     private void VortexDestroyed(EventInfo eventInfo)
     {
         --blackboard.activeVortex;
-        Debug.Log("Vortex-- = " + blackboard.activeVortex);
+        //Debug.Log("Vortex-- = " + blackboard.activeVortex);
     }
 
     private void GameOver(EventInfo eventInfo)
@@ -689,16 +701,16 @@ public class EnemyManager : MonoBehaviour
 
         plan0101.enemiesThreshold = 2;
         List<WaveAction> z01wave01 = new List<WaveAction>();
-        //z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.RED, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01));
-        //z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.GREEN, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01 ,1f));
+        z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.RED, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01));
+        z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.GREEN, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01 ,1f));
         z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.BLUE, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01, 1f));
-        //z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01, 1f));
+        z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01, 1f));
 
         //z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01SpiderEntry01, defaultSpiderAttack, 0f, 2, 1f)); 
         plan0101.sequentialWaves.Add(z01wave01);
 
         
-        /*List<WaveAction> z01wave02 = new List<WaveAction>();
+        List<WaveAction> z01wave02 = new List<WaveAction>();
         z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01SpiderEntry02, defaultSpiderAttack, 0f, 6, 1f));
         plan0101.sequentialWaves.Add(z01wave02);
 
@@ -738,7 +750,7 @@ public class EnemyManager : MonoBehaviour
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", level01Z01spiderEntry07, defaultGreenSpiderAttack, 0.7f, 2, 0.7f));
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP01", level01Z01spiderEntry07, defaultRedSpiderAttack, 0.7f, 2, 0.7f));
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP01", level01Z01spiderEntry07, defaultYellowSpiderAttack, 0.7f, 2, 0.7f));
-        plan0101.sequentialWaves.Add(z01wave07);*/
+        plan0101.sequentialWaves.Add(z01wave07);
 
 
         ////plan0102---------------------------------------------------------------------------------------------------------------

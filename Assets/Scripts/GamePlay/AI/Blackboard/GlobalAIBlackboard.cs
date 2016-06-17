@@ -21,8 +21,16 @@ public class GlobalAIBlackboard
 
     public float timeRemainingToNextPlayerAttack;
 
-    public void InitValues()
+    public void Init()
     {
+        enemiesAttackingDevice = new HashSet<EnemyBaseAIBehaviour>();
+
+        ResetValues();
+    }
+
+    public void ResetValues()
+    {
+
         activeEnemies = 0;
         //activeSpiders = 0;
         activeVortex = 0;
@@ -30,7 +38,7 @@ public class GlobalAIBlackboard
 
         activeDevices = 0;
         timeSinceLastDeviceAttack = 0f;
-        enemiesAttackingDevice = new HashSet<EnemyBaseAIBehaviour>();
+        enemiesAttackingDevice.Clear();
 
         attackingPlayerEnemies = 0;
         attackingPlayerSpiders = 0;
