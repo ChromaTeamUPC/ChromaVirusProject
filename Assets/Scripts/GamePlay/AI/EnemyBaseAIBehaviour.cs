@@ -38,6 +38,14 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         blinkController = GetComponent<BlinkController>();
     }
 
+    void OnDisable()
+    {
+        blackboard.ResetValues();
+        blinkController.StopPreviousBlinkings();
+        blackboard.animator.Rebind();
+        currentState = null;
+    }
+
     public virtual void SetMaterials(Material[] materials) { }
 
     public void SpawnAnimationEnded()
@@ -62,11 +70,14 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
 
     protected virtual void Update()
     {
-        AIBaseState newState = currentState.Update();
-
-        if (newState != null)
+        if (currentState != null)
         {
-            ChangeState(newState);
+            AIBaseState newState = currentState.Update();
+
+            if (newState != null)
+            {
+                ChangeState(newState);
+            }
         }
     }
 
@@ -101,11 +112,14 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
 
     public void ImpactedByShot(ChromaColor shotColor, float damage, Vector3 direction, PlayerController player)
     {
-        AIBaseState newState = currentState.ImpactedByShot(shotColor, damage, direction, player);
-
-        if (newState != null)
+        if (currentState != null)
         {
-            ChangeState(newState);
+            AIBaseState newState = currentState.ImpactedByShot(shotColor, damage, direction, player);
+
+            if (newState != null)
+            {
+                ChangeState(newState);
+            }
         }
     }
 
@@ -117,11 +131,14 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
 
     public virtual void ImpactedBySpecial(float damage, Vector3 direction)
     {
-        AIBaseState newState = currentState.ImpactedBySpecial(damage, direction);
-
-        if (newState != null)
+        if (currentState != null)
         {
-            ChangeState(newState);
+            AIBaseState newState = currentState.ImpactedBySpecial(damage, direction);
+
+            if (newState != null)
+            {
+                ChangeState(newState);
+            }
         }
     }
 
@@ -132,11 +149,14 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
 
     public void ImpactedByBarrel(ChromaColor barrelColor, float damage, Vector3 direction)
     {
-        AIBaseState newState = currentState.ImpactedByBarrel(barrelColor, damage, direction);
-
-        if (newState != null)
+        if (currentState != null)
         {
-            ChangeState(newState);
+            AIBaseState newState = currentState.ImpactedByBarrel(barrelColor, damage, direction);
+
+            if (newState != null)
+            {
+                ChangeState(newState);
+            }
         }
     }
 
