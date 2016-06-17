@@ -120,7 +120,7 @@ public class PlayerController : MonoBehaviour
         specialSoundFX = specialPS.GetComponent<AudioSource>();
         noShootPSGO = noShootPS.gameObject;
 
-        Debug.Log("Player " + playerId + " created.");
+        //Debug.Log("Player " + playerId + " created.");
     }
 
     void Start()
@@ -145,12 +145,14 @@ public class PlayerController : MonoBehaviour
     void OnDisable()
     {
         currentState = null;
-        blackboard.animator.Rebind();
+        //blackboard.animator.Rebind();
     }
 
     private void GameStopped(EventInfo eventInfo)
     {
         ChangeState(blackboard.blockedState);
+        //blackboard.horizontalDirection = Vector3.zero;
+        //currentState = null;
     }
 
     private void ColorChanged(EventInfo eventInfo)
@@ -239,16 +241,18 @@ public class PlayerController : MonoBehaviour
 
     public void Reset()
     {
-        blackboard.animator.Rebind();
+        //blackboard.animator.Rebind();
         blackboard.ResetGameVariables();
     }
 
     public void Spawn()
     {
+        blackboard.animator.Rebind();
         blackboard.ResetLifeVariables();
 
         verticalVelocity = Physics.gravity.y;
 
+        currentState = null;
         ChangeState(blackboard.spawningState);       
     }
 
