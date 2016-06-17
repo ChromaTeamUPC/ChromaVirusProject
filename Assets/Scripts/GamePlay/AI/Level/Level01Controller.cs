@@ -171,6 +171,7 @@ public class Level01Controller : MonoBehaviour
         //Get player
         PlayerController player = ((PlayerEventInfo)eventInfo).player;
 
+        player.gameObject.transform.parent = null;
         player.gameObject.SetActive(false);
 
         //Check player remaining lives
