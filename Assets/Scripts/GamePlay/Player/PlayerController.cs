@@ -83,6 +83,7 @@ public class PlayerController : MonoBehaviour
     //Misc
     [Header("Miscelaneous Settings")]
     public float idleRandomAnimTime = 10f;
+    public Transform hintPoint;
 
 
     [SerializeField]

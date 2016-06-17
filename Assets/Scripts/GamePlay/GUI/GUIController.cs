@@ -4,14 +4,17 @@ using System.Collections;
 
 public class GUIController : MonoBehaviour
 {
+    [Header("Player 1 Items")]
     public GameObject player1Zone;
     public Slider player1Health;
     public Slider player1Energy;
     public GameObject player1ExtraLife1;
     public GameObject player1ExtraLife2;
     public GameObject player1ColorMismatchTxt;
+    public GameObject player1AButtonHintImg;
     private bool player1ColorMismatch;
 
+    [Header("Player 2 Items")]
     public GameObject player2Zone;
     public Slider player2Health;
     public Slider player2Energy;
@@ -93,6 +96,8 @@ public class GUIController : MonoBehaviour
                 player1ExtraLife2.SetActive(true);
             else
                 player1ExtraLife2.SetActive(false);
+
+            player1AButtonHintImg.transform.position = rsc.camerasMng.currentCamera.WorldToScreenPoint(player1Controller.hintPoint.position);
         }
 
 
