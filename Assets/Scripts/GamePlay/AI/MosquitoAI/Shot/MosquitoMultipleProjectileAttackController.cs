@@ -50,7 +50,7 @@ public class MosquitoMultipleProjectileAttackController : MosquitoMainAttackCont
         {
             float secondsAheadPrediction = (player.transform.position - source.position).magnitude * secondsAheadPredictionPerDistanceUnit;
             Vector3 destination = player.PositionPrediction(secondsAheadPrediction);
-            destination.y = source.position.y; //horizontal direction
+            //destination.y = source.position.y; //horizontal direction
             projectile[0].transform.LookAt(destination, Vector3.up);
         }
         else
@@ -76,7 +76,7 @@ public class MosquitoMultipleProjectileAttackController : MosquitoMainAttackCont
             {
                 float secondsAheadPrediction = (player.transform.position - source.position).magnitude * secondsAheadPredictionPerDistanceUnit;
                 Vector3 destination = player.PositionPrediction(secondsAheadPrediction);
-                destination.y = source.position.y; //horizontal direction
+                //destination.y = source.position.y; //horizontal direction
                 projectile[i].transform.LookAt(destination, Vector3.up);
             }
             else
