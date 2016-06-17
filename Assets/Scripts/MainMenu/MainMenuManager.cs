@@ -21,6 +21,7 @@ public class MainMenuManager : MonoBehaviour {
 
     public Button playBtn;
     public Button helpBtn;
+    public Button optionsBtn;
     public Button creditsBtn;
     public Button exitBtn;
 
@@ -112,6 +113,7 @@ public class MainMenuManager : MonoBehaviour {
     {
         playBtn.interactable = true;
         helpBtn.interactable = true;
+        optionsBtn.interactable = true;
         creditsBtn.interactable = true;
         exitBtn.interactable = true;
         playBtn.Select();
@@ -121,6 +123,7 @@ public class MainMenuManager : MonoBehaviour {
     {
         playBtn.interactable = false;
         helpBtn.interactable = false;
+        optionsBtn.interactable = false;
         creditsBtn.interactable = false;
         exitBtn.interactable = false;
     }
