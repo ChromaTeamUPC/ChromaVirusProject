@@ -38,6 +38,8 @@ public class CapacitorController : MonoBehaviour {
     private float charge33;
     private float charge66;
 
+    private bool active;
+
     [HideInInspector]
     public ChromaColor currentColor;
     private int currentCharge;
@@ -70,6 +72,7 @@ public class CapacitorController : MonoBehaviour {
         enemiesInRange = new HashSet<EnemyBaseAIBehaviour>();
         blinkController = GetComponent<BlinkController>();
         model = transform.Find("Model").gameObject;
+        active = false;
     }
 
     void Start()
@@ -77,8 +80,20 @@ public class CapacitorController : MonoBehaviour {
         colorObjMng = rsc.coloredObjectsMng;
     }
 
+    public void Activate()
+    {
+        active = true;
+    }
+
+    public void Deactivate()
+    {
+        active = false;
+    }
+
     void Update()
     {
+        if (!active) return;
+
         switch (state)
         {
             case State.IDLE:
@@ -128,6 +143,8 @@ public class CapacitorController : MonoBehaviour {
 
     public void ImpactedByShot(ChromaColor shotColor)
     {
+        if (!active) return;
+
         switch (state)
         {
             case State.NOT_STARTED:

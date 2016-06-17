@@ -1,36 +1,79 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System;
+
+[Serializable]
+public class ZoneActivableObjects
+{
+    [Header("Zone info")]
+    public int zoneId;
+
+    [Header("Misc objects")]
+    public Transform playerSpawnPoint;
+
+    [Header("To handle on zone reach")]
+    public BridgeController[] deactivableBridges;
+    public VortexController[] activableSpawners;
+    public CapacitorController[] activableCapacitors;
+
+    [Header("To handle on zone finished")]
+    public BridgeController[] activableBridges;
+    public GameObject[] uSBTeleports;
+    public GameObject endZone;
+
+    public void ZoneReached()
+    {
+        for (int i = 0; i < deactivableBridges.Length; i++)
+        {
+            deactivableBridges[i].Deactivate();
+        }
+
+        for (int i = 0; i < activableSpawners.Length; i++)
+        {
+            activableSpawners[i].Activate();
+        }
+
+        for (int i = 0; i < activableCapacitors.Length; i++)
+        {
+            activableCapacitors[i].Activate();
+        }
+    }
+
+    public void ZoneFinished()
+    {
+        for (int i = 0; i < activableBridges.Length; i++)
+        {
+            activableBridges[i].Activate();
+        }
+
+        for (int i = 0; i < uSBTeleports.Length; i++)
+        {
+            uSBTeleports[i].SetActive(true);
+        }
+
+        if (endZone != null)
+            endZone.SetActive(true);
+    }
+}
 
 public class Level01Controller : MonoBehaviour 
 {
+    public ZoneActivableObjects[] zoneActivableObjects;
+
     private float respawnDelay = 4f;
     public Transform player1StartPoint;
     public Transform player2StartPoint;
 
-    public GameObject bridgeZone01;
-    public GameObject bridgeZone02;
-    public BridgeController bridgeCtrlZone1;
-    public BridgeController bridgeCtrlZone2;
-
-    public GameObject uSBTeleport1;
-    public GameObject uSBTeleport2;
-
-    public GameObject endZone;
-
-    public Transform zone1PlayerSpawnPoint;
-    public Transform zone2PlayerSpawnPoint;
-    public Transform zone3PlayerSpawnPoint;
-
     public FloorController floor;
-
-    public VortexController zone2spawner1;
-    public VortexController zone3spawner1;
-    public VortexController zone3spawner2;
 
     [SerializeField]
     private FadeSceneScript fadeScript;
 
-    private int currentZone;
+    private int currentZoneId;
+    private ZoneActivableObjects currentZoneObjects;
+
+    private Dictionary<int, ZoneActivableObjects> zoneDictionary;
 
 	// Use this for initialization
 	void Start () 
@@ -66,6 +109,12 @@ public class Level01Controller : MonoBehaviour
 
         fadeScript.StartFadingToClear();
         rsc.audioMng.FadeInMainMusic();
+
+        zoneDictionary = new Dictionary<int, ZoneActivableObjects>();
+        for (int i = 0; i < zoneActivableObjects.Length; ++i)
+        {
+            zoneDictionary.Add(zoneActivableObjects[i].zoneId, zoneActivableObjects[i]);
+        }
 	}
 
     void OnDestroy()
@@ -84,54 +133,28 @@ public class Level01Controller : MonoBehaviour
     private void ZoneReached(EventInfo eventInfo)
     {
         ZoneReachedInfo info = (ZoneReachedInfo)eventInfo;
-        currentZone = info.zoneId;
+        currentZoneId = info.zoneId;
+        currentZoneObjects = zoneDictionary[currentZoneId];
 
-        rsc.enemyMng.StartPlan(currentZone); //Call to enemy manager start plan BEFORE activating any vortex or turret, because start plan resets counters
+        rsc.enemyMng.StartPlan(currentZoneId); //Call to enemy manager start plan BEFORE activating any vortex or turret, because start plan resets counters
 
-        switch (currentZone)
+        //Special actions on first zone
+        if(currentZoneId == 101)
         {
-            case 101:
-                rsc.colorMng.Activate();
-                floor.Activate();
-                break;
-            case 102:
-                zone2spawner1.Activate();
-                //bridgeZone01.SetActive(false);
-                bridgeCtrlZone1.Deactivate();
-                break;
-            case 103:
-                zone3spawner1.Activate();
-                zone3spawner2.Activate();
-                //bridgeZone02.SetActive(false);
-                bridgeCtrlZone2.Deactivate();
-                break;
-            default:
-                break;
-        }     
+            rsc.colorMng.Activate();
+            floor.Activate();
+        }
+
+        currentZoneObjects.ZoneReached();
     }
 
     private void ZonePlanFinished(EventInfo eventInfo)
     {
         ZonePlanEndedInfo info = (ZonePlanEndedInfo)eventInfo;
-        switch (info.planId)
-        {
-            //open door 01
-            case 101:
-                //bridgeZone01.SetActive(true);
-                bridgeCtrlZone1.Activate();
-                break;
 
-            case 102:
-                //bridgeZone02.SetActive(true);
-                bridgeCtrlZone2.Activate();
-                uSBTeleport1.SetActive(true);
-                uSBTeleport2.SetActive(true);
-                break;
-
-            case 103:
-                endZone.SetActive(true);
-                break;
-        }
+        ZoneActivableObjects zone;
+        if (zoneDictionary.TryGetValue(info.planId, out zone))
+            zone.ZoneFinished();
     }
 
     //This function will reposition player in the battleground in case he fell and god mode was active
@@ -173,25 +196,11 @@ public class Level01Controller : MonoBehaviour
 
     private void PositionPlayer(PlayerController player)
     {
-        switch (currentZone)
-        {
-            //open door 01
-            case 101:
-                player.transform.position = zone1PlayerSpawnPoint.position;
-                break;
+        if (currentZoneObjects != null)
+            player.transform.position = currentZoneObjects.playerSpawnPoint.position;
+        else
+            player.transform.position = zoneActivableObjects[0].playerSpawnPoint.position;
 
-            case 102:
-                player.transform.position = zone2PlayerSpawnPoint.position;
-                break;
-
-            case 103:
-                player.transform.position = zone3PlayerSpawnPoint.position;
-                break;
-
-            default:
-                player.transform.position = zone1PlayerSpawnPoint.position;
-                break;
-        }
         player.transform.SetParent(null);
     }
 
