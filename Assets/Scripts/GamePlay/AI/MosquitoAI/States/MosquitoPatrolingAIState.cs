@@ -48,23 +48,26 @@ public class MosquitoPatrolingAIState : MosquitoAIActionsBaseState
         {
             elapsedTime = 0f;
 
-            if(rsc.enemyMng.blackboard.attackingPlayerMosquitoes < mosquitoBlackboard.mosquito.mosquitoesAttackingThreshold)
+            if (mosquitoBlackboard.player != null && mosquitoBlackboard.playerController.Alive)
             {
-                int chances = 100 - (rsc.enemyMng.blackboard.attackingPlayerMosquitoes * mosquitoBlackboard.mosquito.chancesReductionForEachAttackingMosquito);
-
-                if (RollADice(chances))
+                if (rsc.enemyMng.blackboard.attackingPlayerMosquitoes < mosquitoBlackboard.mosquito.mosquitoesAttackingThreshold)
                 {
-                    return mosquitoBlackboard.attackingPlayerState;
+                    int chances = 100 - (rsc.enemyMng.blackboard.attackingPlayerMosquitoes * mosquitoBlackboard.mosquito.chancesReductionForEachAttackingMosquito);
+
+                    if (RollADice(chances))
+                    {
+                        return mosquitoBlackboard.attackingPlayerState;
+                    }
                 }
-            }
 
-            if(rsc.enemyMng.blackboard.activeMosquitoShots < mosquitoBlackboard.mosquito.activeAttacksThreshold)
-            {
-                int chances = 100 - (rsc.enemyMng.blackboard.activeMosquitoShots * mosquitoBlackboard.mosquito.chancesReductionForEachActiveAttack);
-
-                if(RollADice(chances))
+                if (rsc.enemyMng.blackboard.activeMosquitoShots < mosquitoBlackboard.mosquito.activeAttacksThreshold)
                 {
-                    ShootWeak();
+                    int chances = 100 - (rsc.enemyMng.blackboard.activeMosquitoShots * mosquitoBlackboard.mosquito.chancesReductionForEachActiveAttack);
+
+                    if (RollADice(chances))
+                    {
+                        ShootWeak();
+                    }
                 }
             }
         }
