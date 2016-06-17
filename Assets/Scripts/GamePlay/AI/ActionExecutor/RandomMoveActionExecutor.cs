@@ -83,10 +83,13 @@ public class RandomMoveActionExecutor : BaseExecutor
             blackBoard.agent.speed = speed * rsc.gameInfo.globalEnemySpeedFactor;
             blackBoard.agent.destination = blackBoard.entityGO.transform.position + direction;
 
-            //blackBoard.animator.SetFloat("walkSpeed", blackBoard.agent.speed / 4);
-            //blackBoard.animator.SetBool("walking", true);
+            //This movement has no inertia
+            blackBoard.agent.acceleration = 1000;
 
             blackBoard.agent.Resume();
+
+            //blackBoard.animator.SetFloat("walkSpeed", blackBoard.agent.speed / 4);
+            //blackBoard.animator.SetBool("walking", true);
         }
     }
 
@@ -121,12 +124,12 @@ public class RandomMoveActionExecutor : BaseExecutor
 
 
                 if ((blackBoard.agent.hasPath && blackBoard.agent.remainingDistance <= 1f)
-                    || elapsedTime > randomMoveAction.maxTime)
+                    || (randomMoveAction.maxTime > 0 && elapsedTime > randomMoveAction.maxTime))
                 {
                     blackBoard.agent.velocity = Vector3.zero;
-                    //blackBoard.agent.Stop();
+                    blackBoard.agent.Stop();
                     
-                    //blackBoard.animator.SetFloat("walkSpeed", 1);
+                    blackBoard.animator.SetFloat("walkSpeed", 1);
 
                     --totalDisplacements;
                     if (totalDisplacements > 0)

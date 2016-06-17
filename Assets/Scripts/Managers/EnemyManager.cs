@@ -542,14 +542,14 @@ public class EnemyManager : MonoBehaviour
         level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 6f, true, 4f));
         level01Z01spiderAttack07.Add(new MoveAIAction("Z01WP03", 14f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -20, 4f, true, 4f));
 
-        level01Z01MosquitoPatrol01.Add(new MoveAIAction("Z01SWP02", 7f));
-        level01Z01MosquitoPatrol01.Add(new MoveAIAction("Z01SWP03", 7f));
-        level01Z01MosquitoPatrol01.Add(new MoveAIAction("Z01SWP04", 7f));
-        level01Z01MosquitoPatrol01.Add(new MoveAIAction("Z01SWP01", 7f));
+        level01Z01MosquitoPatrol01.Add(new MoveAIAction("Z01SWP02", 7f, true, 6f));
+        level01Z01MosquitoPatrol01.Add(new MoveAIAction("Z01SWP03", 7f, true, 6f));
+        level01Z01MosquitoPatrol01.Add(new MoveAIAction("Z01SWP04", 7f, true, 6f));
+        level01Z01MosquitoPatrol01.Add(new MoveAIAction("Z01SWP01", 7f, true, 6f));
         //level01Z01MosquitoPatrol01.Add(new RandomMoveAIAction(10f, 15f, 3, 5, 0.25f, 0.5f, 5f, 10f, 10, 80));
 
-        level01Z01MosquitoAttack01.Add(new RandomMoveAIAction(10f, 15f, 2, 3, 0.25f, 0.5f, 2f, 6f, 10, 75));
-        level01Z01MosquitoAttack01.Add(new MosquitoShotAIAction(1, AIAction.LIST_FINISHED));
+        level01Z01MosquitoAttack01.Add(new RandomMoveAIAction(10f, 15f, 1, 2, 0.15f, 0.35f, 2f, 6f, 10, 75, 2f, RandomMoveAIAction.Reference.PLAYER));
+        level01Z01MosquitoAttack01.Add(new MosquitoShotAIAction(AIAction.LIST_FINISHED));
 
         // LEVEL 01 ZONE 02-------------------------------------------------------------------------------------------------------------------------------
 
@@ -689,10 +689,10 @@ public class EnemyManager : MonoBehaviour
 
         plan0101.enemiesThreshold = 2;
         List<WaveAction> z01wave01 = new List<WaveAction>();
-        z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.RED, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01));
-        z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.GREEN, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01 ,1f));
+        //z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.RED, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01));
+        //z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.GREEN, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01 ,1f));
         z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.BLUE, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01, 1f));
-        z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01, 1f));
+        //z01wave01.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z01SSP01", level01Z01MosquitoPatrol01, level01Z01MosquitoAttack01, 1f));
 
         //z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01SpiderEntry01, defaultSpiderAttack, 0f, 2, 1f)); 
         plan0101.sequentialWaves.Add(z01wave01);

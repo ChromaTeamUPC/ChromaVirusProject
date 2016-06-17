@@ -159,10 +159,6 @@ public class SpiderBiteAIAction: AIAction
 
 public class MosquitoShotAIAction: AIAction
 {
-    public int numberOfProjectiles;
-
-    public MosquitoShotAIAction(int numProj = 1, int next = AIAction.NEXT_ACTION) : base(Type.MOSQUITO_ATTACK, next)
-    {
-        numberOfProjectiles = numProj;
-    }
+    public MosquitoShotAIAction(int next = AIAction.NEXT_ACTION) : base(Type.MOSQUITO_ATTACK, next)
+    {}
 }

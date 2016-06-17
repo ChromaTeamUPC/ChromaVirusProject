@@ -50,7 +50,8 @@ public class MosquitoHomingProjectileAttackController : MosquitoMainAttackContro
         projectile[0].transform.rotation = source.rotation;
         projectile[0].SetActive(true);
 
-        projController[0].target = player.transform;
+        if(player != null && player.Alive)
+            projController[0].target = player.transform;
         projController[0].Shoot();
 
         StartCoroutine(ShootDelayed());
@@ -66,7 +67,8 @@ public class MosquitoHomingProjectileAttackController : MosquitoMainAttackContro
             yield return new WaitForSeconds(timeBetweenProjectiles);
 
             projectile[i].transform.position = source.position;
-            projController[0].target = player.transform;
+            if (player != null && player.Alive)
+                projController[0].target = player.transform;
             projectile[i].transform.rotation = source.rotation;
             projectile[i].SetActive(true);
 

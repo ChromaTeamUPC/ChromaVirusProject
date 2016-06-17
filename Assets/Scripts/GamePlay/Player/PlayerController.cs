@@ -192,7 +192,14 @@ public class PlayerController : MonoBehaviour
 
     public Vector3 PositionPrediction(float secondsPrediction = 1f)
     {
-        return transform.position + (totalHorizontalDirection * secondsPrediction);
+        //This case will be true only when dashing or speedwalking
+        if(blackboard.currentSpeed > walkSpeed)
+        {
+            Vector3 calculatedDirection = totalHorizontalDirection / blackboard.currentSpeed * walkSpeed;
+            return transform.position + (calculatedDirection * secondsPrediction);
+        }
+        else
+            return transform.position + (totalHorizontalDirection * secondsPrediction);
     }
 
     public void RechargeEnergy(float energy)

@@ -22,6 +22,9 @@ public class MosquitoPatrolingAIState : MosquitoAIActionsBaseState
     public override void OnStateEnter()
     {
         //Don't reset executor index
+        currentExecutor = null;
+        UpdateExecutor();
+        elapsedTime = 0f;
     }
 
     public override AIBaseState Update()

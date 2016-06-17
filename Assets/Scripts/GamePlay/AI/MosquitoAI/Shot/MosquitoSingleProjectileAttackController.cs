@@ -25,7 +25,10 @@ public class MosquitoSingleProjectileAttackController : MosquitoMainAttackContro
 
         rsc.enemyMng.blackboard.MosquitoShotSpawned();
         projectile.transform.position = source.position;
-        projectile.transform.rotation = source.rotation;
+        if (player != null && player.Alive)
+            projectile.transform.LookAt(player.transform.position, Vector3.up);
+        else
+            projectile.transform.rotation = source.rotation;
 
         projController.Shoot();
         active = true;

@@ -78,7 +78,7 @@ public class EnemyShotController : MonoBehaviour {
 
     void FixedUpdate()
     {
-        if(active && homing && shotCollider.enabled)
+        if(active && homing && shotCollider.enabled && target != null)
         {
             homingDuration += Time.fixedDeltaTime; 
             if(homingDuration <= maxHomingDuration)
