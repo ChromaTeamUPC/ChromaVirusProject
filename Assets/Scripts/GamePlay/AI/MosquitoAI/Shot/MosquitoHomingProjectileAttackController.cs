@@ -72,7 +72,8 @@ public class MosquitoHomingProjectileAttackController : MosquitoMainAttackContro
             projectile[i].transform.rotation = source.rotation;
             projectile[i].SetActive(true);
 
-            projController[i].target = player.transform;
+            if (player != null && player.Alive)
+                projController[i].target = player.transform;
             projController[i].Shoot();
         }
     }
