@@ -54,52 +54,6 @@ public class SpawnPointController : MonoBehaviour {
         UpdatePortal(greenPSs, ref greenPortalDuration, ref isGreenStopping);
         UpdatePortal(bluePSs, ref bluePortalDuration, ref isBlueStopping);
         UpdatePortal(yellowPSs, ref yellowPortalDuration, ref isYellowStopping);
-
-        //TODO DEbug, remove when done
-        /*if (Input.GetKeyDown(KeyCode.Keypad1))
-        {
-            //if (!redPS.isPlaying)
-                redPS.Play();
-            //Debug.Log("Manual Play +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad2))
-        {
-            //if (!redPS.isStopped)
-                redPS.Stop();
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad3))
-        {
-            //if (!greenPS.isPlaying)
-                greenPS.Play();
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad4))
-        {
-            //if (!greenPS.isStopped)
-                greenPS.Stop();
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad5))
-        {
-            //if (!bluePS.isPlaying)
-                bluePS.Play();
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad6))
-        {
-            //if (!bluePS.isStopped)
-                bluePS.Stop();
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad7))
-        {
-            //if (!yellowPS.isPlaying)
-                yellowPS.Play();
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad8))
-        {
-            //if (!yellowPS.isStopped)
-                yellowPS.Stop();
-        }*/
-
-        //Debug.Log("Is playing: " + redPS.isPlaying);
-        //Debug.Log("Is stopped: " + redPS.isStopped);
     }
 
     private void UpdatePortal(ParticleSystem[] particleSystems, ref float duration, ref bool checkStop)

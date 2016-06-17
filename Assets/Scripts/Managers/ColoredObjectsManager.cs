@@ -67,7 +67,7 @@ public class ColoredObjectsManager : MonoBehaviour
 
 	void Start ()
     {
-        Debug.Log("Colored Objects Manager created");
+        //Debug.Log("Colored Objects Manager created");
 
         player1ShotPools[0] = rsc.poolMng.player1ShotRedPool;
         player1ShotPools[1] = rsc.poolMng.player1ShotGreenPool;
@@ -97,7 +97,7 @@ public class ColoredObjectsManager : MonoBehaviour
     {
         if(rsc.eventMng != null)
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
-        Debug.Log("Colored Objects Manager destroyed");
+        //Debug.Log("Colored Objects Manager destroyed");
     }
 
     void ColorChanged(EventInfo eventInfo)

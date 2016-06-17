@@ -83,55 +83,55 @@ public class rsc : MonoBehaviour
             //Double check for every static variable
             if (debugMng == null)
             {
-                Debug.Log("Storing Debug Manager");
+                //Debug.Log("Storing Debug Manager");
                 debugMng = debugManager;
             }
 
             if (eventMng == null)
             {
-                Debug.Log("Storing Event Manager");
+                //Debug.Log("Storing Event Manager");
                 eventMng = eventManager;
             }
 
             if (audioMng == null)
             {
-                Debug.Log("Storing Audio Manager");
+                //Debug.Log("Storing Audio Manager");
                 audioMng = audioManager;
             }
 
             if (enemyMng == null)
             {
-                Debug.Log("Storing Enemy Manager");
+                //Debug.Log("Storing Enemy Manager");
                 enemyMng = enemyManager;
             }
 
             if (poolMng == null)
             {
-                Debug.Log("Storing Pool Manager");
+                //Debug.Log("Storing Pool Manager");
                 poolMng = poolManager;
             }
 
             if (colorMng == null)
             {
-                Debug.Log("Storing Color Manager");
+                //Debug.Log("Storing Color Manager");
                 colorMng = colorManager;
             }
 
             if (coloredObjectsMng == null)
             {
-                Debug.Log("Storing Colored Objects Manager");
+                //Debug.Log("Storing Colored Objects Manager");
                 coloredObjectsMng = coloredObjectsManager;
             }
 
             if (gameMng == null)
             {
-                Debug.Log("Storing Game Manager");
+                //Debug.Log("Storing Game Manager");
                 gameMng = gameManager;
             }
 
             if(coroutineHlp == null)
             {
-                Debug.Log("Storing Coroutine Helper");
+                //Debug.Log("Storing Coroutine Helper");
                 coroutineHlp = coroutineHelper;
             }
 

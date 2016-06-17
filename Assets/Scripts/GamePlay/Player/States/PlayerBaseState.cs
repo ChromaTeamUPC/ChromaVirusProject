@@ -254,7 +254,7 @@ public class PlayerBaseState
 
             float angle = Vector3.Angle(forward, playerEnemy);
 
-            Debug.Log("Angle: " + angle + " // Attack color: " + ChromaColorInfo.GetColorName(color) + " // Current color: " + ChromaColorInfo.GetColorName(blackboard.currentColor));
+            //Debug.Log("Angle: " + angle + " // Attack color: " + ChromaColorInfo.GetColorName(color) + " // Current color: " + ChromaColorInfo.GetColorName(blackboard.currentColor));
 
             if (angle < blackboard.player.maxAngleToShieldBlocking)
             {
@@ -321,18 +321,15 @@ public class PlayerBaseState
     private IEnumerator HandleEnemyTouched()
     {
         blackboard.isAffectedByContact = true;
-        Debug.Log("Is slowdown because enemy contact");
 
         yield return new WaitForSeconds(blackboard.player.speedReductionTimeOnContact);
 
         blackboard.isAffectedByContact = false;
         blackboard.isContactCooldown = true;
-        Debug.Log("Is slowdown cooldown");
 
         yield return new WaitForSeconds(blackboard.player.cooldownTime);
 
         blackboard.isContactCooldown = false;
-        Debug.Log("Slowdown cooldown finished");
     }
 
 

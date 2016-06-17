@@ -118,14 +118,14 @@ public class EventManager : MonoBehaviour {
 
     void Awake()
     {
-        Debug.Log("Event Manager created");
+        //Debug.Log("Event Manager created");
         eventDictionary = new Dictionary<EventType, CustomEvent>();
         active = true;
     }
 
     void OnDestroy()
     {
-        Debug.Log("Event Manager destroyed");
+        //Debug.Log("Event Manager destroyed");
     }
 
     public void Activate()

@@ -73,11 +73,11 @@ public class PoolManager : MonoBehaviour
         mosquitoMultipleProjectilePool.Init(gameObject, poolContainerPrefab);
         mosquitoHomingProjectilePool.Init(gameObject, poolContainerPrefab);
 
-        Debug.Log("Pool Manager created");
+        //Debug.Log("Pool Manager created");
     }
 
     void OnDestroy()
     {
-        Debug.Log("Pool Manager destroyed");
+        //Debug.Log("Pool Manager destroyed");
     }
 }

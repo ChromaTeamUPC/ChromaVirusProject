@@ -19,9 +19,9 @@ public class MosquitoWeakShotController : MonoBehaviour {
     private float maxDuration;
 
     [SerializeField]
-    private GameObject impactParticlePrefab;
-    [SerializeField]
     private GameObject projectileParticlePrefab;
+    [SerializeField]
+    private GameObject impactParticlePrefab;
 
     private GameObject impactParticle;
     private GameObject projectileParticle;

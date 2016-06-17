@@ -65,7 +65,7 @@ public class ColorManager : MonoBehaviour
 
     void Awake()
     {
-        Debug.Log("Color Manager created");
+        //Debug.Log("Color Manager created");
         active = false;
         colorChange = true;
         currentColor = ChromaColorInfo.Random;
@@ -87,7 +87,7 @@ public class ColorManager : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
         }
-        Debug.Log("Color Manager destroyed");
+        //Debug.Log("Color Manager destroyed");
     }
 
     public void Activate()

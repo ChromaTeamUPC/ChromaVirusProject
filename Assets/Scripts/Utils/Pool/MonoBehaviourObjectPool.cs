@@ -14,7 +14,7 @@ public class MonoBehaviourObjectPool<T> where T : MonoBehaviour
 
     public MonoBehaviourObjectPool()
     {
-        Debug.Log("MonoBehaviour Object Pool created");
+        //Debug.Log("MonoBehaviour Object Pool created");
     }
 
     ~MonoBehaviourObjectPool()
@@ -23,7 +23,7 @@ public class MonoBehaviourObjectPool<T> where T : MonoBehaviour
         {
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, RecallObjects);
         }
-        Debug.Log("MonoBehaviour Object Pool destroyed");
+        //Debug.Log("MonoBehaviour Object Pool destroyed");
     }
 
     public void Init(GameObject poolParent, GameObject poolContainer)
@@ -48,7 +48,7 @@ public class MonoBehaviourObjectPool<T> where T : MonoBehaviour
             auxList.Add(comp);
         }
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, RecallObjects);
-        Debug.Log("MonoBehaviour Object Pool initialized");
+        //Debug.Log("MonoBehaviour Object Pool initialized");
     }
 
     private void RecallObjects(EventInfo eventInfo)

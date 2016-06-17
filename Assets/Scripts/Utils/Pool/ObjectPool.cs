@@ -16,7 +16,7 @@ public class ObjectPool {
 
     public ObjectPool()
     {
-        Debug.Log("Object Pool created");
+        //Debug.Log("Object Pool created");
     }
 
     ~ObjectPool()
@@ -25,7 +25,7 @@ public class ObjectPool {
         {
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, RecallObjects);
         }
-        Debug.Log("Object Pool destroyed");
+        //Debug.Log("Object Pool destroyed");
     }
 
     public void Init(GameObject poolParent, GameObject poolContainer)
@@ -49,7 +49,7 @@ public class ObjectPool {
             auxList.Add(aux);
         }
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, RecallObjects);
-        Debug.Log("Object Pool initialized");
+        //Debug.Log("Object Pool initialized");
     }
 
     private void RecallObjects(EventInfo eventInfo)
