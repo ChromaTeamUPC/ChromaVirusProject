@@ -3,16 +3,10 @@ using System.Collections;
 
 public class SpiderBlackboard: EnemyBaseBlackboard
 {
+    //Non reseteable values
     public SpiderAIBehaviour spider;
 
-    public float timeSinceLastAttack;   
-
-    public float initialCheckDelay;
-    public float checkAttackingSpidersDelay;
-
     public Transform boltSpawnPoint;
-
-    public SpiderAIBehaviour.SpawnAnimation spawnAnimation;
 
     public GameObject[] explosions = new GameObject[4];
 
@@ -24,6 +18,15 @@ public class SpiderBlackboard: EnemyBaseBlackboard
     public SpiderAIBaseState attackingChipState;
     public SpiderAIBaseState attractedToBarrelState;
     public SpiderAIBaseState dyingState;
+
+    //Reseteable values
+    public float timeSinceLastAttack;   
+
+    public float initialCheckDelay;
+    public float checkAttackingSpidersDelay;
+
+    public SpiderAIBehaviour.SpawnAnimation spawnAnimation;
+
 
     public override void InitialSetup(GameObject e)
     {
@@ -56,7 +59,6 @@ public class SpiderBlackboard: EnemyBaseBlackboard
         base.ResetValues();
 
         timeSinceLastAttack = 100f;
-        currentHealth = spider.maxHealth;
 
         initialCheckDelay = 0f;
         checkAttackingSpidersDelay = 0f;

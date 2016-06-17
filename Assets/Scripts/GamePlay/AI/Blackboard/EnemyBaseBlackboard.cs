@@ -3,19 +3,20 @@ using System.Collections;
 
 public class EnemyBaseBlackboard
 {
+    //Non reseteable values
     public GameObject entityGO;
     public EnemyBaseAIBehaviour entity;
-
     public NavMeshAgent agent;
-
     public Animator animator;
+
+    //Reseteable values
+    public float currentHealth;
+    public bool canReceiveDamage;
 
     public bool spawnAnimationEnded;
     public bool attackAnimationTrigger;
     public bool attackAnimationEnded;
     public bool dieAnimationEnded;
-
-    public bool canReceiveDamage;
 
     public GameObject target;
 
@@ -29,8 +30,6 @@ public class EnemyBaseBlackboard
 
     public EnemyGroupInfo groupInfo;
 
-    public float currentHealth;
-
     public virtual void InitialSetup(GameObject e)
     {     
         entityGO = e;
@@ -38,37 +37,29 @@ public class EnemyBaseBlackboard
         agent = entityGO.GetComponent<NavMeshAgent>();
         animator = entityGO.GetComponent<Animator>();
 
-        spawnAnimationEnded = true;
-        attackAnimationEnded = true;
-        attackAnimationTrigger = false;
-        dieAnimationEnded = true;
-
-        canReceiveDamage = false;      
-        target = null;
-
-        SetPlayer(null);
-
-        barrelController = null;
-
-        groupInfo = null;
+        ResetValues();
     }
 
     public virtual void ResetValues()
     {
+        currentHealth = entity.maxHealth;
+        canReceiveDamage = false;
+
         spawnAnimationEnded = true;
         attackAnimationTrigger = false;
         attackAnimationEnded = true;
         dieAnimationEnded = true;
 
-        canReceiveDamage = false;
         target = null;
 
         SetPlayer(null);
 
         barrelController = null;
 
+        lastShotDirection = Vector3.zero;
+        lastShotSameColor = false;
+
         groupInfo = null;
-        currentHealth = entity.maxHealth;
     }
 
     public void SetPlayer(GameObject p)

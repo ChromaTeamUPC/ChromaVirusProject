@@ -3,8 +3,19 @@ using System.Collections;
 
 public class MosquitoBlackboard : EnemyBaseBlackboard
 {
+    //Non reseteable values
     public MosquitoAIBehaviour mosquito;
 
+    public Transform shotSpawnPoint;
+
+    public GameObject[] explosions = new GameObject[4];
+
+    public MosquitoAIBaseState spawningState;
+    public MosquitoAIActionsBaseState patrolingState;
+    public MosquitoAIActionsBaseState attackingPlayerState;
+    public MosquitoAIBaseState dyingState;
+
+    //Reseteable values
     public float checkPlayerElapsedTime;
 
     public float timeSinceLastAttack;
@@ -12,17 +23,7 @@ public class MosquitoBlackboard : EnemyBaseBlackboard
     public float initialCheckDelay;
     public float checkAttackingMosquitoesDelay;
 
-    public Transform shotSpawnPoint;
-
     public MosquitoAIBehaviour.SpawnAnimation spawnAnimation;
-
-    public GameObject[] explosions = new GameObject[4];
-
-    public MosquitoAIBaseState spawningState;
-    public MosquitoAIActionsBaseState patrolingState;
-    public MosquitoAIActionsBaseState attackingPlayerState;
-
-    public MosquitoAIBaseState dyingState;
 
     public override void InitialSetup(GameObject e)
     {
