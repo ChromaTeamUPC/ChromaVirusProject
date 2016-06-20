@@ -10,6 +10,7 @@ public class PlayerBlackboard
     public BlinkController blinkController;
     public Animator animator;
     public GameObject shield;
+    public GameObject laserAim;
 
     public int playerRayCastMask;
     public int playerPhysicsLayer;

@@ -80,16 +80,26 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private ParticleSystem attackBlockedPS;
 
+
+    [SerializeField]
+    private LineRenderer mainBeam;
+    [SerializeField]
+    private LineRenderer fadeBeam;
+
     //Misc
     [Header("Miscelaneous Settings")]
     public float idleRandomAnimTime = 10f;
     public Transform hintPoint;
+    
 
 
     [SerializeField]
     private Renderer bodyRend;
     [SerializeField]
     private GameObject shield;
+    [SerializeField]
+    private GameObject laserAim;
+
     private Renderer shieldRend;
     private CharacterController ctrl;
     private ColoredObjectsManager coloredObjMng;
@@ -112,6 +122,7 @@ public class PlayerController : MonoBehaviour
     {
         blackboard.Init(this);
         blackboard.shield = shield;
+        blackboard.laserAim = laserAim;
         shieldRend = shield.GetComponent<Renderer>();
         voxelization = GetComponentInChildren<VoxelizationClient>();
         ctrl = GetComponent<CharacterController>();
@@ -191,6 +202,13 @@ public class PlayerController : MonoBehaviour
         blackboard.blinkController.InvalidateMaterials();
 
         trail.sharedMaterial = coloredObjMng.GetPlayer1TrailMaterial(blackboard.currentColor);
+
+        Color color = rsc.coloredObjectsMng.GetColor(blackboard.currentColor);
+        Color alpha = color;
+        color.a = 0.9f;
+        alpha.a = 0f;
+        mainBeam.SetColors(color, color);
+        fadeBeam.SetColors(color, alpha);
     }
 
     public Vector3 PositionPrediction(float secondsPrediction = 1f)
@@ -528,11 +546,13 @@ public class PlayerController : MonoBehaviour
     public void ActivateShield()
     {
         blackboard.shield.SetActive(true);
+        blackboard.laserAim.SetActive(true);
     }
 
     public void DeactivateShield()
     {
         blackboard.shield.SetActive(false);
+        blackboard.laserAim.SetActive(false);
     }
 
     public void SetCapacitor(CapacitorController capacitor)
