@@ -343,6 +343,38 @@ public class PlayerController : MonoBehaviour
             blackboard.specialPressed = true;
             blackboard.keyPressed = true;
         }
+
+        //A Button
+        if (Input.GetButton(blackboard.greenButton))
+        {
+            blackboard.greenPressed = true;
+            blackboard.colorButtonsPressed = true;
+            blackboard.keyPressed = true;
+        }
+
+        //B Button
+        if (Input.GetButton(blackboard.redButton))
+        {
+            blackboard.redPressed = true;
+            blackboard.colorButtonsPressed = true;
+            blackboard.keyPressed = true;
+        }
+
+        //X Button
+        if (Input.GetButton(blackboard.blueButton))
+        {
+            blackboard.bluePressed = true;
+            blackboard.colorButtonsPressed = true;
+            blackboard.keyPressed = true;
+        }
+
+        //Y Button
+        if (Input.GetButton(blackboard.yellowButton))
+        {
+            blackboard.yellowPressed = true;
+            blackboard.colorButtonsPressed = true;
+            blackboard.keyPressed = true;
+        }
     }
 
     private void RechargeMovingCharge()
@@ -501,6 +533,17 @@ public class PlayerController : MonoBehaviour
     public void DeactivateShield()
     {
         blackboard.shield.SetActive(false);
+    }
+
+    public void SetCapacitor(CapacitorController capacitor)
+    {
+        ButtonHintEventInfo.eventInfo.playerId = playerId;
+        ButtonHintEventInfo.eventInfo.buttonType = ButtonHintEventInfo.ButtonType.COLOR_BUTTONS;
+        ButtonHintEventInfo.eventInfo.show = (capacitor != null);
+
+        rsc.eventMng.TriggerEvent(EventManager.EventType.BUTTON_HINT, ButtonHintEventInfo.eventInfo);
+
+        blackboard.capacitor = capacitor;
     }
 
     //Particle Systems methods

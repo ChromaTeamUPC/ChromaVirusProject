@@ -33,7 +33,9 @@ public class PlayerLongIdleState : PlayerBaseState
             return blackboard.movingState;
         }
         else
-        {            
+        {
+            CapacitorCharge();
+                   
             Turn();
 
             Shoot();

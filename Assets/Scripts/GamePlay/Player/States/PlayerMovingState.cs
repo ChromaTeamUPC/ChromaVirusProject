@@ -44,6 +44,8 @@ public class PlayerMovingState : PlayerBaseState
         }
         else
         {
+            CapacitorCharge();
+
             Turn();
 
             Shoot();

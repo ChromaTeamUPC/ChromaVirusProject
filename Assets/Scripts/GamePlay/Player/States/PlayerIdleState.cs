@@ -18,10 +18,11 @@ public class PlayerIdleState : PlayerBaseState {
         is he in a border?
         can he do a special?
         can he do a dash?
+        can he charge a capacitor?
         can he turn?
         can he shoot?
         can he move?
-        */    
+        */
 
         if (!blackboard.isGrounded)
         {
@@ -46,6 +47,8 @@ public class PlayerIdleState : PlayerBaseState {
         }
         else
         {
+            CapacitorCharge();
+
             Turn();
 
             Shoot();

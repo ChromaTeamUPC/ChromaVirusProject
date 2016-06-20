@@ -38,6 +38,10 @@ public class PlayerBlackboard
     public string fire;
     public string dash;
     public string special;
+    public string greenButton;
+    public string redButton;
+    public string blueButton;
+    public string yellowButton;
 
     //Input variables
     public bool keyPressed;
@@ -48,6 +52,11 @@ public class PlayerBlackboard
     public bool shootPressed;
     public bool dashPressed;
     public bool specialPressed;
+    public bool greenPressed;
+    public bool redPressed;
+    public bool bluePressed;
+    public bool yellowPressed;
+    public bool colorButtonsPressed;
 
     //State control variables
     public bool active;     //Player is participating in current game (not necesarily alive)
@@ -79,6 +88,8 @@ public class PlayerBlackboard
     public List<EnemyBaseAIBehaviour> enemiesInRange = new List<EnemyBaseAIBehaviour>();
     public SphereCollider specialAttackCollider;
 
+    //Other gameplay variables
+    public CapacitorController capacitor;
 
     public void Init(PlayerController pl)
     {
@@ -132,6 +143,10 @@ public class PlayerBlackboard
         fire = playerStr + "_Fire";
         dash = playerStr + "_Dash";
         special = playerStr + "_Special";
+        greenButton = playerStr + "_Green";
+        redButton = playerStr + "_Red";
+        blueButton = playerStr + "_Blue";
+        yellowButton = playerStr + "_Yellow";
 
         playerRayCastMask = LayerMask.GetMask(playerStr + "RayCast");
         playerPhysicsLayer = LayerMask.NameToLayer("Player");
@@ -171,6 +186,8 @@ public class PlayerBlackboard
 
         enemiesInRange.Clear();
         specialAttackCollider.enabled = false;
+
+        capacitor = null;
     }
 
     //This variables have to be reset every update
@@ -182,6 +199,11 @@ public class PlayerBlackboard
         shootPressed = false;
         dashPressed = false;
         specialPressed = false;
+        greenPressed = false;
+        redPressed = false;
+        bluePressed = false;
+        yellowPressed = false;
+        colorButtonsPressed = false;
 
         animator.SetBool("Walking", false);
         animator.SetBool("Aiming", false);

@@ -33,6 +33,7 @@ public class PlayerBaseState
         is he in a border?
         can he do a special?
         can he do a dash?
+        can he charge a capacitor?
         can he turn?
         can he shoot?
         can he move?
@@ -44,6 +45,21 @@ public class PlayerBaseState
     protected Vector3 GetScreenRelativeDirection(Vector3 direction)
     {
         return rsc.camerasMng.GetDirection(blackboard.player.transform.position, direction, blackboard.playerRayCastMask);
+    }
+
+    protected void CapacitorCharge()
+    {
+        if (blackboard.capacitor == null || !blackboard.colorButtonsPressed)
+            return;
+
+        if (blackboard.redPressed)
+            blackboard.capacitor.ManualCharge(ChromaColor.RED);
+        else if (blackboard.greenPressed)
+            blackboard.capacitor.ManualCharge(ChromaColor.GREEN);
+        else if (blackboard.bluePressed)
+            blackboard.capacitor.ManualCharge(ChromaColor.BLUE);
+        else if (blackboard.yellowPressed)
+            blackboard.capacitor.ManualCharge(ChromaColor.YELLOW);
     }
 
     private void LookAt(Vector3 destination)

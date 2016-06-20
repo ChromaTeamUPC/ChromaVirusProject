@@ -8,6 +8,10 @@ public class EventInfo
     //Events that need no extra info, can use this object to improve performance
     public static EventInfo emptyInfo = new EventInfo();
 }
+
+[System.Serializable]
+public class CustomEvent : UnityEvent<EventInfo> { }
+
 public class ColorEventInfo : EventInfo
 {
     public static ColorEventInfo eventInfo = new ColorEventInfo();
@@ -57,7 +61,6 @@ public class CameraEventInfo : EventInfo
     public Camera newCamera;
 }
 
-
 public class DeviceEventInfo : EventInfo
 {
     public static DeviceEventInfo eventInfo = new DeviceEventInfo();
@@ -65,8 +68,27 @@ public class DeviceEventInfo : EventInfo
     public DeviceController device;
 }
 
-[System.Serializable]
-public class CustomEvent : UnityEvent<EventInfo> { }
+public class ButtonHintEventInfo : EventInfo
+{
+    public enum ButtonType
+    {
+        A,
+        B,
+        X,
+        Y,
+        COLOR_BUTTONS,
+        LB,
+        LT,
+        RB,
+        RT
+    }
+
+    public static ButtonHintEventInfo eventInfo = new ButtonHintEventInfo();
+
+    public bool show;
+    public int playerId;
+    public ButtonType buttonType;
+}
 
 
 public class EventManager : MonoBehaviour {
@@ -109,7 +131,9 @@ public class EventManager : MonoBehaviour {
 
         DEVICE_ACTIVATED,
         DEVICE_DEACTIVATED,
-        DEVICE_INFECTION_LEVEL_CHANGED
+        DEVICE_INFECTION_LEVEL_CHANGED,
+
+        BUTTON_HINT,
     }
 
     private Dictionary<EventType, CustomEvent> eventDictionary;
