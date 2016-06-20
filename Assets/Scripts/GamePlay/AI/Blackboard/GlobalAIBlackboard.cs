@@ -9,10 +9,9 @@ public class GlobalAIBlackboard
     public int activeVortex;
     public int activeTurrets;
 
-    public int activeDevicesCount;
     public List<DeviceController> activeDevices;
     public float timeSinceLastDeviceAttack;
-    public HashSet<EnemyBaseAIBehaviour> enemiesAttackingDevice;
+    public int infectingDeviceSpiders;
 
     public const float timeBetweenPlayerAttacks = 1f;
     public int attackingPlayerEnemies;
@@ -25,7 +24,6 @@ public class GlobalAIBlackboard
     public void Init()
     {
         activeDevices = new List<DeviceController>();
-        enemiesAttackingDevice = new HashSet<EnemyBaseAIBehaviour>();
 
         ResetValues();
     }
@@ -40,7 +38,7 @@ public class GlobalAIBlackboard
 
         activeDevices.Clear();
         timeSinceLastDeviceAttack = 0f;
-        enemiesAttackingDevice.Clear();
+        infectingDeviceSpiders = 0;
 
         attackingPlayerEnemies = 0;
         attackingPlayerSpiders = 0;
@@ -60,6 +58,16 @@ public class GlobalAIBlackboard
     {
         --attackingPlayerEnemies;
         --attackingPlayerSpiders;
+    }
+
+    public void SpiderStartsInfectingDevice()
+    {
+        ++infectingDeviceSpiders;
+    }
+
+    public void SpiderStopsInfectingDevice()
+    {
+        --infectingDeviceSpiders;
     }
 
     public void MosquitoStartsAttacking()
