@@ -126,6 +126,7 @@ public class EventManager : MonoBehaviour {
         ZONE_REACHED,
         ZONE_PLAN_FINISHED,
 
+        COLOR_WILL_CHANGE,
         COLOR_CHANGED,
         CAMERA_CHANGED,
 

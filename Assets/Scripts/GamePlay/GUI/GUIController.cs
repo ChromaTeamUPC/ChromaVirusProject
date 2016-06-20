@@ -27,6 +27,7 @@ public class GUIController : MonoBehaviour
     private bool player2ColorMismatch;
 
     [Header("Other Items")]
+    public Image colorWarnTest;
     public Text youWinTxt;
     public Text gameOverTxt;
     public Text pauseTxt;
@@ -72,6 +73,7 @@ public class GUIController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameOver);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameFinished);
         rsc.eventMng.StartListening(EventManager.EventType.BUTTON_HINT, ButtonHint);
+        rsc.eventMng.StartListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
     }
 
     void OnDestroy()
@@ -86,6 +88,7 @@ public class GUIController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameOver);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameFinished);
             rsc.eventMng.StopListening(EventManager.EventType.BUTTON_HINT, ButtonHint);
+            rsc.eventMng.StopListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
         }
     }
 	
@@ -240,7 +243,6 @@ public class GUIController : MonoBehaviour
                 else
                     player2AButton.SetActive(info.show);
                 break;
-                break;
             case ButtonHintEventInfo.ButtonType.LB:
                 break;
             case ButtonHintEventInfo.ButtonType.LT:
@@ -252,5 +254,11 @@ public class GUIController : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    private void ColorPrewarn(EventInfo evenInfo)
+    {
+        ColorEventInfo info = (ColorEventInfo)evenInfo;
+        colorWarnTest.color = rsc.coloredObjectsMng.GetColor(info.newColor);
     }
 }

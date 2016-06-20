@@ -51,13 +51,17 @@ public class ColorManager : MonoBehaviour
 {
     public bool musicSynced = true;
     public float changeInterval;
+    public float prewarningSeconds;
 
     private int[] colorCount = new int[] { 0, 0, 0, 0 };
     private ChromaColor currentColor;
+    private ChromaColor newColor;
     private float elapsedTime = 0f;
 
     private BeatObserver beatObserver;
     private bool colorChange;
+    private bool colorPrecalculated;
+    private float prewarnInterval;
 
     private bool active;
 
@@ -66,9 +70,11 @@ public class ColorManager : MonoBehaviour
     void Awake()
     {
         //Debug.Log("Color Manager created");
+        prewarnInterval = changeInterval - prewarningSeconds;
         active = false;
         colorChange = true;
         currentColor = ChromaColorInfo.Random;
+        newColor = currentColor;
         beatObserver = GetComponent<BeatObserver>();
     }
 
@@ -94,10 +100,16 @@ public class ColorManager : MonoBehaviour
     {
         active = true;
         elapsedTime = 0f;
+        colorPrecalculated = false;
+
         if (musicSynced)
-            SendColorEvent();       
+            SendNewColorEvent();
         else
-            SetNewColor();
+        {
+            //SetNewColor();
+            PrecalculateColor();
+            NotifyNewColor();
+        }
     }
 
     public void Deactivate()
@@ -136,7 +148,12 @@ public class ColorManager : MonoBehaviour
             if (elapsedTime >= changeInterval)
             {
                 elapsedTime -= changeInterval;
-                SetNewColor();        
+                colorPrecalculated = false;
+                NotifyNewColor();        
+            }
+            else if (elapsedTime >= prewarnInterval && !colorPrecalculated)
+            {
+                PrecalculateColor();
             }
         }
 	}
@@ -152,6 +169,70 @@ public class ColorManager : MonoBehaviour
 
                 colorChange = !colorChange;
             }
+        }
+    }
+
+    private void PrecalculateColor()
+    {
+        colorPrecalculated = true;
+
+        //If there is no color enemies in the scene, standard sequence
+        if (TotalColorItems() == 0)
+        {
+            newColor = currentColor;
+
+            if (newColor == ChromaColorInfo.Last)
+                newColor = ChromaColorInfo.First;
+            else
+                newColor++;
+        }
+        else
+        {
+            //If there is only one color of enemies, change between that color and a random one
+            if (TotalColorsWithItems() == 1)
+            {
+                ChromaColor itemsColor = GetFirstColorWithItems();
+
+                if (currentColor != itemsColor)
+                    newColor = itemsColor;
+                else
+                {
+                    do
+                    {
+                        newColor = ChromaColorInfo.Random;
+                    }
+                    while (newColor == itemsColor);
+                }
+            }
+            //If there is more than one color of enemies, change between their colors
+            else
+            {
+                newColor = currentColor;
+
+                ////Search first color in loop that has items
+                do
+                {
+                    if (newColor == ChromaColorInfo.Last)
+                        newColor = ChromaColorInfo.First;
+                    else
+                        newColor++;
+                }
+                while (colorCount[(int)newColor] <= 0);
+            }
+        }
+
+        if (currentColor != newColor)
+        {
+            SendNextColorEvent();
+        }
+    }
+
+    private void NotifyNewColor()
+    {
+        if (currentColor != newColor)
+        {
+            currentColor = newColor;
+            SendNewColorEvent();
         }
     }
 
@@ -207,7 +288,7 @@ public class ColorManager : MonoBehaviour
         if (currentColor != newColor)
         {
             currentColor = newColor;
-            SendColorEvent();
+            SendNewColorEvent();
         }
     }
 
@@ -241,7 +322,13 @@ public class ColorManager : MonoBehaviour
         return sum;
     }
 
-    private void SendColorEvent()
+    private void SendNextColorEvent()
+    {
+        ColorEventInfo.eventInfo.newColor = newColor;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.COLOR_WILL_CHANGE, ColorEventInfo.eventInfo);
+    }
+
+    private void SendNewColorEvent()
     {
         ColorEventInfo.eventInfo.newColor = currentColor;
         rsc.eventMng.TriggerEvent(EventManager.EventType.COLOR_CHANGED, ColorEventInfo.eventInfo);

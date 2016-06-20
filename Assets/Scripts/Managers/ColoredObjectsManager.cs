@@ -9,6 +9,10 @@ public class ColoredObjectsManager : MonoBehaviour
     [SerializeField]
     private Material transparentMaterial;
 
+    //Colors
+    [SerializeField]
+    private Color[] basicColors = new Color[4];
+
     //Player
     [SerializeField]
     private Material[] player1Mats = new Material[4];
@@ -117,6 +121,11 @@ public class ColoredObjectsManager : MonoBehaviour
         currentVoxelMat = voxelMats[colorIndex];
         currentSpiderMat = spiderMats[colorIndex];
         currentMosquitoMat = mosquitoMats[colorIndex];    
+    }
+
+    public Color GetColor(ChromaColor color)
+    {
+        return basicColors[(int)color];
     }
 
     private Material GetMaterial(Material[] matArray, ChromaColor color)
