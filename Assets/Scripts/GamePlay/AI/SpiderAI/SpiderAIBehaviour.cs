@@ -87,7 +87,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     //Not to be used outside FSM
     public override AIBaseState ProcessShotImpact(ChromaColor shotColor, float damage, Vector3 direction, PlayerController player)
     {
-        if (spiderBlackboard.canReceiveDamage && spiderBlackboard.currentHealth > 0)
+        if (spiderBlackboard.canReceiveDamage && spiderBlackboard.HaveHealthRemaining())
         {
             blinkController.BlinkWhiteOnce();
 
@@ -104,14 +104,14 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 
             if (shotColor != color)
             {
-                spiderBlackboard.currentHealth -= damage * wrongColorDamageModifier;
+                spiderBlackboard.currentHealthWrongColor -= damage * wrongColorDamageModifier;
             }
             else
             {
                 spiderBlackboard.currentHealth -= damage;
             }
 
-            if (spiderBlackboard.currentHealth <= 0)
+            if (!spiderBlackboard.HaveHealthRemaining())
             {
                 if (shotColor != color)
                 {
@@ -130,10 +130,10 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     //Not to be used outside FSM
     public override AIBaseState ProcessSpecialImpact(float damage, Vector3 direction)
     {
-        if (spiderBlackboard.canReceiveDamage && spiderBlackboard.currentHealth > 0)
+        if (spiderBlackboard.canReceiveDamage && spiderBlackboard.HaveHealthRemaining())
         {
             spiderBlackboard.currentHealth -= damage;
-            if (spiderBlackboard.currentHealth <= 0)
+            if (!spiderBlackboard.HaveHealthRemaining())
             {
                 spiderBlackboard.lastShotDirection = direction;
                 spiderBlackboard.lastShotSameColor = true;
@@ -152,10 +152,10 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         if (barrelColor != color)
             return null;
 
-        if (spiderBlackboard.canReceiveDamage && spiderBlackboard.currentHealth > 0)
+        if (spiderBlackboard.canReceiveDamage && spiderBlackboard.HaveHealthRemaining())
         {
             spiderBlackboard.currentHealth -= damage;
-            if (spiderBlackboard.currentHealth <= 0)
+            if (!spiderBlackboard.HaveHealthRemaining())
             {
                 spiderBlackboard.lastShotDirection = direction;
                 spiderBlackboard.lastShotSameColor = (barrelColor == color);

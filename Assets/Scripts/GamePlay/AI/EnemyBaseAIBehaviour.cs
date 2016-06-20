@@ -10,7 +10,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
 
     public float shotForceModifier = 1f;
 
-    public float wrongColorDamageModifier = 0.5f;
+    public float wrongColorDamageModifier = 0.25f;
     public int energyVoxelsSpawnedOnDie = 0;
 
     [HideInInspector]

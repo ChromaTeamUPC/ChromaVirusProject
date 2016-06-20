@@ -11,6 +11,7 @@ public class EnemyBaseBlackboard
 
     //Reseteable values
     public float currentHealth;
+    public float currentHealthWrongColor;
     public bool canReceiveDamage;
 
     public bool spawnAnimationEnded;
@@ -43,6 +44,7 @@ public class EnemyBaseBlackboard
     public virtual void ResetValues()
     {
         currentHealth = entity.maxHealth;
+        currentHealthWrongColor = entity.maxHealth;
         canReceiveDamage = false;
 
         spawnAnimationEnded = true;
@@ -69,5 +71,10 @@ public class EnemyBaseBlackboard
             playerController = player.GetComponent<PlayerController>();
         else
             playerController = null;
+    }
+
+    public bool HaveHealthRemaining()
+    {
+        return currentHealth > 0 && currentHealthWrongColor > 0;
     }
 }

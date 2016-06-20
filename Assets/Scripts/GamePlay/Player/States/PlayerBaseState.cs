@@ -365,9 +365,16 @@ public class PlayerBaseState
     {
         if (rsc.debugMng.godMode) return;
 
-        if (blackboard.canShoot)
+        if (blackboard.player.fireSuppresionTimeOnColorMismatch > 0f)
         {
-            blackboard.player.StartCoroutine(ColorMismatchHandle());
+            if (blackboard.canShoot)
+            {
+                blackboard.player.StartCoroutine(ColorMismatchHandle());
+            }
+        }
+        else
+        {
+            TakeDamage(blackboard.player.selfDamageOnColorMismatch, false);
         }
     }
 

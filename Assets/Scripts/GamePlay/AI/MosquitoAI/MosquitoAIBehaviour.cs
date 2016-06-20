@@ -113,7 +113,7 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
     //Not to be used outside FSM
     public override AIBaseState ProcessShotImpact(ChromaColor shotColor, float damage, Vector3 direction, PlayerController player)
     {
-        if (mosquitoBlackboard.canReceiveDamage && mosquitoBlackboard.currentHealth > 0)
+        if (mosquitoBlackboard.canReceiveDamage && mosquitoBlackboard.HaveHealthRemaining())
         {
             blinkController.BlinkWhiteOnce();
 
@@ -130,14 +130,14 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
 
             if (shotColor != color)
             {
-                mosquitoBlackboard.currentHealth -= damage * wrongColorDamageModifier;
+                mosquitoBlackboard.currentHealthWrongColor -= damage * wrongColorDamageModifier;
             }
             else
             {
                 mosquitoBlackboard.currentHealth -= damage;
             }
 
-            if (mosquitoBlackboard.currentHealth <= 0)
+            if (!mosquitoBlackboard.HaveHealthRemaining())
             {
                 if (shotColor != color)
                 {
@@ -156,10 +156,10 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
     //Not to be used outside FSM
     public override AIBaseState ProcessSpecialImpact(float damage, Vector3 direction)
     {
-        if (mosquitoBlackboard.canReceiveDamage && mosquitoBlackboard.currentHealth > 0)
+        if (mosquitoBlackboard.canReceiveDamage && mosquitoBlackboard.HaveHealthRemaining())
         {
             mosquitoBlackboard.currentHealth -= damage;
-            if (mosquitoBlackboard.currentHealth <= 0)
+            if (!mosquitoBlackboard.HaveHealthRemaining())
             {
                 mosquitoBlackboard.lastShotDirection = direction;
                 mosquitoBlackboard.lastShotSameColor = true;
@@ -178,10 +178,10 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
         if (barrelColor != color)
             return null;
 
-        if (mosquitoBlackboard.canReceiveDamage && mosquitoBlackboard.currentHealth > 0)
+        if (mosquitoBlackboard.canReceiveDamage && mosquitoBlackboard.HaveHealthRemaining())
         {
             mosquitoBlackboard.currentHealth -= damage;
-            if (mosquitoBlackboard.currentHealth <= 0)
+            if (!mosquitoBlackboard.HaveHealthRemaining())
             {
                 mosquitoBlackboard.lastShotDirection = direction;
                 mosquitoBlackboard.lastShotSameColor = (barrelColor == color);
