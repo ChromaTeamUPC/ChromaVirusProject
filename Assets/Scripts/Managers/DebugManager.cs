@@ -5,6 +5,8 @@ public class DebugManager : MonoBehaviour {
 
     public DebugKeys keys;
 
+    public float refreshFPSTime = 0.5f;
+
     private int linePosition;
     private int triangleCount;
 
@@ -15,6 +17,17 @@ public class DebugManager : MonoBehaviour {
     private bool calculateTriangles = false;
 
     public bool godMode = false;
+
+    private float elapsedTime;
+    private int frameCount;
+    private int fps;
+
+    void Start()
+    {
+        frameCount = 0;
+        elapsedTime = 0f;
+        fps = 0;
+    }
 
     // Update is called once per frame
     void Update()
@@ -39,6 +52,15 @@ public class DebugManager : MonoBehaviour {
         {
             Time.timeScale /= 2;
         }
+
+        elapsedTime += Time.deltaTime;
+        ++frameCount;
+        if(elapsedTime >= refreshFPSTime)
+        {
+            fps = (int)(frameCount / elapsedTime);
+            frameCount = 0;
+            elapsedTime -= refreshFPSTime;
+        }
     }
 
     void OnGUI()
@@ -53,7 +75,8 @@ public class DebugManager : MonoBehaviour {
         {
             linePosition = 0;
 
-            textFPS = "Fps: " + GetCurrentFPS();
+            //textFPS = "Fps: " + GetCurrentFPS();
+            textFPS = "Fps: " + fps;
             textTriangles = "Triangles in scene: " + triangleCount;
 
             ShowStat(ref textFPS);
