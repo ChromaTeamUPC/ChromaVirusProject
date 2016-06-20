@@ -49,6 +49,8 @@ public class PlayerIdleState : PlayerBaseState {
         {
             CapacitorCharge();
 
+            DisinfectDevice();
+
             Turn();
 
             Shoot();

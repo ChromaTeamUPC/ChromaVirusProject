@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityStandardAssets.ImageEffects;
 
 public class MainCameraController : MonoBehaviour {
 
@@ -11,6 +12,10 @@ public class MainCameraController : MonoBehaviour {
 
     public float smoothing = 5f;
 
+    private MotionBlur motionBlur;
+    private NoiseAndGrain noise;
+    private Grayscale grayScale;
+
     private Vector3 offset;
     private Camera thisCamera;
     private float cameraBorderMargin = 50f;
@@ -18,6 +23,13 @@ public class MainCameraController : MonoBehaviour {
     float maxXPosition;
     float minYPosition;
     float minXPosition;
+
+    void Awake()
+    {
+        motionBlur = GetComponent<MotionBlur>();
+        noise = GetComponent<NoiseAndGrain>();
+        grayScale = GetComponent<Grayscale>();
+    }
 
     void Start()
     {
@@ -36,9 +48,102 @@ public class MainCameraController : MonoBehaviour {
         player1 = rsc.gameInfo.player1Controller;
 
         target2 = rsc.gameInfo.player2.transform;
-        player2 = rsc.gameInfo.player2Controller;      
+        player2 = rsc.gameInfo.player2Controller;
+
+        rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DASHING, PlayerStartDash);
+        rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DASHED, PlayerEndDash);
+        rsc.eventMng.StartListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);     
     }
 
+    void OnDestroy()
+    {
+        if (rsc.eventMng != null)
+        {
+            rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DASHING, PlayerStartDash);
+            rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DASHED, PlayerEndDash);
+            rsc.eventMng.StopListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
+        }
+    }
+
+    private void PlayerStartDash(EventInfo eventInfo)
+    {
+        motionBlur.enabled = true;
+    }
+
+    private void PlayerEndDash(EventInfo eventInfo)
+    {
+        motionBlur.enabled = false;
+    }
+
+    private void DeviceInfectionChanged(EventInfo eventInfo)
+    {
+        DeviceEventInfo info = (DeviceEventInfo)eventInfo;
+        if (info.device.type != DeviceController.Type.VIDEO)
+            return;
+
+        StopAllCoroutines();
+        StopInfection();
+
+        switch (info.device.CurrentInfectionLevel)
+        {
+            case DeviceController.InfectionLevel.LEVEL1:
+                StartCoroutine(InfectionLevel01());
+                break;
+            case DeviceController.InfectionLevel.LEVEL2:
+                StartCoroutine(InfectionLevel02());
+                break;
+            case DeviceController.InfectionLevel.LEVEL3:
+                StartCoroutine(InfectionLevel03());
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void StopInfection()
+    {
+        noise.enabled = false;
+        grayScale.enabled = false;
+    }
+
+    private IEnumerator InfectionLevel01()
+    {
+        while (true)
+        {
+            noise.enabled = true;
+            grayScale.enabled = true;
+            yield return new WaitForSeconds(1f);
+            noise.enabled = false;
+            grayScale.enabled = false;
+            yield return new WaitForSeconds(3f);
+        }
+    }
+
+    private IEnumerator InfectionLevel02()
+    {
+        while (true)
+        {
+            noise.enabled = true;
+            grayScale.enabled = true;
+            yield return new WaitForSeconds(2f);
+            noise.enabled = false;
+            grayScale.enabled = false;
+            yield return new WaitForSeconds(2f);
+        }
+    }
+
+    private IEnumerator InfectionLevel03()
+    {
+        noise.enabled = true;
+
+        while (true)
+        {
+            grayScale.enabled = true;
+            yield return new WaitForSeconds(3f);
+            grayScale.enabled = false;
+            yield return new WaitForSeconds(1f);
+        }
+    }
 
     public Vector3 GetCamTargetPosition()
     {

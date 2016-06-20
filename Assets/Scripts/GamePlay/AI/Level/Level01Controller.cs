@@ -16,6 +16,7 @@ public class ZoneActivableObjects
     public BridgeController[] deactivableBridges;
     public VortexController[] activableSpawners;
     public CapacitorController[] activableCapacitors;
+    public DeviceController[] activableDevices;
 
     [Header("To handle on zone finished")]
     public BridgeController[] activableBridges;
@@ -37,6 +38,11 @@ public class ZoneActivableObjects
         for (int i = 0; i < activableCapacitors.Length; i++)
         {
             activableCapacitors[i].Activate();
+        }
+
+        for (int i = 0; i < activableDevices.Length; i++)
+        {
+            activableDevices[i].Activate();
         }
     }
 

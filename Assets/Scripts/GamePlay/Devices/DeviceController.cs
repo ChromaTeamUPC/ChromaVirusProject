@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class DeviceController : MonoBehaviour
 {
@@ -26,6 +27,11 @@ public class DeviceController : MonoBehaviour
     public float level0To1Threshold = 33;
     public float level1To2Threshold = 66;
     public float level2To3Threshold = 33;
+
+    public float infectionPerAttack = 10;
+    public float disinfectionPerSecond = 33f;
+
+    public Text testText;
 
     public float CurrentInfectionAmount { get { return currentInfection; } }
     public InfectionLevel CurrentInfectionLevel { get { return infectionLevel; } }
@@ -57,20 +63,22 @@ public class DeviceController : MonoBehaviour
         rsc.eventMng.TriggerEvent(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceEventInfo.eventInfo);
     }
 
-    public void Infect(float amount)
+    public void Infect()
     {
         if (!active) return;
 
-        currentInfection += amount;
+        //currentInfection += infectionPerAttack;
+        currentInfection += disinfectionPerSecond * Time.deltaTime; //TO TEST
+
         if (currentInfection > 100f)
             currentInfection = 100f;
     }
 
-    public void Disinfect(float amount)
+    public void Disinfect()
     {
         if (!active) return;
 
-        currentInfection -= amount;
+        currentInfection -= disinfectionPerSecond * Time.deltaTime;
         if (currentInfection < 0f)
             currentInfection = 0f;
     }
@@ -78,6 +86,8 @@ public class DeviceController : MonoBehaviour
     void Update()
     {
         if (!active) return;
+
+        testText.text = ((int)currentInfection) + "%";
 
         switch (infectionLevel)
         {

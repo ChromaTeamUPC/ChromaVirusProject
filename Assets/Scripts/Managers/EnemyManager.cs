@@ -142,6 +142,9 @@ public class EnemyManager : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.VORTEX_ACTIVATED, VortexActivated);
         rsc.eventMng.StartListening(EventManager.EventType.VORTEX_DESTROYED, VortexDestroyed);
 
+        rsc.eventMng.StartListening(EventManager.EventType.DEVICE_ACTIVATED, DeviceActivated);
+        rsc.eventMng.StartListening(EventManager.EventType.DEVICE_DEACTIVATED, DeviceDeactivated);
+
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameOver); 
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
     }
@@ -158,6 +161,9 @@ public class EnemyManager : MonoBehaviour
 
             rsc.eventMng.StopListening(EventManager.EventType.VORTEX_ACTIVATED, VortexActivated);
             rsc.eventMng.StopListening(EventManager.EventType.VORTEX_DESTROYED, VortexDestroyed);
+
+            rsc.eventMng.StopListening(EventManager.EventType.DEVICE_ACTIVATED, DeviceActivated);
+            rsc.eventMng.StopListening(EventManager.EventType.DEVICE_DEACTIVATED, DeviceDeactivated);
 
             rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameOver);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
@@ -210,6 +216,20 @@ public class EnemyManager : MonoBehaviour
         //Debug.Log("Vortex-- = " + blackboard.activeVortex);
     }
 
+    private void DeviceActivated(EventInfo eventInfo)
+    {
+        DeviceEventInfo info = (DeviceEventInfo)eventInfo;
+        blackboard.activeDevices.Add(info.device);
+        //Debug.Log("Devices++ = " + blackboard.activeDevices.Count);
+    }
+
+    private void DeviceDeactivated(EventInfo eventInfo)
+    {
+        DeviceEventInfo info = (DeviceEventInfo)eventInfo;
+        blackboard.activeDevices.Remove(info.device);
+        //Debug.Log("Devices-- = " + blackboard.activeDevices.Count);
+    }
+
     private void GameOver(EventInfo eventInfo)
     {
         StopCurrentPlan();
@@ -241,6 +261,7 @@ public class EnemyManager : MonoBehaviour
         blackboard.activeEnemies = 0;
         blackboard.activeTurrets = 0;
         blackboard.activeVortex = 0;
+        blackboard.activeDevices.Clear();
 
         executingWaves = 0;
         sequentialWavesIndex = 0;
@@ -290,7 +311,10 @@ public class EnemyManager : MonoBehaviour
         if (currentPlan == null)
             return true;
 
-        return (blackboard.activeEnemies + blackboard.activeTurrets + blackboard.activeVortex + executingWaves == 0) && (sequentialWavesIndex == currentPlan.sequentialWaves.Count);
+        return (blackboard.activeEnemies + blackboard.activeTurrets 
+            + blackboard.activeVortex + blackboard.GetTotalDevicesInfection()
+            + executingWaves == 0) 
+            && (sequentialWavesIndex == currentPlan.sequentialWaves.Count);
     }
 
     void Update()

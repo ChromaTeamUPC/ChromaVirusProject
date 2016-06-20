@@ -107,6 +107,8 @@ public class EventManager : MonoBehaviour {
         PLAYER_SPAWNING,
         PLAYER_SPAWNED,
         PLAYER_DAMAGED,
+        PLAYER_DASHING,
+        PLAYER_DASHED,
         PLAYER_DYING,
         PLAYER_DIED,
         PLAYER_WIN,

@@ -22,11 +22,14 @@ public class PlayerDashingState : PlayerBaseState
         currentDashTime = 0f;
         blackboard.currentSpeed = blackboard.player.initialDashSpeed;
         blackboard.player.SpawnDashParticles();
+
+        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DASHING, EventInfo.emptyInfo);
     }
 
     public override void OnStateExit()
     {
         blackboard.currentSpeed = blackboard.player.walkSpeed;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DASHED, EventInfo.emptyInfo);
     }
 
     public override PlayerBaseState Update()

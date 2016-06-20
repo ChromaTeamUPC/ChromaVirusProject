@@ -34,6 +34,7 @@ public class PlayerBaseState
         can he do a special?
         can he do a dash?
         can he charge a capacitor?
+        can he disinfect a device?
         can he turn?
         can he shoot?
         can he move?
@@ -60,6 +61,17 @@ public class PlayerBaseState
             blackboard.capacitor.ManualCharge(ChromaColor.BLUE);
         else if (blackboard.yellowPressed)
             blackboard.capacitor.ManualCharge(ChromaColor.YELLOW);
+    }
+
+    protected void DisinfectDevice()
+    {
+        if (blackboard.device == null || !blackboard.colorButtonsPressed)
+            return;
+
+        if (blackboard.redPressed)
+            blackboard.device.Infect();
+        else if (blackboard.greenPressed)
+            blackboard.device.Disinfect();
     }
 
     private void LookAt(Vector3 destination)

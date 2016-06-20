@@ -46,6 +46,8 @@ public class PlayerMovingState : PlayerBaseState
         {
             CapacitorCharge();
 
+            DisinfectDevice();
+
             Turn();
 
             Shoot();

@@ -546,6 +546,17 @@ public class PlayerController : MonoBehaviour
         blackboard.capacitor = capacitor;
     }
 
+    public void SetDevice(DeviceController device)
+    {
+        ButtonHintEventInfo.eventInfo.playerId = playerId;
+        ButtonHintEventInfo.eventInfo.buttonType = ButtonHintEventInfo.ButtonType.A;
+        ButtonHintEventInfo.eventInfo.show = (device != null);
+
+        rsc.eventMng.TriggerEvent(EventManager.EventType.BUTTON_HINT, ButtonHintEventInfo.eventInfo);
+
+        blackboard.device = device;
+    }
+
     //Particle Systems methods
     public void SpawnDashParticles()
     {

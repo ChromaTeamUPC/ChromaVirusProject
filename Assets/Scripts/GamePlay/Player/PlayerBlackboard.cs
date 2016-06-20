@@ -90,6 +90,7 @@ public class PlayerBlackboard
 
     //Other gameplay variables
     public CapacitorController capacitor;
+    public DeviceController device;
 
     public void Init(PlayerController pl)
     {
@@ -188,6 +189,7 @@ public class PlayerBlackboard
         specialAttackCollider.enabled = false;
 
         capacitor = null;
+        device = null;
     }
 
     //This variables have to be reset every update

@@ -35,7 +35,9 @@ public class PlayerLongIdleState : PlayerBaseState
         else
         {
             CapacitorCharge();
-                   
+
+            DisinfectDevice();
+
             Turn();
 
             Shoot();

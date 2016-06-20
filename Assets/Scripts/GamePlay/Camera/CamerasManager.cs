@@ -11,8 +11,6 @@ public class CamerasManager : MonoBehaviour {
     public float xRotationMinThreshold = 25;
 
     public GameObject mainCameraObj;
-    public GameObject leftCameraObj;
-    public GameObject rightCameraObj;
     public GameObject godCameraObj;
     public GameObject staticCamera1Obj;
     public GameObject staticCamera2Obj;
@@ -52,9 +50,6 @@ public class CamerasManager : MonoBehaviour {
         minYPosition = cameraBorderMargin;
         minXPosition = cameraBorderMargin;
 
-        leftCameraObj.GetComponent<SinglePlayerCameraController>().SetTarget(rsc.gameInfo.player1);
-        rightCameraObj.GetComponent<SinglePlayerCameraController>().SetTarget(rsc.gameInfo.player2);
-
         //Set main camera
         ChangeCamera(0);
     }
@@ -80,8 +75,6 @@ public class CamerasManager : MonoBehaviour {
     {
         //Disable all cameras
         mainCameraObj.SetActive(false);
-        if (leftCameraObj != null) leftCameraObj.SetActive(false);
-        if (rightCameraObj != null) rightCameraObj.SetActive(false);
         if (godCameraObj != null) godCameraObj.SetActive(false);
         if (staticCamera1Obj != null) staticCamera1Obj.SetActive(false);
         if (staticCamera2Obj != null) staticCamera2Obj.SetActive(false);
@@ -95,12 +88,7 @@ public class CamerasManager : MonoBehaviour {
                 if (godCameraObj != null) currentCameraObj = godCameraObj;
                 break;
             case 2:
-                if (leftCameraObj != null) leftCameraObj.SetActive(true);
-                if (rightCameraObj != null) rightCameraObj.SetActive(true);
-                leftCameraObj.GetComponent<SinglePlayerCameraController>().SetTarget(rsc.gameInfo.player1);
-                rightCameraObj.GetComponent<SinglePlayerCameraController>().SetTarget(rsc.gameInfo.player2);
-
-                //if (staticCamera1Obj != null) currentCameraObj = staticCamera1Obj;
+                if (staticCamera1Obj != null) currentCameraObj = staticCamera1Obj;
                 break;
             case 3:
                 if (staticCamera2Obj != null) currentCameraObj = staticCamera2Obj;
