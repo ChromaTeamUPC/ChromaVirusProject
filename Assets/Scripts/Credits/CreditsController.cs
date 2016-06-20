@@ -22,10 +22,12 @@ public class CreditsController : MonoBehaviour {
     public float finalDelay = 3f;
 
     private float waitingTime;
+    private bool buttonPressed;
 
 	// Use this for initialization
 	void Start ()
     {
+        buttonPressed = false;
         currentState = CreditsState.FadingIn;
         fadeScript.StartFadingToClear();
         rsc.audioMng.FadeInCreditsMusic(1.5f);
@@ -83,11 +85,16 @@ public class CreditsController : MonoBehaviour {
                 break;
         }
 
-        if (Input.GetButtonDown("Back"))
+        if (!buttonPressed && Input.GetButtonDown("Back"))
         {
-            fadeScript.StartFadingToColor(Color.black, 2f);
-            rsc.audioMng.FadeOutCreditsMusic(2f);
-            currentState = CreditsState.FadingOut;
+            buttonPressed = true;
+
+            if (currentState != CreditsState.FadingOut)
+            {
+                fadeScript.StartFadingToColor(Color.black, 2f);
+                currentState = CreditsState.FadingOut;
+                rsc.audioMng.FadeOutCreditsMusic(2f);
+            }
         }
     }
 }
