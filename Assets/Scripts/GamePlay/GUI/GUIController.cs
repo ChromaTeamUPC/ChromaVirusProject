@@ -74,6 +74,7 @@ public class GUIController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameFinished);
         rsc.eventMng.StartListening(EventManager.EventType.BUTTON_HINT, ButtonHint);
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
+        rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
     }
 
     void OnDestroy()
@@ -89,6 +90,7 @@ public class GUIController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameFinished);
             rsc.eventMng.StopListening(EventManager.EventType.BUTTON_HINT, ButtonHint);
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
+            rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
         }
     }
 	
@@ -260,5 +262,11 @@ public class GUIController : MonoBehaviour
     {
         ColorEventInfo info = (ColorEventInfo)evenInfo;
         colorWarnTest.color = rsc.coloredObjectsMng.GetColor(info.newColor);
+        colorWarnTest.enabled = true;
+    }
+
+    private void ColorChanged(EventInfo eventInfo)
+    {
+        colorWarnTest.enabled = false;
     }
 }
