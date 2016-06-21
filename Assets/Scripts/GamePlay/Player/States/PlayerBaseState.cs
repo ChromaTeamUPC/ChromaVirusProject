@@ -333,16 +333,18 @@ public class PlayerBaseState
     }
 
 
-    public virtual void EnemyTouched()
+    public virtual PlayerBaseState EnemyTouched()
     {
-        if (rsc.debugMng.godMode) return;
+        if (rsc.debugMng.godMode) return null;
 
         //If touched by an enemy, speed reduction and damage take
         if (!blackboard.isAffectedByContact && !blackboard.isContactCooldown && !blackboard.isInvulnerable)
         {
-            TakeDamage(blackboard.player.damageOnContact, false);
             blackboard.player.StartCoroutine(HandleEnemyTouched());
+            return TakeDamage(blackboard.player.damageOnContact, false);
         }
+
+        return null;
     }
 
     private IEnumerator HandleEnemyTouched()
@@ -360,9 +362,12 @@ public class PlayerBaseState
     }
 
 
-    public virtual void ColorMismatch()
+    public virtual PlayerBaseState ColorMismatch()
     {
-        if (rsc.debugMng.godMode) return;
+        if (rsc.debugMng.godMode) return null;
+
+        PlayerEventInfo.eventInfo.player = blackboard.player;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerEventInfo.eventInfo);
 
         if (blackboard.player.fireSuppresionTimeOnColorMismatch > 0f)
         {
@@ -371,17 +376,13 @@ public class PlayerBaseState
                 blackboard.player.StartCoroutine(ColorMismatchHandle());
             }
         }
-        else
-        {
-            TakeDamage(blackboard.player.selfDamageOnColorMismatch, false);
-        }
+        return TakeDamage(blackboard.player.selfDamageOnColorMismatch, false);
+        
     }
 
     private IEnumerator ColorMismatchHandle()
     {
-        StartColorMismatch();
-
-        TakeDamage(blackboard.player.selfDamageOnColorMismatch, false);
+        StartColorMismatch();     
 
         yield return new WaitForSeconds(blackboard.player.fireSuppresionTimeOnColorMismatch);
 

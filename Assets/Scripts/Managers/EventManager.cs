@@ -112,6 +112,7 @@ public class EventManager : MonoBehaviour {
         PLAYER_DYING,
         PLAYER_DIED,
         PLAYER_WIN,
+        PLAYER_COLOR_MISMATCH,
         PLAYER_COLOR_MISMATCH_START,
         PLAYER_COLOR_MISMATCH_END,
         PLAYER_OUT_OF_ZONE,

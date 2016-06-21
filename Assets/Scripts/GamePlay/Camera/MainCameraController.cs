@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.ImageEffects;
+using VideoGlitches;
 
 public class MainCameraController : MonoBehaviour {
 
@@ -13,6 +14,7 @@ public class MainCameraController : MonoBehaviour {
     public float smoothing = 5f;
 
     private MotionBlur motionBlur;
+    private VideoGlitchSpectrumOffset glitch;
     private NoiseAndGrain noise;
     private Grayscale grayScale;
 
@@ -24,9 +26,12 @@ public class MainCameraController : MonoBehaviour {
     float minYPosition;
     float minXPosition;
 
+    private float colorMismatchDuration;
+
     void Awake()
     {
         motionBlur = GetComponent<MotionBlur>();
+        glitch = GetComponent<VideoGlitchSpectrumOffset>();
         noise = GetComponent<NoiseAndGrain>();
         grayScale = GetComponent<Grayscale>();
     }
@@ -50,8 +55,11 @@ public class MainCameraController : MonoBehaviour {
         target2 = rsc.gameInfo.player2.transform;
         player2 = rsc.gameInfo.player2Controller;
 
+        colorMismatchDuration = 0f;
+
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DASHING, PlayerStartDash);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DASHED, PlayerEndDash);
+        rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerColorMismatch);
         rsc.eventMng.StartListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);     
     }
 
@@ -61,6 +69,7 @@ public class MainCameraController : MonoBehaviour {
         {
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DASHING, PlayerStartDash);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DASHED, PlayerEndDash);
+            rsc.eventMng.StopListening(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerColorMismatch);
             rsc.eventMng.StopListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
         }
     }
@@ -73,6 +82,15 @@ public class MainCameraController : MonoBehaviour {
     private void PlayerEndDash(EventInfo eventInfo)
     {
         motionBlur.enabled = false;
+    }
+
+    private void PlayerColorMismatch(EventInfo eventInfo)
+    {
+        PlayerEventInfo info = (PlayerEventInfo)eventInfo;
+        colorMismatchDuration = info.player.effectDurationOnColorMismatch;
+
+        if(colorMismatchDuration > 0)
+            glitch.enabled = true;
     }
 
     private void DeviceInfectionChanged(EventInfo eventInfo)
@@ -178,6 +196,20 @@ public class MainCameraController : MonoBehaviour {
     public void SetCamPosition()
     {
         transform.position = GetCamTargetPosition();
+    }
+
+    void Update()
+    {
+        if(colorMismatchDuration > 0)
+        {
+            colorMismatchDuration -= Time.deltaTime; 
+            
+            if(colorMismatchDuration <= 0)
+            {
+                colorMismatchDuration = 0f;
+                glitch.enabled = false;
+            }      
+        }
     }
 	
 	// Update is called once per frame

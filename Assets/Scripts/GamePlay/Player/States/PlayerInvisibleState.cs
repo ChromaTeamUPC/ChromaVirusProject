@@ -28,5 +28,8 @@ public class PlayerInvisibleState : PlayerBaseState {
         return null;
     }
 
-    public override void EnemyTouched() { }
+    public override PlayerBaseState EnemyTouched()
+    {
+        return null;
+    }
 }

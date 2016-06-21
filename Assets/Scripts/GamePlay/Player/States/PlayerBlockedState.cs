@@ -19,5 +19,8 @@ public class PlayerBlockedState : PlayerBaseState
         return null;
     }
 
-    public override void EnemyTouched() {}
+    public override PlayerBaseState EnemyTouched()
+    {
+        return null;
+    }
 }

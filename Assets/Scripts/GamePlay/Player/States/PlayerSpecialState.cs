@@ -72,16 +72,16 @@ public class PlayerSpecialState : PlayerBaseState {
         return null;
     }
 
-    public override void EnemyTouched()
+    public override PlayerBaseState EnemyTouched()
     {
         //can not take damage during this state
-        return;
+        return null;
     }
 
-    public override void ColorMismatch()
+    public override PlayerBaseState ColorMismatch()
     {
         //can not take damage during this state
-        return;
+        return null;
     }
 
 

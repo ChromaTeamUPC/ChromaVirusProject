@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour
     public Transform muzzlePoint;
     public int selfDamageOnColorMismatch = 10;
     public float fireSuppresionTimeOnColorMismatch = 3f;
+    public float effectDurationOnColorMismatch = 0.25f;
 
     [Header("Special Attack Settings")]
     public float specialAttackDamage = 30f;
@@ -497,7 +498,11 @@ public class PlayerController : MonoBehaviour
 
     public void ColorMismatch()
     {
-        currentState.ColorMismatch();
+        PlayerBaseState newState = currentState.ColorMismatch();
+        if (newState != null)
+        {
+            ChangeState(newState);
+        }       
     }
 
     void OnTriggerEnter(Collider other)
@@ -539,7 +544,11 @@ public class PlayerController : MonoBehaviour
     {
         if (hit.collider.tag == "Enemy")
         {
-            currentState.EnemyTouched();
+            PlayerBaseState newState = currentState.EnemyTouched();
+            if (newState != null)
+            {
+                ChangeState(newState);
+            }        
         }
     }
 
