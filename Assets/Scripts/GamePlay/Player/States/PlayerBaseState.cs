@@ -7,7 +7,6 @@ public class PlayerBaseState
 
     //Shoot variables
     private float nextFire;
-    private bool isFirstShot = true;
     private const float maxSideOffset = 0.4f;
     private const float minSideOffset = 0.2f;
     private float shotSideOffset = minSideOffset;

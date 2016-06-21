@@ -12,7 +12,11 @@ public class GUIController : MonoBehaviour
     public GameObject player1ExtraLife2;
     public GameObject player1ColorMismatchTxt;
     public GameObject player1ButtonHints;
-    public GameObject player1AButton;
+    public GameObject player1RedButton;
+    public GameObject player1GreenButton;
+    public GameObject player1BlueButton;
+    public GameObject player1YellowButton;
+    public GameObject player1ColorsButton;
     private bool player1ColorMismatch;
 
     [Header("Player 2 Items")]
@@ -23,7 +27,11 @@ public class GUIController : MonoBehaviour
     public GameObject player2ExtraLife2;
     public GameObject player2ColorMismatchTxt;
     public GameObject player2ButtonHints;
-    public GameObject player2AButton;
+    public GameObject player2RedButton;
+    public GameObject player2GreenButton;
+    public GameObject player2BlueButton;
+    public GameObject player2YellowButton;
+    public GameObject player2ColorsButton;
     private bool player2ColorMismatch;
 
     [Header("Other Items")]
@@ -62,12 +70,12 @@ public class GUIController : MonoBehaviour
         player1ColorMismatch = false;
         player2ColorMismatch = false;
 
-        player1AButton.SetActive(false);
-        player2AButton.SetActive(false);
+        DisableHintButtons(0);
 
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_START, PlayerColorMismatchStart);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_END, PlayerColorMismatchEnd);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DYING, PlayerDying);
+        rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDying);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_PAUSED, GamePaused);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESUMED, GameResumed);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameOver);
@@ -84,6 +92,7 @@ public class GUIController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_START, PlayerColorMismatchStart);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_END, PlayerColorMismatchEnd);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DYING, PlayerDying);
+            rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDying);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_PAUSED, GamePaused);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESUMED, GameResumed);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameOver);
@@ -151,6 +160,27 @@ public class GUIController : MonoBehaviour
             godModeTxt.enabled = false;
     }
 
+    private void DisableHintButtons(int playerId)
+    {
+        if (playerId == 0 || playerId == 1)
+        {
+            player1RedButton.SetActive(false);
+            player1GreenButton.SetActive(false);
+            player1BlueButton.SetActive(false);
+            player1YellowButton.SetActive(false);
+            player1ColorsButton.SetActive(false);
+        }
+
+        if (playerId == 0 || playerId == 2)
+        {
+            player2RedButton.SetActive(false);
+            player2GreenButton.SetActive(false);
+            player2BlueButton.SetActive(false);
+            player2YellowButton.SetActive(false);
+            player2ColorsButton.SetActive(false);
+        }
+    }
+
     private void PlayerColorMismatchStart(EventInfo eventInfo)
     {
         PlayerEventInfo info = (PlayerEventInfo)eventInfo;
@@ -207,17 +237,17 @@ public class GUIController : MonoBehaviour
     {
         PlayerEventInfo info = (PlayerEventInfo)eventInfo;
 
+        DisableHintButtons(info.player.Id);
+
         if (info.player.Id == 1)
         {
             player1ColorMismatch = false;
             player1ColorMismatchTxt.SetActive(false);
-            player1AButton.SetActive(false);
         }
         else
         {
             player2ColorMismatch = false;
             player2ColorMismatchTxt.SetActive(false);
-            player2AButton.SetActive(false);
         }
     }
 
@@ -229,21 +259,33 @@ public class GUIController : MonoBehaviour
         {
             case ButtonHintEventInfo.ButtonType.A:
                 if (info.playerId == 1)
-                    player1AButton.SetActive(info.show);
+                    player1GreenButton.SetActive(info.show);
                 else
-                    player2AButton.SetActive(info.show);
+                    player2GreenButton.SetActive(info.show);
                 break;
             case ButtonHintEventInfo.ButtonType.B:
+                if (info.playerId == 1)
+                    player1RedButton.SetActive(info.show);
+                else
+                    player2RedButton.SetActive(info.show);
                 break;
             case ButtonHintEventInfo.ButtonType.X:
+                if (info.playerId == 1)
+                    player1BlueButton.SetActive(info.show);
+                else
+                    player2BlueButton.SetActive(info.show);
                 break;
             case ButtonHintEventInfo.ButtonType.Y:
+                if (info.playerId == 1)
+                    player1YellowButton.SetActive(info.show);
+                else
+                    player2YellowButton.SetActive(info.show);
                 break;
             case ButtonHintEventInfo.ButtonType.COLOR_BUTTONS:
                 if (info.playerId == 1)
-                    player1AButton.SetActive(info.show);
+                    player1ColorsButton.SetActive(info.show);
                 else
-                    player2AButton.SetActive(info.show);
+                    player2ColorsButton.SetActive(info.show);
                 break;
             case ButtonHintEventInfo.ButtonType.LB:
                 break;

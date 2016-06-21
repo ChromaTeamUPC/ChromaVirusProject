@@ -30,6 +30,7 @@ public class CapacitorController : MonoBehaviour {
     public float attractingColliderRange;
     public ParticleSystem attractingDome;
     public SphereCollider damageCollider;
+    public GameObject detectingPlayerCollider;
     public float damageColliderRange;
     public GameObject[] explosionBlast = new GameObject[4];
 
@@ -102,6 +103,7 @@ public class CapacitorController : MonoBehaviour {
                 {
                     attractingCollider.enabled = true;
                     damageCollider.enabled = true;
+                    detectingPlayerCollider.SetActive(false);
                     state = State.CHARGED;
                     attractingDome.Play();
                     blinkController.BlinkWhiteIncremental(timeToExplode, 0.03f, 0.5f);
