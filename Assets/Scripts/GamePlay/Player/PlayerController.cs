@@ -206,7 +206,7 @@ public class PlayerController : MonoBehaviour
 
         Color color = rsc.coloredObjectsMng.GetColor(blackboard.currentColor);
         Color alpha = color;
-        color.a = 0.9f;
+        color.a = 0.5f;
         alpha.a = 0f;
         mainBeam.SetColors(color, color);
         fadeBeam.SetColors(color, alpha);
