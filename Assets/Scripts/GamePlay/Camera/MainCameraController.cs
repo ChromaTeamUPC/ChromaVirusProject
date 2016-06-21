@@ -12,6 +12,9 @@ public class MainCameraController : MonoBehaviour {
     private int playerRayCastMask;
 
     public float smoothing = 5f;
+    public float defaultShakeMaximum = 0.3f;
+
+    private Vector3 smoothedPosition;
 
     private MotionBlur motionBlur;
     private VideoGlitchSpectrumOffset glitch;
@@ -27,6 +30,8 @@ public class MainCameraController : MonoBehaviour {
     float minXPosition;
 
     private float colorMismatchDuration;
+    private float shakeDuration;
+    private float currentShakeMaximum;
 
     void Awake()
     {
@@ -40,6 +45,7 @@ public class MainCameraController : MonoBehaviour {
     {
         thisCamera = gameObject.GetComponent<Camera>();
         offset = rsc.gameInfo.gameCameraOffset;
+        smoothedPosition = transform.position;
         //gameObject.transform.rotation = rsc.gameInfo.gameCameraRotation;
 
         playerRayCastMask = LayerMask.GetMask("PlayerRayCast");
@@ -56,6 +62,8 @@ public class MainCameraController : MonoBehaviour {
         player2 = rsc.gameInfo.player2Controller;
 
         colorMismatchDuration = 0f;
+        shakeDuration = 0f;
+        currentShakeMaximum = 0f;
 
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DASHING, PlayerStartDash);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DASHED, PlayerEndDash);
@@ -87,9 +95,11 @@ public class MainCameraController : MonoBehaviour {
     private void PlayerColorMismatch(EventInfo eventInfo)
     {
         PlayerEventInfo info = (PlayerEventInfo)eventInfo;
-        colorMismatchDuration = info.player.effectDurationOnColorMismatch;
 
-        if(colorMismatchDuration > 0)
+        colorMismatchDuration = info.player.effectDurationOnColorMismatch;
+        shakeDuration = info.player.effectDurationOnColorMismatch;
+
+        if (colorMismatchDuration > 0)
             glitch.enabled = true;
     }
 
@@ -215,7 +225,25 @@ public class MainCameraController : MonoBehaviour {
 	// Update is called once per frame
 	void LateUpdate () 
     {
-        transform.position = Vector3.Lerp(transform.position, GetCamTargetPosition(), smoothing * Time.deltaTime);       	
+        smoothedPosition = Vector3.Lerp(smoothedPosition, GetCamTargetPosition(), smoothing * Time.deltaTime);
+
+        if(shakeDuration > 0)
+        {
+            transform.position = smoothedPosition + Random.insideUnitSphere * (currentShakeMaximum > 0 ? currentShakeMaximum : defaultShakeMaximum);
+
+            shakeDuration -= Time.deltaTime;
+
+            if (shakeDuration <= 0)
+            {
+                shakeDuration = 0f;
+                currentShakeMaximum = 0f;
+            }
+        }
+        else
+        {
+            transform.position = smoothedPosition;
+        }
+        //transform.position = smoothedPosition;       	
 	}
 
     public Vector3 GetPosition(Vector3 originalPosition, Vector3 displacement)
