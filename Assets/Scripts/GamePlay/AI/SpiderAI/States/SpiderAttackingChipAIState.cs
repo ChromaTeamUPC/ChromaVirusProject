@@ -22,6 +22,7 @@ public class SpiderAttackingChipAIState : SpiderAIBaseState {
     {
         if (spiderBlackboard.barrelController != null && spiderBlackboard.barrelController.currentColor == spiderBlackboard.spider.color)
             return spiderBlackboard.attractedToBarrelState;
+ 
 
         return null;
     }

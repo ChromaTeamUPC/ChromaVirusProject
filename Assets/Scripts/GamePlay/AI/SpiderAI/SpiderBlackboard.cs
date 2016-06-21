@@ -24,6 +24,7 @@ public class SpiderBlackboard: EnemyBaseBlackboard
 
     public float initialCheckDelay;
     public float checkAttackingSpidersDelay;
+    public float checkInfectingChipDelay;
 
     public SpiderAIBehaviour.SpawnAnimation spawnAnimation;
 
@@ -62,6 +63,7 @@ public class SpiderBlackboard: EnemyBaseBlackboard
 
         initialCheckDelay = 0f;
         checkAttackingSpidersDelay = 0f;
+        checkInfectingChipDelay = 0f;
 
         spawnAnimation = SpiderAIBehaviour.SpawnAnimation.FLOOR;   
     }

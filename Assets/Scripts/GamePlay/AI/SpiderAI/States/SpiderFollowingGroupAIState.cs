@@ -35,9 +35,21 @@ public class SpiderFollowingGroupAIState : SpiderAIActionsBaseState
 
         spiderBlackboard.initialCheckDelay += Time.deltaTime;
         spiderBlackboard.checkAttackingSpidersDelay += Time.deltaTime;
+        spiderBlackboard.checkInfectingChipDelay += Time.deltaTime;
         if (spiderBlackboard.initialCheckDelay >= 3f)
         {
-            if ((spiderBlackboard.checkAttackingSpidersDelay >= 1f) //Check once per second
+            if ((spiderBlackboard.checkInfectingChipDelay >= spiderBlackboard.spider.checkDeviceEverySeconds))
+            {
+                if ((rsc.enemyMng.blackboard.activeDevices.Count > 0 )
+                    && (rsc.enemyMng.blackboard.infectingDeviceSpiders < spiderBlackboard.spider.spidersInfectingDeviceThreshold))
+                {
+                    return spiderBlackboard.attackingChipState;
+                }
+
+                spiderBlackboard.checkInfectingChipDelay = 0f;
+            }
+
+            if ((spiderBlackboard.checkAttackingSpidersDelay >= spiderBlackboard.spider.checkAttackEverySeconds) //Check once per second
                 && (rsc.enemyMng.blackboard.timeRemainingToNextPlayerAttack == 0f))
             {
                 if (rsc.enemyMng.blackboard.attackingPlayerSpiders < spiderBlackboard.spider.spidersAttackingThreshold)

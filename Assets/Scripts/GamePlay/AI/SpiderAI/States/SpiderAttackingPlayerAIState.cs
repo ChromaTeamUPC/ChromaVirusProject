@@ -24,6 +24,19 @@ public class SpiderAttackingPlayerAIState : SpiderAIActionsBaseState
         if (spiderBlackboard.barrelController != null && spiderBlackboard.barrelController.currentColor == spiderBlackboard.spider.color)
             return spiderBlackboard.attractedToBarrelState;
 
+        spiderBlackboard.checkInfectingChipDelay += Time.deltaTime;
+
+        if ((spiderBlackboard.checkInfectingChipDelay >= spiderBlackboard.spider.checkDeviceEverySeconds))
+        {
+            if ((rsc.enemyMng.blackboard.activeDevices.Count > 0)
+                && (rsc.enemyMng.blackboard.infectingDeviceSpiders < spiderBlackboard.spider.spidersInfectingDeviceThreshold))
+            {
+                return spiderBlackboard.attackingChipState;
+            }
+
+            spiderBlackboard.checkInfectingChipDelay = 0f;
+        }
+
         return base.Update();
     }
 }

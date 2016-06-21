@@ -111,4 +111,9 @@ public class GlobalAIBlackboard
 
         return total;
     }
+
+    public DeviceController GetRandomDevice()
+    {
+        return activeDevices[Random.Range(0, activeDevices.Count)];
+    }
 }
