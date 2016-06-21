@@ -1,0 +1,45 @@
+Video Glitches 2.0
+--------------------------
+- New effect 'Broken screen'.
+
+Video Glitches 1.8
+--------------------------
+- New effect 'Old VHS'.
+- Saturation control for all effects (now in 'Color controls' foldout).
+- Improved documentation.
+- More configuration options in shaders code (see 'CONFIGURATION REGION').
+
+Video Glitches 1.7
+--------------------------
+- New effect 'Corruption digital'.
+
+Video Glitches 1.6
+--------------------------
+- New effect 'Old TV'.Colorfulness
+- Improved documentation.
+- Small improvements.
+
+Video Glitches 1.5
+--------------------------
+- New effect 'VHS Pause'.
+
+Video Glitches 1.4
+--------------------------
+- New effect 'Old Tape'.
+- Brightness, contrast and gamma controls for all effects.
+
+Video Glitches 1.3
+--------------------------
+- New effect 'Spectrum Offset'.
+
+Video Glitches 1.2
+--------------------------
+- New effect 'RGB Display'.
+
+Video Glitches 1.1
+--------------------------
+- New effect 'Black and White Distortion'.
+
+Video Glitches 1.0
+--------------------------
+- Initial release.
