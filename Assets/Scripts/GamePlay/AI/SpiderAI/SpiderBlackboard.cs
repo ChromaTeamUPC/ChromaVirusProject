@@ -15,7 +15,7 @@ public class SpiderBlackboard: EnemyBaseBlackboard
     public SpiderAIActionsBaseState attackingPlayerState;
     public SpiderAIActionsBaseState leadingGroupState;
     public SpiderAIActionsBaseState followingGroupState;
-    public SpiderAIBaseState attackingChipState;
+    public SpiderAIActionsBaseState infectingDeviceState;
     public SpiderAIBaseState attractedToBarrelState;
     public SpiderAIBaseState dyingState;
 
@@ -26,8 +26,9 @@ public class SpiderBlackboard: EnemyBaseBlackboard
     public float checkAttackingSpidersDelay;
     public float checkInfectingChipDelay;
 
-    public SpiderAIBehaviour.SpawnAnimation spawnAnimation;
+    public Vector3 deviceEndPoint;
 
+    public SpiderAIBehaviour.SpawnAnimation spawnAnimation;
 
     public override void InitialSetup(GameObject e)
     {
@@ -48,7 +49,7 @@ public class SpiderBlackboard: EnemyBaseBlackboard
         attackingPlayerState = new SpiderAttackingPlayerAIState(this);
         leadingGroupState = new SpiderLeadingGroupAIState(this);
         followingGroupState = new SpiderFollowingGroupAIState(this);
-        attackingChipState = new SpiderAttackingChipAIState(this);
+        infectingDeviceState = new SpiderInfectingDeviceAIState(this);
         attractedToBarrelState = new SpiderAttractedToBarrelAIState(this);
         dyingState = new SpiderDyingAIState(this);
 

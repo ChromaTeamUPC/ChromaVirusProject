@@ -18,17 +18,17 @@ public class CamerasManager : MonoBehaviour {
 
     private DebugKeys keys;
 
-    private Transform target1;
+    private float camRayLength = 100f;
+    /*private Transform target1;
     private Transform target2;
     private PlayerController player1;
     private PlayerController player2;
-    private float camRayLength = 100f;
 
     private float cameraBorderMargin = 50f;
     private float maxYPosition;
     private float maxXPosition;
     private float minYPosition;
-    private float minXPosition;
+    private float minXPosition;*/
 
     void Awake()
     {
@@ -41,14 +41,14 @@ public class CamerasManager : MonoBehaviour {
     void Start()
     { 
         keys = rsc.debugMng.keys;
-        target1 = rsc.gameInfo.player1.transform;
+        /*target1 = rsc.gameInfo.player1.transform;
         player1 = rsc.gameInfo.player1Controller;
 
         target2 = rsc.gameInfo.player2.transform;
         player2 = rsc.gameInfo.player2Controller;
 
         minYPosition = cameraBorderMargin;
-        minXPosition = cameraBorderMargin;
+        minXPosition = cameraBorderMargin;*/
 
         //Set main camera
         ChangeCamera(0);
@@ -101,8 +101,8 @@ public class CamerasManager : MonoBehaviour {
         //Enable it and send event
         currentCameraObj.SetActive(true);
         currentCamera = currentCameraObj.GetComponent<Camera>();
-        maxYPosition = currentCamera.pixelHeight - cameraBorderMargin;
-        maxXPosition = currentCamera.pixelWidth - cameraBorderMargin;
+        /*maxYPosition = currentCamera.pixelHeight - cameraBorderMargin;
+        maxXPosition = currentCamera.pixelWidth - cameraBorderMargin;*/
 
         rsc.eventMng.TriggerEvent(EventManager.EventType.CAMERA_CHANGED, new CameraEventInfo { newCamera = currentCamera });
     }

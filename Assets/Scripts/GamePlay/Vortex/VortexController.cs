@@ -26,6 +26,7 @@ public class VortexController : MonoBehaviour {
 
     private List<AIAction> entryActions;
     private List<AIAction> attackActions;
+    private List<AIAction> infectActions;
 
     private BlinkController blinkController;
     private Animator anim;
@@ -42,6 +43,7 @@ public class VortexController : MonoBehaviour {
         coloredObjMng = rsc.coloredObjectsMng;
         entryActions = rsc.enemyMng.defaultSpiderEntry;
         attackActions = rsc.enemyMng.defaultSpiderAttack;
+        infectActions = rsc.enemyMng.defaultSpiderInfect;
     }
 
     public void Activate()
@@ -92,7 +94,7 @@ public class VortexController : MonoBehaviour {
                 if (enemy != null)
                 {
                     //TODO, change spawn animation to vortex specific one when we have it
-                    enemy.AIInit(SpiderAIBehaviour.SpawnAnimation.FLOOR, entryActions, attackActions);
+                    enemy.AIInit(SpiderAIBehaviour.SpawnAnimation.FLOOR, entryActions, attackActions, infectActions);
                     enemy.Spawn(spawnPoint);
                 }
 

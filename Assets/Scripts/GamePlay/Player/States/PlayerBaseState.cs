@@ -67,10 +67,10 @@ public class PlayerBaseState
         if (blackboard.device == null || !blackboard.colorButtonsPressed)
             return;
 
-        if (blackboard.redPressed)
-            blackboard.device.Infect();
-        else if (blackboard.greenPressed)
+        if (blackboard.greenPressed)
             blackboard.device.Disinfect();
+        else if (blackboard.redPressed)
+            blackboard.device.Infect();
     }
 
     private void LookAt(Vector3 destination)

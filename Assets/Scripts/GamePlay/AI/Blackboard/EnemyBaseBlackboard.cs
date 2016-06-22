@@ -25,6 +25,7 @@ public class EnemyBaseBlackboard
     public PlayerController playerController;
 
     public CapacitorController barrelController;
+    public DeviceController deviceController;
 
     public Vector3 lastShotDirection;
     public bool lastShotSameColor;
@@ -57,6 +58,7 @@ public class EnemyBaseBlackboard
         SetPlayer(null);
 
         barrelController = null;
+        deviceController = null;
 
         lastShotDirection = Vector3.zero;
         lastShotSameColor = false;

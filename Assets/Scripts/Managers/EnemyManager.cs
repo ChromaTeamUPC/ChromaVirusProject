@@ -6,10 +6,13 @@ public class EnemyManager : MonoBehaviour
 {
     private const string playerTargetTxt = "player";
     private const string leaderTargetTxt = "leader";
+    private const string deviceTargetTxt = "device";
     private const float spiderBiteDefaultWaitTime = 2f;
     private const float spiderIdleDefaultTime = 0.75f;
 
     public GlobalAIBlackboard blackboard;
+
+    public List<AIAction> defaultSpiderInfect = new List<AIAction>();
 
     // Leader action lists
     public List<AIAction> level01Z02leader1 = new List<AIAction>();
@@ -378,6 +381,10 @@ public class EnemyManager : MonoBehaviour
 
     void CreateAIActionLists()
     {
+        defaultSpiderInfect.Add(new MoveAIAction(deviceTargetTxt, 15f));
+        defaultSpiderInfect.Add(new SpiderInfectAIAction());
+        defaultSpiderInfect.Add(new StandingIdleAIAction(2f, 1));
+
         rolling.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_FORWARD_RELATIVE, 90, 2));
         rolling.Add(new MoveAIAction(leaderTargetTxt, 15f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, -30, 4, false, 0, 1));
 
@@ -735,45 +742,45 @@ public class EnemyManager : MonoBehaviour
 
         
         List<WaveAction> z01wave02 = new List<WaveAction>();
-        z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01SpiderEntry02, defaultSpiderAttack, 0f, 6, 1f));
+        z01wave02.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01SpiderEntry02, defaultSpiderAttack, defaultSpiderInfect, 0f, 6, 1f));
         plan0101.sequentialWaves.Add(z01wave02);
 
         List<WaveAction> z01wave03 = new List<WaveAction>();
-        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP03", level01Z01spiderEntry03, level01Z01spiderAttack03, 0f, 3, 1f));
-        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", level01Z01spiderEntry03, level01Z01spiderAttack03, 1f, 3, 1f));
-        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z01SP02", level01Z01spiderEntry03, level01Z01spiderAttack03, 1f, 3, 1f));
+        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP03", level01Z01spiderEntry03, level01Z01spiderAttack03, defaultSpiderInfect, 0f, 3, 1f));
+        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", level01Z01spiderEntry03, level01Z01spiderAttack03, defaultSpiderInfect, 1f, 3, 1f));
+        z01wave03.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z01SP02", level01Z01spiderEntry03, level01Z01spiderAttack03, defaultSpiderInfect, 1f, 3, 1f));
         plan0101.sequentialWaves.Add(z01wave03);                                                                                                                              
 
         List<WaveAction> z01wave04 = new List<WaveAction>();
-        z01wave04.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP03", level01Z01spiderEntry04, defaultYellowSpiderAttack, 0f, 3, 1f));
-        z01wave04.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP03", level01Z01spiderEntry04, defaultGreenSpiderAttack, 3.5f, 2, 1f));
+        z01wave04.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP03", level01Z01spiderEntry04, defaultYellowSpiderAttack, defaultSpiderInfect, 0f, 3, 1f));
+        z01wave04.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP03", level01Z01spiderEntry04, defaultGreenSpiderAttack, defaultSpiderInfect, 3.5f, 2, 1f));
         plan0101.sequentialWaves.Add(z01wave04);
 
         List<WaveAction> z01wave05 = new List<WaveAction>();
-        z01wave05.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP01", level01Z01spiderEntry05, level01Z01spiderAttack05, 0f, 3, 1f));
-        z01wave05.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z01SP01", level01Z01spiderEntry05, level01Z01spiderAttack05, 3.5f, 2, 1f));
+        z01wave05.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP01", level01Z01spiderEntry05, level01Z01spiderAttack05, defaultSpiderInfect, 0f, 3, 1f));
+        z01wave05.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z01SP01", level01Z01spiderEntry05, level01Z01spiderAttack05, defaultSpiderInfect, 3.5f, 2, 1f));
         plan0101.sequentialWaves.Add(z01wave05);
 
         List<WaveAction> z01wave06 = new List<WaveAction>();
-        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP03", level01Z01spiderEntry06, level01Z01spiderAttack06));
-        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderEntry06, level01Z01spiderAttack06, 1f));
-        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderEntry06, level01Z01spiderAttack06, 1f));
-        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP03", level01Z01spiderEntry06, level01Z01spiderAttack06));
-        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderEntry06, level01Z01spiderAttack06, 1f));
-        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderEntry06, level01Z01spiderAttack06, 1f));
-        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP03", level01Z01spiderEntry06, level01Z01spiderAttack06));
-        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderEntry06, level01Z01spiderAttack06, 1f));
-        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderEntry06, level01Z01spiderAttack06, 1f));
-        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP03", level01Z01spiderEntry06, level01Z01spiderAttack06));
-        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderEntry06, level01Z01spiderAttack06, 1f));
-        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderEntry06, level01Z01spiderAttack06, 1f));
+        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP03", level01Z01spiderEntry06, level01Z01spiderAttack06, defaultSpiderInfect));
+        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderEntry06, level01Z01spiderAttack06, defaultSpiderInfect, 1f));
+        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderEntry06, level01Z01spiderAttack06, defaultSpiderInfect, 1f));
+        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP03", level01Z01spiderEntry06, level01Z01spiderAttack06, defaultSpiderInfect));
+        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderEntry06, level01Z01spiderAttack06, defaultSpiderInfect, 1f));
+        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderEntry06, level01Z01spiderAttack06, defaultSpiderInfect, 1f));
+        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP03", level01Z01spiderEntry06, level01Z01spiderAttack06, defaultSpiderInfect));
+        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderEntry06, level01Z01spiderAttack06, defaultSpiderInfect, 1f));
+        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderEntry06, level01Z01spiderAttack06, defaultSpiderInfect, 1f));
+        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP03", level01Z01spiderEntry06, level01Z01spiderAttack06, defaultSpiderInfect));
+        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01spiderEntry06, level01Z01spiderAttack06, defaultSpiderInfect, 1f));
+        z01wave06.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP02", level01Z01spiderEntry06, level01Z01spiderAttack06, defaultSpiderInfect, 1f));
         plan0101.sequentialWaves.Add(z01wave06);
 
         List<WaveAction> z01wave07 = new List<WaveAction>();
-        z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z01SP01", level01Z01spiderEntry07, defaultBlueSpiderAttack, 0f, 2, 0.7f));
-        z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", level01Z01spiderEntry07, defaultGreenSpiderAttack, 0.7f, 2, 0.7f));
-        z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP01", level01Z01spiderEntry07, defaultRedSpiderAttack, 0.7f, 2, 0.7f));
-        z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP01", level01Z01spiderEntry07, defaultYellowSpiderAttack, 0.7f, 2, 0.7f));
+        z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z01SP01", level01Z01spiderEntry07, defaultBlueSpiderAttack, defaultSpiderInfect, 0f, 2, 0.7f));
+        z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", level01Z01spiderEntry07, defaultGreenSpiderAttack, defaultSpiderInfect, 0.7f, 2, 0.7f));
+        z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP01", level01Z01spiderEntry07, defaultRedSpiderAttack, defaultSpiderInfect, 0.7f, 2, 0.7f));
+        z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP01", level01Z01spiderEntry07, defaultYellowSpiderAttack, defaultSpiderInfect, 0.7f, 2, 0.7f));
         plan0101.sequentialWaves.Add(z01wave07);
 
 
@@ -782,13 +789,13 @@ public class EnemyManager : MonoBehaviour
         plan0102.enemiesThreshold = 12;
 
         List<WaveAction> z02wave01 = new List<WaveAction>();
-        z02wave01.Add(new SpawnSpiderGroupWaveAction("Z02SP01", level01Z02leader1, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.THREE_BACK,
+        z02wave01.Add(new SpawnSpiderGroupWaveAction("Z02SP01", level01Z02leader1, defaultSpiderAttack, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.THREE_BACK,
             new int[] { ChromaColorInfo.CURRENT_COLOR_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET }));
 
-        z02wave01.Add(new SpawnSpiderGroupWaveAction("Z02SP02", level01Z02leader2, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.ROLLING,
+        z02wave01.Add(new SpawnSpiderGroupWaveAction("Z02SP02", level01Z02leader2, defaultSpiderAttack, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.ROLLING,
             new int[] { ChromaColorInfo.CURRENT_COLOR_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET }));
 
-        z02wave01.Add(new SpawnSpiderGroupWaveAction("Z02SP03", level01Z02leader3, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.THREE_FRONT,
+        z02wave01.Add(new SpawnSpiderGroupWaveAction("Z02SP03", level01Z02leader3, defaultSpiderAttack, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.THREE_FRONT,
             new int[] { ChromaColorInfo.CURRENT_COLOR_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS3_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS3_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS3_OFFSET }));
 
         // de momento desactivada - posiblemente TODELETE
@@ -798,13 +805,13 @@ public class EnemyManager : MonoBehaviour
         plan0102.sequentialWaves.Add(z02wave01);
 
         List<WaveAction> z02wave02 = new List<WaveAction>();
-        z02wave02.Add(new SpawnSpiderGroupWaveAction("Z02SP04", level01Z02leader4, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.THREE_FRONT,
+        z02wave02.Add(new SpawnSpiderGroupWaveAction("Z02SP04", level01Z02leader4, defaultSpiderAttack, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.THREE_FRONT,
             new int[] { (int)ChromaColor.RED, (int)ChromaColor.BLUE, (int)ChromaColor.YELLOW, (int)ChromaColor.GREEN }));
 
         plan0102.sequentialWaves.Add(z02wave02);
 
         List<WaveAction> z02wave03 = new List<WaveAction>();
-        z02wave03.Add(new SpawnSpiderGroupWaveAction("Z02SP01", level01Z02leader1, defaultSpiderAttack, SpawnSpiderGroupWaveAction.FormationType.THREE_FRONT,
+        z02wave03.Add(new SpawnSpiderGroupWaveAction("Z02SP01", level01Z02leader1, defaultSpiderAttack, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.THREE_FRONT,
             new int[] { (int)ChromaColor.YELLOW, (int)ChromaColor.RED, (int)ChromaColor.GREEN, (int)ChromaColor.BLUE }));
 
         plan0102.sequentialWaves.Add(z02wave03);
@@ -864,43 +871,43 @@ public class EnemyManager : MonoBehaviour
         //plan0103.sequentialWaves.Add(z03wave01);
 
         List<WaveAction> z03wave02 = new List<WaveAction>();
-        z03wave02.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z03SP04", level01Z03spiderEntry02a, level01Z03spiderAttack02a, 0f, 2, 0.7f));
-        z03wave02.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z03SP04", level01Z03spiderEntry02b, level01Z03spiderAttack02b, 1f, 2, 0.7f));
-        z03wave02.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z03SP04", level01Z03spiderEntry02c, level01Z03spiderAttack02c, 1f, 2, 0.7f));
-        z03wave02.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z03SP04", level01Z03spiderEntry02a, level01Z03spiderAttack02a, 1f, 2, 0.7f));
-        z03wave02.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z03SP04", level01Z03spiderEntry02b, level01Z03spiderAttack02b, 1f, 2, 0.7f));
-        z03wave02.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z03SP04", level01Z03spiderEntry02c, level01Z03spiderAttack02c, 1f, 2, 0.7f));
+        z03wave02.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z03SP04", level01Z03spiderEntry02a, level01Z03spiderAttack02a, defaultSpiderInfect, 0f, 2, 0.7f));
+        z03wave02.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z03SP04", level01Z03spiderEntry02b, level01Z03spiderAttack02b, defaultSpiderInfect, 1f, 2, 0.7f));
+        z03wave02.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z03SP04", level01Z03spiderEntry02c, level01Z03spiderAttack02c, defaultSpiderInfect, 1f, 2, 0.7f));
+        z03wave02.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z03SP04", level01Z03spiderEntry02a, level01Z03spiderAttack02a, defaultSpiderInfect, 1f, 2, 0.7f));
+        z03wave02.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z03SP04", level01Z03spiderEntry02b, level01Z03spiderAttack02b, defaultSpiderInfect, 1f, 2, 0.7f));
+        z03wave02.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z03SP04", level01Z03spiderEntry02c, level01Z03spiderAttack02c, defaultSpiderInfect, 1f, 2, 0.7f));
         plan0103.sequentialWaves.Add(z03wave02);
 
         List<WaveAction> z03wave03 = new List<WaveAction>();
 
-        z03wave03.Add(new SpawnSpiderGroupWaveAction("Z03SP04", level01Z03leader1, defaultSpiderAttack2, SpawnSpiderGroupWaveAction.FormationType.TRIANGLE,
+        z03wave03.Add(new SpawnSpiderGroupWaveAction("Z03SP04", level01Z03leader1, defaultSpiderAttack2, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.TRIANGLE,
             new int[] { ChromaColorInfo.CURRENT_COLOR_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET }, 6));
 
         plan0103.sequentialWaves.Add(z03wave03);
 
         List<WaveAction> z03wave04 = new List<WaveAction>();
 
-        z03wave04.Add(new SpawnSpiderGroupWaveAction("Z03SP04", level01Z03leader1, defaultSpiderAttack2, SpawnSpiderGroupWaveAction.FormationType.ROLLING,
+        z03wave04.Add(new SpawnSpiderGroupWaveAction("Z03SP04", level01Z03leader1, defaultSpiderAttack2, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.ROLLING,
             new int[] { (int)ChromaColor.YELLOW, (int)ChromaColor.RED, (int)ChromaColor.GREEN, (int)ChromaColor.BLUE }));
 
         plan0103.sequentialWaves.Add(z03wave04);
 
         List<WaveAction> z03wave05 = new List<WaveAction>();
 
-        z03wave05.Add(new SpawnSpiderGroupWaveAction("Z03SP02", level01Z03leader3, defaultSpiderAttack3, SpawnSpiderGroupWaveAction.FormationType.QUAD,
+        z03wave05.Add(new SpawnSpiderGroupWaveAction("Z03SP02", level01Z03leader3, defaultSpiderAttack3, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.QUAD,
             new int[] { ChromaColorInfo.CURRENT_COLOR_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET }));
 
         plan0103.sequentialWaves.Add(z03wave05);
 
         List<WaveAction> z03wave06 = new List<WaveAction>();
-        z03wave06.Add(new SpawnSpiderGroupWaveAction("Z03SP03", level01Z03leader2, defaultSpiderAttack3, SpawnSpiderGroupWaveAction.FormationType.THREE_BACK,
+        z03wave06.Add(new SpawnSpiderGroupWaveAction("Z03SP03", level01Z03leader2, defaultSpiderAttack3, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.THREE_BACK,
             new int[] { (int)ChromaColor.YELLOW, (int)ChromaColor.RED, (int)ChromaColor.RED, (int)ChromaColor.BLUE}));
 
         plan0103.sequentialWaves.Add(z03wave06);
 
         List<WaveAction> z03wave07 = new List<WaveAction>();
-        z03wave07.Add(new SpawnSpiderGroupWaveAction("Z03SP01", level01Z03leader2, defaultSpiderAttack3, SpawnSpiderGroupWaveAction.FormationType.QUAD,
+        z03wave07.Add(new SpawnSpiderGroupWaveAction("Z03SP01", level01Z03leader2, defaultSpiderAttack3, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.QUAD,
             new int[] { (int)ChromaColor.YELLOW, (int)ChromaColor.RED, (int)ChromaColor.RED, (int)ChromaColor.BLUE, (int)ChromaColor.BLUE }));
 
         plan0103.sequentialWaves.Add(z03wave07);

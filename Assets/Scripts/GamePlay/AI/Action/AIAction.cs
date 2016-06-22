@@ -16,6 +16,7 @@ public class AIAction
         RANDOM_MOVE,
         LOOK_AT,
         SPIDER_BITE,
+        SPIDER_INFECT,
         MOSQUITO_ATTACK,
         MOSQUITO_ATTACK_COLOR
     }
@@ -155,6 +156,12 @@ public class SpiderBiteAIAction: AIAction
     {
         minimumTimeSinceLastAttack = minTime;
     }
+}
+
+public class SpiderInfectAIAction: AIAction
+{
+    public SpiderInfectAIAction(int next = AIAction.NEXT_ACTION) : base(Type.SPIDER_INFECT, next)
+    { }
 }
 
 public class MosquitoShotAIAction: AIAction

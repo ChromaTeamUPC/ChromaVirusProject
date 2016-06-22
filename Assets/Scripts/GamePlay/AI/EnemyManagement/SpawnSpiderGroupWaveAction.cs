@@ -27,6 +27,7 @@ public class SpawnSpiderGroupWaveAction : WaveAction  {
 
     private List<AIAction> leaderActions;
     private List<AIAction> attackActions;
+    private List<AIAction> infectActions;
 
     private FormationType formation;
     private int[] colors;
@@ -39,11 +40,12 @@ public class SpawnSpiderGroupWaveAction : WaveAction  {
 
     private SpiderAIBehaviour.SpawnAnimation spawnAnimation;
 
-    public SpawnSpiderGroupWaveAction(string spPoint, List<AIAction> leader, List<AIAction> attack, FormationType form, int[] col, float iniDel = 0f, SpiderAIBehaviour.SpawnAnimation spawnAnim = SpiderAIBehaviour.SpawnAnimation.FLOOR)
+    public SpawnSpiderGroupWaveAction(string spPoint, List<AIAction> leader, List<AIAction> attack, List<AIAction> infect, FormationType form, int[] col, float iniDel = 0f, SpiderAIBehaviour.SpawnAnimation spawnAnim = SpiderAIBehaviour.SpawnAnimation.FLOOR)
     {
         spawnPointName = spPoint;
         leaderActions = leader;
         attackActions = attack;
+        infectActions = infect;
         initialDelay = iniDel;
         formation = form;
         colors = col;
@@ -128,7 +130,7 @@ public class SpawnSpiderGroupWaveAction : WaveAction  {
 
         if (spider != null)
         {
-            spider.AIInitGroup(spawnAnimation, groupInfo, leaderActions, followersActions[spiderIndex], attackActions, (spiderIndex == 0) ? true : false);
+            spider.AIInitGroup(spawnAnimation, groupInfo, leaderActions, followersActions[spiderIndex], attackActions, infectActions, (spiderIndex == 0) ? true : false);
             spider.Spawn(spawnPoint);
 
             if (spawnAnimation == SpiderAIBehaviour.SpawnAnimation.FLOOR)

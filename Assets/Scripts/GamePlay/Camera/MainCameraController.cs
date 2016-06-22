@@ -9,7 +9,7 @@ public class MainCameraController : MonoBehaviour {
     private Transform target2;
     private PlayerController player1;
     private PlayerController player2;
-    private int playerRayCastMask;
+    //private int playerRayCastMask;
 
     public float smoothing = 5f;
     public float defaultShakeMaximum = 0.3f;
@@ -48,7 +48,7 @@ public class MainCameraController : MonoBehaviour {
         smoothedPosition = transform.position;
         //gameObject.transform.rotation = rsc.gameInfo.gameCameraRotation;
 
-        playerRayCastMask = LayerMask.GetMask("PlayerRayCast");
+        //playerRayCastMask = LayerMask.GetMask("PlayerRayCast");
             
         maxYPosition = thisCamera.pixelHeight - cameraBorderMargin;
         maxXPosition = thisCamera.pixelWidth - cameraBorderMargin;

@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SpiderAttackingChipAIState : SpiderAIBaseState {
-
-    public SpiderAttackingChipAIState(SpiderBlackboard bb) : base(bb)
+public class SpiderInfectingDeviceAIState : SpiderAIActionsBaseState
+{
+    public SpiderInfectingDeviceAIState(SpiderBlackboard bb) : base(bb)
     { }
 
     public override void OnStateEnter()
     {
-        rsc.enemyMng.blackboard.SpiderStartsInfectingDevice();
         base.OnStateEnter();
+        rsc.enemyMng.blackboard.SpiderStartsInfectingDevice();
     }
 
     public override void OnStateExit()
@@ -22,8 +22,8 @@ public class SpiderAttackingChipAIState : SpiderAIBaseState {
     {
         if (spiderBlackboard.barrelController != null && spiderBlackboard.barrelController.currentColor == spiderBlackboard.spider.color)
             return spiderBlackboard.attractedToBarrelState;
- 
 
-        return null;
+
+        return base.Update();
     }
 }

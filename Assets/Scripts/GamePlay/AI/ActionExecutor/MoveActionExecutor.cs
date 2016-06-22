@@ -19,6 +19,12 @@ public class MoveActionExecutor: BaseExecutor
             if(blackBoard.groupInfo != null && blackBoard.groupInfo.leader != null)
                 blackBoard.target = blackBoard.groupInfo.leader.gameObject;
         }
+        else if (tId == "device")
+        {
+            blackBoard.deviceController = rsc.enemyMng.blackboard.GetRandomDevice();
+            if (blackBoard.deviceController != null)
+                blackBoard.target = blackBoard.deviceController.GetRandomEndPoint();
+        }
         else if (tId != "player")
         {
             blackBoard.target = GameObject.Find(tId);

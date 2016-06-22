@@ -46,17 +46,18 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         }
     }
 
-    public void AIInit(SpawnAnimation spawnAnimation, List<AIAction> entryList, List<AIAction> attackList)
+    public void AIInit(SpawnAnimation spawnAnimation, List<AIAction> entryList, List<AIAction> attackList, List<AIAction> infectList)
     {
         spiderBlackboard.ResetValues();
         spiderBlackboard.spawnAnimation = spawnAnimation;
 
         //Init states with lists
         spiderBlackboard.entryState.Init(entryList);
-        spiderBlackboard.attackingPlayerState.Init(attackList);   
+        spiderBlackboard.attackingPlayerState.Init(attackList);
+        spiderBlackboard.infectingDeviceState.Init(infectList);   
     }
 
-    public void AIInitGroup(SpawnAnimation spawnAnimation, EnemyGroupInfo groupInfo, List<AIAction> leaderList, List<AIAction> followerList, List<AIAction> attackList, bool isLeader = false)
+    public void AIInitGroup(SpawnAnimation spawnAnimation, EnemyGroupInfo groupInfo, List<AIAction> leaderList, List<AIAction> followerList, List<AIAction> attackList, List<AIAction> infectList, bool isLeader = false)
     {
         spiderBlackboard.ResetValues();
         spiderBlackboard.spawnAnimation = spawnAnimation;
@@ -69,6 +70,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         spiderBlackboard.leadingGroupState.Init(leaderList);
         spiderBlackboard.followingGroupState.Init(followerList);
         spiderBlackboard.attackingPlayerState.Init(attackList);
+        spiderBlackboard.infectingDeviceState.Init(infectList);
     }
 
     public void Spawn(Transform spawnPoint)

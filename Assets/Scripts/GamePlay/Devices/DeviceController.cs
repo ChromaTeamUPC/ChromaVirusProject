@@ -25,13 +25,23 @@ public class DeviceController : MonoBehaviour
 
     public Type type;
     public float level0To1Threshold = 33;
+    public Color colorOnLevel0To1;
     public float level1To2Threshold = 66;
-    public float level2To3Threshold = 33;
+    public Color colorOnLevel1To2;
+    public float level2To3Threshold = 99;
+    public Color colorOnLevel2To3;
 
     public float infectionPerAttack = 10;
     public float disinfectionPerSecond = 33f;
 
-    public Text testText;
+    public GameObject[] endPoints;
+
+    public Text infectionNumberTxt;
+    private Material infectionNumberMat;
+    private Color currentColor;
+    private float currentBrightness;
+    public float brightnessCicleDuration;
+    private float brightnessSpeed;
 
     public float CurrentInfectionAmount { get { return currentInfection; } }
     public InfectionLevel CurrentInfectionLevel { get { return infectionLevel; } }
@@ -41,6 +51,25 @@ public class DeviceController : MonoBehaviour
         active = false;
         currentInfection = 0f;
         infectionLevel = InfectionLevel.LEVEL0;
+        infectionNumberMat = infectionNumberTxt.material;
+        currentBrightness = 1f;
+        currentColor = Color.white;
+        infectionNumberTxt.text = "0%";
+
+        if (brightnessCicleDuration > 0)
+            brightnessSpeed = 1 / brightnessCicleDuration;
+        else
+            brightnessSpeed = 1;
+
+        SetTextColor();
+    }
+
+    private void SetTextColor()
+    {
+        currentColor *= currentBrightness;
+        currentColor.a = 1f;
+
+        infectionNumberMat.SetColor("_EmissionColor", currentColor);
     }
 
     public void Activate()
@@ -67,8 +96,7 @@ public class DeviceController : MonoBehaviour
     {
         if (!active) return;
 
-        //currentInfection += infectionPerAttack;
-        currentInfection += disinfectionPerSecond * Time.deltaTime; //TO TEST
+        currentInfection += infectionPerAttack;
 
         if (currentInfection > 100f)
             currentInfection = 100f;
@@ -87,11 +115,13 @@ public class DeviceController : MonoBehaviour
     {
         if (!active) return;
 
-        testText.text = ((int)currentInfection) + "%";
+        infectionNumberTxt.text = ((int)currentInfection) + "%";
+        currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 2) + 1; //Values between 0.5 and 1.5
 
         switch (infectionLevel)
         {
             case InfectionLevel.LEVEL0:
+                currentColor = Color.Lerp(Color.white, colorOnLevel0To1, currentInfection / level0To1Threshold);
                 if(currentInfection >= level2To3Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL3;
@@ -110,6 +140,7 @@ public class DeviceController : MonoBehaviour
                 break;
 
             case InfectionLevel.LEVEL1:
+                currentColor = Color.Lerp(colorOnLevel0To1, colorOnLevel1To2, (currentInfection - level0To1Threshold) / (level1To2Threshold - level0To1Threshold));
                 if (currentInfection >= level2To3Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL3;
@@ -128,6 +159,7 @@ public class DeviceController : MonoBehaviour
                 break;
 
             case InfectionLevel.LEVEL2:
+                currentColor = Color.Lerp(colorOnLevel1To2, colorOnLevel2To3, (currentInfection - level1To2Threshold) / (level2To3Threshold - level1To2Threshold));
                 if (currentInfection >= level2To3Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL3;
@@ -146,6 +178,7 @@ public class DeviceController : MonoBehaviour
                 break;
 
             case InfectionLevel.LEVEL3:
+                currentColor = colorOnLevel2To3;
                 if (currentInfection < level0To1Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL0;
@@ -165,5 +198,15 @@ public class DeviceController : MonoBehaviour
             default:
                 break;
         }
+
+        SetTextColor();
+    }
+
+    public GameObject GetRandomEndPoint()
+    {
+        if (endPoints.Length > 0)
+            return endPoints[Random.Range(0, endPoints.Length)];
+        else
+            return gameObject;
     }
 }

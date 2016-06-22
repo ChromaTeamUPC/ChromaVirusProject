@@ -4,6 +4,7 @@ using System.Collections;
 public class SpiderAIActionsBaseState : AIActionsBaseState
 {
     protected SpiderBiteExecutor spiderBiteExecutor;
+    protected SpiderInfectExecutor spiderInfectExecutor;
 
     protected SpiderBlackboard spiderBlackboard;
 
@@ -13,6 +14,9 @@ public class SpiderAIActionsBaseState : AIActionsBaseState
 
         spiderBiteExecutor = new SpiderBiteExecutor();
         spiderBiteExecutor.Init(spiderBlackboard);
+
+        spiderInfectExecutor = new SpiderInfectExecutor();
+        spiderInfectExecutor.Init(spiderBlackboard);
     }
 
 
@@ -26,6 +30,11 @@ public class SpiderAIActionsBaseState : AIActionsBaseState
             {
                 case AIAction.Type.SPIDER_BITE:
                     currentExecutor = spiderBiteExecutor;
+                    currentExecutor.SetAction(action);
+                    break;
+
+                case AIAction.Type.SPIDER_INFECT:
+                    currentExecutor = spiderInfectExecutor;
                     currentExecutor.SetAction(action);
                     break;
 
