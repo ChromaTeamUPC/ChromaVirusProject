@@ -56,7 +56,11 @@ public class CreditsController : MonoBehaviour {
                 Vector3 displacement = Vector3.up * Time.deltaTime * crawlingSpeed;
                 credits.Translate(displacement);
                 copyright.Translate(displacement);
-                if (copyright.transform.position.y > Screen.height/2)
+
+                Vector3 copyScreenPos = Camera.main.WorldToScreenPoint(copyright.transform.position);
+
+                //if (copyright.transform.position.y > Screen.height/2)
+                if (copyScreenPos.y > Screen.height / 2)
                 {
                     currentState = CreditsState.WaitingCopyRight;
                     waitingTime = 0;
