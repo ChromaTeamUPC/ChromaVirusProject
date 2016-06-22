@@ -21,10 +21,8 @@ public class MosquitoShotExecutor : BaseExecutor
 
         //Start shot animation
         blackBoard.attackAnimationEnded = false;
-        //blackBoard.attackAnimationTrigger = false;
-
-        //TODO: Remove when having proper animations
-        blackBoard.attackAnimationTrigger = true; 
+        blackBoard.attackAnimationTrigger = false;
+        blackBoard.animator.SetTrigger("attack");
     }
 
     public override int Execute()
@@ -66,8 +64,6 @@ public class MosquitoShotExecutor : BaseExecutor
             {
                 attack.Shoot(mosquitoBlackboard.shotSpawnPoint, mosquitoBlackboard.playerController);
             }
-            //TODO: Remove when having proper animations
-            blackBoard.attackAnimationEnded = true;
         }
 
         return AIAction.ACTION_NOT_FINISHED;

@@ -88,8 +88,8 @@ public class RandomMoveActionExecutor : BaseExecutor
 
             blackBoard.agent.Resume();
 
-            //blackBoard.animator.SetFloat("walkSpeed", blackBoard.agent.speed / 4);
-            //blackBoard.animator.SetBool("walking", true);
+            blackBoard.animator.SetFloat("moveSpeed", blackBoard.agent.speed / 4);
+            blackBoard.animator.SetBool("moving", true);
         }
     }
 
@@ -129,7 +129,7 @@ public class RandomMoveActionExecutor : BaseExecutor
                     blackBoard.agent.velocity = Vector3.zero;
                     blackBoard.agent.Stop();
                     
-                    blackBoard.animator.SetFloat("walkSpeed", 1);
+                    blackBoard.animator.SetFloat("moveSpeed", 1);
 
                     --totalDisplacements;
                     if (totalDisplacements > 0)

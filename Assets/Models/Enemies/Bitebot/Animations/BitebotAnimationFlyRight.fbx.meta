@@ -1,0 +1,187 @@
+fileFormatVersion: 2
+guid: eb9356f9aa45aaa43bfdd7f86493d41f
+timeCreated: 1466594052
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Ala_Dreta
+    100002: Ala_Esquerra
+    100004: Antena1_Dreta
+    100006: Antena1_Esquerra
+    100008: Antena2_Dreta
+    100010: Antena2_Esquerra
+    100012: Antena3_Dreta
+    100014: Antena3_Esquerra
+    100016: Antena4_Dreta
+    100018: Antena4_Esquerra
+    100020: BaseAla_Dreta
+    100022: BaseAla_Esquerra
+    100024: Bitebot
+    100026: //RootNode
+    100028: Cama_Dreta_Devant
+    100030: Cama_Dreta_Redera
+    100032: Cama_Esquerra_Devant
+    100034: Cama_Esquerra_Redera
+    100036: Cap
+    100038: Cos
+    100040: Ctrl_Ala_Dreta
+    100042: Ctrl_Ala_Esquerra
+    100044: Ctrl_Antena_Dreta
+    100046: Ctrl_Antena_Esquerra
+    100048: Ctrl_Base
+    100050: Ctrl_BaseAla_Dreta
+    100052: Ctrl_BaseAla_Esquerra
+    100054: Ctrl_Cama_Dreta_Devant
+    100056: Ctrl_Cama_Dreta_Redera
+    100058: Ctrl_Cama_Esquerra_Devant
+    100060: Ctrl_Cama_Esquerra_Redera
+    100062: Ctrl_Cap
+    100064: Ctrl_Cos
+    100066: Ctrl_Cul
+    100068: Ctrl_Genoll_Dreta_Devant
+    100070: Ctrl_Genoll_Dreta_Redera
+    100072: Ctrl_Genoll_Esquerra_Devant
+    100074: Ctrl_Genoll_Esquerra_Redera
+    100076: Cul
+    100078: Genoll_Dreta_Devant
+    100080: Genoll_Dreta_Redera
+    100082: Genoll_Esquerra_Devant
+    100084: Genoll_Esquerra_Redera
+    100086: ikHandle1
+    100088: ikHandle2
+    100090: ikHandle3
+    100092: ikHandle4
+    100094: ikHandle5
+    100096: ikHandle6
+    100098: Punta_Cul
+    100100: Punta_Dreta_Devant
+    100102: Punta_Dreta_Redera
+    100104: Punta_Esquerra_Devant
+    100106: Punta_Esquerra_Redera
+    100108: PuntaAla_Dreta
+    100110: PuntaAla_Esquerra
+    400000: Ala_Dreta
+    400002: Ala_Esquerra
+    400004: Antena1_Dreta
+    400006: Antena1_Esquerra
+    400008: Antena2_Dreta
+    400010: Antena2_Esquerra
+    400012: Antena3_Dreta
+    400014: Antena3_Esquerra
+    400016: Antena4_Dreta
+    400018: Antena4_Esquerra
+    400020: BaseAla_Dreta
+    400022: BaseAla_Esquerra
+    400024: Bitebot
+    400026: //RootNode
+    400028: Cama_Dreta_Devant
+    400030: Cama_Dreta_Redera
+    400032: Cama_Esquerra_Devant
+    400034: Cama_Esquerra_Redera
+    400036: Cap
+    400038: Cos
+    400040: Ctrl_Ala_Dreta
+    400042: Ctrl_Ala_Esquerra
+    400044: Ctrl_Antena_Dreta
+    400046: Ctrl_Antena_Esquerra
+    400048: Ctrl_Base
+    400050: Ctrl_BaseAla_Dreta
+    400052: Ctrl_BaseAla_Esquerra
+    400054: Ctrl_Cama_Dreta_Devant
+    400056: Ctrl_Cama_Dreta_Redera
+    400058: Ctrl_Cama_Esquerra_Devant
+    400060: Ctrl_Cama_Esquerra_Redera
+    400062: Ctrl_Cap
+    400064: Ctrl_Cos
+    400066: Ctrl_Cul
+    400068: Ctrl_Genoll_Dreta_Devant
+    400070: Ctrl_Genoll_Dreta_Redera
+    400072: Ctrl_Genoll_Esquerra_Devant
+    400074: Ctrl_Genoll_Esquerra_Redera
+    400076: Cul
+    400078: Genoll_Dreta_Devant
+    400080: Genoll_Dreta_Redera
+    400082: Genoll_Esquerra_Devant
+    400084: Genoll_Esquerra_Redera
+    400086: ikHandle1
+    400088: ikHandle2
+    400090: ikHandle3
+    400092: ikHandle4
+    400094: ikHandle5
+    400096: ikHandle6
+    400098: Punta_Cul
+    400100: Punta_Dreta_Devant
+    400102: Punta_Dreta_Redera
+    400104: Punta_Esquerra_Devant
+    400106: Punta_Esquerra_Redera
+    400108: PuntaAla_Dreta
+    400110: PuntaAla_Esquerra
+    4300000: Bitebot
+    7400000: FlyRight
+    9500000: //RootNode
+    13700000: Bitebot
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

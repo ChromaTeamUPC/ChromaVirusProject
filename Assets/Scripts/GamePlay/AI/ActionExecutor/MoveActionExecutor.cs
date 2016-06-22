@@ -69,8 +69,8 @@ public class MoveActionExecutor: BaseExecutor
         blackBoard.agent.speed = moveAction.speed * rsc.gameInfo.globalEnemySpeedFactor;
         blackBoard.agent.Resume();
 
-        blackBoard.animator.SetFloat("walkSpeed", blackBoard.agent.speed / 4);
-        blackBoard.animator.SetBool("walking", true);
+        blackBoard.animator.SetFloat("moveSpeed", blackBoard.agent.speed / 4);
+        blackBoard.animator.SetBool("moving", true);
         
         elapsedTime = 0f;
     }
@@ -131,7 +131,7 @@ public class MoveActionExecutor: BaseExecutor
             if (!moveAction.inertia)
                 blackBoard.agent.velocity = Vector3.zero;
 
-            blackBoard.animator.SetFloat("walkSpeed", 1);
+            blackBoard.animator.SetFloat("moveSpeed", 1);
 
             return moveAction.nextAction;
         }

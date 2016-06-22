@@ -25,7 +25,7 @@ public class SpiderBiteExecutor : BaseExecutor
         {
             blackBoard.attackAnimationEnded = false;
             blackBoard.attackAnimationTrigger = false;
-            blackBoard.animator.SetBool("walking", false);
+            blackBoard.animator.SetBool("moving", false);
             blackBoard.animator.SetTrigger("bite");
             spiderBlackBoard.timeSinceLastAttack = 0f;
             discardedAttack = false;

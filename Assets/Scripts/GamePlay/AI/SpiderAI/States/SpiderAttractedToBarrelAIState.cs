@@ -30,7 +30,7 @@ public class SpiderAttractedToBarrelAIState : SpiderAIBaseState
 
         spiderBlackboard.agent.destination = spiderBlackboard.barrelController.transform.position + direction;
         spiderBlackboard.agent.Resume();
-        spiderBlackboard.animator.SetBool("walking", true);
+        spiderBlackboard.animator.SetBool("moving", true);
         subState = AttractedToBarrelSubState.GOING;
         base.OnStateEnter();
     }
@@ -66,7 +66,7 @@ public class SpiderAttractedToBarrelAIState : SpiderAIBaseState
                 //...Make sure we look at the barrel
                 if (Vector3.Angle(direction, spiderBlackboard.agent.transform.forward) < 5)
                 {
-                    spiderBlackboard.animator.SetBool("walking", false);
+                    spiderBlackboard.animator.SetBool("moving", false);
                     subState = AttractedToBarrelSubState.WAITING;
                 }
                 else

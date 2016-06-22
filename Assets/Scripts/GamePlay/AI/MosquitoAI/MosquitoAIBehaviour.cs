@@ -85,29 +85,52 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
             mosquitoBlackboard.SetPlayer(rsc.enemyMng.SelectPlayer(gameObject));
         }
 
+        Vector3 movingVector = transform.forward;
+        Vector3 lookingVector;
+
         //If player is valid, look at it
         if(mosquitoBlackboard.player != null)
         {
-            Vector3 direction = mosquitoBlackboard.player.transform.position - transform.position;
-            direction.y = 0f;
+            lookingVector = mosquitoBlackboard.player.transform.position - transform.position;
+            lookingVector.y = 0f;
 
-            Quaternion newRotation = Quaternion.LookRotation(direction);
+            Quaternion newRotation = Quaternion.LookRotation(lookingVector);
             newRotation = Quaternion.RotateTowards(rotationObject.rotation, newRotation, angularSpeed * Time.deltaTime);
             rotationObject.rotation = newRotation;
         }
         //else look forward
         else
         {
-            Vector3 direction = transform.forward;
+            lookingVector = transform.forward;
 
-            Quaternion newRotation = Quaternion.LookRotation(direction);
+            Quaternion newRotation = Quaternion.LookRotation(lookingVector);
             newRotation = Quaternion.RotateTowards(rotationObject.rotation, newRotation, angularSpeed * Time.deltaTime);
             rotationObject.rotation = newRotation;
         }
 
+        int angleBetweenVectors = AngleBetween360(lookingVector, movingVector);
+
+        float angleRad = angleBetweenVectors * Mathf.Deg2Rad;
+        float forward = Mathf.Cos(angleRad);
+        float lateral = Mathf.Sin(angleRad);
+        blackboard.animator.SetFloat("forward", forward);
+        blackboard.animator.SetFloat("lateral", lateral);
+
         mosquitoBlackboard.timeSinceLastAttack += Time.deltaTime;
 
         base.Update();
+    }
+
+    private int AngleBetween360(Vector3 v1, Vector3 v2)
+    {
+        Vector3 n = new Vector3(0, 1, 0);
+
+        float signedAngle = Mathf.Atan2(Vector3.Dot(n, Vector3.Cross(v1, v2)), Vector3.Dot(v1, v2)) * Mathf.Rad2Deg;
+
+        if (signedAngle >= 0)
+            return (int)signedAngle;
+        else
+            return (int)(360 + signedAngle);
     }
 
     //Not to be used outside FSM

@@ -12,7 +12,7 @@ public class StandingIdleExecutor : BaseExecutor
         standingIdleAction = (StandingIdleAIAction)act;
 
         blackBoard.agent.Stop();
-        blackBoard.animator.SetBool("walking", false);
+        blackBoard.animator.SetBool("moving", false);
         elapsedTime = 0f;
     }
 
