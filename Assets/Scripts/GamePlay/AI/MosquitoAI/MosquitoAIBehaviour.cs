@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
 {
+    public const int infectionValue = 2;
+
     public enum SpawnAnimation
     {
         ABOVE,

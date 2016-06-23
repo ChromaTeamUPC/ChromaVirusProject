@@ -41,6 +41,8 @@ public class GUIController : MonoBehaviour
     public Text pauseTxt;
     public Text godModeTxt;
 
+    public Text currentInfectionTxt;
+
     //private GameObject player1;
     //private GameObject player2;
     private PlayerController player1Controller;
@@ -158,6 +160,8 @@ public class GUIController : MonoBehaviour
             godModeTxt.enabled = shouldShowTxt;
         else
             godModeTxt.enabled = false;
+
+        currentInfectionTxt.text = rsc.enemyMng.blackboard.GetCurrentInfectionPercentage().ToString();
     }
 
     private void DisableHintButtons(int playerId)

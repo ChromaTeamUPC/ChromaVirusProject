@@ -134,9 +134,9 @@ public class ColorManager : MonoBehaviour
 
     public void EnemyDied(EventInfo eventInfo)
     {
-        ColorEventInfo info = (ColorEventInfo)eventInfo;
-        --colorCount[(int)info.newColor];
-        if (colorCount[(int)info.newColor] < 0) colorCount[(int)info.newColor] = 0;
+        EnemyDiedEventInfo info = (EnemyDiedEventInfo)eventInfo;
+        --colorCount[(int)info.color];
+        if (colorCount[(int)info.color] < 0) colorCount[(int)info.color] = 0;
     }
 
     void FixedUpdate ()

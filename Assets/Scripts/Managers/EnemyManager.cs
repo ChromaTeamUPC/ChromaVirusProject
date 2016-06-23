@@ -194,6 +194,10 @@ public class EnemyManager : MonoBehaviour
     private void EnemyDied(EventInfo eventInfo)
     {
         --blackboard.activeEnemies;
+
+        EnemyDiedEventInfo info = (EnemyDiedEventInfo)eventInfo;
+        blackboard.zoneCurrentInfectionLevel -= info.infectionValue;
+
         //Debug.Log("Enemies-- = " + blackboard.activeEnemies);
     }
 
@@ -210,13 +214,28 @@ public class EnemyManager : MonoBehaviour
     private void VortexActivated(EventInfo eventInfo)
     {
         ++blackboard.activeVortex;
+
+        blackboard.zoneTotalInfectionLevel += VortexController.infectionValue;
+        blackboard.zoneCurrentInfectionLevel += VortexController.infectionValue;
+
         //Debug.Log("Vortex++ = " + blackboard.activeVortex);
     }
 
     private void VortexDestroyed(EventInfo eventInfo)
     {
         --blackboard.activeVortex;
+
+        blackboard.zoneCurrentInfectionLevel -= VortexController.infectionValue;
         //Debug.Log("Vortex-- = " + blackboard.activeVortex);
+    }
+
+    public void AddVortexEnemyInfection(int infectionValue)
+    {
+        blackboard.zoneCurrentInfectionLevel += infectionValue;
+        if (blackboard.zoneCurrentInfectionLevel > blackboard.zoneTotalInfectionLevel)
+        {     
+            blackboard.zoneTotalInfectionLevel = blackboard.zoneCurrentInfectionLevel;
+        }
     }
 
     private void DeviceActivated(EventInfo eventInfo)
@@ -260,6 +279,9 @@ public class EnemyManager : MonoBehaviour
         }
 
         currentPlanId = planId;
+
+        blackboard.zoneTotalInfectionLevel = currentPlan.GetPlanTotalInfection();
+        blackboard.zoneCurrentInfectionLevel = blackboard.zoneTotalInfectionLevel;
 
         blackboard.activeEnemies = 0;
         blackboard.activeTurrets = 0;

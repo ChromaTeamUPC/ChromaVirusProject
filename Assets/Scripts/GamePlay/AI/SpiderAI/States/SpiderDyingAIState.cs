@@ -16,9 +16,10 @@ public class SpiderDyingAIState : SpiderAIBaseState
         spiderBlackboard.agent.enabled = false;
 
         color = spiderBlackboard.spider.color;
-            
-        ColorEventInfo.eventInfo.newColor = color;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.ENEMY_DIED, ColorEventInfo.eventInfo);
+
+        EnemyDiedEventInfo.eventInfo.color = color;
+        EnemyDiedEventInfo.eventInfo.infectionValue = SpiderAIBehaviour.infectionValue;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.ENEMY_DIED, EnemyDiedEventInfo.eventInfo);
 
         if (spiderBlackboard.lastShotSameColor)
         {

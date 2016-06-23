@@ -14,4 +14,6 @@ public class WaveAction
     {
         //Do nothing by default
     }
+
+    public virtual int GetWaveTotalInfection() { return 0; }
 }

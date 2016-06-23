@@ -17,8 +17,9 @@ public class MosquitoDyingAIState : MosquitoAIBaseState
 
         color = mosquitoBlackboard.mosquito.color;
 
-        ColorEventInfo.eventInfo.newColor = color;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.ENEMY_DIED, ColorEventInfo.eventInfo);
+        EnemyDiedEventInfo.eventInfo.color = color;
+        EnemyDiedEventInfo.eventInfo.infectionValue = MosquitoAIBehaviour.infectionValue;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.ENEMY_DIED, EnemyDiedEventInfo.eventInfo);
 
         if (mosquitoBlackboard.lastShotSameColor)
         {

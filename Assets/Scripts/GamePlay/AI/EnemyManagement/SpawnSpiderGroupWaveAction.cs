@@ -6,15 +6,10 @@ public class SpawnSpiderGroupWaveAction : WaveAction  {
 
     public enum FormationType
     {
-
-
-
-
         ROLLING,
         THREE_FRONT,
         THREE_BACK,
         TRIANGLE,
-
         QUAD
     }
 
@@ -53,20 +48,10 @@ public class SpawnSpiderGroupWaveAction : WaveAction  {
         spiderIndex = 0;
 
         enemyMng = rsc.enemyMng;
-    }
 
-    public override void Execute()
-    {
-        executing = true;
-
-        spawnPoint = GameObject.Find(spawnPointName).transform; //TODO: Improve this
-        spawnController = spawnPoint.GetComponent<SpawnPointController>();
 
         switch (formation)
         {
-
-
-
             case FormationType.ROLLING:
                 followersActions = new List<AIAction>[4] { null, enemyMng.rolling, enemyMng.rolling, enemyMng.rolling };
                 break;
@@ -83,11 +68,6 @@ public class SpawnSpiderGroupWaveAction : WaveAction  {
                 followersActions = new List<AIAction>[5] { null, enemyMng.triangle_1, enemyMng.triangle_2, enemyMng.triangle_3, enemyMng.triangle_4 };
                 break;
 
-
-
-
-
-
             case FormationType.QUAD:
                 followersActions = new List<AIAction>[5] { null, enemyMng.quad_1, enemyMng.quad_2, enemyMng.quad_3, enemyMng.quad_4 };
                 break;
@@ -98,6 +78,15 @@ public class SpawnSpiderGroupWaveAction : WaveAction  {
         groupInfo = new EnemyGroupInfo();
         groupInfo.followersCount = followersActions.Length - 1;
         groupInfo.leaderActionIndex = 0;
+
+    }
+
+    public override void Execute()
+    {
+        executing = true;
+
+        spawnPoint = GameObject.Find(spawnPointName).transform; //TODO: Improve this
+        spawnController = spawnPoint.GetComponent<SpawnPointController>();
 
         spiderIndex = 0;
         SpawnSpider();
@@ -156,5 +145,10 @@ public class SpawnSpiderGroupWaveAction : WaveAction  {
         }
 
         executing = false;
+    }
+
+    public override int GetWaveTotalInfection()
+    {
+        return SpiderAIBehaviour.infectionValue * followersActions.Length;
     }
 }

@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class VortexController : MonoBehaviour {
+public class VortexController : MonoBehaviour
+{
+    public const int infectionValue = 5;
 
     public int maxHealth = 100;
 
@@ -96,6 +98,7 @@ public class VortexController : MonoBehaviour {
                     //TODO, change spawn animation to vortex specific one when we have it
                     enemy.AIInit(SpiderAIBehaviour.SpawnAnimation.FLOOR, entryActions, attackActions, infectActions);
                     enemy.Spawn(spawnPoint);
+                    rsc.enemyMng.AddVortexEnemyInfection(SpiderAIBehaviour.infectionValue);
                 }
 
                 spawnDelay = Random.Range(spawnMinDelay, spawnMaxDelay);

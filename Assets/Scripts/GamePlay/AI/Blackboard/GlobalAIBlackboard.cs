@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class GlobalAIBlackboard
 {
+    public int zoneTotalInfectionLevel;
+    public int zoneCurrentInfectionLevel;
+
     public int activeEnemies;
     //public int activeSpiders;
     public int activeVortex;
@@ -30,6 +33,8 @@ public class GlobalAIBlackboard
 
     public void ResetValues()
     {
+        zoneTotalInfectionLevel = 100;
+        zoneCurrentInfectionLevel = 100;
 
         activeEnemies = 0;
         //activeSpiders = 0;
@@ -115,5 +120,19 @@ public class GlobalAIBlackboard
     public DeviceController GetRandomDevice()
     {
         return activeDevices[Random.Range(0, activeDevices.Count)];
+    }
+
+    public int GetCurrentInfectionPercentage()
+    {
+        int total = zoneTotalInfectionLevel;
+        int current = zoneCurrentInfectionLevel;
+
+        foreach(DeviceController device in activeDevices)
+        {
+            total += DeviceController.globalInfectionValue;
+            current += device.CurrentGlobalInfectionValue;
+        }
+
+        return (current * 100) / total;
     }
 }

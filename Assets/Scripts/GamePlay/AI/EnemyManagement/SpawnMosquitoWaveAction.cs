@@ -119,4 +119,9 @@ public class SpawnMosquitoWaveAction : WaveAction
 
         executing = false;
     }
+
+    public override int GetWaveTotalInfection()
+    {
+        return MosquitoAIBehaviour.infectionValue * totalSpawnsNumber;
+    }
 }

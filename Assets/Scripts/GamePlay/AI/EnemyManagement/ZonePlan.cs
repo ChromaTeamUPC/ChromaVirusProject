@@ -16,4 +16,22 @@ public class ZonePlan {
         triggerWaves = new List<List<WaveAction>>();
         sequentialWaves = new List<List<WaveAction>>();
     }
+
+    public int GetPlanTotalInfection()
+    {
+        int result = 0;
+
+        foreach (WaveAction wave in initialActions)
+            result += wave.GetWaveTotalInfection();
+
+        foreach (List<WaveAction> waveList in triggerWaves)
+            foreach (WaveAction wave in waveList)
+                result += wave.GetWaveTotalInfection();
+
+        foreach (List<WaveAction> waveList in sequentialWaves)
+            foreach (WaveAction wave in waveList)
+                result += wave.GetWaveTotalInfection();
+
+        return result;
+    }
 }

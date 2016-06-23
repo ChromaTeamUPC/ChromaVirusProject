@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 {
+    public const int infectionValue = 1;
+
     public enum SpawnAnimation
     {
         FLOOR,

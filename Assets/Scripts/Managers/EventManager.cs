@@ -49,6 +49,14 @@ public class PlayerDamagedEventInfo : EventInfo
     public float currentHealth;
 }
 
+public class EnemyDiedEventInfo : EventInfo
+{
+    public static EnemyDiedEventInfo eventInfo = new EnemyDiedEventInfo();
+
+    public ChromaColor color;
+    public int infectionValue;
+}
+
 public class LevelEventInfo : EventInfo
 {
     public static LevelEventInfo eventInfo = new LevelEventInfo();

@@ -128,4 +128,9 @@ public class SpawnSpiderWaveAction : WaveAction
 
         executing = false;
     }
+
+    public override int GetWaveTotalInfection()
+    {
+        return SpiderAIBehaviour.infectionValue * totalSpawnsNumber;
+    }
 }

@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class DeviceController : MonoBehaviour
 {
+    public const int globalInfectionValue = 5;
+
     public enum Type
     {
         VIDEO,
@@ -42,6 +44,8 @@ public class DeviceController : MonoBehaviour
     private float currentBrightness;
     public float brightnessCicleDuration;
     private float brightnessSpeed;
+
+    public int CurrentGlobalInfectionValue { get { return (int)(globalInfectionValue * (currentInfection / 100)); } }
 
     public float CurrentInfectionAmount { get { return currentInfection; } }
     public InfectionLevel CurrentInfectionLevel { get { return infectionLevel; } }
