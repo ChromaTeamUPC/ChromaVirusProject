@@ -101,6 +101,8 @@ public class MainCameraController : MonoBehaviour {
 
         if (colorMismatchDuration > 0)
             glitch.enabled = true;
+
+        rsc.rumbleMng.Rumble(0, shakeDuration);
     }
 
     private void DeviceInfectionChanged(EventInfo eventInfo)

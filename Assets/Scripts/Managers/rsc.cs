@@ -12,6 +12,7 @@ public class rsc : MonoBehaviour
     public static PoolManager poolMng;
     public static ColorManager colorMng;
     public static ColoredObjectsManager coloredObjectsMng;
+    public static RumbleManager rumbleMng;
     public static GameManager gameMng;
     public static CoroutineHelper coroutineHlp;
 
@@ -54,6 +55,8 @@ public class rsc : MonoBehaviour
     private ColorManager colorManager;
     [SerializeField]
     private ColoredObjectsManager coloredObjectsManager;
+    [SerializeField]
+    private RumbleManager rumbleManager;
     [SerializeField]
     private GameManager gameManager;
     [SerializeField]
@@ -121,6 +124,12 @@ public class rsc : MonoBehaviour
             {
                 //Debug.Log("Storing Colored Objects Manager");
                 coloredObjectsMng = coloredObjectsManager;
+            }
+
+            if (rumbleMng == null)
+            {
+                //Debug.Log("Storing Rumble Manager");
+                rumbleMng = rumbleManager;
             }
 
             if (gameMng == null)
