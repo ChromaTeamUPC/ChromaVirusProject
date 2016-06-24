@@ -12,6 +12,7 @@ public class RandomMoveActionExecutor : BaseExecutor
     private float elapsedTime;
     private float distance;
     private float angle;
+    private int leftRight;
     private Vector3 direction;
 
     public override void SetAction(AIAction act)
@@ -25,8 +26,14 @@ public class RandomMoveActionExecutor : BaseExecutor
         else
             totalDisplacements = Random.Range(randomMoveAction.totalDisplacementsMin, randomMoveAction.totalDisplacementsMax + 1);
 
+        if (Random.Range(0f, 1f) < 0.5f)
+            leftRight = -1;
+        else
+            leftRight = 1;
+
         if (totalDisplacements > 0)
             SetNewParameters();
+
     }
 
     private void SetNewParameters()
@@ -58,8 +65,9 @@ public class RandomMoveActionExecutor : BaseExecutor
         else
             angle = Random.Range(randomMoveAction.angleMin, randomMoveAction.angleMax);
 
-        if (Random.Range(0f, 1f) < 0.5f)
-            angle *= -1;
+        angle *= leftRight;
+
+        leftRight *= -1;
 
         direction = Vector3.zero;
         if(randomMoveAction.reference == RandomMoveAIAction.Reference.PLAYER)
@@ -129,8 +137,6 @@ public class RandomMoveActionExecutor : BaseExecutor
                     blackBoard.agent.velocity = Vector3.zero;
                     blackBoard.agent.Stop();
                     
-                    blackBoard.animator.SetFloat("moveSpeed", 1);
-
                     --totalDisplacements;
                     if (totalDisplacements > 0)
                     {
@@ -141,6 +147,7 @@ public class RandomMoveActionExecutor : BaseExecutor
                     }
                     else
                     {
+                        blackBoard.animator.SetFloat("moveSpeed", 1);
                         return randomMoveAction.nextAction;
                     }
                 }

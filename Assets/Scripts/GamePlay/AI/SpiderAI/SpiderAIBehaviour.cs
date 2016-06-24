@@ -16,11 +16,9 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 
     [Header("Spider Settings")]
     public float biteDamage = 10f;
-    public float playerDetectionDistance = 5f;
+    public float playerDetectionDistance = 5f; 
     public float checkAttackEverySeconds = 1f;
-    public int spidersAttackingThreshold = 3;
     public float checkDeviceEverySeconds = 3f;
-    public int spidersInfectingDeviceThreshold = 3;
 
     public GameObject[] explosionPrefabs = new GameObject[4];     
 

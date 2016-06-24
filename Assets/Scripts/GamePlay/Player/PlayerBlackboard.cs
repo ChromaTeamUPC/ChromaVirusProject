@@ -211,5 +211,7 @@ public class PlayerBlackboard
         animator.SetBool("Walking", false);
         animator.SetBool("Aiming", false);
         animator.SetBool("Shooting", false);
+
+        rsc.rumbleMng.RemoveContinousRumble(2);
     }
 }

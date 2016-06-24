@@ -29,7 +29,7 @@ public class SpiderAttackingPlayerAIState : SpiderAIActionsBaseState
         if ((spiderBlackboard.checkInfectingChipDelay >= spiderBlackboard.spider.checkDeviceEverySeconds))
         {
             if ((rsc.enemyMng.blackboard.activeDevices.Count > 0)
-                && (rsc.enemyMng.blackboard.infectingDeviceSpiders < spiderBlackboard.spider.spidersInfectingDeviceThreshold))
+                && (rsc.enemyMng.blackboard.timeRemainingToNextDeviceInfect == 0f))
             {
                 return spiderBlackboard.infectingDeviceState;
             }

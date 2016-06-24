@@ -26,7 +26,7 @@ public class PlayerSpecialState : PlayerBaseState {
             blackboard.player.SpendEnergy(blackboard.player.specialAttackNecessaryEnergy);
         blackboard.player.StartSpecialEnergyCharging();
         state = State.MOVING;
-        elapsedTime = 0f;
+        elapsedTime = 0f;       
     }
 
     public override PlayerBaseState Update()
@@ -44,6 +44,7 @@ public class PlayerSpecialState : PlayerBaseState {
                     blackboard.player.StartCoroutine(SpecialExplosion());
 
                     state = State.EXPLODING;
+                    rsc.rumbleMng.Rumble(blackboard.player.Id, 1f, 0.25f, 1f);
                 }
 
                 return null;

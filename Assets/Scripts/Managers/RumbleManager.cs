@@ -104,7 +104,13 @@ public class RumbleManager : MonoBehaviour
     // Update is called once per frame
     void Update () 
 	{
-        if (temporalRumbleList.Count > 0 || continousRumbleList.Count > 0)
+        if (temporalRumbleList.Count == 0 && continousRumbleList.Count == 0)
+        {
+            GamePad.SetVibration(PlayerIndex.One, 0f, 0f);
+            GamePad.SetVibration(PlayerIndex.Two, 0f, 0f);
+        }
+        //if (temporalRumbleList.Count > 0 || continousRumbleList.Count > 0)
+        else
         {
             float p1Weak = 0f;
             float p1Strong = 0f;
@@ -196,10 +202,10 @@ public class RumbleManager : MonoBehaviour
         continousRumbleList.Remove(rumbleId);
 
         //If that was the last rumble, stop all controllers
-        if(temporalRumbleList.Count == 0 && continousRumbleList.Count == 0)
+        /*if(temporalRumbleList.Count == 0 && continousRumbleList.Count == 0)
         {
             GamePad.SetVibration(PlayerIndex.One, 0f, 0f);
             GamePad.SetVibration(PlayerIndex.Two, 0f, 0f);
-        }
+        }*/
     }
 }

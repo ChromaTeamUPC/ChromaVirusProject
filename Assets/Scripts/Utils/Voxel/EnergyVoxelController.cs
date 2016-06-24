@@ -63,7 +63,8 @@ public class EnergyVoxelController : MonoBehaviour {
                 {
                     if (elapsedTime >= blinkingTime)
                     {
-                        blinkController.BlinkTransparentIncremental(duration - blinkingTime);
+                        //blinkController.BlinkTransparentIncremental(duration - blinkingTime);
+                        blinkController.BlinkTransparentMultipleTimes(duration - blinkingTime);
                         state = State.BLINKING;
                     }
                     else if (elapsedTime >= duration)

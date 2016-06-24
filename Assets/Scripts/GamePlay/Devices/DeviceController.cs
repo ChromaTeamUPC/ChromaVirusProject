@@ -45,7 +45,9 @@ public class DeviceController : MonoBehaviour
     public float brightnessCicleDuration;
     private float brightnessSpeed;
 
-    public int CurrentGlobalInfectionValue { get { return (int)(globalInfectionValue * (currentInfection / 100)); } }
+    private BlinkController blinkController;
+
+    public float CurrentGlobalInfectionValue { get { return (globalInfectionValue * (currentInfection / 100)); } }
 
     public float CurrentInfectionAmount { get { return currentInfection; } }
     public InfectionLevel CurrentInfectionLevel { get { return infectionLevel; } }
@@ -53,6 +55,9 @@ public class DeviceController : MonoBehaviour
     void Awake()
     {
         active = false;
+
+        blinkController = GetComponent<BlinkController>();
+
         currentInfection = 0f;
         infectionLevel = InfectionLevel.LEVEL0;
         infectionNumberMat = infectionNumberTxt.material;
@@ -100,10 +105,15 @@ public class DeviceController : MonoBehaviour
     {
         if (!active) return;
 
-        currentInfection += infectionPerAttack;
+        if (currentInfection < 100f)
+        {
+            blinkController.BlinkWhiteOnce(0.02f);
 
-        if (currentInfection > 100f)
-            currentInfection = 100f;
+            currentInfection += infectionPerAttack;
+
+            if (currentInfection > 100f)
+                currentInfection = 100f;
+        }
     }
 
     public void Disinfect()

@@ -24,12 +24,14 @@ public class PlayerDashingState : PlayerBaseState
         blackboard.player.SpawnDashParticles();
 
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DASHING, EventInfo.emptyInfo);
+        rsc.rumbleMng.AddContinousRumble(1, blackboard.player.Id, 1f, 0f);
     }
 
     public override void OnStateExit()
     {
         blackboard.currentSpeed = blackboard.player.walkSpeed;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DASHED, EventInfo.emptyInfo);
+        rsc.rumbleMng.RemoveContinousRumble(1);
     }
 
     public override PlayerBaseState Update()

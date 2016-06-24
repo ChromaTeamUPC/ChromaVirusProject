@@ -50,9 +50,9 @@ public class MosquitoPatrolingAIState : MosquitoAIActionsBaseState
 
             if (mosquitoBlackboard.player != null && mosquitoBlackboard.playerController.Alive)
             {
-                if (rsc.enemyMng.blackboard.attackingPlayerMosquitoes < mosquitoBlackboard.mosquito.mosquitoesAttackingThreshold)
+                if (rsc.enemyMng.blackboard.attackingPlayerMosquitoes + rsc.enemyMng.blackboard.activeMosquitoMainShots < rsc.enemyMng.mosquitoesAttackingThreshold)
                 {
-                    int chances = 100 - (rsc.enemyMng.blackboard.attackingPlayerMosquitoes * mosquitoBlackboard.mosquito.chancesReductionForEachAttackingMosquito);
+                    int chances = 100 - ((rsc.enemyMng.blackboard.attackingPlayerMosquitoes + rsc.enemyMng.blackboard.activeMosquitoMainShots) * rsc.enemyMng.mosquitoChancesReductionForEachAttack);
 
                     if (RollADice(chances))
                     {
@@ -60,9 +60,9 @@ public class MosquitoPatrolingAIState : MosquitoAIActionsBaseState
                     }
                 }
 
-                if (rsc.enemyMng.blackboard.activeMosquitoShots < mosquitoBlackboard.mosquito.activeAttacksThreshold)
+                if (rsc.enemyMng.blackboard.activeMosquitoWeakShots < rsc.enemyMng.mosquitoWeakShotsThreshold)
                 {
-                    int chances = 100 - (rsc.enemyMng.blackboard.activeMosquitoShots * mosquitoBlackboard.mosquito.chancesReductionForEachActiveAttack);
+                    int chances = 100 - (rsc.enemyMng.blackboard.activeMosquitoWeakShots * rsc.enemyMng.mosquitoChancesReductionForEachWeakShot);
 
                     if (RollADice(chances))
                     {
@@ -78,7 +78,8 @@ public class MosquitoPatrolingAIState : MosquitoAIActionsBaseState
 
     private bool RollADice(int chances)
     {
-        return Random.Range(1, 101) <= chances;
+        int dice = Random.Range(1, 101);
+        return dice <= chances;
     }
 
     private void ShootWeak()

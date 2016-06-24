@@ -114,7 +114,7 @@ public class RandomMoveAIAction : AIAction
     public Reference reference;
     public float maxTime;
 
-    public RandomMoveAIAction(float spMin, float spMax, int totalDispMin, int totalDispMax, float pauseMin, float pauseMax, float distMin, float distMax, float angMin, float angMax, float maxT = 2f, Reference refer = Reference.PLAYER, int next = AIAction.NEXT_ACTION) : base(Type.RANDOM_MOVE, next)
+    public RandomMoveAIAction(float spMin, float spMax, int totalDispMin, int totalDispMax, float pauseMin, float pauseMax, float distMin, float distMax, float angMin, float angMax, float maxT = 1f, Reference refer = Reference.PLAYER, int next = AIAction.NEXT_ACTION) : base(Type.RANDOM_MOVE, next)
     {
         speedMin = spMin;
         speedMax = spMax;
@@ -131,7 +131,7 @@ public class RandomMoveAIAction : AIAction
     }
 
 
-    public RandomMoveAIAction(float sp, int totalDisp = 3, float pause = 0.5f, float dist = 3f, float angMin = 10f, float angMax = 90f, float maxT = 2f, Reference refer = Reference.PLAYER, int next = AIAction.NEXT_ACTION) : 
+    public RandomMoveAIAction(float sp, int totalDisp = 3, float pause = 0.5f, float dist = 3f, float angMin = 10f, float angMax = 90f, float maxT = 1f, Reference refer = Reference.PLAYER, int next = AIAction.NEXT_ACTION) : 
         this (sp, sp, totalDisp, totalDisp, pause, pause, dist, dist, angMin, angMax, maxT, refer, next)
     {
     }

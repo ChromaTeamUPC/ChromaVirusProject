@@ -55,7 +55,7 @@ public class MosquitoWeakShotController : MonoBehaviour {
     // Use this for initialization
     public void Shoot()
     {
-        rsc.enemyMng.blackboard.MosquitoShotSpawned();
+        rsc.enemyMng.blackboard.MosquitoWeakShotSpawned();
         shotCollider.enabled = true;
         projectileParticle.SetActive(true);
         rigidBody.velocity = transform.forward * speed;
@@ -97,7 +97,7 @@ public class MosquitoWeakShotController : MonoBehaviour {
 
     private void ReturnToPool()
     {
-        rsc.enemyMng.blackboard.MosquitoShotDestroyed();
+        rsc.enemyMng.blackboard.MosquitoWeakShotDestroyed();
         damage = defaultDamage;
         projectileParticle.SetActive(false);
         impactParticle.transform.localRotation = Quaternion.identity;

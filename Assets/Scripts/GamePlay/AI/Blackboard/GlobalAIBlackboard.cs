@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class GlobalAIBlackboard
 {
+    EnemyManager enemyMng;
+
     public int zoneTotalInfectionLevel;
     public int zoneCurrentInfectionLevel;
 
@@ -12,21 +14,24 @@ public class GlobalAIBlackboard
     public int activeVortex;
     public int activeTurrets;
 
-    public List<DeviceController> activeDevices;
+    public List<DeviceController> activeDevices = new List<DeviceController>();
     public float timeSinceLastDeviceAttack;
     public int infectingDeviceSpiders;
 
-    public const float timeBetweenPlayerAttacks = 1f;
+    public float timeRemainingToNextPlayerAttack;
+
     public int attackingPlayerEnemies;
     public int attackingPlayerSpiders;
     public int attackingPlayerMosquitoes;
-    public int activeMosquitoShots;
+    public int activeMosquitoMainShots;
+    public int activeMosquitoWeakShots;
 
-    public float timeRemainingToNextPlayerAttack;
+    public float timeRemainingToNextDeviceInfect;
 
-    public void Init()
+
+    public void Init(EnemyManager eMng)
     {
-        activeDevices = new List<DeviceController>();
+        enemyMng = eMng;
 
         ResetValues();
     }
@@ -48,15 +53,18 @@ public class GlobalAIBlackboard
         attackingPlayerEnemies = 0;
         attackingPlayerSpiders = 0;
         attackingPlayerMosquitoes = 0;
-        activeMosquitoShots = 0;
+        activeMosquitoMainShots = 0;
+        activeMosquitoWeakShots = 0;
         timeRemainingToNextPlayerAttack = 0f;
+
+        timeRemainingToNextDeviceInfect = enemyMng.timeBetweenDeviceInfects;
     }
 
     public void SpiderStartsAttacking()
     {
         ++attackingPlayerEnemies;
         ++attackingPlayerSpiders;
-        timeRemainingToNextPlayerAttack = timeBetweenPlayerAttacks;
+        timeRemainingToNextPlayerAttack = enemyMng.timeBetweenPlayerAttacks;
     }
 
     public void SpiderStopsAttacking()
@@ -68,6 +76,7 @@ public class GlobalAIBlackboard
     public void SpiderStartsInfectingDevice()
     {
         ++infectingDeviceSpiders;
+        timeRemainingToNextDeviceInfect = enemyMng.timeBetweenDeviceInfects;
     }
 
     public void SpiderStopsInfectingDevice()
@@ -87,14 +96,24 @@ public class GlobalAIBlackboard
         --attackingPlayerMosquitoes;
     }
 
-    public void MosquitoShotSpawned()
+    public void MosquitoMainShotSpawned()
     {
-        ++activeMosquitoShots;
+        ++activeMosquitoMainShots;
     }
 
-    public void MosquitoShotDestroyed()
+    public void MosquitoMainShotDestroyed()
     {
-        --activeMosquitoShots;
+        --activeMosquitoMainShots;
+    }
+
+    public void MosquitoWeakShotSpawned()
+    {
+        ++activeMosquitoWeakShots;
+    }
+
+    public void MosquitoWeakShotDestroyed()
+    {
+        --activeMosquitoWeakShots;
     }
 
     public void DecrementTimes()
@@ -104,6 +123,13 @@ public class GlobalAIBlackboard
             timeRemainingToNextPlayerAttack -= Time.deltaTime;
             if (timeRemainingToNextPlayerAttack < 0f)
                 timeRemainingToNextPlayerAttack = 0f;
+        }
+
+        if(timeRemainingToNextDeviceInfect > 0f && infectingDeviceSpiders < enemyMng.spidersInfectingDeviceThreshold)
+        {
+            timeRemainingToNextDeviceInfect -= Time.deltaTime;
+            if (timeRemainingToNextDeviceInfect < 0f)
+                timeRemainingToNextDeviceInfect = 0f;
         }
     }
 
@@ -124,8 +150,8 @@ public class GlobalAIBlackboard
 
     public int GetCurrentInfectionPercentage()
     {
-        int total = zoneTotalInfectionLevel;
-        int current = zoneCurrentInfectionLevel;
+        float total = zoneTotalInfectionLevel;
+        float current = zoneCurrentInfectionLevel;
 
         foreach(DeviceController device in activeDevices)
         {
@@ -133,6 +159,6 @@ public class GlobalAIBlackboard
             current += device.CurrentGlobalInfectionValue;
         }
 
-        return (current * 100) / total;
+        return (int)Mathf.Ceil((current * 100) / total);
     }
 }

@@ -18,14 +18,9 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
     public float checkTargetEverySeconds = 1f;
     public float angularSpeed = 360f;
 
-    public float checkAttackEverySeconds = 2f;
-    public int activeAttacksThreshold = 5;
-    public int chancesReductionForEachActiveAttack = 20;
-    public float patrolShotDamage = 10f;
-
-    public int mosquitoesAttackingThreshold = 3;
-    public int chancesReductionForEachAttackingMosquito = 33;
+    public float checkAttackEverySeconds = 2f;    
     public float mainAttackDamage = 20f;
+    public float patrolShotDamage = 10f;   
 
     private Transform rotationObject;
 

@@ -23,7 +23,7 @@ public class MosquitoSingleProjectileAttackController : MosquitoMainAttackContro
     {
         base.Shoot(s, p);
 
-        rsc.enemyMng.blackboard.MosquitoShotSpawned();
+        rsc.enemyMng.blackboard.MosquitoMainShotSpawned();
         projectile.transform.position = source.position;
         if (player != null && player.Alive)
             projectile.transform.LookAt(player.transform.position, Vector3.up);
@@ -46,7 +46,7 @@ public class MosquitoSingleProjectileAttackController : MosquitoMainAttackContro
 
     private void ReturnToPool()
     {
-        rsc.enemyMng.blackboard.MosquitoShotDestroyed();
+        rsc.enemyMng.blackboard.MosquitoMainShotDestroyed();
         active = false;
         rsc.poolMng.mosquitoSingleProjectilePool.AddObject(this);
     }
