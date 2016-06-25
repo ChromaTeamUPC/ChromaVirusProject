@@ -84,12 +84,12 @@ public class MainCameraController : MonoBehaviour {
 
     private void PlayerStartDash(EventInfo eventInfo)
     {
-       // motionBlur.enabled = true;
+        motionBlur.enabled = true;
     }
 
     private void PlayerEndDash(EventInfo eventInfo)
     {
-      //   motionBlur.enabled = false;
+         motionBlur.enabled = false;
     }
 
     private void PlayerColorMismatch(EventInfo eventInfo)
