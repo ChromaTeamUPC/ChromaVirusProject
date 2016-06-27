@@ -11,6 +11,7 @@ public class CamerasManager : MonoBehaviour {
     public float xRotationMinThreshold = 25;
 
     public GameObject mainCameraObj;
+    public GameObject entryCameraObj;
     public GameObject godCameraObj;
     public GameObject staticCamera1Obj;
     public GameObject staticCamera2Obj;
@@ -51,7 +52,7 @@ public class CamerasManager : MonoBehaviour {
         minXPosition = cameraBorderMargin;*/
 
         //Set main camera
-        ChangeCamera(0);
+        //ChangeCamera(0);
     }
 
     // Update is called once per frame
@@ -60,21 +61,22 @@ public class CamerasManager : MonoBehaviour {
         if (Input.GetKeyDown(keys.mainCameraActivationKey))
             ChangeCamera(0);
         else if (Input.GetKeyDown(keys.godCameraActivationKey))
-            ChangeCamera(1);
-        else if (Input.GetKeyDown(keys.staticCamera1ActivationKey))
             ChangeCamera(2);
-        else if (Input.GetKeyDown(keys.staticCamera2ActivationKey))
+        else if (Input.GetKeyDown(keys.staticCamera1ActivationKey))
             ChangeCamera(3);
-        else if (Input.GetKeyDown(keys.staticCamera3ActivationKey))
+        else if (Input.GetKeyDown(keys.staticCamera2ActivationKey))
             ChangeCamera(4);
+        else if (Input.GetKeyDown(keys.staticCamera3ActivationKey))
+            ChangeCamera(5);
         else if (Input.GetKeyDown(keys.mainCameraFollowPlayersKey))
             ToggleCameraFollowPlayers();
     }
 
-    void ChangeCamera(int cameraIndex)
+    public void ChangeCamera(int cameraIndex)
     {
         //Disable all cameras
         mainCameraObj.SetActive(false);
+        if (entryCameraObj != null) entryCameraObj.SetActive(false);
         if (godCameraObj != null) godCameraObj.SetActive(false);
         if (staticCamera1Obj != null) staticCamera1Obj.SetActive(false);
         if (staticCamera2Obj != null) staticCamera2Obj.SetActive(false);
@@ -85,15 +87,18 @@ public class CamerasManager : MonoBehaviour {
         switch (cameraIndex)
         {
             case 1:
-                if (godCameraObj != null) currentCameraObj = godCameraObj;
+                if (entryCameraObj != null) currentCameraObj = entryCameraObj;
                 break;
             case 2:
-                if (staticCamera1Obj != null) currentCameraObj = staticCamera1Obj;
+                if (godCameraObj != null) currentCameraObj = godCameraObj;
                 break;
             case 3:
-                if (staticCamera2Obj != null) currentCameraObj = staticCamera2Obj;
+                if (staticCamera1Obj != null) currentCameraObj = staticCamera1Obj;
                 break;
             case 4:
+                if (staticCamera2Obj != null) currentCameraObj = staticCamera2Obj;
+                break;
+            case 5:
                 if (staticCamera3Obj != null) currentCameraObj = staticCamera3Obj;
                 break;
         }

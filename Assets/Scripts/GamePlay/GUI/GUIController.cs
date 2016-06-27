@@ -59,6 +59,8 @@ public class GUIController : MonoBehaviour
     public Text pauseTxt;
     public Text godModeTxt;
 
+    public GameObject skipHint;
+
 
     //private GameObject player1;
     //private GameObject player2;
@@ -106,6 +108,7 @@ public class GUIController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
         rsc.eventMng.StartListening(EventManager.EventType.ZONE_REACHED, ZoneReached);
+        rsc.eventMng.StartListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
     }
 
     void OnDestroy()
@@ -124,6 +127,7 @@ public class GUIController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
             rsc.eventMng.StopListening(EventManager.EventType.ZONE_REACHED, ZoneReached);
+            rsc.eventMng.StopListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
         }
     }
 	
@@ -410,5 +414,10 @@ public class GUIController : MonoBehaviour
     private void ZoneReached(EventInfo eventInfo)
     {
         infectionAndNextColorZone.SetActive(true);
+    }
+
+    private void CameraEnded(EventInfo eventInfo)
+    {
+        skipHint.SetActive(false);
     }
 }

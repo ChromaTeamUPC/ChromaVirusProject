@@ -31,6 +31,7 @@ public class CapacitorController : MonoBehaviour {
     public ParticleSystem attractingDome;
     public SphereCollider damageCollider;
     public GameObject detectingPlayerCollider;
+    public GameObject modelCollider;
     public float damageColliderRange;
     public GameObject[] explosionBlast = new GameObject[4];
 
@@ -117,6 +118,7 @@ public class CapacitorController : MonoBehaviour {
                 if(elapsedTime >= timeToExplode)
                 {                    
                     model.SetActive(false);
+                    modelCollider.SetActive(false);
                     explosionBlast[(int)currentColor].SetActive(true);
                     state = State.EXPLODING;
                     //Debug.Log("Moving to Exploding state");

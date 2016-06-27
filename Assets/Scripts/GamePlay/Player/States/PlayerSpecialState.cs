@@ -58,12 +58,6 @@ public class PlayerSpecialState : PlayerBaseState {
                 }
                 else
                     return null;
-                /*elapsedTime += Time.deltaTime;
-
-                if (elapsedTime > EXPLODING_WAIT_TIME)
-                    return blackboard.idleState;
-                else
-                    return null;*/
         }
 
         return null;

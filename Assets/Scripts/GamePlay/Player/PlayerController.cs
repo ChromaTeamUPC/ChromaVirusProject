@@ -14,7 +14,8 @@ public class PlayerController : MonoBehaviour
     public float maxHealth = 100f;    
     public float invulnerabilityTimeAfterHit = 3f;
     public float maxAngleToShieldBlocking = 30f;
-    public float damageRatioWhenBlockedWrongColor = 0.75f; 
+    public float damageRatioWhenBlockedWrongColor = 0.75f;
+    public float damageAfterInvulnerability = 10f; 
 
     //Movement
     [Header("Movement Settings")]
@@ -91,6 +92,7 @@ public class PlayerController : MonoBehaviour
     [Header("Miscelaneous Settings")]
     public float idleRandomAnimTime = 10f;
     public Transform hintPoint;
+    public PlayerEnemyIntersectionDetector enemyDetector;
     
 
 
@@ -492,7 +494,6 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-
 
     public void ReceiveAttack(float damage, ChromaColor color, Vector3 origin)
     {

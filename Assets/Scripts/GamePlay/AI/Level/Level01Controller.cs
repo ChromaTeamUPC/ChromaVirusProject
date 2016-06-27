@@ -76,6 +76,9 @@ public class Level01Controller : MonoBehaviour
     [SerializeField]
     private FadeSceneScript fadeScript;
 
+    [SerializeField]
+    private Animator elevatorAnimator;
+
     private int currentZoneId;
     private ZoneActivableObjects currentZoneObjects;
 
@@ -84,6 +87,11 @@ public class Level01Controller : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
+        rsc.camerasMng.ChangeCamera(1);
+
+        //Ensure all resources are in place (ie, enemies back to pool)
+        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
+
         //rsc.colorMng.Activate();
 
         if (rsc.gameInfo.player1Controller.Active)
@@ -103,6 +111,7 @@ public class Level01Controller : MonoBehaviour
             rsc.gameInfo.player2Controller.Spawn();
         }
 
+        rsc.eventMng.StartListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
         rsc.eventMng.StartListening(EventManager.EventType.ZONE_REACHED, ZoneReached);
         rsc.eventMng.StartListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanFinished);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
@@ -110,8 +119,6 @@ public class Level01Controller : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameFinished);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameFinished);
 
-        //Ensure all resources are in place (ie, enemies back to pool)
-        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
 
         fadeScript.StartFadingToClear();
         rsc.audioMng.FadeInMainMusic();
@@ -127,6 +134,7 @@ public class Level01Controller : MonoBehaviour
     {
         if (rsc.eventMng != null)
         {
+            rsc.eventMng.StopListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
             rsc.eventMng.StopListening(EventManager.EventType.ZONE_REACHED, ZoneReached);
             rsc.eventMng.StopListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanFinished);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
@@ -134,6 +142,12 @@ public class Level01Controller : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameFinished);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameFinished);
         }
+    }
+
+    private void CameraEnded(EventInfo eventInfo)
+    {
+        rsc.camerasMng.ChangeCamera(0);
+        elevatorAnimator.SetFloat("AnimationSpeed", 1f);
     }
 
     private void ZoneReached(EventInfo eventInfo)

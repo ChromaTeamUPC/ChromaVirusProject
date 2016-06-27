@@ -147,6 +147,8 @@ public class EventManager : MonoBehaviour {
 
         COLOR_WILL_CHANGE,
         COLOR_CHANGED,
+
+        CAMERA_ANIMATION_ENDED,
         CAMERA_CHANGED,
 
         DEVICE_ACTIVATED,
