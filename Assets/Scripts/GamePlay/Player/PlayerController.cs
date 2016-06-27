@@ -259,6 +259,11 @@ public class PlayerController : MonoBehaviour
         blackboard.animationEnded = true;
     }
 
+    public void AnimationTrigger()
+    {
+        blackboard.animationTrigger = true;
+    }
+
     public void Reset()
     {
         //blackboard.animator.Rebind();
@@ -281,6 +286,8 @@ public class PlayerController : MonoBehaviour
         if (blackboard.active && blackboard.alive)
         {
             //Reset flags
+            if(!blackboard.shootPressed)
+                rsc.rumbleMng.RemoveContinousRumble(2);
             blackboard.ResetFlagVariables();
 
             RetrieveInput();
@@ -513,7 +520,14 @@ public class PlayerController : MonoBehaviour
         }
         else if (other.tag == "Enemy")
         {
-            blackboard.enemiesInRange.Add(other.GetComponent<EnemyBaseAIBehaviour>());
+            EnemyBaseAIBehaviour enemy = other.GetComponent<EnemyBaseAIBehaviour>();
+
+            //Mosquito has the collider in a children object so we need to search for script in parent
+            if (enemy == null)
+                enemy = other.GetComponentInParent<EnemyBaseAIBehaviour>();
+
+            if(enemy != null)
+                blackboard.enemiesInRange.Add(enemy);
         }
         else if (other.tag == "DeathZone")
         {           
@@ -535,7 +549,14 @@ public class PlayerController : MonoBehaviour
         }
         else if (other.tag == "Enemy")
         {
-            blackboard.enemiesInRange.Remove(other.GetComponent<EnemyBaseAIBehaviour>());
+            EnemyBaseAIBehaviour enemy = other.GetComponent<EnemyBaseAIBehaviour>();
+
+            //Mosquito has the collider in a children object so we need to search for script in parent
+            if (enemy == null)
+                enemy = other.GetComponentInParent<EnemyBaseAIBehaviour>();
+
+            if (enemy != null)
+                blackboard.enemiesInRange.Remove(enemy);
         }
     }
 

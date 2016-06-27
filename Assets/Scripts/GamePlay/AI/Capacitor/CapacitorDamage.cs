@@ -9,7 +9,14 @@ public class CapacitorDamage : MonoBehaviour {
     {
         if(other.tag == "Enemy")
         {
-            controller.EnemyInRange(other.GetComponent<EnemyBaseAIBehaviour>());
+            EnemyBaseAIBehaviour enemy = other.GetComponent<EnemyBaseAIBehaviour>();
+
+            //Mosquito has the collider in a children object so we need to search for script in parent
+            if (enemy == null)
+                enemy = other.GetComponentInParent<EnemyBaseAIBehaviour>();
+
+            if (enemy != null)
+                controller.EnemyInRange(enemy);
         }
     }
 
@@ -17,7 +24,14 @@ public class CapacitorDamage : MonoBehaviour {
     {
         if (other.tag == "Enemy")
         {
-            controller.EnemyOutOfRange(other.GetComponent<EnemyBaseAIBehaviour>());
+            EnemyBaseAIBehaviour enemy = other.GetComponent<EnemyBaseAIBehaviour>();
+
+            //Mosquito has the collider in a children object so we need to search for script in parent
+            if (enemy == null)
+                enemy = other.GetComponentInParent<EnemyBaseAIBehaviour>();
+
+            if (enemy != null)
+                controller.EnemyOutOfRange(enemy);
         }
     }
 }

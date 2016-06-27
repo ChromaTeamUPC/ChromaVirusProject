@@ -106,9 +106,9 @@ public class ColorManager : MonoBehaviour
             SendNewColorEvent();
         else
         {
-            //SetNewColor();
+            SetNewColor();
+            //NotifyNewColor();
             PrecalculateColor();
-            NotifyNewColor();
         }
     }
 
@@ -172,19 +172,19 @@ public class ColorManager : MonoBehaviour
         }
     }
 
-    private void PrecalculateColor()
+    private ChromaColor GetColor()
     {
-        colorPrecalculated = true;
+        ChromaColor result;
 
         //If there is no color enemies in the scene, standard sequence
         if (TotalColorItems() == 0)
         {
-            newColor = currentColor;
+            result = currentColor;
 
-            if (newColor == ChromaColorInfo.Last)
-                newColor = ChromaColorInfo.First;
+            if (result == ChromaColorInfo.Last)
+                result = ChromaColorInfo.First;
             else
-                newColor++;
+                result++;
         }
         else
         {
@@ -194,32 +194,43 @@ public class ColorManager : MonoBehaviour
                 ChromaColor itemsColor = GetFirstColorWithItems();
 
                 if (currentColor != itemsColor)
-                    newColor = itemsColor;
+                {
+                    result = itemsColor;
+                }
                 else
                 {
                     do
                     {
-                        newColor = ChromaColorInfo.Random;
+                        result = ChromaColorInfo.Random;
                     }
-                    while (newColor == itemsColor);
+                    while (result == itemsColor);
                 }
             }
             //If there is more than one color of enemies, change between their colors
             else
             {
-                newColor = currentColor;
+                result = currentColor;
 
                 ////Search first color in loop that has items
                 do
                 {
-                    if (newColor == ChromaColorInfo.Last)
-                        newColor = ChromaColorInfo.First;
+                    if (result == ChromaColorInfo.Last)
+                        result = ChromaColorInfo.First;
                     else
-                        newColor++;
+                        result++;
                 }
-                while (colorCount[(int)newColor] <= 0);
+                while (colorCount[(int)result] <= 0);
             }
         }
+
+        return result;
+    }
+
+    private void PrecalculateColor()
+    {
+        colorPrecalculated = true;
+
+        newColor = GetColor();
 
         if (currentColor != newColor)
         {
@@ -238,56 +249,11 @@ public class ColorManager : MonoBehaviour
 
     private void SetNewColor()
     {
-        ChromaColor newColor;
+        ChromaColor color = GetColor();     
 
-        //If there is no color enemies in the scene, standard sequence
-        if (TotalColorItems() == 0)
+        if (currentColor != color)
         {
-            newColor = currentColor;
-
-            if (newColor == ChromaColorInfo.Last)
-                newColor = ChromaColorInfo.First;
-            else
-                newColor++;
-        }
-        else
-        {
-            //If there is only one color of enemies, change between that color and a random one
-            if (TotalColorsWithItems() == 1)
-            {
-                ChromaColor itemsColor = GetFirstColorWithItems();
-
-                if (currentColor != itemsColor)
-                    newColor = itemsColor;
-                else
-                {
-                    do
-                    {
-                        newColor = ChromaColorInfo.Random;
-                    }
-                    while (newColor == itemsColor);
-                }
-            }
-            //If there is more than one color of enemies, change between their colors
-            else
-            {
-                newColor = currentColor;
-
-                ////Search first color in loop that has items
-                do
-                {
-                    if (newColor == ChromaColorInfo.Last)
-                        newColor = ChromaColorInfo.First;
-                    else
-                        newColor++;
-                }
-                while (colorCount[(int)newColor] <= 0);
-            }
-        }
-
-        if (currentColor != newColor)
-        {
-            currentColor = newColor;
+            currentColor = color;
             SendNewColorEvent();
         }
     }
@@ -324,8 +290,9 @@ public class ColorManager : MonoBehaviour
 
     private void SendNextColorEvent()
     {
-        ColorEventInfo.eventInfo.newColor = newColor;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.COLOR_WILL_CHANGE, ColorEventInfo.eventInfo);
+        ColorPrewarnEventInfo.eventInfo.newColor = newColor;
+        ColorPrewarnEventInfo.eventInfo.prewarnSeconds = prewarningSeconds;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarnEventInfo.eventInfo);
     }
 
     private void SendNewColorEvent()

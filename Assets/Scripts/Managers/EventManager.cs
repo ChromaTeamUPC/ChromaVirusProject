@@ -19,6 +19,14 @@ public class ColorEventInfo : EventInfo
     public ChromaColor newColor;
 }
 
+public class ColorPrewarnEventInfo : EventInfo
+{
+    public static ColorPrewarnEventInfo eventInfo = new ColorPrewarnEventInfo();
+
+    public ChromaColor newColor;
+    public float prewarnSeconds;
+}
+
 public class ZoneReachedInfo : EventInfo
 {
     public static ZoneReachedInfo eventInfo = new ZoneReachedInfo();

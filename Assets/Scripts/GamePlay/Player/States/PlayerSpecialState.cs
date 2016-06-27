@@ -17,6 +17,7 @@ public class PlayerSpecialState : PlayerBaseState {
     public override void OnStateEnter()
     {
         blackboard.horizontalDirection = Vector3.zero;
+        blackboard.animationTrigger = false;
         blackboard.animationEnded = false;
         blackboard.animator.SetTrigger("SpecialAttack");
 
@@ -34,8 +35,9 @@ public class PlayerSpecialState : PlayerBaseState {
         switch (state)
         {
             case State.MOVING:
-                if (blackboard.animationEnded)
+                if (blackboard.animationTrigger)
                 {
+                    blackboard.animationTrigger = false;
                     blackboard.player.StopSpecialEnergyCharging();
                     blackboard.player.StartSpecial();
 
@@ -50,12 +52,18 @@ public class PlayerSpecialState : PlayerBaseState {
                 return null;
 
             case State.EXPLODING:
-                elapsedTime += Time.deltaTime;
+                if (blackboard.animationEnded)
+                {
+                    return blackboard.idleState;
+                }
+                else
+                    return null;
+                /*elapsedTime += Time.deltaTime;
 
                 if (elapsedTime > EXPLODING_WAIT_TIME)
                     return blackboard.idleState;
                 else
-                    return null;
+                    return null;*/
         }
 
         return null;

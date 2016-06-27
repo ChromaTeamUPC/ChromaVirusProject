@@ -62,6 +62,7 @@ public class PlayerBlackboard
     //State control variables
     public bool active;     //Player is participating in current game (not necesarily alive)
     public bool alive;      //Player is alive at the moment
+    public bool animationTrigger;
     public bool animationEnded;
     public bool isGrounded;
     public bool isInBorder;
@@ -211,7 +212,5 @@ public class PlayerBlackboard
         animator.SetBool("Walking", false);
         animator.SetBool("Aiming", false);
         animator.SetBool("Shooting", false);
-
-        rsc.rumbleMng.RemoveContinousRumble(2);
     }
 }

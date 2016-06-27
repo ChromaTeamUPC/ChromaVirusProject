@@ -34,14 +34,31 @@ public class GUIController : MonoBehaviour
     public GameObject player2ColorsButton;
     private bool player2ColorMismatch;
 
+    [Header("Central Panel")]
+    public GameObject infectionAndNextColorZone;
+
+    private Color currentColor;
+    public Slider nextColorSlider;
+    public Image nextColorBackground;
+    public Image nextColorForeground;
+    private float nextColorElapsedTime;
+    private float nextColorPrewarnTime;
+
+    public Text currentInfectionTxt;
+    public Text maxInfectionTxt;
+    public Text percentageTxt;
+    public Text infectionTxt;
+    private int currentInfectionNumber;
+
+    public Text zoneTxt;
+    public Text clearedTxt;
+
     [Header("Other Items")]
-    public Image colorWarnTest;
     public Text youWinTxt;
     public Text gameOverTxt;
     public Text pauseTxt;
     public Text godModeTxt;
 
-    public Text currentInfectionTxt;
 
     //private GameObject player1;
     //private GameObject player2;
@@ -74,6 +91,9 @@ public class GUIController : MonoBehaviour
 
         DisableHintButtons(0);
 
+        nextColorElapsedTime = 0f;
+        nextColorPrewarnTime = 0f;
+
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_START, PlayerColorMismatchStart);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_END, PlayerColorMismatchEnd);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DYING, PlayerDying);
@@ -85,6 +105,7 @@ public class GUIController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.BUTTON_HINT, ButtonHint);
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+        rsc.eventMng.StartListening(EventManager.EventType.ZONE_REACHED, ZoneReached);
     }
 
     void OnDestroy()
@@ -102,6 +123,7 @@ public class GUIController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.BUTTON_HINT, ButtonHint);
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+            rsc.eventMng.StopListening(EventManager.EventType.ZONE_REACHED, ZoneReached);
         }
     }
 	
@@ -161,8 +183,65 @@ public class GUIController : MonoBehaviour
         else
             godModeTxt.enabled = false;
 
-        currentInfectionTxt.text = rsc.enemyMng.blackboard.GetCurrentInfectionPercentage().ToString();
+        //Next color slider update
+        if (nextColorElapsedTime < nextColorPrewarnTime)
+        {
+            float factor = nextColorElapsedTime / nextColorPrewarnTime;
+
+            nextColorSlider.value = Mathf.Lerp(0f, 1f, factor);
+
+            nextColorBackground.color = Color.Lerp(currentColor, Color.black, factor);
+
+            nextColorElapsedTime += Time.deltaTime;
+        }
+
+        //Current infection update
+        currentInfectionNumber = rsc.enemyMng.blackboard.GetCurrentInfectionPercentage();
+
+        if (currentInfectionNumber == 100)
+        {
+            currentInfectionTxt.enabled = false;
+            percentageTxt.enabled = false;
+
+            maxInfectionTxt.enabled = true;
+
+            infectionTxt.enabled = true;
+
+            zoneTxt.enabled = false;
+            clearedTxt.enabled = false;
+        }
+        else if (currentInfectionNumber == 0)
+        {
+            currentInfectionTxt.enabled = false;
+            percentageTxt.enabled = false;
+
+            maxInfectionTxt.enabled = false;
+
+            infectionTxt.enabled = false;
+
+            zoneTxt.enabled = true;
+            clearedTxt.enabled = true;
+        }
+        else
+        {
+            currentInfectionTxt.enabled = true;
+            percentageTxt.enabled = true;
+
+            maxInfectionTxt.enabled = false;
+
+            infectionTxt.enabled = true;
+
+            zoneTxt.enabled = false;
+            clearedTxt.enabled = false;
+
+            currentInfectionTxt.text = currentInfectionNumber.ToString();
+        }
     }
+
+    /*public Text currentInfectionTxt;
+    public Text maxInfectionTxt;
+    public Text percentageTxt;
+    public Text infectionTxt;*/
 
     private void DisableHintButtons(int playerId)
     {
@@ -304,15 +383,32 @@ public class GUIController : MonoBehaviour
         }
     }
 
-    private void ColorPrewarn(EventInfo evenInfo)
+    private void ColorPrewarn(EventInfo eventInfo)
     {
-        ColorEventInfo info = (ColorEventInfo)evenInfo;
-        colorWarnTest.color = rsc.coloredObjectsMng.GetColor(info.newColor);
-        colorWarnTest.enabled = true;
+        ColorPrewarnEventInfo info = (ColorPrewarnEventInfo)eventInfo;
+
+        nextColorPrewarnTime = info.prewarnSeconds;
+        nextColorElapsedTime = 0f;
+
+        //nextColorBackground.color = nextColorForeground.color;
+        nextColorForeground.color = rsc.coloredObjectsMng.GetColor(info.newColor);
+
+        if (info.prewarnSeconds > 0)
+            nextColorSlider.value = 1f;
+        else
+            nextColorSlider.value = 0f;
     }
 
     private void ColorChanged(EventInfo eventInfo)
     {
-        colorWarnTest.enabled = false;
+        ColorEventInfo info = (ColorEventInfo)eventInfo;
+        currentColor = rsc.coloredObjectsMng.GetColor(info.newColor);
+        nextColorBackground.color = currentColor;
+        nextColorSlider.value = 0f;
+    }
+
+    private void ZoneReached(EventInfo eventInfo)
+    {
+        infectionAndNextColorZone.SetActive(true);
     }
 }

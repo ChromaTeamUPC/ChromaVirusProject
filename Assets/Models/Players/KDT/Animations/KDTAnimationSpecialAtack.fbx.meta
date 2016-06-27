@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 7273c04a2c4058b468056f31c8b2df38
-timeCreated: 1467031863
+guid: 8f8d4fefb9ddb44438f411fe64e0d375
+timeCreated: 1467031901
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -78,7 +78,7 @@ ModelImporter:
     400068: PeuEsquerra
     400070: Pit
     4300000: KDT
-    7400000: Hit
+    7400000: SpecialAtack
     9500000: //RootNode
     13700000: KDT
   materials:
