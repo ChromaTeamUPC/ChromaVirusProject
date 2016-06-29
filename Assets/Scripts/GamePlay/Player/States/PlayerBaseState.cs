@@ -25,6 +25,102 @@ public class PlayerBaseState
 
     public virtual void OnStateExit() { }
 
+    public virtual void RetrieveInput()
+    {
+        //Movement
+        float h = Input.GetAxisRaw(blackboard.moveHorizontal);
+        float v = Input.GetAxisRaw(blackboard.moveVertical);
+
+        blackboard.moveVector = Vector3.zero;
+
+        if (Mathf.Abs(v) > 0 || Mathf.Abs(h) > 0)
+        {
+            blackboard.moveVector.x = h;
+            blackboard.moveVector.y = v;
+            if (blackboard.moveVector.magnitude > 1f)
+                blackboard.moveVector.Normalize();
+
+            blackboard.movePressed = true;
+            blackboard.animator.SetBool("Walking", true);
+            blackboard.keyPressed = true;
+        }
+
+        //Aiming
+        h = Input.GetAxisRaw(blackboard.aimHorizontal);
+        v = Input.GetAxisRaw(blackboard.aimVertical);
+
+        blackboard.aimVector = Vector3.zero;
+
+        if (Mathf.Abs(v) >= blackboard.player.aimThreshold || Mathf.Abs(h) >= blackboard.player.aimThreshold)
+        {
+            blackboard.aimVector.x = h;
+            blackboard.aimVector.y = v;
+
+            blackboard.aimPressed = true;
+            blackboard.animator.SetBool("Aiming", true);
+            blackboard.keyPressed = true;
+        }
+
+        //Shoot
+        if (Input.GetAxisRaw(blackboard.fire) > 0.1f)
+        {
+            blackboard.shootPressed = true;
+            blackboard.keyPressed = true;
+            blackboard.animator.SetBool("Shooting", true);
+        }
+        else
+        {
+            blackboard.firstShot = true;
+            blackboard.player.StopNoShoot();
+        }
+
+        //Dash
+        if (Input.GetButtonDown(blackboard.dash))
+        {
+            blackboard.dashPressed = true;
+            blackboard.keyPressed = true;
+        }
+
+        //Special
+        if (Input.GetButtonDown(blackboard.special))
+        {
+            blackboard.specialPressed = true;
+            blackboard.keyPressed = true;
+        }
+
+        //A Button
+        if (Input.GetButton(blackboard.greenButton))
+        {
+            blackboard.greenPressed = true;
+            blackboard.colorButtonsPressed = true;
+            blackboard.keyPressed = true;
+        }
+
+        //B Button
+        if (Input.GetButton(blackboard.redButton))
+        {
+            blackboard.redPressed = true;
+            blackboard.colorButtonsPressed = true;
+            blackboard.keyPressed = true;
+        }
+
+        //X Button
+        if (Input.GetButton(blackboard.blueButton))
+        {
+            blackboard.bluePressed = true;
+            blackboard.colorButtonsPressed = true;
+            blackboard.keyPressed = true;
+        }
+
+        //Y Button
+        if (Input.GetButton(blackboard.yellowButton))
+        {
+            blackboard.yellowPressed = true;
+            blackboard.colorButtonsPressed = true;
+            blackboard.keyPressed = true;
+        }
+    }
+
     public virtual PlayerBaseState Update()
     {
         /*actions check list:

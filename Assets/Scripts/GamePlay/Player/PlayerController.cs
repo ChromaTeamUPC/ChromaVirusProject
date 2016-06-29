@@ -3,10 +3,12 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
+    private bool init = false;
+
     [SerializeField]
     private int playerId = 0;
-       
-    private PlayerBlackboard blackboard = new PlayerBlackboard();
+
+    private PlayerBlackboard blackboard;// = new PlayerBlackboard();
 
     //Life
     [Header("Health Settings")]
@@ -114,6 +116,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 totalHorizontalDirection;
 
     //Properties
+    public bool Initialized { get { return init; } }
     public bool Active { get { return blackboard.active; } set { blackboard.active = value; } }
     public bool Alive { get { return blackboard.alive; } }
     public int Id { get { return playerId; } }
@@ -123,6 +126,7 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
+        blackboard = new PlayerBlackboard();
         blackboard.Init(this);
         blackboard.shield = shield;
         blackboard.laserAim = laserAim;
@@ -135,7 +139,8 @@ public class PlayerController : MonoBehaviour
         specialSoundFX = specialPS.GetComponent<AudioSource>();
         noShootPSGO = noShootPS.gameObject;
 
-        //Debug.Log("Player " + playerId + " created.");
+        init = true;
+        Debug.Log("Player " + playerId + " created.");
     }
 
     void Start()
@@ -226,6 +231,11 @@ public class PlayerController : MonoBehaviour
             return transform.position + (totalHorizontalDirection * secondsPrediction);
     }
 
+    public void GoToIdle()
+    {
+        ChangeState(blackboard.idleState);
+    }
+
     public void RechargeEnergy(float energy)
     {
         if (blackboard.currentEnergy == blackboard.player.maxEnergy) return;
@@ -270,6 +280,7 @@ public class PlayerController : MonoBehaviour
     {
         //blackboard.animator.Rebind();
         blackboard.ResetGameVariables();
+        Debug.Log("Player Reset");
     }
 
     public void Spawn()
@@ -280,7 +291,8 @@ public class PlayerController : MonoBehaviour
         verticalVelocity = Physics.gravity.y;
 
         currentState = null;
-        ChangeState(blackboard.spawningState);       
+        ChangeState(blackboard.spawningState);
+        Debug.Log("Player Spawn");
     }
 
     void Update()
@@ -292,7 +304,7 @@ public class PlayerController : MonoBehaviour
                 rsc.rumbleMng.RemoveContinousRumble(2);
             blackboard.ResetFlagVariables();
 
-            RetrieveInput();
+            currentState.RetrieveInput();
             RechargeMovingCharge();
 
             if (currentState != null)
@@ -307,103 +319,7 @@ public class PlayerController : MonoBehaviour
             if(gameObject.activeSelf) //Check to avoid a warning trying to update CharacterController if we just died and deactivated gameObject
                 UpdatePosition();
         }
-    }
-
-    private void RetrieveInput()
-    {
-        //Movement
-        float h = Input.GetAxisRaw(blackboard.moveHorizontal);
-        float v = Input.GetAxisRaw(blackboard.moveVertical);
-
-        blackboard.moveVector = Vector3.zero;
-
-        if (Mathf.Abs(v) > 0 || Mathf.Abs(h) > 0)
-        {
-            blackboard.moveVector.x = h;
-            blackboard.moveVector.y = v;
-            if (blackboard.moveVector.magnitude > 1f)
-                blackboard.moveVector.Normalize();
-
-            blackboard.movePressed = true;
-            blackboard.animator.SetBool("Walking", true);
-            blackboard.keyPressed = true;
-        }
-
-        //Aiming
-        h = Input.GetAxisRaw(blackboard.aimHorizontal);
-        v = Input.GetAxisRaw(blackboard.aimVertical);
-
-        blackboard.aimVector = Vector3.zero;
-
-        if (Mathf.Abs(v) >= blackboard.player.aimThreshold || Mathf.Abs(h) >= blackboard.player.aimThreshold)
-        {
-            blackboard.aimVector.x = h;
-            blackboard.aimVector.y = v;
-
-            blackboard.aimPressed = true;           
-            blackboard.animator.SetBool("Aiming", true);
-            blackboard.keyPressed = true;
-        }
-
-        //Shoot
-        if (Input.GetAxisRaw(blackboard.fire) > 0.1f)
-        {
-            blackboard.shootPressed = true;
-            blackboard.keyPressed = true;
-            blackboard.animator.SetBool("Shooting", true);
-        }
-        else
-        {
-            blackboard.firstShot = true;
-            StopNoShoot();
-        }
-
-        //Dash
-        if (Input.GetButtonDown(blackboard.dash))
-        {
-            blackboard.dashPressed = true;
-            blackboard.keyPressed = true;
-        }
-
-        //Special
-        if (Input.GetButtonDown(blackboard.special))
-        {
-            blackboard.specialPressed = true;
-            blackboard.keyPressed = true;
-        }
-
-        //A Button
-        if (Input.GetButton(blackboard.greenButton))
-        {
-            blackboard.greenPressed = true;
-            blackboard.colorButtonsPressed = true;
-            blackboard.keyPressed = true;
-        }
-
-        //B Button
-        if (Input.GetButton(blackboard.redButton))
-        {
-            blackboard.redPressed = true;
-            blackboard.colorButtonsPressed = true;
-            blackboard.keyPressed = true;
-        }
-
-        //X Button
-        if (Input.GetButton(blackboard.blueButton))
-        {
-            blackboard.bluePressed = true;
-            blackboard.colorButtonsPressed = true;
-            blackboard.keyPressed = true;
-        }
-
-        //Y Button
-        if (Input.GetButton(blackboard.yellowButton))
-        {
-            blackboard.yellowPressed = true;
-            blackboard.colorButtonsPressed = true;
-            blackboard.keyPressed = true;
-        }
-    }
+    }  
 
     private void RechargeMovingCharge()
     {

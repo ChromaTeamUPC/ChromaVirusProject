@@ -66,13 +66,25 @@ public class GameManager : MonoBehaviour {
     {
         rsc.gameInfo.numberOfPlayers = numPlayers;
 
-        rsc.gameInfo.player1.SetActive(true);
+        //Force player scripts to Awake
+        if (!rsc.gameInfo.player1Controller.Initialized)
+        {
+            rsc.gameInfo.player1.SetActive(true);
+            rsc.gameInfo.player1.SetActive(false);
+        }
+
+        if (!rsc.gameInfo.player2Controller.Initialized)
+        {
+            rsc.gameInfo.player2.SetActive(true);
+            rsc.gameInfo.player2.SetActive(false);
+        }
+
         rsc.gameInfo.player1Controller.Reset();
         rsc.gameInfo.player1Controller.Active = true;
               
         if (numPlayers == 2)
         {
-            rsc.gameInfo.player2.SetActive(true);
+            //rsc.gameInfo.player2.SetActive(true);
             rsc.gameInfo.player2Controller.Reset();
             rsc.gameInfo.player2Controller.Active = true;
         }

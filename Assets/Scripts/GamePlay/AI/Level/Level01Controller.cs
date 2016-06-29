@@ -161,6 +161,14 @@ public class Level01Controller : MonoBehaviour
         //Special actions on first zone
         if(currentZoneId == 101)
         {
+            if (rsc.gameInfo.player1Controller.Active)
+            {
+                rsc.gameInfo.player1Controller.GoToIdle();
+            }
+            if (rsc.gameInfo.numberOfPlayers == 2 && rsc.gameInfo.player2Controller.Active)
+            {
+                rsc.gameInfo.player2Controller.GoToIdle();
+            }
             rsc.colorMng.Activate();
             floor.Activate();
         }
@@ -213,6 +221,7 @@ public class Level01Controller : MonoBehaviour
             player.gameObject.SetActive(true);
 
         player.Spawn();
+        player.GoToIdle();
     }
 
     private void PositionPlayer(PlayerController player)
