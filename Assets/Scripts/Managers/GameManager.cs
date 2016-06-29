@@ -59,7 +59,8 @@ public class GameManager : MonoBehaviour {
         InitPlayers(numPlayers);
 
         gameStarted = true;
-        SceneManager.LoadScene("Level01");
+        //SceneManager.LoadScene("Level01");
+        SceneManager.LoadScene("Intro");
     }
 
     public void InitPlayers(int numPlayers)

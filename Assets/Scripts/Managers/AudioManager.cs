@@ -10,6 +10,8 @@ public class AudioManager : MonoBehaviour {
     [SerializeField]
     private AudioSource mainMenuMusic;
     [SerializeField]
+    private AudioSource introMusic;
+    [SerializeField]
     private AudioSource creditsMusic;
     [SerializeField]
     private AudioSource gamePlayMusicTrak1;
@@ -49,6 +51,35 @@ public class AudioManager : MonoBehaviour {
         StartCoroutine(FadeMusic(mainMenuMusic, fadeSeconds, false));
     }
 
+    //Intro music
+    public void FadeInIntroMusic()
+    {
+        FadeInIntroMusic(defaultFadeSeconds);
+    }
+
+    public void FadeInIntroMusic(float fadeSeconds)
+    {
+        StopAllCoroutines();
+        StartCoroutine(FadeMusic(introMusic, fadeSeconds, true));
+    }
+
+    public void FadeInIntroMusic(float fadeSeconds, float maxVolume)
+    {
+        StopAllCoroutines();
+        StartCoroutine(FadeMusic(introMusic, fadeSeconds, true, maxVolume));
+    }
+
+    public void FadeOutIntroMusic()
+    {
+        FadeOutIntroMusic(defaultFadeSeconds);
+    }
+
+    public void FadeOutIntroMusic(float fadeSeconds)
+    {
+        StopAllCoroutines();
+        StartCoroutine(FadeMusic(introMusic, fadeSeconds, false));
+    }
+
     //Credits music
     public void FadeInCreditsMusic()
     {
@@ -72,14 +103,16 @@ public class AudioManager : MonoBehaviour {
         StartCoroutine(FadeMusic(creditsMusic, fadeSeconds, false));
     }
 
-    IEnumerator FadeMusic(AudioSource fadingMusic, float fadeSeconds, bool fadeIn)
+    IEnumerator FadeMusic(AudioSource fadingMusic, float fadeSeconds, bool fadeIn, float maxVolume = 1f)
     {
         AudioSource music = fadingMusic;
         float fadeSpeed;
-        float fadeTime = 0f;
+        float fadeTime = 0f;       
 
         if (fadeIn)
         {
+            float actualMaxVolume = Mathf.Min(maxVolume, musicMaxVolume);
+
             if (!music.isPlaying)
             {
                 music.Play();
@@ -89,15 +122,15 @@ public class AudioManager : MonoBehaviour {
                     fadeSpeed = 1 / fadeSeconds;
                     music.volume = 0;
 
-                    while (music.volume < musicMaxVolume - 0.025f) 
+                    while (music.volume < actualMaxVolume - 0.025f) 
                     {
                         fadeTime += Time.deltaTime;
-                        music.volume = Mathf.Lerp(0, musicMaxVolume, fadeSpeed * fadeTime);
+                        music.volume = Mathf.Lerp(0, actualMaxVolume, fadeSpeed * fadeTime);
                         yield return null;
                     }
                 }
 
-                music.volume = musicMaxVolume;
+                music.volume = actualMaxVolume;
             }
         }
         else
