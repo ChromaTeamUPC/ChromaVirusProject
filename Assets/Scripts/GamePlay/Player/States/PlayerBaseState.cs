@@ -240,7 +240,7 @@ public class PlayerBaseState
         {
             if (blackboard.canShoot)
             {
-                rsc.rumbleMng.AddContinousRumble(2, blackboard.player.Id, 0f, 0.25f);
+                rsc.rumbleMng.AddContinousRumble(2, blackboard.player.Id, 0.22f, 0.104f);
 
                 if (Time.time > nextFire)
                 {

@@ -10,6 +10,11 @@ public class PlayerController : MonoBehaviour
 
     private PlayerBlackboard blackboard;// = new PlayerBlackboard();
 
+    [Range(0f, 1f)]
+    public float weak = 0f;
+    [Range(0f, 1f)]
+    public float strong = 0f;
+
     //Life
     [Header("Health Settings")]
     public int maxLives = 3; 

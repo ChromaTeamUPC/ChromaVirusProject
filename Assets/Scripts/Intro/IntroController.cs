@@ -32,7 +32,7 @@ public class IntroController : MonoBehaviour
 	void Start () 
 	{
         fadeScript.StartFadingToClear(1f);
-        rsc.audioMng.FadeInIntroMusic(1f, 0.3f);
+        rsc.audioMng.FadeInIntroMusic(1f, 0.2f);
         state = IntroState.FadingIn;
 
         async = SceneManager.LoadSceneAsync("Level01");

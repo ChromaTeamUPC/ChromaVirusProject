@@ -12,6 +12,8 @@ public class PlayerDyingState : PlayerBaseState
         blackboard.animator.SetTrigger("Die");
         blackboard.animationEnded = false;
 
+        rsc.rumbleMng.AddContinousRumble(3, blackboard.player.Id, 0.25f, 0f);
+
         PlayerEventInfo.eventInfo.player = blackboard.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DYING, PlayerEventInfo.eventInfo);
 
@@ -31,6 +33,9 @@ public class PlayerDyingState : PlayerBaseState
 
         if (blackboard.animationEnded)
         {
+            rsc.rumbleMng.RemoveContinousRumble(3);
+            rsc.rumbleMng.Rumble(blackboard.player.Id, 1f, 0.25f, 0.6f);
+
             blackboard.alive = false;
             blackboard.currentLives--;
             blackboard.blinkController.StopPreviousBlinkings();

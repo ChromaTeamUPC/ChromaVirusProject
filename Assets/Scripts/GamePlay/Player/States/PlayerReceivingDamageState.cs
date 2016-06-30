@@ -7,6 +7,8 @@ public class PlayerReceivingDamageState : PlayerBaseState {
     {
         blackboard.animationEnded = false;
         blackboard.animator.SetTrigger("Hit");
+
+        rsc.rumbleMng.Rumble(blackboard.player.Id, 0.3f, 0.4f, 0.2f, 0.3f);
     }
 
     public override void OnStateExit()
@@ -17,6 +19,7 @@ public class PlayerReceivingDamageState : PlayerBaseState {
     public override PlayerBaseState Update()
     {
         blackboard.currentSpeed *= 0.95f;
+        
 
         if(blackboard.animationEnded)
         {
