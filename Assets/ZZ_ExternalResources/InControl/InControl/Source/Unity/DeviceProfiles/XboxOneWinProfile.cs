@@ -96,7 +96,7 @@ namespace InControl
 					Source = Analog4,
 					Invert = true
 				},
-				new InputControlMapping {
+				/*new InputControlMapping {
 					Handle = "DPad Left",
 					Target = InputControlType.DPadLeft,
 					Source = Analog5,
@@ -125,7 +125,7 @@ namespace InControl
 					SourceRange = InputControlMapping.Range.Negative,
 					TargetRange = InputControlMapping.Range.Negative,
 					Invert = true
-				},
+				},*/
 				new InputControlMapping {
 					Handle = "Left Trigger",
 					Target = InputControlType.LeftTrigger,
