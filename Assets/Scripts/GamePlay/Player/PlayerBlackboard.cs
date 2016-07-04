@@ -75,6 +75,7 @@ public class PlayerBlackboard
     public float currentEnergy;
     public bool isInvulnerable;
     public ChromaColor currentColor;
+    public bool contactFlag;
 
     //Movement variables
     public Vector3 horizontalDirection;
@@ -181,6 +182,7 @@ public class PlayerBlackboard
         currentHealth = player.maxHealth;
         currentEnergy = 0;
         isInvulnerable = false;
+        contactFlag = false;
 
         horizontalDirection = Vector3.zero;
         currentSpeed = 0f;

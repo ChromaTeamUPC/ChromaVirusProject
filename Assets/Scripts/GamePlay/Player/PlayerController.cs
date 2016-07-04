@@ -309,6 +309,15 @@ public class PlayerController : MonoBehaviour
                 rsc.rumbleMng.RemoveContinousRumble(2);
             blackboard.ResetFlagVariables();
 
+            if(blackboard.contactFlag && currentState != null)
+            {
+                PlayerBaseState newState = currentState.EnemyContactOnInvulnerabilityEnd();
+                if (newState != null)
+                {
+                    ChangeState(newState);
+                }
+            }
+
             currentState.RetrieveInput();
             RechargeMovingCharge();
 

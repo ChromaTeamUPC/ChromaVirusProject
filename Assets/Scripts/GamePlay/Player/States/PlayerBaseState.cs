@@ -414,21 +414,39 @@ public class PlayerBaseState
 
         if (shouldTakeDamage)
         {
-            PlayerBaseState result = TakeDamage((int)(damage * damageRatio), color, true, false);
+            PlayerBaseState result = TakeDamage((damage * damageRatio), color, true, false);
             if (blackboard.isAffectedByContact || blackboard.isContactCooldown)
             {
                 blackboard.player.StopCoroutine(HandleEnemyTouched());
                 blackboard.isAffectedByContact = false;
                 blackboard.isContactCooldown = false;
             }
-            blackboard.player.StartCoroutine(HandleAttackReceived());
+            blackboard.player.StartCoroutine(HandleInvulnerabilityTime());
             return result;
         }
 
         return null;
     }
 
-    private IEnumerator HandleAttackReceived()
+    public virtual PlayerBaseState EnemyContactOnInvulnerabilityEnd()
+    {
+        blackboard.contactFlag = false;
+
+        if (rsc.debugMng.godMode || blackboard.isInvulnerable) return null;
+
+        PlayerBaseState result = TakeDamage((blackboard.player.damageAfterInvulnerability), true, false);
+        if (blackboard.isAffectedByContact || blackboard.isContactCooldown)
+        {
+            blackboard.player.StopCoroutine(HandleEnemyTouched());
+            blackboard.isAffectedByContact = false;
+            blackboard.isContactCooldown = false;
+        }
+        blackboard.player.StartCoroutine(HandleInvulnerabilityTime());
+
+        return result;
+    }
+
+    private IEnumerator HandleInvulnerabilityTime()
     {
         blackboard.blinkController.BlinkTransparentMultipleTimes(blackboard.player.invulnerabilityTimeAfterHit);
 
@@ -437,8 +455,13 @@ public class PlayerBaseState
 
         yield return new WaitForSeconds(blackboard.player.invulnerabilityTimeAfterHit);
 
-        Physics.IgnoreLayerCollision(blackboard.playerPhysicsLayer, blackboard.enemyPhysicsPlayer, false);
         blackboard.isInvulnerable = false;
+
+        //If player are colliding with enemies when finishing invulnerability time, not reactivate collitions and set contact flat
+        if (blackboard.enemiesInRange.Count > 0)
+            blackboard.contactFlag = true;
+        else
+            Physics.IgnoreLayerCollision(blackboard.playerPhysicsLayer, blackboard.enemyPhysicsPlayer, false);
     }
 
 
