@@ -27,6 +27,10 @@ public class MosquitoSpawningAIState : MosquitoAIBaseState {
         mosquitoBlackboard.agent.enabled = true;
         mosquitoBlackboard.entity.mainCollider.enabled = true;
         mosquitoBlackboard.canReceiveDamage = true;
+
+        if (rsc.colorMng.CurrentColor != blackboard.entity.color)
+            blackboard.entity.shields[(int)blackboard.entity.color].SetActive(true);
+
         base.OnStateExit();
     }
 
@@ -38,5 +42,10 @@ public class MosquitoSpawningAIState : MosquitoAIBaseState {
         {
             return mosquitoBlackboard.patrolingState;
         }
+    }
+
+    public override void ColorChanged(ChromaColor newColor)
+    {
+        //Do nothing
     }
 }

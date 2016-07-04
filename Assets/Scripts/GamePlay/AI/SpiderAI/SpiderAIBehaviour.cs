@@ -73,10 +73,9 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         spiderBlackboard.infectingDeviceState.Init(infectList);
     }
 
-    public void Spawn(Transform spawnPoint)
+    public override void Spawn(Transform spawnPoint)
     {
-        transform.position = spawnPoint.position;
-        transform.rotation = spawnPoint.rotation;
+        base.Spawn(spawnPoint);
         ChangeState(spiderBlackboard.spawningState);      
     }
 

@@ -27,6 +27,10 @@ public class SpiderSpawningAIState : SpiderAIBaseState {
         spiderBlackboard.agent.enabled = true;
         spiderBlackboard.entity.mainCollider.enabled = true;
         spiderBlackboard.canReceiveDamage = true;
+
+        if (rsc.colorMng.CurrentColor != blackboard.entity.color)
+            blackboard.entity.shields[(int)blackboard.entity.color].SetActive(true);
+
         base.OnStateExit();
     }
 
@@ -48,5 +52,10 @@ public class SpiderSpawningAIState : SpiderAIBaseState {
 
         }
        
+    }
+
+    public override void ColorChanged(ChromaColor newColor)
+    {
+        //Do nothing
     }
 }

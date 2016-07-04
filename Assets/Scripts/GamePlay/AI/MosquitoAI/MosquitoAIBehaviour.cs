@@ -63,10 +63,9 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
         mosquitoBlackboard.attackingPlayerState.Init(attackList);
     }
 
-    public void Spawn(Transform spawnPoint)
+    public override void Spawn(Transform spawnPoint)
     {
-        transform.position = spawnPoint.position;
-        transform.rotation = spawnPoint.rotation;
+        base.Spawn(spawnPoint);
         mosquitoBlackboard.SetPlayer( rsc.enemyMng.SelectPlayer(gameObject) );
 
         ChangeState(mosquitoBlackboard.spawningState);

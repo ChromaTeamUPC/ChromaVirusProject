@@ -22,6 +22,11 @@ public class AIBaseState
         return null;
     }
 
+    virtual public void ColorChanged(ChromaColor newColor)
+    {
+        blackboard.entity.ProcessColorChanged(newColor);
+    }
+
     virtual public AIBaseState ImpactedByShot(ChromaColor shotColor, float damage, Vector3 direction, PlayerController player)
     {
         return blackboard.entity.ProcessShotImpact(shotColor, damage, direction, player);

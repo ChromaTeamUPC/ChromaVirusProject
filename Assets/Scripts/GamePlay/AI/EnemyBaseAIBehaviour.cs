@@ -24,6 +24,8 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     [HideInInspector]
     public GameObject dyingCollider;
 
+    public GameObject[] shields = new GameObject[4];
+
     protected AIBaseState currentState;
 
     protected BlinkController blinkController;
@@ -36,6 +38,49 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         mainCollider = GetComponent<Collider>();
         dyingCollider = transform.FindDeepChild("DyingCollider").gameObject;
         blinkController = GetComponent<BlinkController>();
+    }
+
+    protected virtual void Start()
+    {
+        rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+    }
+
+    protected virtual void OnDestroy()
+    {
+        if (rsc.eventMng != null)
+        {
+            rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+        }
+    }
+
+    protected virtual void ColorChanged(EventInfo eventInfo)
+    {
+        ColorEventInfo info = (ColorEventInfo)eventInfo;
+
+        if (currentState != null)
+            currentState.ColorChanged(info.newColor);
+    }
+
+    public virtual void ProcessColorChanged(ChromaColor newColor)
+    {
+        if (color == newColor)
+            shields[(int)color].SetActive(false);
+        else
+            shields[(int)color].SetActive(true);
+    }
+
+    public virtual void Spawn(Transform spawnPoint)
+    {
+        transform.position = spawnPoint.position;
+        transform.rotation = spawnPoint.rotation;
+
+        DisableShields();      
+    }
+
+    public void DisableShields()
+    {
+        foreach (GameObject shield in shields)
+            shield.SetActive(false);
     }
 
     void OnDisable()
