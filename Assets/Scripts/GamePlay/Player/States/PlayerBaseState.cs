@@ -446,6 +446,11 @@ public class PlayerBaseState
         return result;
     }
 
+    public void StartInvulnerabilityTime()
+    {
+        blackboard.player.StartCoroutine(HandleInvulnerabilityTime());
+    }
+
     private IEnumerator HandleInvulnerabilityTime()
     {
         blackboard.blinkController.BlinkTransparentMultipleTimes(blackboard.player.invulnerabilityTimeAfterHit);

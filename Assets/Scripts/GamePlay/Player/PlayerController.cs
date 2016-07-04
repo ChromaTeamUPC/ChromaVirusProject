@@ -288,7 +288,7 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Player Reset");
     }
 
-    public void Spawn()
+    public void Spawn(bool invulnerabilityTime = false)
     {
         blackboard.animator.Rebind();
         blackboard.ResetLifeVariables();
@@ -297,6 +297,10 @@ public class PlayerController : MonoBehaviour
 
         currentState = null;
         ChangeState(blackboard.spawningState);
+
+        if (invulnerabilityTime)
+            currentState.StartInvulnerabilityTime();
+
         Debug.Log("Player Spawn");
     }
 

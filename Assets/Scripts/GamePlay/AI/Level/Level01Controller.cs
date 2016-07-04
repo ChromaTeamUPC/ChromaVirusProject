@@ -220,7 +220,7 @@ public class Level01Controller : MonoBehaviour
         if (!player.gameObject.activeSelf)
             player.gameObject.SetActive(true);
 
-        player.Spawn();
+        player.Spawn(true);
         player.GoToIdle();
     }
 
