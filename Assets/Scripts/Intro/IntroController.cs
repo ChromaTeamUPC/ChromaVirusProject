@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using InControl;
 
 public class IntroController : MonoBehaviour 
 {
@@ -59,12 +60,22 @@ public class IntroController : MonoBehaviour
                 break;
 
             case IntroState.Playing:
-                if(Input.GetButtonDown("P1_Red") || Input.GetButtonDown("P2_Red") || elapsedTime >= startFadingTime)
+                int ctrlNumber = 0;
+                bool processed = false;
+
+                while (!processed && ctrlNumber < rsc.gameInfo.numberOfPlayers)
                 {
-                    skipHint.SetActive(false);
-                    fadeScript.StartFadingToColor(1f);
-                    rsc.audioMng.FadeOutIntroMusic(1f);
-                    state = IntroState.FadingOut;
+                    if ((ctrlNumber < InputManager.Devices.Count && InputManager.Devices[ctrlNumber].Action2.WasPressed)
+                       || elapsedTime >= startFadingTime)
+                    {
+                        processed = true;
+                        skipHint.SetActive(false);
+                        fadeScript.StartFadingToColor(1f);
+                        rsc.audioMng.FadeOutIntroMusic(1f);
+                        state = IntroState.FadingOut;
+                    }
+
+                    ++ctrlNumber;
                 }
 
                 break;

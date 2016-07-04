@@ -29,7 +29,8 @@ public class PlayerSpeedBumpState : PlayerBaseState
         */
         elapsedTime += Time.deltaTime;
                 
-        if(!Input.GetButton(blackboard.dash))
+        //if(!Input.GetButton(blackboard.dash))
+        if(!blackboard.controller.LeftBumper.IsPressed)
         {
             if (elapsedTime < blackboard.player.dashDetectionThreshold && blackboard.fastMovementCharge >= blackboard.player.dashCost)
                 return blackboard.dashingState;

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using XInputDotNetPure;
+using InControl;
 
 public class RumbleManager : MonoBehaviour 
 {
@@ -97,19 +98,16 @@ public class RumbleManager : MonoBehaviour
     {
         temporalRumbleList.Clear();
         continousRumbleList.Clear();
-        GamePad.SetVibration(PlayerIndex.One, 0f, 0f);
-        GamePad.SetVibration(PlayerIndex.Two, 0f, 0f);
+
+        //GamePad.SetVibration(PlayerIndex.One, 0f, 0f);
+        //GamePad.SetVibration(PlayerIndex.Two, 0f, 0f);
+        if (InputManager.Devices.Count >= 1) InputManager.Devices[0].Vibrate(0f, 0f);
+        if (InputManager.Devices.Count >= 2) InputManager.Devices[1].Vibrate(0f, 0f);
     }
 
     // Update is called once per frame
     void Update () 
 	{
-        /*if (temporalRumbleList.Count == 0 && continousRumbleList.Count == 0)
-        {
-            GamePad.SetVibration(PlayerIndex.One, 0f, 0f);
-            GamePad.SetVibration(PlayerIndex.Two, 0f, 0f);
-        }
-        else*/
         if (temporalRumbleList.Count > 0 || continousRumbleList.Count > 0)
         {
             float p1Weak = 0f;
@@ -176,8 +174,11 @@ public class RumbleManager : MonoBehaviour
                 }
             }
 
-            GamePad.SetVibration(PlayerIndex.One, p1Strong, p1Weak);
-            GamePad.SetVibration(PlayerIndex.Two, p2Strong, p2Weak);
+            //GamePad.SetVibration(PlayerIndex.One, p1Strong, p1Weak);
+            //GamePad.SetVibration(PlayerIndex.Two, p2Strong, p2Weak);
+
+            if (InputManager.Devices.Count >= 1) InputManager.Devices[0].Vibrate(p1Strong, p1Weak);
+            if (InputManager.Devices.Count >= 2) InputManager.Devices[1].Vibrate(p2Strong, p2Weak);
         }
 	}
 
@@ -204,8 +205,10 @@ public class RumbleManager : MonoBehaviour
         //If that was the last rumble, stop all controllers
         if(temporalRumbleList.Count == 0 && continousRumbleList.Count == 0)
         {
-            GamePad.SetVibration(PlayerIndex.One, 0f, 0f);
-            GamePad.SetVibration(PlayerIndex.Two, 0f, 0f);
+            //GamePad.SetVibration(PlayerIndex.One, 0f, 0f);
+            //GamePad.SetVibration(PlayerIndex.Two, 0f, 0f);
+            if (InputManager.Devices.Count >= 1) InputManager.Devices[0].Vibrate(0f, 0f);
+            if (InputManager.Devices.Count >= 2) InputManager.Devices[1].Vibrate(0f, 0f);
         }
     }
 }

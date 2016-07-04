@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using InControl;
 
 //Class to encapsulate all variables and objects that needs to be shared between PlayerController and its states
 public class PlayerBlackboard
@@ -11,6 +12,7 @@ public class PlayerBlackboard
     public Animator animator;
     public GameObject shield;
     public GameObject laserAim;
+    public InputDevice controller;
 
     public int playerRayCastMask;
     public int playerPhysicsLayer;
@@ -103,6 +105,9 @@ public class PlayerBlackboard
 
         specialAttackCollider = player.GetComponent<SphereCollider>();
         specialAttackCollider.radius = player.specialAttackAffectationRadius;
+
+        if(InputManager.Devices.Count >= player.Id)
+            controller = InputManager.Devices[player.Id - 1];
 
         spawningState = new PlayerSpawningState();
         idleState = new PlayerIdleState();

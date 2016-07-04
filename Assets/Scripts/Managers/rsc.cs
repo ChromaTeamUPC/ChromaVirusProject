@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using InControl;
 
 public class rsc : MonoBehaviour
 {
     //Objects maintained between scenes
     public static DebugManager debugMng;
     public static EventManager eventMng;
+    public static InControlManager inputMng;
     public static AudioManager audioMng;
     public static EnemyManager enemyMng;
     public static PoolManager poolMng;
@@ -45,6 +47,8 @@ public class rsc : MonoBehaviour
     private DebugManager debugManager;
     [SerializeField]
     private EventManager eventManager;
+    [SerializeField]
+    private InControlManager inputManager;
     [SerializeField]
     private AudioManager audioManager;
     [SerializeField]
@@ -94,6 +98,12 @@ public class rsc : MonoBehaviour
             {
                 //Debug.Log("Storing Event Manager");
                 eventMng = eventManager;
+            }
+
+            if (inputMng == null)
+            {
+                //Debug.Log("Storing Input Manager");
+                inputMng = inputManager;
             }
 
             if (audioMng == null)
@@ -160,7 +170,7 @@ public class rsc : MonoBehaviour
 
                 gameInfo.gameCameraOffset = gameCameraOffset;
                 gameInfo.gameCameraRotation = gameCameraRotation.rotation;
-            }
+            } 
 
             objectsInitialized = true;
         }

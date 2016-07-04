@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using InControl;
 
 public class GameManager : MonoBehaviour {
 
@@ -28,22 +29,30 @@ public class GameManager : MonoBehaviour {
     {
         if (gameStarted)
         {
-            if (Input.GetButtonDown("Pause"))
-            {
-                paused = !paused;
+            int ctrlNumber = 0;
 
-                if (paused)
+            while (ctrlNumber < rsc.gameInfo.numberOfPlayers)
+            {
+                //if (Input.GetButtonDown("Pause"))
+                if (ctrlNumber < InputManager.Devices.Count && InputManager.Devices[ctrlNumber].GetControl(InputControlType.Start).WasPressed)
                 {
-                    Time.timeScale = 0.000000000001f;
-                    rsc.audioMng.PauseMainMusic();
-                    rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_PAUSED, EventInfo.emptyInfo);
+                    paused = !paused;
+
+                    if (paused)
+                    {
+                        Time.timeScale = 0.000000000001f;
+                        rsc.audioMng.PauseMainMusic();
+                        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_PAUSED, EventInfo.emptyInfo);
+                    }
+                    else
+                    {
+                        Time.timeScale = 1f;
+                        rsc.audioMng.ResumeMainMusic();
+                        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESUMED, EventInfo.emptyInfo);
+                    }
                 }
-                else
-                {
-                    Time.timeScale = 1f;
-                    rsc.audioMng.ResumeMainMusic();
-                    rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESUMED, EventInfo.emptyInfo);
-                }
+
+                ++ctrlNumber;
             }
         }
 	}

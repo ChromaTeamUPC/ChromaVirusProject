@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using InControl;
 
 public class MainMenuManager : MonoBehaviour {
 
@@ -72,7 +73,9 @@ public class MainMenuManager : MonoBehaviour {
                 break;
 
             case MainMenuState.ShowHelp:
-                if(Input.GetButtonDown("Back"))
+                //if(Input.GetButtonDown("Back"))
+                if((InputManager.Devices.Count >= 1 && InputManager.Devices[0].Action2.WasPressed)
+                    || (InputManager.Devices.Count >= 2 && InputManager.Devices[1].Action2.WasPressed))
                 {
                     help.SetActive(false);
                     EnableMainButtons();
@@ -80,7 +83,9 @@ public class MainMenuManager : MonoBehaviour {
                 break;
 
             case MainMenuState.SelectingPlayers:
-                if (Input.GetButtonDown("Back"))
+                //if (Input.GetButtonDown("Back"))
+                if ((InputManager.Devices.Count >= 1 && InputManager.Devices[0].Action2.WasPressed)
+                    || (InputManager.Devices.Count >= 2 && InputManager.Devices[1].Action2.WasPressed))
                 {
                     DisablePlayerSelectionButtons();
                     playerSelection.SetActive(false);
@@ -132,7 +137,8 @@ public class MainMenuManager : MonoBehaviour {
     {      
         p1Btn.interactable = true;
         
-        if(Input.GetJoystickNames().Length > 1)
+        //if(Input.GetJoystickNames().Length > 1)
+        if(InputManager.Devices.Count > 1)
         {
             p2Btn.interactable = true;
         }
@@ -156,7 +162,8 @@ public class MainMenuManager : MonoBehaviour {
         {
             DisableMainButtons();
 
-            if (Input.GetJoystickNames().Length > 1)
+            //if(Input.GetJoystickNames().Length > 1)
+            if (InputManager.Devices.Count > 1)
             {
                 playerSelection.SetActive(true);
                 EnablePlayerSelectionButtons();

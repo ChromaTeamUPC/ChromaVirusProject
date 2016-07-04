@@ -28,8 +28,10 @@ public class PlayerBaseState
     public virtual void RetrieveInput()
     {
         //Movement
-        float h = Input.GetAxisRaw(blackboard.moveHorizontal);
-        float v = Input.GetAxisRaw(blackboard.moveVertical);
+        //float h = Input.GetAxisRaw(blackboard.moveHorizontal);
+        //float v = Input.GetAxisRaw(blackboard.moveVertical);
+        float h = blackboard.controller.LeftStickX.Value;
+        float v = blackboard.controller.LeftStickY.Value;
 
         blackboard.moveVector = Vector3.zero;
 
@@ -46,8 +48,10 @@ public class PlayerBaseState
         }
 
         //Aiming
-        h = Input.GetAxisRaw(blackboard.aimHorizontal);
-        v = Input.GetAxisRaw(blackboard.aimVertical);
+        //h = Input.GetAxisRaw(blackboard.aimHorizontal);
+        //v = Input.GetAxisRaw(blackboard.aimVertical);
+        h = blackboard.controller.RightStickX.Value;
+        v = blackboard.controller.RightStickY.Value;
 
         blackboard.aimVector = Vector3.zero;
 
@@ -62,7 +66,8 @@ public class PlayerBaseState
         }
 
         //Shoot
-        if (Input.GetAxisRaw(blackboard.fire) > 0.1f)
+        //if (Input.GetAxisRaw(blackboard.fire) > 0.1f)
+        if (blackboard.controller.RightTrigger.Value > 0.1f)
         {
             blackboard.shootPressed = true;
             blackboard.keyPressed = true;
@@ -75,21 +80,24 @@ public class PlayerBaseState
         }
 
         //Dash
-        if (Input.GetButtonDown(blackboard.dash))
+        //if (Input.GetButtonDown(blackboard.dash))
+        if(blackboard.controller.LeftBumper.WasPressed)
         {
             blackboard.dashPressed = true;
             blackboard.keyPressed = true;
         }
 
         //Special
-        if (Input.GetButtonDown(blackboard.special))
+        //if (Input.GetButtonDown(blackboard.special))
+        if (blackboard.controller.RightBumper.WasPressed)
         {
             blackboard.specialPressed = true;
             blackboard.keyPressed = true;
         }
 
         //A Button
-        if (Input.GetButton(blackboard.greenButton))
+        //if (Input.GetButton(blackboard.greenButton))
+        if (blackboard.controller.Action1.IsPressed)
         {
             blackboard.greenPressed = true;
             blackboard.colorButtonsPressed = true;
@@ -97,7 +105,8 @@ public class PlayerBaseState
         }
 
         //B Button
-        if (Input.GetButton(blackboard.redButton))
+        //if (Input.GetButton(blackboard.redButton))
+        if (blackboard.controller.Action2.IsPressed)
         {
             blackboard.redPressed = true;
             blackboard.colorButtonsPressed = true;
@@ -105,7 +114,8 @@ public class PlayerBaseState
         }
 
         //X Button
-        if (Input.GetButton(blackboard.blueButton))
+        //if (Input.GetButton(blackboard.blueButton))
+        if (blackboard.controller.Action3.IsPressed)
         {
             blackboard.bluePressed = true;
             blackboard.colorButtonsPressed = true;
@@ -113,7 +123,8 @@ public class PlayerBaseState
         }
 
         //Y Button
-        if (Input.GetButton(blackboard.yellowButton))
+        //if (Input.GetButton(blackboard.yellowButton))
+        if (blackboard.controller.Action4.IsPressed)
         {
             blackboard.yellowPressed = true;
             blackboard.colorButtonsPressed = true;

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using InControl;
 
 public class EntryCameraController : MonoBehaviour 
 {
@@ -13,10 +14,17 @@ public class EntryCameraController : MonoBehaviour
 
     void Update()
     {
-        if((Input.GetButtonDown("P1_Red") || Input.GetButtonDown("P2_Red")) && !skipped)
+        int ctrlNumber = 0;
+
+        while (!skipped && ctrlNumber < rsc.gameInfo.numberOfPlayers)
         {
-            skipped = true;
-            rsc.eventMng.TriggerEvent(EventManager.EventType.CAMERA_ANIMATION_ENDED, EventInfo.emptyInfo);
+            if (InputManager.Devices[ctrlNumber].Action2.WasPressed)
+            {
+                skipped = true;
+                rsc.eventMng.TriggerEvent(EventManager.EventType.CAMERA_ANIMATION_ENDED, EventInfo.emptyInfo);
+            }
+
+            ++ctrlNumber;
         }
     }
 }

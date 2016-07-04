@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using InControl;
 
 public class CreditsController : MonoBehaviour {
     private enum CreditsState
@@ -89,15 +90,25 @@ public class CreditsController : MonoBehaviour {
                 break;
         }
 
-        if (!buttonPressed && Input.GetButtonDown("Back"))
-        {
-            buttonPressed = true;
 
-            if (currentState != CreditsState.FadingOut)
+        if (!buttonPressed)// && Input.GetButtonDown("Back"))
+        {
+            int ctrlNumber = 0;
+            while (!buttonPressed && ctrlNumber < InputManager.Devices.Count)
             {
-                fadeScript.StartFadingToColor(Color.black, 2f);
-                currentState = CreditsState.FadingOut;
-                rsc.audioMng.FadeOutCreditsMusic(2f);
+                if (ctrlNumber < InputManager.Devices.Count && InputManager.Devices[ctrlNumber].Action2.WasPressed)
+                {
+                    buttonPressed = true;
+
+                    if (currentState != CreditsState.FadingOut)
+                    {
+                        fadeScript.StartFadingToColor(Color.black, 2f);
+                        currentState = CreditsState.FadingOut;
+                        rsc.audioMng.FadeOutCreditsMusic(2f);
+                    }
+                }
+
+                ++ctrlNumber;
             }
         }
     }
