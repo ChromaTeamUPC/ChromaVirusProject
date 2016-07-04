@@ -23,6 +23,7 @@ public class EnemyBaseBlackboard
 
     public GameObject player;
     public PlayerController playerController;
+    public bool lookAtPlayer;
 
     public CapacitorController barrelController;
     public DeviceController deviceController;
@@ -56,6 +57,7 @@ public class EnemyBaseBlackboard
         target = null;
 
         SetPlayer(null);
+        lookAtPlayer = true;
 
         barrelController = null;
         deviceController = null;

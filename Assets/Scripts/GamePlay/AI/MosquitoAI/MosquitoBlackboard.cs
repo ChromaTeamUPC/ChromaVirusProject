@@ -13,6 +13,7 @@ public class MosquitoBlackboard : EnemyBaseBlackboard
     public MosquitoAIBaseState spawningState;
     public MosquitoAIActionsBaseState patrolingState;
     public MosquitoAIActionsBaseState attackingPlayerState;
+    public MosquitoAIBaseState attractedToBarrelState;
     public MosquitoAIBaseState dyingState;
 
     //Reseteable values
@@ -42,6 +43,7 @@ public class MosquitoBlackboard : EnemyBaseBlackboard
         spawningState = new MosquitoSpawningAIState(this);
         patrolingState = new MosquitoPatrolingAIState(this);
         attackingPlayerState = new MosquitoAttackingPlayerAIState(this);
+        attractedToBarrelState = new MosquitoAttractedToBarrelAIState(this);
         dyingState = new MosquitoDyingAIState(this);
 
         ResetValues();

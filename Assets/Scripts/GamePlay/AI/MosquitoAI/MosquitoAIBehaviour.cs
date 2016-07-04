@@ -86,7 +86,7 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
         Vector3 lookingVector;
 
         //If player is valid, look at it
-        if(mosquitoBlackboard.player != null)
+        if(mosquitoBlackboard.lookAtPlayer && mosquitoBlackboard.player != null)
         {
             lookingVector = mosquitoBlackboard.player.transform.position - transform.position;
             lookingVector.y = 0f;

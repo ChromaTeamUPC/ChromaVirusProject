@@ -24,8 +24,9 @@ public class SpiderAttractedToBarrelAIState : SpiderAIBaseState
         float angle = Random.Range(0f, 360f);
         float distance = Random.Range(0.7f, 2.5f);
 
-        direction = new Vector3(0, 0, 1);
-        direction = Quaternion.Euler(0, angle, 0) * direction;
+        //direction = new Vector3(0, 0, 1);
+        //direction = Quaternion.Euler(0, angle, 0) * direction;
+        direction = (spiderBlackboard.agent.transform.position - spiderBlackboard.barrelController.transform.position).normalized;
         direction *= distance;
 
         spiderBlackboard.agent.destination = spiderBlackboard.barrelController.transform.position + direction;

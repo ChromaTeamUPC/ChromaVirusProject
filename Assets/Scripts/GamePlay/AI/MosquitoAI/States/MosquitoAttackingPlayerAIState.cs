@@ -20,6 +20,9 @@ public class MosquitoAttackingPlayerAIState : MosquitoAIActionsBaseState
 
     public override AIBaseState Update()
     {
+        if (blackboard.barrelController != null && blackboard.barrelController.currentColor == blackboard.entity.color)
+            return mosquitoBlackboard.attractedToBarrelState;
+
         int updateResult = UpdateExecution();
 
         if (updateResult == AIAction.LIST_FINISHED)
