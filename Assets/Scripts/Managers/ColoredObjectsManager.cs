@@ -13,6 +13,9 @@ public class ColoredObjectsManager : MonoBehaviour
     [SerializeField]
     private Color[] basicColors = new Color[4];
 
+    [SerializeField]
+    private Color[] treeColors = new Color[4];
+
     //Player
     [SerializeField]
     private Material[] player1Mats = new Material[4];
@@ -128,6 +131,11 @@ public class ColoredObjectsManager : MonoBehaviour
     public Color GetColor(ChromaColor color)
     {
         return basicColors[(int)color];
+    }
+
+    public Color GetTreeColor(ChromaColor color)
+    {
+        return treeColors[(int)color];
     }
 
     private Material GetMaterial(Material[] matArray, ChromaColor color)
