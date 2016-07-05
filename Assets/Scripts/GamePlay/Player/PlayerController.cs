@@ -100,7 +100,7 @@ public class PlayerController : MonoBehaviour
     public float idleRandomAnimTime = 10f;
     public Transform hintPoint;
     public PlayerEnemyIntersectionDetector enemyDetector;
-    
+    public GameObject specialDetector;
 
 
     [SerializeField]
@@ -453,7 +453,7 @@ public class PlayerController : MonoBehaviour
         {
             blackboard.isInBorder = true;
         }
-        else if (other.tag == "Enemy")
+        /*else if (other.tag == "Enemy")
         {
             EnemyBaseAIBehaviour enemy = other.GetComponent<EnemyBaseAIBehaviour>();
 
@@ -463,7 +463,7 @@ public class PlayerController : MonoBehaviour
 
             if(enemy != null)
                 blackboard.enemiesInRange.Add(enemy);
-        }
+        }*/
         else if (other.tag == "DeathZone")
         {           
             if(rsc.debugMng.godMode)
@@ -482,7 +482,7 @@ public class PlayerController : MonoBehaviour
         {
             blackboard.isInBorder = false;
         }
-        else if (other.tag == "Enemy")
+        /*else if (other.tag == "Enemy")
         {
             EnemyBaseAIBehaviour enemy = other.GetComponent<EnemyBaseAIBehaviour>();
 
@@ -492,7 +492,7 @@ public class PlayerController : MonoBehaviour
 
             if (enemy != null)
                 blackboard.enemiesInRange.Remove(enemy);
-        }
+        }*/
     }
 
 
@@ -500,6 +500,7 @@ public class PlayerController : MonoBehaviour
     {
         if (hit.collider.tag == "Enemy")
         {
+            Debug.Log("Enemy touched!");
             PlayerBaseState newState = currentState.EnemyTouched();
             if (newState != null)
             {

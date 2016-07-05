@@ -21,7 +21,7 @@ public class PlayerSpecialState : PlayerBaseState {
         blackboard.animationEnded = false;
         blackboard.animator.SetTrigger("SpecialAttack");
 
-        blackboard.specialAttackCollider.enabled = true;
+        blackboard.specialAttackDetector.SetActive(true);
 
         if(!rsc.debugMng.godMode)
             blackboard.player.SpendEnergy(blackboard.player.specialAttackNecessaryEnergy);
@@ -93,8 +93,7 @@ public class PlayerSpecialState : PlayerBaseState {
     {
         yield return new WaitForSeconds(0.1f);
         DamageEnemies();
-        blackboard.specialAttackCollider.enabled = false;
-        blackboard.enemiesInRange.Clear();
+        blackboard.specialAttackDetector.SetActive(false);
     }
 
     private void DamageEnemies()

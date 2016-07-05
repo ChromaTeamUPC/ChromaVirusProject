@@ -91,7 +91,7 @@ public class PlayerBlackboard
 
     //Special attack variables
     public List<EnemyBaseAIBehaviour> enemiesInRange = new List<EnemyBaseAIBehaviour>();
-    public SphereCollider specialAttackCollider;
+    public GameObject specialAttackDetector;
 
     //Other gameplay variables
     public CapacitorController capacitor;
@@ -104,10 +104,11 @@ public class PlayerBlackboard
 
         animator = player.GetComponent<Animator>();
 
-        specialAttackCollider = player.GetComponent<SphereCollider>();
-        specialAttackCollider.radius = player.specialAttackAffectationRadius;
+        specialAttackDetector = player.specialDetector;
+        specialAttackDetector.GetComponent<PlayerSpecialAttackDetector>().Blackboard = this;
+        specialAttackDetector.GetComponent<SphereCollider>().radius = player.specialAttackAffectationRadius;
 
-        if(InputManager.Devices.Count >= player.Id)
+        if (InputManager.Devices.Count >= player.Id)
             controller = InputManager.Devices[player.Id - 1];
 
         spawningState = new PlayerSpawningState();
@@ -195,7 +196,7 @@ public class PlayerBlackboard
         firstShot = true;
 
         enemiesInRange.Clear();
-        specialAttackCollider.enabled = false;
+        specialAttackDetector.SetActive(false);
 
         capacitor = null;
         device = null;
