@@ -21,7 +21,7 @@ public class SpiderAttractedToBarrelAIState : SpiderAIBaseState
     public override void OnStateEnter()
     {
         //Go to around barrel at random angle and distance
-        float angle = Random.Range(0f, 360f);
+        //float angle = Random.Range(0f, 360f);
         float distance = Random.Range(0.7f, 2.5f);
 
         //direction = new Vector3(0, 0, 1);

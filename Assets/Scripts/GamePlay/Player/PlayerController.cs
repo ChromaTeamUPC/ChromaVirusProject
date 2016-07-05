@@ -145,7 +145,7 @@ public class PlayerController : MonoBehaviour
         noShootPSGO = noShootPS.gameObject;
 
         init = true;
-        Debug.Log("Player " + playerId + " created.");
+        //Debug.Log("Player " + playerId + " created.");
     }
 
     void Start()
@@ -164,7 +164,7 @@ public class PlayerController : MonoBehaviour
         {
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
         }
-        Debug.Log("Player " + playerId + " destroyed.");
+        //Debug.Log("Player " + playerId + " destroyed.");
     }
 
     void OnDisable()
@@ -285,7 +285,7 @@ public class PlayerController : MonoBehaviour
     {
         //blackboard.animator.Rebind();
         blackboard.ResetGameVariables();
-        Debug.Log("Player Reset");
+        //Debug.Log("Player Reset");
     }
 
     public void Spawn(bool invulnerabilityTime = false)
@@ -301,7 +301,7 @@ public class PlayerController : MonoBehaviour
         if (invulnerabilityTime)
             currentState.StartInvulnerabilityTime();
 
-        Debug.Log("Player Spawn");
+        //Debug.Log("Player Spawn");
     }
 
     void Update()

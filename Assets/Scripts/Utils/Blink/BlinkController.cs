@@ -168,6 +168,12 @@ public class BlinkController : MonoBehaviour {
         StartCoroutine(DoBlinkOnce(transparent, duration));
     }
 
+    public void BlinkCustomOnce(Material mat, float duration = blinkOnceDefaultDuration)
+    {
+        StopPreviousBlinkings();
+        StartCoroutine(DoBlinkOnce(mat, duration));
+    }
+
     private IEnumerator DoBlinkOnce(Material mat, float duration)
     {
         currentBlinkMaterial = mat;
@@ -185,8 +191,8 @@ public class BlinkController : MonoBehaviour {
     }
 
     public void BlinkWhiteMultipleTimes(float totalDuration = totalMultipleDefaultDuration,
-                                              float blinkInterval = blinkMultipleIntervalDefaultDuration,
-                                              float normalInterval = normalMultipleIntervalDefaultDuration)
+                                        float blinkInterval = blinkMultipleIntervalDefaultDuration,
+                                        float normalInterval = normalMultipleIntervalDefaultDuration)
     {
         StopPreviousBlinkings();
         StartCoroutine(DoBlinkMultiple(white, totalDuration, blinkInterval, normalInterval));
@@ -198,6 +204,15 @@ public class BlinkController : MonoBehaviour {
     {
         StopPreviousBlinkings();
         StartCoroutine(DoBlinkMultiple(transparent, totalDuration, blinkInterval, normalInterval));
+    }
+
+    public void BlinkCustomMultipleTimes(Material mat,
+                                         float totalDuration = totalMultipleDefaultDuration,
+                                         float blinkInterval = blinkMultipleIntervalDefaultDuration,
+                                         float normalInterval = normalMultipleIntervalDefaultDuration)
+    {
+        StopPreviousBlinkings();
+        StartCoroutine(DoBlinkMultiple(mat, totalDuration, blinkInterval, normalInterval));
     }
 
     private IEnumerator DoBlinkMultiple(Material mat, float totalDuration, float blinkInterval, float normalInterval)
@@ -244,12 +259,22 @@ public class BlinkController : MonoBehaviour {
     }
 
     public void BlinkTransparentIncremental(float totalDuration = totalIncrementalDefaultDuration,
-                                      float blinkInterval = blinkIncrementalIntervalDefaultDuration,
-                                      float initialNormalInterval = normalIncrementalIntervalDefaultDuration,
-                                      float normalIntervalReductionRatio = normalIntervalDefaultReductionRatio)
+                                            float blinkInterval = blinkIncrementalIntervalDefaultDuration,
+                                            float initialNormalInterval = normalIncrementalIntervalDefaultDuration,
+                                            float normalIntervalReductionRatio = normalIntervalDefaultReductionRatio)
     {
         StopPreviousBlinkings();
         StartCoroutine(DoBlinkIncremental(transparent, totalDuration, blinkInterval, initialNormalInterval, normalIntervalReductionRatio));
+    }
+
+    public void BlinkCustomIncremental(Material mat, 
+                                       float totalDuration = totalIncrementalDefaultDuration,
+                                       float blinkInterval = blinkIncrementalIntervalDefaultDuration,
+                                       float initialNormalInterval = normalIncrementalIntervalDefaultDuration,
+                                       float normalIntervalReductionRatio = normalIntervalDefaultReductionRatio)
+    {
+        StopPreviousBlinkings();
+        StartCoroutine(DoBlinkIncremental(mat, totalDuration, blinkInterval, initialNormalInterval, normalIntervalReductionRatio));
     }
 
     private IEnumerator DoBlinkIncremental(Material mat, float totalDuration, float blinkInterval, float initialNormalInterval, float normalIntervalReductionRatio)

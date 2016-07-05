@@ -115,7 +115,7 @@ public class EnemyManager : MonoBehaviour
     private List<AIAction> level01Z03spiderAttack03a = new List<AIAction>();
     private List<AIAction> level01Z03spiderAttack03b = new List<AIAction>();
 
-    private List<AIAction> level01Z02MosquitoPatrol01 = new List<AIAction>();
+    //private List<AIAction> level01Z02MosquitoPatrol01 = new List<AIAction>();
     private List<AIAction> level01Z02MosquitoPatrol02 = new List<AIAction>();
     private List<AIAction> level01Z02MosquitoPatrol03 = new List<AIAction>();
     private List<AIAction> level01Z02MosquitoPatrol04 = new List<AIAction>();
@@ -291,7 +291,7 @@ public class EnemyManager : MonoBehaviour
     {
         if(currentPlan != null)
         {
-            Debug.Log("There is a current plan active");
+            //Debug.Log("There is a current plan active");
             return;
         }
 
@@ -380,7 +380,7 @@ public class EnemyManager : MonoBehaviour
         {
             if(PlanEnded())
             {
-                Debug.Log("PLAN ENDED");
+                //Debug.Log("PLAN ENDED");
                 ZonePlanEndedInfo.eventInfo.planId = currentPlanId;
                 rsc.eventMng.TriggerEvent(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanEndedInfo.eventInfo);
                 currentPlan = null;

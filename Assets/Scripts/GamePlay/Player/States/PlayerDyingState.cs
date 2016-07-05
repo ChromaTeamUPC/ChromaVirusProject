@@ -16,8 +16,6 @@ public class PlayerDyingState : PlayerBaseState
 
         PlayerEventInfo.eventInfo.player = blackboard.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DYING, PlayerEventInfo.eventInfo);
-
-        Debug.Log("Player Entering: DyingState");
     }
 
     public override void OnStateExit()

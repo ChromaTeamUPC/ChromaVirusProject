@@ -12,7 +12,7 @@ public class PlayerSpecialState : PlayerBaseState {
 
     private Vector3 currentPos;
     private State state;
-    private float elapsedTime;
+    //private float elapsedTime;
 
     public override void OnStateEnter()
     {
@@ -27,7 +27,7 @@ public class PlayerSpecialState : PlayerBaseState {
             blackboard.player.SpendEnergy(blackboard.player.specialAttackNecessaryEnergy);
         blackboard.player.StartSpecialEnergyCharging();
         state = State.MOVING;
-        elapsedTime = 0f;       
+        //elapsedTime = 0f;       
     }
 
     public override PlayerBaseState Update()

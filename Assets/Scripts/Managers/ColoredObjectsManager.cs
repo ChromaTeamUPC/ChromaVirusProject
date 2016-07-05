@@ -40,6 +40,8 @@ public class ColoredObjectsManager : MonoBehaviour
 
     //Floor Materials
     [SerializeField]
+    private Material floorWhiteMat;
+    [SerializeField]
     private Material[] floorMats = new Material[4];
 
     //Bridge Materials
@@ -321,6 +323,11 @@ public class ColoredObjectsManager : MonoBehaviour
     public Material GetVoxelRandomMaterial()
     {
         return GetVoxelMaterial(ChromaColorInfo.Random);
+    }
+
+    public Material GetFloorWhiteMaterial()
+    {
+        return floorWhiteMat;
     }
 
     public Material GetFloorMaterial(ChromaColor color)

@@ -11,12 +11,12 @@ public class PlayerEnemyIntersectionDetector : MonoBehaviour
 	void OnTriggerEnter(Collider other)
     {
         enemies.Add(other.gameObject);
-        Debug.Log("New enemy added. Total: " + enemies.Count);
+        //Debug.Log("New enemy added. Total: " + enemies.Count);
     }
 
     void OnTriggerExit(Collider other)
     {
         enemies.Remove(other.gameObject);
-        Debug.Log("Enemy removed. Total: " + enemies.Count);
+        //Debug.Log("Enemy removed. Total: " + enemies.Count);
     }
 }
