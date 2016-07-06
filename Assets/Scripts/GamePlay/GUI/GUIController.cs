@@ -4,9 +4,27 @@ using System.Collections;
 
 public class GUIController : MonoBehaviour
 {
+    [Header("Both players config")]
+    public Color healthEmptyColor;
+    public float healthThreshold1 = 0.2f;
+    public Color healthThreshold1Color;
+    public float healthThreshold2 = 0.3f;
+    public Color healthThreshold2Color;
+    public float healthThreshold3 = 0.4f;
+    public Color healthThreshold3Color;
+    public float startGradientThreshold = 0.5f;
+
+    public float brightnessCicleDuration = 0.5f;
+    public float startBrightnessThreshold = 0.3f;
+    private Color currentP1HealthColor;
+    private Color currentP2HealthColor;
+    private float currentBrightness;
+    private float brightnessSpeed;
+
     [Header("Player 1 Items")]
     public GameObject player1Zone;
     public Slider player1Health;
+    public Image player1HealthFill;
     public Slider player1Energy;
     public GameObject player1ExtraLife1;
     public GameObject player1ExtraLife2;
@@ -22,6 +40,7 @@ public class GUIController : MonoBehaviour
     [Header("Player 2 Items")]
     public GameObject player2Zone;
     public Slider player2Health;
+    public Image player2HealthFill;
     public Slider player2Energy;
     public GameObject player2ExtraLife1;
     public GameObject player2ExtraLife2;
@@ -96,6 +115,15 @@ public class GUIController : MonoBehaviour
         nextColorElapsedTime = 0f;
         nextColorPrewarnTime = 0f;
 
+        currentBrightness = 1f;
+        currentP1HealthColor = Color.white;
+        currentP2HealthColor = Color.white;
+
+        if (brightnessCicleDuration > 0)
+            brightnessSpeed = 1 / brightnessCicleDuration;
+        else
+            brightnessSpeed = 1;
+
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_START, PlayerColorMismatchStart);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_END, PlayerColorMismatchEnd);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DYING, PlayerDying);
@@ -134,12 +162,39 @@ public class GUIController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+        currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 2) + 1; //Values between 0.5 and 1.5
+
         //Player 1 update
         if (player1Controller.Active)
         {
-            player1Health.value = player1Controller.Health * referenceHealthFactor;
+            //Health bar
+            float p1HealthValue = player1Controller.Health * referenceHealthFactor;
+            player1Health.value = p1HealthValue;
+
+            if (p1HealthValue > startGradientThreshold)
+                currentP1HealthColor = Color.white;
+            else if (p1HealthValue >= healthThreshold3)
+                currentP1HealthColor = Color.Lerp(healthThreshold3Color, Color.white, (p1HealthValue - healthThreshold3) / (startGradientThreshold - healthThreshold3));
+            else if (p1HealthValue >= healthThreshold2)
+                currentP1HealthColor = Color.Lerp(healthThreshold2Color, healthThreshold3Color, (p1HealthValue - healthThreshold2) / (healthThreshold3 - healthThreshold2));
+            else if (p1HealthValue >= healthThreshold1)
+                currentP1HealthColor = Color.Lerp(healthThreshold1Color, healthThreshold2Color, (p1HealthValue - healthThreshold1) / (healthThreshold2 - healthThreshold1));
+            else
+                currentP1HealthColor = Color.Lerp(healthEmptyColor, healthThreshold1Color, p1HealthValue / healthThreshold1);
+
+            if (p1HealthValue < startBrightnessThreshold)
+            {
+                currentP1HealthColor *= currentBrightness;
+                currentP1HealthColor.a = 1f;
+            }
+
+            player1HealthFill.color = currentP1HealthColor;
+
+
+            //Energy bar
             player1Energy.value = player1Controller.Energy * referenceEnergyFactor;
 
+            //Lives
             if (player1Controller.Lives > 1)
                 player1ExtraLife1.SetActive(true);
             else
@@ -150,6 +205,7 @@ public class GUIController : MonoBehaviour
             else
                 player1ExtraLife2.SetActive(false);
 
+            //Hints
             player1ButtonHints.transform.position = rsc.camerasMng.currentCamera.WorldToScreenPoint(player1Controller.hintPoint.position);
         }
 
@@ -157,9 +213,35 @@ public class GUIController : MonoBehaviour
         //Player 2 update
         if (player2Controller.Active)
         {
+            //Health bar
             player2Health.value = player2Controller.Health * referenceHealthFactor;
+
+            float p2HealthValue = player2Controller.Health * referenceHealthFactor;
+            player2Health.value = p2HealthValue;
+
+            if (p2HealthValue > startGradientThreshold)
+                currentP2HealthColor = Color.white;
+            else if (p2HealthValue >= healthThreshold3)
+                currentP2HealthColor = Color.Lerp(healthThreshold3Color, Color.white, (p2HealthValue - healthThreshold3) / (startGradientThreshold - healthThreshold3));
+            else if (p2HealthValue >= healthThreshold2)
+                currentP2HealthColor = Color.Lerp(healthThreshold2Color, healthThreshold3Color, (p2HealthValue - healthThreshold2) / (healthThreshold3 - healthThreshold2));
+            else if (p2HealthValue >= healthThreshold1)
+                currentP2HealthColor = Color.Lerp(healthThreshold1Color, healthThreshold2Color, (p2HealthValue - healthThreshold1) / (healthThreshold2 - healthThreshold1));
+            else
+                currentP2HealthColor = Color.Lerp(healthEmptyColor, healthThreshold1Color, p2HealthValue / healthThreshold1);
+
+            if (p2HealthValue < startBrightnessThreshold)
+            {
+                currentP2HealthColor *= currentBrightness;
+                currentP2HealthColor.a = 1f;
+            }
+
+            player2HealthFill.color = currentP2HealthColor;
+
+            //Energy bar
             player2Energy.value = player2Controller.Energy * referenceEnergyFactor;
 
+            //Lives
             if (player2Controller.Lives > 1)
                 player2ExtraLife1.SetActive(true);
             else
@@ -170,6 +252,7 @@ public class GUIController : MonoBehaviour
             else
                 player2ExtraLife2.SetActive(false);
 
+            //Hints
             player2ButtonHints.transform.position = rsc.camerasMng.currentCamera.WorldToScreenPoint(player2Controller.hintPoint.position);
         }
 
@@ -241,11 +324,6 @@ public class GUIController : MonoBehaviour
             currentInfectionTxt.text = currentInfectionNumber.ToString();
         }
     }
-
-    /*public Text currentInfectionTxt;
-    public Text maxInfectionTxt;
-    public Text percentageTxt;
-    public Text infectionTxt;*/
 
     private void DisableHintButtons(int playerId)
     {

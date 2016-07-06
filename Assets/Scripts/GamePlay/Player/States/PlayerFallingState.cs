@@ -7,6 +7,7 @@ public class PlayerFallingState : PlayerBaseState
     {
         //play falling animation
         blackboard.player.StopTrail();
+        blackboard.player.DisableUI();
         blackboard.animator.SetBool("Falling", true);
     }
 
@@ -14,6 +15,7 @@ public class PlayerFallingState : PlayerBaseState
     {
         blackboard.currentSpeed = blackboard.player.walkSpeed;
         blackboard.player.StartTrail();
+        blackboard.player.EnableUI();
         blackboard.animator.SetBool("Falling", false);
     }
 

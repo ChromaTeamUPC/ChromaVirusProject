@@ -14,6 +14,7 @@ public class PlayerSpawningState : PlayerBaseState {
         PlayerEventInfo.eventInfo.player = blackboard.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNING, PlayerEventInfo.eventInfo);
         blackboard.player.StopTrail();
+        blackboard.player.DisableUI();
         blackboard.alive = true;
         blackboard.shield.SetActive(true);
         blackboard.currentSpeed = blackboard.player.walkSpeed;
@@ -24,6 +25,7 @@ public class PlayerSpawningState : PlayerBaseState {
         blackboard.animator.SetTrigger("KeyPressed");
 
         blackboard.player.StartTrail();
+        blackboard.player.EnableUI();
 
         PlayerEventInfo.eventInfo.player = blackboard.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNED, PlayerEventInfo.eventInfo);

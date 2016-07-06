@@ -221,4 +221,9 @@ public class PlayerBlackboard
         animator.SetBool("Aiming", false);
         animator.SetBool("Shooting", false);
     }
+
+    public Vector3 GetScreenRelativeDirection(Vector3 direction)
+    {
+        return rsc.camerasMng.GetDirection(player.transform.position, direction, playerRayCastMask);
+    }
 }

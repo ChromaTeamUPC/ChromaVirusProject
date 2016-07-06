@@ -3,6 +3,11 @@ using System.Collections;
 
 public class FloorController : MonoBehaviour {
 
+    public float startFlashingSecondsBeforeChange = 1.5f;
+    public float totalTimeFlashing = 1.3f;
+    public float flashDuration = 0.1f;
+    public float normalDuration = 0.4f;
+
     public Renderer rend;
     private ColoredObjectsManager coloredObjMng;
     private ChromaColor currentColor;
@@ -59,8 +64,8 @@ public class FloorController : MonoBehaviour {
 
     private IEnumerator ColorChangeWarning(float prewarnTime)
     {
-        yield return new WaitForSeconds(prewarnTime - 1.5f);
+        yield return new WaitForSeconds(prewarnTime - startFlashingSecondsBeforeChange);
 
-        blinkController.BlinkCustomMultipleTimes(whiteMat, 1.3f, 0.1f, 0.4f);
+        blinkController.BlinkCustomMultipleTimes(whiteMat, totalTimeFlashing, flashDuration, normalDuration);
     }
 }

@@ -58,7 +58,7 @@ public class PlayerDashingState : PlayerBaseState
     { 
         if(blackboard.movePressed)
         {
-            blackboard.moveVector = GetScreenRelativeDirection(blackboard.moveVector);
+            blackboard.moveVector = blackboard.GetScreenRelativeDirection(blackboard.moveVector);
             blackboard.horizontalDirection = blackboard.moveVector;
         }
         else

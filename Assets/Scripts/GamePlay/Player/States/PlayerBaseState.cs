@@ -149,11 +149,6 @@ public class PlayerBaseState
         return null;
     }
 
-    protected Vector3 GetScreenRelativeDirection(Vector3 direction)
-    {
-        return rsc.camerasMng.GetDirection(blackboard.player.transform.position, direction, blackboard.playerRayCastMask);
-    }
-
     protected void CapacitorCharge()
     {
         if (blackboard.capacitor == null || !blackboard.colorButtonsPressed)
@@ -191,7 +186,7 @@ public class PlayerBaseState
     {
         if (blackboard.aimPressed)
         {
-            blackboard.aimVector = GetScreenRelativeDirection(blackboard.aimVector);
+            blackboard.aimVector = blackboard.GetScreenRelativeDirection(blackboard.aimVector);
             LookAt(blackboard.aimVector);
         }
     }
@@ -214,7 +209,7 @@ public class PlayerBaseState
         {
             float magnitude = blackboard.moveVector.magnitude;
 
-            blackboard.moveVector = GetScreenRelativeDirection(blackboard.moveVector) * magnitude;
+            blackboard.moveVector = blackboard.GetScreenRelativeDirection(blackboard.moveVector) * magnitude;
 
             blackboard.horizontalDirection = blackboard.moveVector;
 

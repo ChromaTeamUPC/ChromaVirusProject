@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private int playerId = 0;
 
-    private PlayerBlackboard blackboard;// = new PlayerBlackboard();
+    public PlayerBlackboard blackboard;// = new PlayerBlackboard();
 
     [Range(0f, 1f)]
     public float weak = 0f;
@@ -109,6 +109,9 @@ public class PlayerController : MonoBehaviour
     private GameObject shield;
     [SerializeField]
     private GameObject laserAim;
+    [SerializeField]
+    private GameObject ui;
+
 
     private Renderer shieldRend;
     private CharacterController ctrl;
@@ -263,12 +266,14 @@ public class PlayerController : MonoBehaviour
     {
         bodyRend.enabled = true;
         shieldRend.enabled = true;
+        ui.SetActive(true);
     }
 
     public void MakeInvisible()
     {
         bodyRend.enabled = false;
         shieldRend.enabled = false;
+        ui.SetActive(false);
     }
 
     public void AnimationEnded()
@@ -553,6 +558,7 @@ public class PlayerController : MonoBehaviour
     {
         ChangeState(blackboard.invisibleState);
         trail.enabled = false;
+        ui.SetActive(false);
         electricPS.Play();
     }
 
@@ -560,6 +566,7 @@ public class PlayerController : MonoBehaviour
     {
         electricPS.Stop();
         trail.enabled = true;
+        ui.SetActive(true);
         ChangeState(blackboard.idleState);
     }
 
@@ -571,6 +578,16 @@ public class PlayerController : MonoBehaviour
     public void StopTrail()
     {
         trail.enabled = false;
+    }
+
+    public void EnableUI()
+    {
+        ui.SetActive(true);
+    }
+
+    public void DisableUI()
+    {
+        ui.SetActive(false);
     }
 
     public void StartSpecialEnergyCharging()

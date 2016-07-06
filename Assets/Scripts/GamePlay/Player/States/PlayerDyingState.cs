@@ -8,6 +8,7 @@ public class PlayerDyingState : PlayerBaseState
         EndColorMismatch(); //Ensure it is not active
 
         blackboard.player.StopTrail();
+        blackboard.player.DisableUI();
         blackboard.shield.SetActive(false);
         blackboard.animator.SetTrigger("Die");
         blackboard.animationEnded = false;
