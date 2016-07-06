@@ -68,7 +68,8 @@ public class PlayerHealthBarController : MonoBehaviour
 
         //Always oriented the same
         Vector3 lookAt = playerController.blackboard.GetScreenRelativeDirection(Vector3.up);
-        lookAt.y = gameObject.transform.position.y;
+        lookAt.y = 0;
+        lookAt = gameObject.transform.position + lookAt;
         gameObject.transform.LookAt(lookAt, Vector3.up);
     }
 }
