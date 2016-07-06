@@ -54,6 +54,7 @@ public class PlayerBlackboard
     public bool aimPressed;
     public bool shootPressed;
     public bool dashPressed;
+    public bool speedBumpPressed;
     public bool specialPressed;
     public bool greenPressed;
     public bool redPressed;
@@ -83,7 +84,7 @@ public class PlayerBlackboard
     public bool isAffectedByContact;
     public bool isContactCooldown;
     public bool updateVerticalPosition;
-    public float fastMovementCharge;
+    //public float fastMovementCharge;
 
     //Shoot variables
     public bool canShoot;
@@ -190,7 +191,7 @@ public class PlayerBlackboard
         isAffectedByContact = false;
         isContactCooldown = false;
         updateVerticalPosition = true;
-        fastMovementCharge = 0f;
+        //fastMovementCharge = 0f;
 
         canShoot = true;
         firstShot = true;
@@ -210,6 +211,7 @@ public class PlayerBlackboard
         aimPressed = false;
         shootPressed = false;
         dashPressed = false;
+        speedBumpPressed = false;
         specialPressed = false;
         greenPressed = false;
         redPressed = false;

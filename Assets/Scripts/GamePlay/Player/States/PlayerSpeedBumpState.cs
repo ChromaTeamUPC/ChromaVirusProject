@@ -4,12 +4,15 @@ using System.Collections;
 public class PlayerSpeedBumpState : PlayerBaseState
 {
     private float elapsedTime;
+    private float speedReductionOn;
 
     public override void OnStateEnter()
     {
         elapsedTime = 0f;
 
         blackboard.currentSpeed = blackboard.player.fastMovingSpeed;
+
+        speedReductionOn = blackboard.player.fastMovingMaxSeconds * blackboard.player.fastMovingSpeedReductionOn;
     }
 
     public override void OnStateExit()
@@ -30,24 +33,31 @@ public class PlayerSpeedBumpState : PlayerBaseState
         elapsedTime += Time.deltaTime;
                 
         //if(!Input.GetButton(blackboard.dash))
-        if(!blackboard.controller.LeftBumper.IsPressed)
+        if(!blackboard.controller.LeftTrigger.IsPressed)
         {
-            if (elapsedTime < blackboard.player.dashDetectionThreshold && blackboard.fastMovementCharge >= blackboard.player.dashCost)
-                return blackboard.dashingState;
-            else
-                return ReturnIdleOrMoving();
+            return ReturnIdleOrMoving();
         }
         else
         {
-            blackboard.fastMovementCharge -= Time.deltaTime * blackboard.player.fastMovingCostXSecond;
+            //blackboard.fastMovementCharge -= Time.deltaTime * blackboard.player.fastMovingCostXSecond;
 
-            if(blackboard.fastMovementCharge <= 0f)
+            /*if(blackboard.fastMovementCharge <= 0f)
             {
                 blackboard.fastMovementCharge = 0f;
                 return ReturnIdleOrMoving();
+            }*/
+
+            if(elapsedTime >= blackboard.player.fastMovingMaxSeconds)
+            {
+                return ReturnIdleOrMoving();
+            }
+            else if (elapsedTime >= speedReductionOn)
+            {
+                blackboard.currentSpeed = Mathf.Lerp(blackboard.player.walkSpeed, blackboard.player.fastMovingSpeed, 1-((elapsedTime - speedReductionOn) / (blackboard.player.fastMovingMaxSeconds - speedReductionOn)));
+                Debug.Log(blackboard.currentSpeed);
             }
 
-            else if (!blackboard.isGrounded)
+            if (!blackboard.isGrounded)
             {
                 return blackboard.fallingState;
             }

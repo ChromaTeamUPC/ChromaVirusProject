@@ -36,7 +36,7 @@ public class PlayerDashingState : PlayerBaseState
 
     public override PlayerBaseState Update()
     {      
-        if(currentDashTime > blackboard.player.maxDashTime || blackboard.currentSpeed < blackboard.player.minDashSpeed)
+        if(currentDashTime > blackboard.player.maxDashSeconds || blackboard.currentSpeed < blackboard.player.minDashSpeed)
         {
             if (blackboard.isGrounded)
                 return blackboard.idleState;

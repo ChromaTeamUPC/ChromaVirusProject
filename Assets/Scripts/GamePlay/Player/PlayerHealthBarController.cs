@@ -24,7 +24,6 @@ public class PlayerHealthBarController : MonoBehaviour
     public Slider playerHealth;
     public Image playerHealthFill;
     private float referenceHealthFactor;
-    private Material healthMat;
 
     // Use this for initialization
     void Start () 
@@ -38,8 +37,6 @@ public class PlayerHealthBarController : MonoBehaviour
             brightnessSpeed = 1 / brightnessCicleDuration;
         else
             brightnessSpeed = 1;
-
-        healthMat = playerHealthFill.material;
     }
 	
 	// Update is called once per frame

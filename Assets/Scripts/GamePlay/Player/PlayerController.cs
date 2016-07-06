@@ -37,12 +37,15 @@ public class PlayerController : MonoBehaviour
     public float cooldownTime = 1f;
 
     [Header("Fast Moving & Dash Settings")]
-    public float movingRechargeXSecond = 33.3f;
-    public float fastMovingCostXSecond = 100f;
     public float fastMovingSpeed = 20f;
-    public float dashCost = 25f;
-    public float dashDetectionThreshold = 0.2f;
-    public float maxDashTime = 1.0f;
+    public float fastMovingMaxSeconds = 0.75f;
+    [Range(0f,1f)]
+    public float fastMovingSpeedReductionOn = 0.75f;
+    //public float fastMovingCostXSecond = 100f;
+    //public float movingRechargeXSecond = 33.3f;
+    //public float dashCost = 25f;
+    //public float dashDetectionThreshold = 0.2f;
+    public float maxDashSeconds = 0.1f;
     public float initialDashSpeed = 20.0f;
     public float dashDeceleration = 5f;
     public bool isDecelerationRatio = false;
@@ -328,7 +331,7 @@ public class PlayerController : MonoBehaviour
             }
 
             currentState.RetrieveInput();
-            RechargeMovingCharge();
+            //RechargeMovingCharge();
 
             if (currentState != null)
             {
@@ -346,10 +349,10 @@ public class PlayerController : MonoBehaviour
 
     private void RechargeMovingCharge()
     {
-        if (blackboard.fastMovementCharge < 100f)
+        /*if (blackboard.fastMovementCharge < 100f)
         {
             blackboard.fastMovementCharge += Time.deltaTime * movingRechargeXSecond;
-        }
+        }*/
     }
 
     public void UpdatePosition()

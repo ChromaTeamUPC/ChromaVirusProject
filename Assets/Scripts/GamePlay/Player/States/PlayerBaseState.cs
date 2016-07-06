@@ -87,6 +87,14 @@ public class PlayerBaseState
             blackboard.keyPressed = true;
         }
 
+        //Speed bump
+        //if (Input.GetButtonDown(blackboard.dash))
+        if (blackboard.controller.LeftTrigger.WasPressed)
+        {
+            blackboard.speedBumpPressed = true;
+            blackboard.keyPressed = true;
+        }
+
         //Special
         //if (Input.GetButtonDown(blackboard.special))
         if (blackboard.controller.RightBumper.WasPressed)
