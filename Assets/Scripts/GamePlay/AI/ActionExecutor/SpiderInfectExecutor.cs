@@ -3,12 +3,12 @@ using System.Collections;
 
 public class SpiderInfectExecutor : BaseExecutor
 {
-    private SpiderBlackboard spiderBlackBoard;
+    //private SpiderBlackboard spiderBlackBoard; //disabled to avoid warnings. reenable if needed
 
     public override void Init(EnemyBaseBlackboard bb)
     {
         base.Init(bb);
-        spiderBlackBoard = (SpiderBlackboard)bb;
+        //spiderBlackBoard = (SpiderBlackboard)bb;
     }
 
     public override void SetAction(AIAction act)

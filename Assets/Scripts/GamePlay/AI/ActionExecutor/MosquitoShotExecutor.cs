@@ -4,7 +4,7 @@ using System.Collections;
 public class MosquitoShotExecutor : BaseExecutor
 {
     private MosquitoBlackboard mosquitoBlackboard;
-    private MosquitoShotAIAction shotAction;
+    //private MosquitoShotAIAction shotAction; //disabled to avoid warnings. reenable if needed
 
     public override void Init(EnemyBaseBlackboard bb)
     {
@@ -15,7 +15,7 @@ public class MosquitoShotExecutor : BaseExecutor
     public override void SetAction(AIAction act)
     {
         base.SetAction(act);
-        shotAction = (MosquitoShotAIAction)act;
+        //shotAction = (MosquitoShotAIAction)act;
 
         blackBoard.agent.Stop();
 

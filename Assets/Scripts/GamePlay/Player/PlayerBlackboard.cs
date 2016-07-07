@@ -92,6 +92,7 @@ public class PlayerBlackboard
 
     //Special attack variables
     public List<EnemyBaseAIBehaviour> enemiesInRange = new List<EnemyBaseAIBehaviour>();
+    public List<EnemyShotControllerBase> shotsInRange = new List<EnemyShotControllerBase>();
     public GameObject specialAttackDetector;
 
     //Other gameplay variables

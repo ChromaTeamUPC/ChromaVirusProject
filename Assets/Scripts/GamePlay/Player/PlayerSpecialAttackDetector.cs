@@ -9,14 +9,20 @@ public class PlayerSpecialAttackDetector : MonoBehaviour
 
     void OnEnable()
     {
-        if(blackboard != null)
+        if (blackboard != null)
+        {
             blackboard.enemiesInRange.Clear();
+            blackboard.shotsInRange.Clear();
+        }
     }
 
     void OnDisable()
     {
         if (blackboard != null)
+        {
             blackboard.enemiesInRange.Clear();
+            blackboard.shotsInRange.Clear();
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -31,7 +37,14 @@ public class PlayerSpecialAttackDetector : MonoBehaviour
 
             if (enemy != null)
                 blackboard.enemiesInRange.Add(enemy);
-        }       
+        }  
+        else if (other.tag == "Shot")
+        {
+            EnemyShotControllerBase shot = other.GetComponent<EnemyShotControllerBase>();
+
+            if (shot != null)
+                blackboard.shotsInRange.Add(shot);
+        }     
     }
 
     void OnTriggerExit(Collider other)
@@ -46,6 +59,13 @@ public class PlayerSpecialAttackDetector : MonoBehaviour
 
             if (enemy != null)
                 blackboard.enemiesInRange.Remove(enemy);
+        }
+        else if (other.tag == "Shot")
+        {
+            EnemyShotControllerBase shot = other.GetComponent<EnemyShotControllerBase>();
+
+            if (shot != null)
+                blackboard.shotsInRange.Remove(shot);
         }
     }
 }

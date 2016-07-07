@@ -113,5 +113,10 @@ public class PlayerSpecialState : PlayerBaseState {
             direction *= totalForceMultiplier;
             enemy.ImpactedBySpecial(damage, direction);
         }
+
+        foreach (EnemyShotControllerBase shot in blackboard.shotsInRange)
+        {
+            shot.Impact();
+        }
     }
 }

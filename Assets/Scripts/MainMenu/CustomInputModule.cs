@@ -12,8 +12,8 @@ namespace UnityEngine.EventSystems
         private Vector2 m_LastMoveVector;
         private int m_ConsecutiveMoveCount = 0;
 
-        private Vector2 m_LastMousePosition;
-        private Vector2 m_MousePosition;
+        //private Vector2 m_LastMousePosition;
+        //private Vector2 m_MousePosition;
 
         protected CustomInputModule()
         {
@@ -118,11 +118,11 @@ namespace UnityEngine.EventSystems
             set { m_CancelButton = value; }
         }
 
-        public override void UpdateModule()
+        /*public override void UpdateModule()
         {
             m_LastMousePosition = m_MousePosition;
             m_MousePosition = Input.mousePosition;
-        }
+        }*/
 
         public override bool IsModuleSupported()
         {
@@ -158,8 +158,8 @@ namespace UnityEngine.EventSystems
         public override void ActivateModule()
         {
             base.ActivateModule();
-            m_MousePosition = Input.mousePosition;
-            m_LastMousePosition = Input.mousePosition;
+            //m_MousePosition = Input.mousePosition;
+            //m_LastMousePosition = Input.mousePosition;
 
             var toSelect = eventSystem.currentSelectedGameObject;
             if (toSelect == null)

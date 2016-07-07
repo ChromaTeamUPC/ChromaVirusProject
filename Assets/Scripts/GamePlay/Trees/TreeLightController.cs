@@ -3,11 +3,11 @@ using System.Collections;
 
 public class TreeLightController : MonoBehaviour 
 {
-    private Light light;
+    private Light treeLight;
 
     void Awake()
     {
-        light = GetComponent<Light>();
+        treeLight = GetComponent<Light>();
     }
 	// Use this for initialization
 	void Start () 
@@ -26,6 +26,6 @@ public class TreeLightController : MonoBehaviour
 	private void ColorChanged(EventInfo eventInfo)
     {
         ColorEventInfo info = (ColorEventInfo)eventInfo;
-        light.color = rsc.coloredObjectsMng.GetColor(info.newColor);
+        treeLight.color = rsc.coloredObjectsMng.GetColor(info.newColor);
     }
 }
