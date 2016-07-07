@@ -6,6 +6,7 @@ using InControl;
 
 public enum RumbleType
 {
+    TEST,
     PLAYER_SHOOT,
     PLAYER_DASH,
     PLAYER_DYING

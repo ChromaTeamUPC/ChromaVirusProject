@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using InControl;
 
 public class PlayerController : MonoBehaviour
 {
@@ -314,6 +315,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (blackboard.controller.GetControl(InputControlType.Back).IsPressed)
+            rsc.rumbleMng.AddContinousRumble(RumbleType.TEST, 0, weak, strong);
+        else
+            rsc.rumbleMng.RemoveContinousRumble(RumbleType.TEST);
+
         if (blackboard.active && blackboard.alive)
         {
             //Reset flags
