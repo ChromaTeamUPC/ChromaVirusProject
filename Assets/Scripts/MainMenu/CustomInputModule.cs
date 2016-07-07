@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Serialization;
+using InControl;
 
 namespace UnityEngine.EventSystems
 {
@@ -133,7 +134,7 @@ namespace UnityEngine.EventSystems
             if (!base.ShouldActivateModule())
                 return false;
 
-            var shouldActivate = m_ForceModuleActive;
+            /*var shouldActivate = m_ForceModuleActive;
             shouldActivate |= Input.GetButtonDown(m_SubmitButton);
             shouldActivate |= Input.GetButtonDown(m_CancelButton);
             shouldActivate |= !Mathf.Approximately(Input.GetAxisRaw(m_HorizontalAxis), 0.0f);
@@ -150,7 +151,8 @@ namespace UnityEngine.EventSystems
                     || input.phase == TouchPhase.Moved
                     || input.phase == TouchPhase.Stationary;
             }
-            return shouldActivate;
+            return shouldActivate;*/
+            return true;
         }
 
         public override void ActivateModule()
@@ -190,7 +192,7 @@ namespace UnityEngine.EventSystems
             //    ProcessMouseEvent();
         }
 
-        private bool ProcessTouchEvents()
+        /*private bool ProcessTouchEvents()
         {
             for (int i = 0; i < Input.touchCount; ++i)
             {
@@ -214,9 +216,9 @@ namespace UnityEngine.EventSystems
                     RemovePointerData(pointer);
             }
             return Input.touchCount > 0;
-        }
+        }*/
 
-        private void ProcessTouchPress(PointerEventData pointerEvent, bool pressed, bool released)
+        /*private void ProcessTouchPress(PointerEventData pointerEvent, bool pressed, bool released)
         {
             var currentOverGo = pointerEvent.pointerCurrentRaycast.gameObject;
 
@@ -319,7 +321,7 @@ namespace UnityEngine.EventSystems
                 ExecuteEvents.ExecuteHierarchy(pointerEvent.pointerEnter, pointerEvent, ExecuteEvents.pointerExitHandler);
                 pointerEvent.pointerEnter = null;
             }
-        }
+        }*/
 
         /// <summary>
         /// Process submit keys.
@@ -341,7 +343,8 @@ namespace UnityEngine.EventSystems
         private Vector2 GetRawMoveVector()
         {
             Vector2 move = Vector2.zero;
-            move.x = Input.GetAxisRaw(m_HorizontalAxis);
+
+            /*move.x = Input.GetAxisRaw(m_HorizontalAxis);
             move.y = Input.GetAxisRaw(m_VerticalAxis);
 
             if (Input.GetButtonDown(m_HorizontalAxis))
@@ -357,7 +360,18 @@ namespace UnityEngine.EventSystems
                     move.y = -1f;
                 if (move.y > 0)
                     move.y = 1f;
-            }
+            }*/
+
+            if (InputManager.GetAnyControllerLeft())
+                move.x = -1;
+            else if (InputManager.GetAnyControllerRight())
+                move.x = 1;
+
+            if (InputManager.GetAnyControllerUp())
+                move.y = 1;
+            else if (InputManager.GetAnyControllerDown())
+                move.y = -1;
+
             return move;
         }
 
@@ -376,7 +390,10 @@ namespace UnityEngine.EventSystems
             }
 
             // If user pressed key again, always allow event
-            bool allow = Input.GetButtonDown(m_HorizontalAxis) || Input.GetButtonDown(m_VerticalAxis);
+            //bool allow = Input.GetButtonDown(m_HorizontalAxis) || Input.GetButtonDown(m_VerticalAxis);
+            bool allow = InputManager.GetAnyControllerWasLeft() || InputManager.GetAnyControllerWasRight()
+                        || InputManager.GetAnyControllerWasUp() || InputManager.GetAnyControllerWasDown();
+
             bool similarDir = (Vector2.Dot(movement, m_LastMoveVector) > 0);
             if (!allow)
             {
@@ -411,15 +428,15 @@ namespace UnityEngine.EventSystems
             return axisEventData.used;
         }
 
-        protected void ProcessMouseEvent()
+        /*protected void ProcessMouseEvent()
         {
             ProcessMouseEvent(0);
-        }
+        }*/
 
         /// <summary>
         /// Process all mouse events.
         /// </summary>
-        protected void ProcessMouseEvent(int id)
+        /*protected void ProcessMouseEvent(int id)
         {
             var mouseData = GetMousePointerEventData(id);
             var leftButtonData = mouseData.GetButtonState(PointerEventData.InputButton.Left).eventData;
@@ -440,7 +457,7 @@ namespace UnityEngine.EventSystems
                 var scrollHandler = ExecuteEvents.GetEventHandler<IScrollHandler>(leftButtonData.buttonData.pointerCurrentRaycast.gameObject);
                 ExecuteEvents.ExecuteHierarchy(scrollHandler, leftButtonData.buttonData, ExecuteEvents.scrollHandler);
             }
-        }
+        }*/
 
         protected bool SendUpdateEventToSelectedObject()
         {
@@ -455,7 +472,7 @@ namespace UnityEngine.EventSystems
         /// <summary>
         /// Process the current mouse press.
         /// </summary>
-        protected void ProcessMousePress(MouseButtonEventData data)
+        /*protected void ProcessMousePress(MouseButtonEventData data)
         {
             var pointerEvent = data.buttonData;
             var currentOverGo = pointerEvent.pointerCurrentRaycast.gameObject;
@@ -553,6 +570,6 @@ namespace UnityEngine.EventSystems
                     HandlePointerExitAndEnter(pointerEvent, currentOverGo);
                 }
             }
-        }
+        }*/
     }
 }

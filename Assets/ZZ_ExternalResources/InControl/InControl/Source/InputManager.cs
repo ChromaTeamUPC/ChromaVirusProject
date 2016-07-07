@@ -431,7 +431,135 @@ namespace InControl
 				return unityVersion.Value;
 			}
 		}
-	}
+
+        public static bool GetAnyControllerWasLeft() //Pressed on this frame
+        {
+            bool result = false;
+
+            for (int i = 0; i < devices.Count; ++i)
+            {
+                result |= devices[i].DPadLeft.WasPressed;
+                result |= devices[i].LeftStick.Left.WasPressed;
+
+                if (result)
+                    break;
+            }
+
+            return result;
+        }
+
+        public static bool GetAnyControllerLeft() //Pressed no matter when was pressed
+        {
+            bool result = false;
+
+            for(int i = 0; i < devices.Count; ++i)
+            {                
+                result |= devices[i].DPadLeft;
+                result |= (devices[i].LeftStickX.Value < -0.1f);
+
+                if (result)
+                    break;
+            }
+
+            return result;
+        }
+
+        public static bool GetAnyControllerWasRight() //Pressed on this frame
+        {
+            bool result = false;
+
+            for (int i = 0; i < devices.Count; ++i)
+            {
+                result |= devices[i].DPadRight.WasPressed;
+                result |= devices[i].LeftStick.Right.WasPressed;
+
+                if (result)
+                    break;
+            }
+
+            return result;
+        }
+
+        public static bool GetAnyControllerRight() //Pressed no matter when was pressed
+        {
+            bool result = false;
+
+            for (int i = 0; i < devices.Count; ++i)
+            {
+                result |= devices[i].DPadRight;
+                result |= devices[i].LeftStickX.Value > 0.1f;
+
+                if (result)
+                    break;
+            }
+
+            return result;
+        }
+
+        public static bool GetAnyControllerWasUp() //Pressed on this frame
+        {
+            bool result = false;
+
+            for (int i = 0; i < devices.Count; ++i)
+            {
+                result |= devices[i].DPadUp.WasPressed;
+                result |= devices[i].LeftStick.Up.WasPressed;
+
+                if (result)
+                    break;
+            }
+
+            return result;
+        }
+
+        public static bool GetAnyControllerUp() //Pressed no matter when was pressed
+        {
+            bool result = false;
+
+            for (int i = 0; i < devices.Count; ++i)
+            {
+                result |= devices[i].DPadUp;
+                result |= devices[i].LeftStickY.Value > 0.1f;
+
+                if (result)
+                    break;
+            }
+
+            return result;
+        }
+
+        public static bool GetAnyControllerWasDown() //Pressed on this frame
+        {
+            bool result = false;
+
+            for (int i = 0; i < devices.Count; ++i)
+            {
+                result |= devices[i].DPadDown.WasPressed;
+                result |= devices[i].LeftStick.Down.WasPressed;
+
+                if (result)
+                    break;
+            }
+
+            return result;
+        }
+
+        public static bool GetAnyControllerDown() //Pressed no matter when was pressed
+        {
+            bool result = false;
+
+            for (int i = 0; i < devices.Count; ++i)
+            {
+                result |= devices[i].DPadDown;
+                result |= devices[i].LeftStickY.Value < -0.1f;
+
+                if (result)
+                    break;
+            }
+
+            return result;
+        }
+    }
 }
 
 
