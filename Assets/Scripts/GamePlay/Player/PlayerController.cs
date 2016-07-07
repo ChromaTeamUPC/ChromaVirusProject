@@ -318,7 +318,7 @@ public class PlayerController : MonoBehaviour
         {
             //Reset flags
             if(!blackboard.shootPressed)
-                rsc.rumbleMng.RemoveContinousRumble(2);
+                rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_SHOOT);
             blackboard.ResetFlagVariables();
 
             if(blackboard.contactFlag && currentState != null)
@@ -560,6 +560,8 @@ public class PlayerController : MonoBehaviour
     public void EnteredUSB()
     {
         ChangeState(blackboard.invisibleState);
+        rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_SHOOT);
+        DeactivateShield();
         trail.enabled = false;
         ui.SetActive(false);
         electricPS.Play();

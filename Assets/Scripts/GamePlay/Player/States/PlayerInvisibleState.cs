@@ -17,6 +17,8 @@ public class PlayerInvisibleState : PlayerBaseState {
         blackboard.player.MakeVisible();
     }
 
+    public override void RetrieveInput() { }
+
     //In this state the player can not move nor take damage
     public override PlayerBaseState TakeDamage(float damage, bool triggerDamageAnim = true, bool whiteBlink = true)
     {
