@@ -194,8 +194,8 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
     public override AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, float damage, Vector3 direction)
     {
         //Harmless to other colors
-        if (barrelColor != color)
-            return null;
+        /*if (barrelColor != color)
+            return null;*/
 
         if (mosquitoBlackboard.canReceiveDamage && mosquitoBlackboard.HaveHealthRemaining())
         {
