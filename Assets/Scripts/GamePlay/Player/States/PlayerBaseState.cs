@@ -44,7 +44,7 @@ public class PlayerBaseState
 
             blackboard.movePressed = true;
             blackboard.animator.SetBool("Walking", true);
-            blackboard.keyPressed = true;
+            blackboard.KeyPressed = true;
         }
 
         //Aiming
@@ -62,7 +62,7 @@ public class PlayerBaseState
 
             blackboard.aimPressed = true;
             blackboard.animator.SetBool("Aiming", true);
-            blackboard.keyPressed = true;
+            blackboard.KeyPressed = true;
         }
 
         //Shoot
@@ -70,7 +70,7 @@ public class PlayerBaseState
         if (blackboard.controller.RightTrigger.Value > 0.1f)
         {
             blackboard.shootPressed = true;
-            blackboard.keyPressed = true;
+            blackboard.KeyPressed = true;
             blackboard.animator.SetBool("Shooting", true);
         }
         else
@@ -84,7 +84,7 @@ public class PlayerBaseState
         if(blackboard.controller.LeftBumper.WasPressed)
         {
             blackboard.dashPressed = true;
-            blackboard.keyPressed = true;
+            blackboard.KeyPressed = true;
         }
 
         //Speed bump
@@ -92,7 +92,7 @@ public class PlayerBaseState
         if (blackboard.controller.LeftTrigger.WasPressed)
         {
             blackboard.speedBumpPressed = true;
-            blackboard.keyPressed = true;
+            blackboard.KeyPressed = true;
         }
 
         //Special
@@ -100,7 +100,7 @@ public class PlayerBaseState
         if (blackboard.controller.RightBumper.WasPressed)
         {
             blackboard.specialPressed = true;
-            blackboard.keyPressed = true;
+            blackboard.KeyPressed = true;
         }
 
         //A Button
@@ -109,7 +109,7 @@ public class PlayerBaseState
         {
             blackboard.greenPressed = true;
             blackboard.colorButtonsPressed = true;
-            blackboard.keyPressed = true;
+            blackboard.KeyPressed = true;
         }
 
         //B Button
@@ -118,7 +118,7 @@ public class PlayerBaseState
         {
             blackboard.redPressed = true;
             blackboard.colorButtonsPressed = true;
-            blackboard.keyPressed = true;
+            blackboard.KeyPressed = true;
         }
 
         //X Button
@@ -127,7 +127,7 @@ public class PlayerBaseState
         {
             blackboard.bluePressed = true;
             blackboard.colorButtonsPressed = true;
-            blackboard.keyPressed = true;
+            blackboard.KeyPressed = true;
         }
 
         //Y Button
@@ -136,7 +136,7 @@ public class PlayerBaseState
         {
             blackboard.yellowPressed = true;
             blackboard.colorButtonsPressed = true;
-            blackboard.keyPressed = true;
+            blackboard.KeyPressed = true;
         }
     }
 
@@ -179,8 +179,6 @@ public class PlayerBaseState
 
         if (blackboard.greenPressed)
             blackboard.device.Disinfect();
-        else if (blackboard.redPressed)
-            blackboard.device.Infect();
     }
 
     private void LookAt(Vector3 destination)

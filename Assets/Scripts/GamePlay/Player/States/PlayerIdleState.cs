@@ -59,7 +59,7 @@ public class PlayerIdleState : PlayerBaseState {
 
             Shoot();
 
-            if (blackboard.keyPressed)
+            if (blackboard.KeyPressed)
             {
                 elapsedTime = 0f;
             }

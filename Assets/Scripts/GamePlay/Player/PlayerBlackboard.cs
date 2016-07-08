@@ -47,7 +47,7 @@ public class PlayerBlackboard
     public string yellowButton;
 
     //Input variables
-    public bool keyPressed;
+    private bool keyPressed;
     public Vector3 moveVector;
     public bool movePressed;
     public Vector3 aimVector;
@@ -228,5 +228,14 @@ public class PlayerBlackboard
     public Vector3 GetScreenRelativeDirection(Vector3 direction)
     {
         return rsc.camerasMng.GetDirection(player.transform.position, direction, playerRayCastMask);
+    }
+
+    public bool KeyPressed
+    {
+        get { return keyPressed; }
+        set
+        {
+            keyPressed = value;
+        }
     }
 }

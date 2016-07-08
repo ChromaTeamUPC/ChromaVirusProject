@@ -13,8 +13,6 @@ public class PlayerLongIdleState : PlayerBaseState
 
     public override void OnStateExit()
     {
-        if(blackboard.keyPressed)
-            blackboard.animator.SetTrigger("KeyPressed");
     }
 
     public override PlayerBaseState Update()
@@ -46,8 +44,9 @@ public class PlayerLongIdleState : PlayerBaseState
 
             Shoot();
 
-            if (blackboard.keyPressed)
-            {            
+            if (blackboard.KeyPressed)
+            {
+                blackboard.animator.SetTrigger("KeyPressed");
                 return blackboard.idleState;
             }
         }

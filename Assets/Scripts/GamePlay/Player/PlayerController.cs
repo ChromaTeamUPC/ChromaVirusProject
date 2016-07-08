@@ -61,6 +61,12 @@ public class PlayerController : MonoBehaviour
     public float energyIncreaseWhenBlockedCorrectColor = 1f;
     public float specialAttackNecessaryEnergy = 50f;
 
+    public float brightnessCicleDuration;
+    private float currentBrightness;
+    private float brightnessSpeed;
+    private Color originalBrightnessColor;
+    private float H, S, V;
+
 
     [Header("Fire Settings")]   
     public float fireRate = 0.25f;
@@ -110,6 +116,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Renderer bodyRend;
     [SerializeField]
+    private Material bodyBaseMaterial;
+    [SerializeField]
+    private float standardBodyBrightness = 0.4f;
+    [SerializeField]
     private GameObject shield;
     [SerializeField]
     private GameObject laserAim;
@@ -150,6 +160,15 @@ public class PlayerController : MonoBehaviour
 
         specialSoundFX = specialPS.GetComponent<AudioSource>();
         noShootPSGO = noShootPS.gameObject;
+
+        if (brightnessCicleDuration > 0)
+            brightnessSpeed = 1 / brightnessCicleDuration;
+        else
+            brightnessSpeed = 1;
+
+        originalBrightnessColor = bodyBaseMaterial.GetColor("_EmissionColor");
+        Color.RGBToHSV(originalBrightnessColor, out H, out S, out V);
+        originalBrightnessColor = Color.HSVToRGB(H, S, standardBodyBrightness);
 
         init = true;
         //Debug.Log("Player " + playerId + " created.");
@@ -322,8 +341,17 @@ public class PlayerController : MonoBehaviour
 
         if (blackboard.active && blackboard.alive)
         {
+            if (blackboard.currentEnergy == maxEnergy)
+            {
+                currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 6.666f) + 0.45f; //Values between 0.3 and 0.6
+                Color newColor = Color.HSVToRGB(H, S, currentBrightness);
+                bodyBaseMaterial.SetColor("_EmissionColor", newColor);
+            }
+            else
+                bodyBaseMaterial.SetColor("_EmissionColor", originalBrightnessColor);
+
             //Reset flags
-            if(!blackboard.shootPressed)
+            if (!blackboard.shootPressed)
                 rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_SHOOT);
             blackboard.ResetFlagVariables();
 

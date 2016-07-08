@@ -22,8 +22,6 @@ public class PlayerSpawningState : PlayerBaseState {
 
     public override void OnStateExit()
     {
-        blackboard.animator.SetTrigger("KeyPressed");
-
         blackboard.player.StartTrail();
         blackboard.player.EnableUI();
 
