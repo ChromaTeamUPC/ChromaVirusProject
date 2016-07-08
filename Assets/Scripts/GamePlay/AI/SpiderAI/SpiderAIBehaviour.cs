@@ -19,9 +19,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     public float biteDamage = 10f;
     public float playerDetectionDistance = 5f; 
     public float checkAttackEverySeconds = 1f;
-    public float checkDeviceEverySeconds = 3f;
-
-    public GameObject[] explosionPrefabs = new GameObject[4];     
+    public float checkDeviceEverySeconds = 3f;   
 
 	// Use this for initialization
 	protected override void Awake ()

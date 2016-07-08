@@ -8,8 +8,6 @@ public class MosquitoBlackboard : EnemyBaseBlackboard
 
     public Transform shotSpawnPoint;
 
-    public GameObject[] explosions = new GameObject[4];
-
     public MosquitoAIBaseState spawningState;
     public MosquitoAIActionsBaseState patrolingState;
     public MosquitoAIActionsBaseState attackingPlayerState;
@@ -32,13 +30,6 @@ public class MosquitoBlackboard : EnemyBaseBlackboard
 
         mosquito = entityGO.GetComponent<MosquitoAIBehaviour>();
         shotSpawnPoint = entityGO.transform.FindDeepChild("ShotSpawnPoint");
-
-        for (int i = 0; i < 4; ++i)
-        {
-            explosions[i] = GameObject.Instantiate(mosquito.explosionPrefabs[i], mosquito.transform.position, mosquito.transform.rotation) as GameObject;
-            explosions[i].transform.parent = mosquito.transform;
-            explosions[i].SetActive(false);
-        }
 
         spawningState = new MosquitoSpawningAIState(this);
         patrolingState = new MosquitoPatrolingAIState(this);

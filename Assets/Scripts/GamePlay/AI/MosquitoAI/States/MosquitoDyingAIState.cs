@@ -33,10 +33,7 @@ public class MosquitoDyingAIState : MosquitoAIBaseState
 
             movement = mosquitoBlackboard.lastShotDirection * mosquitoBlackboard.entity.shotForceModifier;*/
 
-            GameObject explosion = mosquitoBlackboard.explosions[(int)color];
-            explosion.SetActive(true);
-
-            mosquitoBlackboard.mosquito.SpawnVoxelsAndReturnToPool(true);
+            mosquitoBlackboard.mosquito.SpawnVoxelsAndReturnToPool();
         }
         else
             mosquitoBlackboard.mosquito.SpawnVoxelsAndReturnToPool(false);

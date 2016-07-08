@@ -24,8 +24,6 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
 
     private Transform rotationObject;
 
-    public GameObject[] explosionPrefabs = new GameObject[4];
-
     // Use this for initialization
     protected override void Awake()
     {
@@ -216,6 +214,15 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
         if (spawnEnergyVoxels)
         {
             Vector3 pos = transform.position;
+
+            EnemyExplosionController explosion = rsc.poolMng.enemyExplosionPool.GetObject();
+
+            if (explosion != null)
+            {
+                explosion.transform.position = pos;
+                explosion.Play(color);
+            }
+
             EnergyVoxelPool pool = rsc.poolMng.energyVoxelPool;
             for (int i = 0; i < energyVoxelsSpawnedOnDie; ++i)
             {

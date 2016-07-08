@@ -8,8 +8,6 @@ public class SpiderBlackboard: EnemyBaseBlackboard
 
     public Transform boltSpawnPoint;
 
-    public GameObject[] explosions = new GameObject[4];
-
     public SpiderAIBaseState spawningState;
     public SpiderAIActionsBaseState entryState;
     public SpiderAIActionsBaseState attackingPlayerState;
@@ -36,13 +34,6 @@ public class SpiderBlackboard: EnemyBaseBlackboard
 
         spider = entityGO.GetComponent<SpiderAIBehaviour>();
         boltSpawnPoint = entityGO.transform.Find("BoltSpawnPoint");
-
-        for(int i = 0; i < 4; ++i)
-        {
-            explosions[i] = GameObject.Instantiate(spider.explosionPrefabs[i], spider.transform.position, spider.transform.rotation) as GameObject;
-            explosions[i].transform.parent = spider.transform;
-            explosions[i].SetActive(false);
-        }
 
         spawningState = new SpiderSpawningAIState(this);
         entryState = new SpiderEntryAIState(this);
