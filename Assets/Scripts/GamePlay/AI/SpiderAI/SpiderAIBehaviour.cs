@@ -9,7 +9,8 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     public enum SpawnAnimation
     {
         FLOOR,
-        SKY
+        SKY,
+        VORTEX
     }
 
     private SpiderBlackboard spiderBlackboard;

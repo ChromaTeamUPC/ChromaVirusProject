@@ -96,7 +96,7 @@ public class VortexController : MonoBehaviour
                 if (enemy != null)
                 {
                     //TODO, change spawn animation to vortex specific one when we have it
-                    enemy.AIInit(SpiderAIBehaviour.SpawnAnimation.FLOOR, entryActions, attackActions, infectActions);
+                    enemy.AIInit(SpiderAIBehaviour.SpawnAnimation.VORTEX, entryActions, attackActions, infectActions);
                     enemy.Spawn(spawnPoint);
                     rsc.enemyMng.AddVortexEnemyInfection(SpiderAIBehaviour.infectionValue);
                 }
