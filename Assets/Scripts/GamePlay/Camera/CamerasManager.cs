@@ -39,6 +39,11 @@ public class CamerasManager : MonoBehaviour {
         rsc.camerasMng = this;
     }
 
+    void OnDestroy()
+    {
+        rsc.camerasMng = null;
+    }
+
     void Start()
     { 
         keys = rsc.debugMng.keys;
@@ -120,6 +125,8 @@ public class CamerasManager : MonoBehaviour {
 
     public Vector3 GetDirection(Vector3 originalPosition, Vector3 displacement, int rayCastMask)
     {
+        if (currentCameraObj == null) return Vector3.zero;
+
         if (currentCameraObj.transform.localEulerAngles.x > xRotationMinThreshold)
         {
             return CalculateDirectionRaycasting(originalPosition, displacement, rayCastMask);

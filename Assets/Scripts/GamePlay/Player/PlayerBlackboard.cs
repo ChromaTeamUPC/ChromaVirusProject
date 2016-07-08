@@ -227,6 +227,8 @@ public class PlayerBlackboard
 
     public Vector3 GetScreenRelativeDirection(Vector3 direction)
     {
+        if (rsc.camerasMng == null) return Vector3.zero;
+
         return rsc.camerasMng.GetDirection(player.transform.position, direction, playerRayCastMask);
     }
 

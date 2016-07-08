@@ -42,34 +42,37 @@ public class PlayerHealthBarController : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-        currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 2) + 1; //Values between 0.5 and 1.5
-
-        float pHealthValue = playerController.Health * referenceHealthFactor;
-        playerHealth.value = pHealthValue;
-
-        if (pHealthValue > startGradientThreshold)
-            currentHealthColor = Color.white;
-        else if (pHealthValue >= healthThreshold3)
-            currentHealthColor = Color.Lerp(healthThreshold3Color, Color.white, (pHealthValue - healthThreshold3) / (startGradientThreshold - healthThreshold3));
-        else if (pHealthValue >= healthThreshold2)
-            currentHealthColor = Color.Lerp(healthThreshold2Color, healthThreshold3Color, (pHealthValue - healthThreshold2) / (healthThreshold3 - healthThreshold2));
-        else if (pHealthValue >= healthThreshold1)
-            currentHealthColor = Color.Lerp(healthThreshold1Color, healthThreshold2Color, (pHealthValue - healthThreshold1) / (healthThreshold2 - healthThreshold1));
-        else
-            currentHealthColor = Color.Lerp(healthEmptyColor, healthThreshold1Color, pHealthValue / healthThreshold1);
-
-        if (pHealthValue < startBrightnessThreshold)
+        if (playerController.blackboard.active && playerController.blackboard.alive)
         {
-            currentHealthColor *= currentBrightness;
-            currentHealthColor.a = 1f;
+            currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 2) + 1; //Values between 0.5 and 1.5
+
+            float pHealthValue = playerController.Health * referenceHealthFactor;
+            playerHealth.value = pHealthValue;
+
+            if (pHealthValue > startGradientThreshold)
+                currentHealthColor = Color.white;
+            else if (pHealthValue >= healthThreshold3)
+                currentHealthColor = Color.Lerp(healthThreshold3Color, Color.white, (pHealthValue - healthThreshold3) / (startGradientThreshold - healthThreshold3));
+            else if (pHealthValue >= healthThreshold2)
+                currentHealthColor = Color.Lerp(healthThreshold2Color, healthThreshold3Color, (pHealthValue - healthThreshold2) / (healthThreshold3 - healthThreshold2));
+            else if (pHealthValue >= healthThreshold1)
+                currentHealthColor = Color.Lerp(healthThreshold1Color, healthThreshold2Color, (pHealthValue - healthThreshold1) / (healthThreshold2 - healthThreshold1));
+            else
+                currentHealthColor = Color.Lerp(healthEmptyColor, healthThreshold1Color, pHealthValue / healthThreshold1);
+
+            if (pHealthValue < startBrightnessThreshold)
+            {
+                currentHealthColor *= currentBrightness;
+                currentHealthColor.a = 1f;
+            }
+
+            playerHealthFill.color = currentHealthColor;
+
+            //Always oriented the same
+            Vector3 lookAt = playerController.blackboard.GetScreenRelativeDirection(Vector3.up);
+            lookAt.y = 0;
+            lookAt = gameObject.transform.position + lookAt;
+            gameObject.transform.LookAt(lookAt, Vector3.up);
         }
-
-        playerHealthFill.color = currentHealthColor;
-
-        //Always oriented the same
-        Vector3 lookAt = playerController.blackboard.GetScreenRelativeDirection(Vector3.up);
-        lookAt.y = 0;
-        lookAt = gameObject.transform.position + lookAt;
-        gameObject.transform.LookAt(lookAt, Vector3.up);
     }
 }
