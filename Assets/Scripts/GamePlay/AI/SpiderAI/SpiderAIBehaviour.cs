@@ -187,6 +187,15 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         if (spawnEnergyVoxels)
         {
             Vector3 pos = transform.position;
+
+            EnemyExplosionController explosion = rsc.poolMng.enemyExplosionPool.GetObject();
+
+            if(explosion != null)
+            {
+                explosion.transform.position = pos;
+                explosion.Play(color);
+            }
+
             EnergyVoxelPool pool = rsc.poolMng.energyVoxelPool;
             for (int i = 0; i < energyVoxelsSpawnedOnDie; ++i)
             {

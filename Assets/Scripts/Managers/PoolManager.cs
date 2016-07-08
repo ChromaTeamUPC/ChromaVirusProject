@@ -11,6 +11,8 @@ using System;
 [Serializable] public class MosquitoPool : MonoBehaviourObjectPool<MosquitoAIBehaviour> { }
 [Serializable] public class MosquitoWeakShotPool : MonoBehaviourObjectPool<MosquitoWeakShotController> { }
 [Serializable] public class MosquitoMainAttackPool : MonoBehaviourObjectPool<MosquitoMainAttackControllerBase> { }
+[Serializable] public class EnemyExplosionPool : MonoBehaviourObjectPool<EnemyExplosionController> { }
+
 
 //Just a container for the different pools we have in the game
 public class PoolManager : MonoBehaviour
@@ -44,6 +46,8 @@ public class PoolManager : MonoBehaviour
     public MosquitoMainAttackPool mosquitoMultipleProjectilePool = new MosquitoMainAttackPool();
     public MosquitoMainAttackPool mosquitoHomingProjectilePool = new MosquitoMainAttackPool();
 
+    public EnemyExplosionPool enemyExplosionPool = new EnemyExplosionPool();
+
     void Start()
     {
         player1ShotRedPool.Init(gameObject, poolContainerPrefab);
@@ -72,6 +76,8 @@ public class PoolManager : MonoBehaviour
         mosquitoFanProjectilePool.Init(gameObject, poolContainerPrefab);
         mosquitoMultipleProjectilePool.Init(gameObject, poolContainerPrefab);
         mosquitoHomingProjectilePool.Init(gameObject, poolContainerPrefab);
+
+        enemyExplosionPool.Init(gameObject, poolContainerPrefab);
 
         //Debug.Log("Pool Manager created");
     }

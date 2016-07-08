@@ -33,8 +33,13 @@ public class SpiderDyingAIState : SpiderAIBaseState
 
             movement = spiderBlackboard.lastShotDirection * spiderBlackboard.entity.shotForceModifier;
 
-            GameObject explosion = spiderBlackboard.explosions[(int)color];
-            explosion.SetActive(true);
+            EnemyExplosionController explosion = rsc.poolMng.enemyExplosionPool.GetObject();
+
+            if (explosion != null)
+            {
+                explosion.transform.position = blackboard.entityGO.transform.position;
+                explosion.Play(color);
+            }
         }
         else
             spiderBlackboard.spider.SpawnVoxelsAndReturnToPool(false);
