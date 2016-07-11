@@ -129,15 +129,19 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     public void SpawnVoxels()
     {
         if (blackboard.lastShotSameColor)
+        {
             voxelization.SetMaterial(color);
+            voxelization.SpawnFakeVoxels();
+        }
         else
         {
             voxelization.SetGreyMaterial();
+            //Wrong color does not explode so, grid has to be more precise
+            voxelization.CalculateVoxelsGrid();
             voxelization.SpawnColliderThisTime = false;
+            voxelization.SpawnVoxels();
         }
 
-        voxelization.CalculateVoxelsGrid();
-        voxelization.SpawnVoxels();
     }
 
     protected void ChangeState(AIBaseState newState)

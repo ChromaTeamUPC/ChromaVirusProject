@@ -16,6 +16,7 @@ public class rsc : MonoBehaviour
     public static ColoredObjectsManager coloredObjectsMng;
     public static RumbleManager rumbleMng;
     public static GameManager gameMng;
+    public static VoxelizationServer voxelizationMng;
     public static CoroutineHelper coroutineHlp;
 
     public static GameInfo gameInfo;
@@ -63,6 +64,8 @@ public class rsc : MonoBehaviour
     private RumbleManager rumbleManager;
     [SerializeField]
     private GameManager gameManager;
+    [SerializeField]
+    private VoxelizationServer voxelizationManager;
     [SerializeField]
     private CoroutineHelper coroutineHelper;
 
@@ -148,7 +151,13 @@ public class rsc : MonoBehaviour
                 gameMng = gameManager;
             }
 
-            if(coroutineHlp == null)
+            if (voxelizationMng == null)
+            {
+                //Debug.Log("Storing Voxelization Manager");
+                voxelizationMng = voxelizationManager;
+            }
+
+            if (coroutineHlp == null)
             {
                 //Debug.Log("Storing Coroutine Helper");
                 coroutineHlp = coroutineHelper;

@@ -15,8 +15,12 @@ public class VoxelizationClient : MonoBehaviour {
 
     public bool spawnVoxelCollider = true;
     public float voxelColliderScaleRatio = 1f;
+    public int fakeGridMinVoxels;
+    public int fakeGridMaxVoxels;
 
     private List<VoxelizationServer.AABCGrid> aABCGrids;
+    private VoxelizationServer.AABCGrid fakeAABCGrid;
+    private List<VoxelizationServer.AABCGrid> fakeAABCGrids = new List<VoxelizationServer.AABCGrid>();
 
     private ColoredObjectsManager colorObjMng;
     private VoxelPool voxelPool;
@@ -70,6 +74,8 @@ public class VoxelizationClient : MonoBehaviour {
         voxelScale = new Vector3(voxelSideSize, voxelSideSize, voxelSideSize);
         voxelColliderScale = new Vector3(voxelColliderScaleRatio, voxelColliderScaleRatio, voxelColliderScaleRatio);
         spawnColliderThisTime = spawnVoxelCollider;
+
+        CalculateFakeVoxelsGrid();
     }
 
     private void PopulateLists(GameObject gameObj)
@@ -168,9 +174,9 @@ public class VoxelizationClient : MonoBehaviour {
                 aABCGrids = VoxelizationServer.CreateNGridsNObjects(transforms, meshes, renderers, voxelSideSize, fillVoxelShell);
             }
         }
-    }
+    }   
 
-    public void SpawnVoxels()
+    /*public void SpawnVoxels()
     {
         //int total = 0;
         if (aABCGrids != null)
@@ -208,13 +214,6 @@ public class VoxelizationClient : MonoBehaviour {
                                                                         
                                     voxelController.spawnLevels = 1;
                                 }
-
-                                //Set a collider in place to make voxels "explode"
-                                /*GameObject voxelCollider = voxelColliderPool.GetObject();
-                                if (voxelCollider != null)
-                                {
-                                    voxelCollider.transform.position = cubeCenter;
-                                }*/
                             }
                         }
                     }
@@ -233,6 +232,40 @@ public class VoxelizationClient : MonoBehaviour {
             }
         }
         //Debug.Log("Spider spawned: " + total);
+
+        //Return to default
+        spawnColliderThisTime = spawnVoxelCollider;
+    }*/
+
+    public void SpawnVoxels()
+    {
+        VoxelizationInfo info = new VoxelizationInfo(aABCGrids, voxelScale, randomMaterial, mat, spawnColliderThisTime, voxelColliderScale);
+
+        rsc.voxelizationMng.AddInfoToPendingSpawns(info);
+
+        //Return to default
+        spawnColliderThisTime = spawnVoxelCollider;
+    }
+
+    public void CalculateFakeVoxelsGrid()
+    {
+        int totalVoxels = Random.Range(fakeGridMinVoxels, fakeGridMaxVoxels + 1);
+        short gridSideSize = (short)Mathf.Ceil(Mathf.Pow(totalVoxels, (1f / 3f)));
+
+        fakeAABCGrid = new VoxelizationServer.AABCGrid(gridSideSize, gridSideSize, gridSideSize, voxelSideSize, transform.position);
+        fakeAABCGrid.FillGridWithFixedNumber(totalVoxels);
+        fakeAABCGrids.Add(fakeAABCGrid);
+    }
+
+    public void SpawnFakeVoxels()
+    {
+        Vector3 position = transform.position;
+        position.y -= transform.localPosition.y;
+        fakeAABCGrid.SetCenter(position);
+
+        VoxelizationInfo info = new VoxelizationInfo(fakeAABCGrids, voxelScale, randomMaterial, mat, spawnColliderThisTime, voxelColliderScale);
+
+        rsc.voxelizationMng.AddInfoToPendingSpawns(info);
 
         //Return to default
         spawnColliderThisTime = spawnVoxelCollider;
