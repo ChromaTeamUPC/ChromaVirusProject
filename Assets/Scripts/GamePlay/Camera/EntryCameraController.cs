@@ -14,17 +14,13 @@ public class EntryCameraController : MonoBehaviour
 
     void Update()
     {
-        int ctrlNumber = 0;
-
-        while (!skipped && ctrlNumber < rsc.gameInfo.numberOfPlayers)
-        {
-            if (InputManager.Devices[ctrlNumber].Action2.WasPressed)
+        if (rsc.gameMng.State == GameManager.GameState.STARTED)
+        {        
+            if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action2))
             {
                 skipped = true;
                 rsc.eventMng.TriggerEvent(EventManager.EventType.CAMERA_ANIMATION_ENDED, EventInfo.emptyInfo);
             }
-
-            ++ctrlNumber;
         }
     }
 }

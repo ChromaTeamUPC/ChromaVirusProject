@@ -128,6 +128,11 @@ public class ColoredObjectsManager : MonoBehaviour
         currentMosquitoMat = mosquitoMats[colorIndex];    
     }
 
+    public Color GetColor()
+    {
+        return GetColor(currentColor);
+    }
+
     public Color GetColor(ChromaColor color)
     {
         return basicColors[(int)color];

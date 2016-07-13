@@ -5,8 +5,21 @@ using InControl;
 
 public class GameManager : MonoBehaviour {
 
-    private bool gameStarted = false;
-    private bool paused = false;
+    public enum GameState
+    {
+        NOT_STARTED,
+        STARTED,
+        PAUSED
+    }
+
+    private GameState state;
+
+    public GameState State { get { return state; } }
+
+    void Awake()
+    {
+        state = GameState.NOT_STARTED;
+    }
 
     // Use this for initialization
     void Start ()
@@ -27,7 +40,23 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        if (gameStarted)
+        if (state == GameState.NOT_STARTED) return;
+
+        switch (state)
+        {
+            case GameState.STARTED:
+                if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Start))
+                    Pause();
+                break;
+            case GameState.PAUSED:
+                if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Start))
+                    Resume();
+                break;
+            default:
+                break;
+        }
+
+        /*if (gameStarted)
         {
             int ctrlNumber = 0;
 
@@ -54,12 +83,32 @@ public class GameManager : MonoBehaviour {
 
                 ++ctrlNumber;
             }
-        }
+        }*/
 	}
+
+    public void Pause()
+    {
+        if (state != GameState.STARTED) return;
+
+        state = GameState.PAUSED;
+        Time.timeScale = 0.000000000001f;
+        rsc.audioMng.PauseMainMusic();
+        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_PAUSED, EventInfo.emptyInfo);
+    }
+
+    public void Resume()
+    {
+        if (state != GameState.PAUSED) return;
+
+        state = GameState.STARTED;
+        Time.timeScale = 1f;
+        rsc.audioMng.ResumeMainMusic();
+        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESUMED, EventInfo.emptyInfo);
+    }
 
     public void SetGameStartedDEBUG()
     {
-        gameStarted = true;
+        state = GameState.STARTED;
         Debug.Log("WARNING: gameStarted set to true through a debug function!");
     }
 
@@ -67,7 +116,7 @@ public class GameManager : MonoBehaviour {
     {
         InitPlayers(numPlayers);
 
-        gameStarted = true;
+        state = GameState.STARTED;
         //SceneManager.LoadScene("Level01");
         SceneManager.LoadScene("Intro");
     }
@@ -132,16 +181,35 @@ public class GameManager : MonoBehaviour {
 
     private void GameOver()
     {
-        gameStarted = false;
+        state = GameState.NOT_STARTED;
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_OVER, EventInfo.emptyInfo);
         StartCoroutine(GoToMainMenu());
     }
 
     private void GameFinished()
     {
-        gameStarted = false;
+        state = GameState.NOT_STARTED;
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_FINISHED, EventInfo.emptyInfo);
         StartCoroutine(GoToCredits());
+    }
+
+    public void GameCancelled()
+    {
+        state = GameState.NOT_STARTED;
+        GoToMainMenuInmediate();
+    }
+
+    private void GoToMainMenuInmediate()
+    {
+        Time.timeScale = 1f;
+        rsc.audioMng.StopMainMusic();
+
+        rsc.gameInfo.player1Controller.Active = false;
+        rsc.gameInfo.player2Controller.Active = false;
+
+        //Ensure all resources are in place (ie, enemies back to pool)
+        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
+        SceneManager.LoadScene("MainMenu");
     }
 
     private IEnumerator GoToMainMenu()

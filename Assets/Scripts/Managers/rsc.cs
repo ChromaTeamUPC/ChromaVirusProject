@@ -16,7 +16,7 @@ public class rsc : MonoBehaviour
     public static ColoredObjectsManager coloredObjectsMng;
     public static RumbleManager rumbleMng;
     public static GameManager gameMng;
-    public static VoxelizationServer voxelizationMng;
+    public static VoxelizationManager voxelizationMng;
     public static CoroutineHelper coroutineHlp;
 
     public static GameInfo gameInfo;
@@ -65,7 +65,7 @@ public class rsc : MonoBehaviour
     [SerializeField]
     private GameManager gameManager;
     [SerializeField]
-    private VoxelizationServer voxelizationManager;
+    private VoxelizationManager voxelizationManager;
     [SerializeField]
     private CoroutineHelper coroutineHelper;
 

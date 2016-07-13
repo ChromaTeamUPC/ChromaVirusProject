@@ -194,6 +194,13 @@ public class AudioManager : MonoBehaviour {
         //gamePlayMusicTrak3.UnPause();
     }
 
+    public void StopMainMusic()
+    {
+        gamePlayMusicTrak1.Stop();
+        //gamePlayMusicTrak2.Stop();
+        //gamePlayMusicTrak3.Stop();
+    }
+
     IEnumerator FadeMainMusic(float fadeSeconds, bool fadeIn)
     {
         float fadeSpeed;

@@ -91,24 +91,15 @@ public class CreditsController : MonoBehaviour {
         }
 
 
-        if (!buttonPressed)// && Input.GetButtonDown("Back"))
+        if (!buttonPressed && InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action2)) 
         {
-            int ctrlNumber = 0;
-            while (!buttonPressed && ctrlNumber < InputManager.Devices.Count)
+            buttonPressed = true;
+
+            if (currentState != CreditsState.FadingOut)
             {
-                if (ctrlNumber < InputManager.Devices.Count && InputManager.Devices[ctrlNumber].Action2.WasPressed)
-                {
-                    buttonPressed = true;
-
-                    if (currentState != CreditsState.FadingOut)
-                    {
-                        fadeScript.StartFadingToColor(Color.black, 2f);
-                        currentState = CreditsState.FadingOut;
-                        rsc.audioMng.FadeOutCreditsMusic(2f);
-                    }
-                }
-
-                ++ctrlNumber;
+                fadeScript.StartFadingToColor(Color.black, 2f);
+                currentState = CreditsState.FadingOut;
+                rsc.audioMng.FadeOutCreditsMusic(2f);
             }
         }
     }

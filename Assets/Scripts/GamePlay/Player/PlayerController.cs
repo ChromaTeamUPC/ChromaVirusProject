@@ -180,6 +180,7 @@ public class PlayerController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameStopped);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameStopped);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
         blackboard.currentColor = rsc.colorMng.CurrentColor;
         SetMaterial();
     }
@@ -189,6 +190,9 @@ public class PlayerController : MonoBehaviour
         if (rsc.eventMng != null)
         {
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameStopped);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameStopped);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
         }
         //Debug.Log("Player " + playerId + " destroyed.");
     }
@@ -204,6 +208,11 @@ public class PlayerController : MonoBehaviour
         ChangeState(blackboard.blockedState);
         //blackboard.horizontalDirection = Vector3.zero;
         //currentState = null;
+    }
+
+    private void GameReset(EventInfo eventInfo)
+    {
+        transform.SetParent(null); //To avoid destruction if parented with some scene game object
     }
 
     private void ColorChanged(EventInfo eventInfo)

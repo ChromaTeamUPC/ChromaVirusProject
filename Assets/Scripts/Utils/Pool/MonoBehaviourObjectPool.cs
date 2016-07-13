@@ -55,7 +55,7 @@ public class MonoBehaviourObjectPool<T> where T : MonoBehaviour
     {
         foreach (T obj in auxList)
         {
-            if (obj.gameObject.activeSelf)
+            //if (obj.gameObject.activeSelf)
             {
                 AddObject(obj);
             }

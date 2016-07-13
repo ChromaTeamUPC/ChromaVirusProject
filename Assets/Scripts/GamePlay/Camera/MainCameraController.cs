@@ -16,6 +16,7 @@ public class MainCameraController : MonoBehaviour {
 
     private Vector3 smoothedPosition;
 
+    private BlurOptimized blur;
     private MotionBlur motionBlur;
     private VideoGlitchSpectrumOffset glitch;
     private NoiseAndGrain noise;
@@ -35,6 +36,7 @@ public class MainCameraController : MonoBehaviour {
 
     void Awake()
     {
+        blur = GetComponent<BlurOptimized>();
         motionBlur = GetComponent<MotionBlur>();
         glitch = GetComponent<VideoGlitchSpectrumOffset>();
         noise = GetComponent<NoiseAndGrain>();
@@ -68,7 +70,7 @@ public class MainCameraController : MonoBehaviour {
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DASHING, PlayerStartDash);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DASHED, PlayerEndDash);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerColorMismatch);
-        rsc.eventMng.StartListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);     
+        rsc.eventMng.StartListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
     }
 
     void OnDestroy()

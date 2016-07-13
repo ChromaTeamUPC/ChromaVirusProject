@@ -60,22 +60,13 @@ public class IntroController : MonoBehaviour
                 break;
 
             case IntroState.Playing:
-                int ctrlNumber = 0;
-                bool processed = false;
-
-                while (!processed && ctrlNumber < rsc.gameInfo.numberOfPlayers)
+                if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action2)
+                    || elapsedTime >= startFadingTime)
                 {
-                    if ((ctrlNumber < InputManager.Devices.Count && InputManager.Devices[ctrlNumber].Action2.WasPressed)
-                       || elapsedTime >= startFadingTime)
-                    {
-                        processed = true;
-                        skipHint.SetActive(false);
-                        fadeScript.StartFadingToColor(1f);
-                        rsc.audioMng.FadeOutIntroMusic(1f);
-                        state = IntroState.FadingOut;
-                    }
-
-                    ++ctrlNumber;
+                    skipHint.SetActive(false);
+                    fadeScript.StartFadingToColor(1f);
+                    rsc.audioMng.FadeOutIntroMusic(1f);
+                    state = IntroState.FadingOut;
                 }
 
                 break;

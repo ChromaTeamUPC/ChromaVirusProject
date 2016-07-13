@@ -73,9 +73,16 @@ public class GUIController : MonoBehaviour
     public Text clearedTxt;
 
     [Header("Other Items")]
+    public GameObject infoArea;
+    public GameObject pauseGroup;
+    public GameObject optionsGroup;
+    public GameObject confirmationGroup;
+    public Button continueBtn;
+    public Button quitBtn;
+    public Button yesBtn;
+    public Button noBtn;
     public Text youWinTxt;
     public Text gameOverTxt;
-    public Text pauseTxt;
     public Text godModeTxt;
 
     public GameObject skipHint;
@@ -380,12 +387,41 @@ public class GUIController : MonoBehaviour
 
     private void GamePaused(EventInfo eventInfo)
     {
-        pauseTxt.enabled = true;
+        infoArea.SetActive(false);
+        pauseGroup.SetActive(true);
+        optionsGroup.SetActive(true);
+        confirmationGroup.SetActive(false);
+        continueBtn.Select();
     }
 
     private void GameResumed(EventInfo eventInfo)
     {
-        pauseTxt.enabled = false;
+        infoArea.SetActive(true);
+        pauseGroup.SetActive(false);
+    }
+
+    public void ResumeGame()
+    {
+        rsc.gameMng.Resume();
+    }
+
+    public void Quit()
+    {
+        optionsGroup.SetActive(false);
+        confirmationGroup.SetActive(true);
+        noBtn.Select();
+    }
+
+    public void QuitConfirmed()
+    {
+        rsc.gameMng.GameCancelled();
+    }
+
+    public void QuitCancelled()
+    {
+        optionsGroup.SetActive(true);
+        confirmationGroup.SetActive(false);
+        quitBtn.Select();
     }
 
     private void GameOver(EventInfo eventInfo)
