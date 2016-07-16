@@ -23,9 +23,6 @@ public class VoxelizationClient : MonoBehaviour {
     private List<VoxelizationServer.AABCGrid> fakeAABCGrids = new List<VoxelizationServer.AABCGrid>();
 
     private ColoredObjectsManager colorObjMng;
-    private VoxelPool voxelPool;
-    private ObjectPool voxelColliderPool;
-    private VoxelController voxelController;
 
     private bool spawnColliderThisTime;
 
@@ -48,8 +45,6 @@ public class VoxelizationClient : MonoBehaviour {
     void Start ()
     {
         colorObjMng = rsc.coloredObjectsMng;
-        voxelPool = rsc.poolMng.voxelPool;
-        voxelColliderPool = rsc.poolMng.voxelColliderPool;
 
         mat = colorObjMng.GetVoxelRandomMaterial();
 

@@ -16,7 +16,6 @@ public class MainCameraController : MonoBehaviour {
 
     private Vector3 smoothedPosition;
 
-    private BlurOptimized blur;
     private MotionBlur motionBlur;
     private VideoGlitchSpectrumOffset glitch;
     private NoiseAndGrain noise;
@@ -36,7 +35,6 @@ public class MainCameraController : MonoBehaviour {
 
     void Awake()
     {
-        blur = GetComponent<BlurOptimized>();
         motionBlur = GetComponent<MotionBlur>();
         glitch = GetComponent<VideoGlitchSpectrumOffset>();
         noise = GetComponent<NoiseAndGrain>();

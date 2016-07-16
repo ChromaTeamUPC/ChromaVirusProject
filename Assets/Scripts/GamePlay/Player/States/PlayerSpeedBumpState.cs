@@ -54,7 +54,6 @@ public class PlayerSpeedBumpState : PlayerBaseState
             else if (elapsedTime >= speedReductionOn)
             {
                 blackboard.currentSpeed = Mathf.Lerp(blackboard.player.walkSpeed, blackboard.player.fastMovingSpeed, 1-((elapsedTime - speedReductionOn) / (blackboard.player.fastMovingMaxSeconds - speedReductionOn)));
-                Debug.Log(blackboard.currentSpeed);
             }
 
             if (!blackboard.isGrounded)
