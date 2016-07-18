@@ -163,13 +163,13 @@ public class PlayerBaseState
             return;
 
         if (blackboard.redPressed)
-            blackboard.capacitor.ManualCharge(ChromaColor.RED);
+            blackboard.capacitor.ManualCharge(ChromaColor.RED, blackboard.player);
         else if (blackboard.greenPressed)
-            blackboard.capacitor.ManualCharge(ChromaColor.GREEN);
+            blackboard.capacitor.ManualCharge(ChromaColor.GREEN, blackboard.player);
         else if (blackboard.bluePressed)
-            blackboard.capacitor.ManualCharge(ChromaColor.BLUE);
+            blackboard.capacitor.ManualCharge(ChromaColor.BLUE, blackboard.player);
         else if (blackboard.yellowPressed)
-            blackboard.capacitor.ManualCharge(ChromaColor.YELLOW);
+            blackboard.capacitor.ManualCharge(ChromaColor.YELLOW, blackboard.player);
     }
 
     protected void DisinfectDevice()
@@ -478,6 +478,7 @@ public class PlayerBaseState
         //If touched by an enemy, speed reduction and damage take
         if (!blackboard.isAffectedByContact && !blackboard.isContactCooldown && !blackboard.isInvulnerable)
         {
+            Debug.Log("Enemy touched!");
             blackboard.player.StartCoroutine(HandleEnemyTouched());
             return TakeDamage(blackboard.player.damageOnContact, false);
         }

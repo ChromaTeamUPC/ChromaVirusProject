@@ -57,6 +57,8 @@ public class CapacitorController : MonoBehaviour {
 
     private GameObject model;
 
+    private PlayerController activatingPlayer;
+
 
     void Awake()
     {
@@ -147,7 +149,7 @@ public class CapacitorController : MonoBehaviour {
         blinkController.InvalidateMaterials();
     }
 
-    public void ImpactedByShot(ChromaColor shotColor)
+    public void ImpactedByShot(ChromaColor shotColor, PlayerController player)
     {
         if (!active) return;
 
@@ -161,6 +163,7 @@ public class CapacitorController : MonoBehaviour {
                 //Debug.Log("Received first shot.");
                 //Debug.Log("Current Color = " + ChromaColorInfo.GetColorName(currentColor) + ". Current charge = " + currentCharge);
                 //Debug.Log("Moving to Idle state");
+                activatingPlayer = player;
                 break;
 
             case State.IDLE:
@@ -188,12 +191,14 @@ public class CapacitorController : MonoBehaviour {
                     currentColor = shotColor;
                     SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.EMPTY, currentColor));
                 }
+
+                activatingPlayer = player;
                 //Debug.Log("Current Color = " + ChromaColorInfo.GetColorName(currentColor) + ". Current charge = " + currentCharge);
                 break;
         }
     }
 
-    public void ManualCharge(ChromaColor color)
+    public void ManualCharge(ChromaColor color, PlayerController player)
     {
         if (!active) return;
 
@@ -207,6 +212,7 @@ public class CapacitorController : MonoBehaviour {
                 //Debug.Log("Received first shot.");
                 //Debug.Log("Current Color = " + ChromaColorInfo.GetColorName(currentColor) + ". Current charge = " + currentCharge);
                 //Debug.Log("Moving to Idle state");
+                activatingPlayer = player;
                 break;
 
             case State.IDLE:
@@ -234,6 +240,7 @@ public class CapacitorController : MonoBehaviour {
                     currentColor = color;
                     SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.EMPTY, currentColor));
                 }
+                activatingPlayer = player;
                 //Debug.Log("Current Color = " + ChromaColorInfo.GetColorName(currentColor) + ". Current charge = " + currentCharge);
                 break;
         }
@@ -263,7 +270,7 @@ public class CapacitorController : MonoBehaviour {
             direction.y = 0;
             direction.Normalize();
             direction *= forceMultiplier;
-            enemy.ImpactedByBarrel(currentColor, damage, direction);
+            enemy.ImpactedByBarrel(currentColor, damage, direction, activatingPlayer);
         }
 
         attractingCollider.enabled = false;

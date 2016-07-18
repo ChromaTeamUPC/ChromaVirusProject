@@ -550,8 +550,7 @@ public class PlayerController : MonoBehaviour
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.collider.tag == "Enemy")
-        {
-            Debug.Log("Enemy touched!");
+        {           
             PlayerBaseState newState = currentState.EnemyTouched();
             if (newState != null)
             {

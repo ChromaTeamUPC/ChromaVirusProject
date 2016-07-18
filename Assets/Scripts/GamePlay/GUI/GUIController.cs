@@ -35,6 +35,8 @@ public class GUIController : MonoBehaviour
     public GameObject player1BlueButton;
     public GameObject player1YellowButton;
     public GameObject player1ColorsButton;
+    public Text player1ComboTxt;
+    private PlayerStats player1Stats;
     private bool player1ColorMismatch;
 
     [Header("Player 2 Items")]
@@ -51,6 +53,8 @@ public class GUIController : MonoBehaviour
     public GameObject player2BlueButton;
     public GameObject player2YellowButton;
     public GameObject player2ColorsButton;
+    public Text player2ComboTxt;
+    private PlayerStats player2Stats;
     private bool player2ColorMismatch;
 
     [Header("Central Panel")]
@@ -116,6 +120,9 @@ public class GUIController : MonoBehaviour
 
         player1ColorMismatch = false;
         player2ColorMismatch = false;
+
+        player1Stats = rsc.statsMng.p1Stats;
+        player2Stats = rsc.statsMng.p2Stats;
 
         DisableHintButtons(0);
 
@@ -214,6 +221,9 @@ public class GUIController : MonoBehaviour
 
             //Hints
             player1ButtonHints.transform.position = rsc.camerasMng.currentCamera.WorldToScreenPoint(player1Controller.hintPoint.position);
+
+            //Combo
+            player1ComboTxt.text = "x" + player1Stats.currentCombo;
         }
 
 
@@ -261,6 +271,9 @@ public class GUIController : MonoBehaviour
 
             //Hints
             player2ButtonHints.transform.position = rsc.camerasMng.currentCamera.WorldToScreenPoint(player2Controller.hintPoint.position);
+
+            //Combo
+            player2ComboTxt.text = "x" + player2Stats.currentCombo;
         }
 
         int secondFraction = (int)(Time.time * 10) % 10;

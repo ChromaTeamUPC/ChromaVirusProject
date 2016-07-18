@@ -178,11 +178,11 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     }
 
 
-    public virtual void ImpactedBySpecial(float damage, Vector3 direction)
+    public virtual void ImpactedBySpecial(float damage, Vector3 direction, PlayerController player)
     {
         if (currentState != null)
         {
-            AIBaseState newState = currentState.ImpactedBySpecial(damage, direction);
+            AIBaseState newState = currentState.ImpactedBySpecial(damage, direction, player);
 
             if (newState != null)
             {
@@ -191,16 +191,16 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         }
     }
 
-    public virtual AIBaseState ProcessSpecialImpact(float damage, Vector3 direction)
+    public virtual AIBaseState ProcessSpecialImpact(float damage, Vector3 direction, PlayerController player)
     {
         return null;
     }
 
-    public void ImpactedByBarrel(ChromaColor barrelColor, float damage, Vector3 direction)
+    public void ImpactedByBarrel(ChromaColor barrelColor, float damage, Vector3 direction, PlayerController player)
     {
         if (currentState != null)
         {
-            AIBaseState newState = currentState.ImpactedByBarrel(barrelColor, damage, direction);
+            AIBaseState newState = currentState.ImpactedByBarrel(barrelColor, damage, direction, player);
 
             if (newState != null)
             {
@@ -209,7 +209,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         }
     }
 
-    public virtual AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, float damage, Vector3 direction)
+    public virtual AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, float damage, Vector3 direction, PlayerController player)
     {
         return null;
     }

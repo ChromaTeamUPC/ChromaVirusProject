@@ -123,6 +123,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 
                 spiderBlackboard.lastShotDirection = direction;
                 spiderBlackboard.lastShotSameColor = (shotColor == color);
+                spiderBlackboard.lastShotPlayer = player;
                 return spiderBlackboard.dyingState;
             }
         }
@@ -131,7 +132,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     }
 
     //Not to be used outside FSM
-    public override AIBaseState ProcessSpecialImpact(float damage, Vector3 direction)
+    public override AIBaseState ProcessSpecialImpact(float damage, Vector3 direction, PlayerController player)
     {
         if (spiderBlackboard.canReceiveDamage && spiderBlackboard.HaveHealthRemaining())
         {
@@ -140,6 +141,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
             {
                 spiderBlackboard.lastShotDirection = direction;
                 spiderBlackboard.lastShotSameColor = true;
+                spiderBlackboard.lastShotPlayer = player;
                 return spiderBlackboard.dyingState;
             }
         }
@@ -149,7 +151,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 
 
     //Not to be used outside FSM
-    public override AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, float damage, Vector3 direction)
+    public override AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, float damage, Vector3 direction, PlayerController player)
     {
         //Harmless to other colors
         /*if (barrelColor != color)
@@ -162,6 +164,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
             {
                 spiderBlackboard.lastShotDirection = direction;
                 spiderBlackboard.lastShotSameColor = (barrelColor == color);
+                spiderBlackboard.lastShotPlayer = player;
                 return spiderBlackboard.dyingState;
             }
         }

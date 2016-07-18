@@ -63,6 +63,8 @@ public class EnemyDiedEventInfo : EventInfo
 
     public ChromaColor color;
     public int infectionValue;
+    public PlayerController killerPlayer;
+    public bool killedSameColor;
 }
 
 public class LevelEventInfo : EventInfo

@@ -163,6 +163,7 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
 
                 mosquitoBlackboard.lastShotDirection = direction;
                 mosquitoBlackboard.lastShotSameColor = (shotColor == color);
+                mosquitoBlackboard.lastShotPlayer = player;
                 return mosquitoBlackboard.dyingState;
             }
         }
@@ -171,7 +172,7 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
     }
 
     //Not to be used outside FSM
-    public override AIBaseState ProcessSpecialImpact(float damage, Vector3 direction)
+    public override AIBaseState ProcessSpecialImpact(float damage, Vector3 direction, PlayerController player)
     {
         if (mosquitoBlackboard.canReceiveDamage && mosquitoBlackboard.HaveHealthRemaining())
         {
@@ -180,6 +181,7 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
             {
                 mosquitoBlackboard.lastShotDirection = direction;
                 mosquitoBlackboard.lastShotSameColor = true;
+                mosquitoBlackboard.lastShotPlayer = player;
                 return mosquitoBlackboard.dyingState;
             }
         }
@@ -189,7 +191,7 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
 
 
     //Not to be used outside FSM
-    public override AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, float damage, Vector3 direction)
+    public override AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, float damage, Vector3 direction, PlayerController player)
     {
         //Harmless to other colors
         /*if (barrelColor != color)
@@ -202,6 +204,7 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
             {
                 mosquitoBlackboard.lastShotDirection = direction;
                 mosquitoBlackboard.lastShotSameColor = (barrelColor == color);
+                mosquitoBlackboard.lastShotPlayer = player;
                 return mosquitoBlackboard.dyingState;
             }
         }

@@ -108,7 +108,7 @@ public class PlayerShotController : MonoBehaviour {
         {
             CapacitorImpacted barrel = collision.collider.GetComponent<CapacitorImpacted>();
             if (barrel != null)
-                barrel.controller.ImpactedByShot(color);
+                barrel.controller.ImpactedByShot(color, player);
         }
 
         shotCollider.enabled = false;

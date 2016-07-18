@@ -111,7 +111,7 @@ public class PlayerSpecialState : PlayerBaseState {
             direction.Normalize();
             float totalForceMultiplier = baseForceMultiplier / Mathf.Pow(forceAttenuation, distance - 1);
             direction *= totalForceMultiplier;
-            enemy.ImpactedBySpecial(damage, direction);
+            enemy.ImpactedBySpecial(damage, direction, blackboard.player);
         }
 
         foreach (EnemyShotControllerBase shot in blackboard.shotsInRange)

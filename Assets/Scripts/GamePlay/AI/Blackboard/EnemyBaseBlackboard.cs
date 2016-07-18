@@ -30,6 +30,7 @@ public class EnemyBaseBlackboard
 
     public Vector3 lastShotDirection;
     public bool lastShotSameColor;
+    public PlayerController lastShotPlayer;
 
     public EnemyGroupInfo groupInfo;
 
@@ -64,6 +65,7 @@ public class EnemyBaseBlackboard
 
         lastShotDirection = Vector3.zero;
         lastShotSameColor = false;
+        lastShotPlayer = null;
 
         groupInfo = null;
     }

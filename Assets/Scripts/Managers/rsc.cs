@@ -17,6 +17,7 @@ public class rsc : MonoBehaviour
     public static RumbleManager rumbleMng;
     public static GameManager gameMng;
     public static VoxelizationManager voxelizationMng;
+    public static StatsManager statsMng;
     public static CoroutineHelper coroutineHlp;
 
     public static GameInfo gameInfo;
@@ -66,6 +67,8 @@ public class rsc : MonoBehaviour
     private GameManager gameManager;
     [SerializeField]
     private VoxelizationManager voxelizationManager;
+    [SerializeField]
+    private StatsManager statsManager;
     [SerializeField]
     private CoroutineHelper coroutineHelper;
 
@@ -155,6 +158,12 @@ public class rsc : MonoBehaviour
             {
                 //Debug.Log("Storing Voxelization Manager");
                 voxelizationMng = voxelizationManager;
+            }
+
+            if (statsMng == null)
+            {
+                //Debug.Log("Storing Stats Manager");
+                statsMng = statsManager;
             }
 
             if (coroutineHlp == null)
