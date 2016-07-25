@@ -67,7 +67,7 @@ public class Level01Controller : MonoBehaviour
 {
     public ZoneActivableObjects[] zoneActivableObjects;
 
-    private float respawnDelay = 4f;
+    private float respawnDelay = 2f;
     public Transform player1StartPoint;
     public Transform player2StartPoint;
 

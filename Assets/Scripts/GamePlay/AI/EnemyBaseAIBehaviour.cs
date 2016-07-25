@@ -17,8 +17,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     public ChromaColor color;
 
     protected VoxelizationClient voxelization;
-    [HideInInspector]
-    public Renderer rend;
+    protected Renderer rend;
     [HideInInspector]
     public Collider mainCollider;
     [HideInInspector]

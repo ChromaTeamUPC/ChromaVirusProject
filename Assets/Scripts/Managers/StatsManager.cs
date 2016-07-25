@@ -43,6 +43,7 @@ public class StatsManager : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameFinished);
         rsc.eventMng.StartListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
+        rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
     }
 
     void OnDestroy()
@@ -54,6 +55,7 @@ public class StatsManager : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameFinished);
             rsc.eventMng.StopListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
+            rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
         }
     }
 	
@@ -119,4 +121,27 @@ public class StatsManager : MonoBehaviour
         }
     }
 
+    private void PlayerDied(EventInfo eventInfo)
+    {
+        PlayerEventInfo info = (PlayerEventInfo)eventInfo;
+
+        PlayerStats stats;
+
+        switch (info.player.Id)
+        {
+            case 1:
+                stats = p1Stats;
+                break;
+
+            case 2:
+                stats = p2Stats;
+                break;
+
+            default:
+                stats = p1Stats;
+                break;
+        }
+
+        stats.currentCombo = 0;
+    }
 }

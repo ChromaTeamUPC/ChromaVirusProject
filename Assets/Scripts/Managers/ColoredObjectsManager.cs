@@ -41,6 +41,14 @@ public class ColoredObjectsManager : MonoBehaviour
     private Material[] mosquitoMats = new Material[4];
     private Material currentMosquitoMat;
 
+    //Worm Materials
+    [SerializeField]
+    private Material wormGreyMat;
+    [SerializeField]
+    private Material wormWireframeMat;
+    [SerializeField]
+    private Material[] wormMats = new Material[4];
+
     //Floor Materials
     [SerializeField]
     private Material floorWhiteMat;
@@ -289,6 +297,22 @@ public class ColoredObjectsManager : MonoBehaviour
     public MosquitoWeakShotController GetMosquitoWeakShot(ChromaColor color)
     {
         return mosquitoWeakShotPools[(int)color].GetObject();
+    }
+
+    //Worm methods
+    public Material GetWormGreyMaterial()
+    {
+        return wormGreyMat;
+    }
+
+    public Material GetWormWireframeMaterial()
+    {
+        return wormWireframeMat;
+    }
+
+    public Material GetWormBodyMaterial(ChromaColor color)
+    {
+        return GetMaterial(wormMats, color);
     }
 
     //Voxel methods

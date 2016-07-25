@@ -12,8 +12,7 @@ public class PlayerShotController : MonoBehaviour {
 
     private PlayerShotInfo shotInfo;*/
 
-    [SerializeField]
-    private ChromaColor color;
+    public ChromaColor color;
 
     [SerializeField]
     private int speed;
@@ -27,7 +26,7 @@ public class PlayerShotController : MonoBehaviour {
     [Range(0,20)]
     private float maxDuration;
 
-    private PlayerController player;
+    public PlayerController player;
 
     [SerializeField]
     private GameObject impactParticlePrefab;
@@ -43,9 +42,6 @@ public class PlayerShotController : MonoBehaviour {
 
     private int defaultDamage;
     private float currentDuration;
-
-    public int Damage { set { damage = value; } }
-    public PlayerController Player { set { player = value; } }
 
     void Awake()
     {
@@ -80,6 +76,11 @@ public class PlayerShotController : MonoBehaviour {
             ReturnToPool();
     }
 
+    public Vector3 GetImpactVector()
+    {
+        return transform.forward * forceMultiplier;
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         //Stop shot
@@ -109,6 +110,12 @@ public class PlayerShotController : MonoBehaviour {
             CapacitorImpacted barrel = collision.collider.GetComponent<CapacitorImpacted>();
             if (barrel != null)
                 barrel.controller.ImpactedByShot(color, player);
+        }
+        else if (collision.collider.tag == "WormBody")
+        {
+            WormBodySegmentController worm = collision.collider.GetComponent<WormBodySegmentController>();
+            if (worm != null)
+                worm.ImpactedByShot(color, damage, player);
         }
 
         shotCollider.enabled = false;

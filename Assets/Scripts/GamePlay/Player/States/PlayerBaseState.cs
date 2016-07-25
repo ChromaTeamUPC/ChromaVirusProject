@@ -271,7 +271,7 @@ public class PlayerBaseState
                             shot.transform.position = shotSpawn.position;
                             shot.transform.rotation = shotSpawn.rotation;
                             shot.damage *= 2;
-                            shot.Player = blackboard.player;
+                            shot.player = blackboard.player;
                             shot.Shoot();
 
                             Transform muzzlePoint = blackboard.player.muzzlePoint;
@@ -300,7 +300,7 @@ public class PlayerBaseState
                             shot1.transform.rotation = shotSpawn.rotation;
                             shot1.transform.position = shotSpawn.position;
                             shot1.transform.Translate(new Vector3(shotSideOffset, 0, 0));
-                            shot1.Player = blackboard.player;
+                            shot1.player = blackboard.player;
                             shot1.Shoot();
 
                             muzzle1.transform.position = muzzlePoint.position;
@@ -312,7 +312,7 @@ public class PlayerBaseState
                             shot2.transform.rotation = shotSpawn.rotation;
                             shot2.transform.position = shotSpawn.position;
                             shot2.transform.Translate(new Vector3(-shotSideOffset, 0, 0));
-                            shot2.Player = blackboard.player;
+                            shot2.player = blackboard.player;
                             shot2.Shoot();
 
                             muzzle2.transform.position = muzzlePoint.position;

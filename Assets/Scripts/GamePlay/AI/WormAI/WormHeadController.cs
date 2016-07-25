@@ -4,7 +4,7 @@ using System.Collections;
 public class WormHeadController : MonoBehaviour 
 {
     private float fTurnRate = 90.0f;  // 90 degrees of turning per second
-    private float fSpeed = 1.0f;  // Units per second of movement;
+    private float fSpeed = 3.0f;  // Units per second of movement;
 
     void Update()
     {
