@@ -27,7 +27,7 @@ public class WormAIWanderingState : WormAIBaseState
     {
         base.OnStateEnter();
 
-        head = blackboard.worm.head.transform;
+        head = bb.headTrf.transform;
 
         SetInitialState();
     }
@@ -41,17 +41,17 @@ public class WormAIWanderingState : WormAIBaseState
         WormRoute newRoute;
         do
         {
-            int routeNum = Random.Range(0, blackboard.worm.routes.Length);
-            newRoute = blackboard.worm.routes[routeNum];
+            int routeNum = Random.Range(0, bb.worm.routes.Length);
+            newRoute = bb.worm.routes[routeNum];
         }
         while (route == newRoute);
 
         route = newRoute;
 
-        blackboard.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
-        blackboard.agent.enabled = true;
-        blackboard.agent.speed = blackboard.worm.undergroundSpeed;
-        blackboard.agent.SetDestination(route.wayPoints[WPIndex].transform.position - blackboard.navMeshLayersDistance);
+        bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
+        bb.agent.enabled = true;
+        bb.agent.speed = bb.undergroundSpeed;
+        bb.agent.SetDestination(route.wayPoints[WPIndex].transform.position - bb.navMeshLayersDistance);
     }
 
     public override WormAIBaseState Update()
@@ -59,15 +59,15 @@ public class WormAIWanderingState : WormAIBaseState
         switch (subState)
         {
             case SubState.GOING_TO_ENTRY:
-                if(blackboard.agent.hasPath && blackboard.agent.remainingDistance <= 0.25f)
+                if(bb.agent.hasPath && bb.agent.remainingDistance <= 0.25f)
                 {
-                    blackboard.agent.enabled = false;
+                    bb.agent.enabled = false;
 
                     currentWP = route.wayPoints[WPIndex].transform.position;
                     nextWP = route.wayPoints[WPIndex +1].transform.position;
 
-                    Vector3 currentWPUG = currentWP - blackboard.navMeshLayersDistance;
-                    Vector3 nextWPUG = nextWP - blackboard.navMeshLayersDistance;
+                    Vector3 currentWPUG = currentWP - bb.navMeshLayersDistance;
+                    Vector3 nextWPUG = nextWP - bb.navMeshLayersDistance;
 
                     Vector3 headUp = currentWPUG - nextWPUG;
                     //Rotate head
@@ -78,16 +78,18 @@ public class WormAIWanderingState : WormAIBaseState
                 break;
 
             case SubState.ENTERING:
+                head.position = Vector3.MoveTowards(head.position, head.position + head.forward, Time.deltaTime * bb.floorSpeed);
+
                 //Go up
                 if(head.position.y < currentWP.y)
                 {
-                    head.position = Vector3.MoveTowards(head.position, currentWP, Time.deltaTime * blackboard.worm.floorSpeed);
+                    head.position = Vector3.MoveTowards(head.position, currentWP, Time.deltaTime * bb.floorSpeed);
                 }
                 //Then rotate
                 else if (Vector3.Angle(head.forward, nextWP - head.position) > 1)
                 {
                     lookRotation = Quaternion.LookRotation(nextWP - head.position, Vector3.up);
-                    head.rotation = Quaternion.RotateTowards(head.rotation, lookRotation, Time.deltaTime * blackboard.worm.rotationSpeed);
+                    head.rotation = Quaternion.RotateTowards(head.rotation, lookRotation, Time.deltaTime * bb.rotationSpeed);
                 }
                 //Then start following path
                 else
@@ -95,22 +97,22 @@ public class WormAIWanderingState : WormAIBaseState
                     ++WPIndex;
                     currentWP = route.wayPoints[WPIndex].transform.position;
 
-                    blackboard.agent.areaMask = WormBlackboard.NAVMESH_FLOOR_LAYER;
-                    blackboard.agent.enabled = true;
-                    blackboard.agent.speed = blackboard.worm.floorSpeed;
-                    blackboard.agent.SetDestination(currentWP);
+                    bb.agent.areaMask = WormBlackboard.NAVMESH_FLOOR_LAYER;
+                    bb.agent.enabled = true;
+                    bb.agent.speed = bb.floorSpeed;
+                    bb.agent.SetDestination(currentWP);
 
                     subState = SubState.FOLLOWING_PATH;
                 }
                 break;
 
             case SubState.FOLLOWING_PATH:
-                if (blackboard.agent.hasPath && blackboard.agent.remainingDistance <= 0.25f)
+                if (bb.agent.hasPath && bb.agent.remainingDistance <= 0.25f)
                 {
                     //If it was the last WP, exit
                     if (WPIndex == route.wayPoints.Length -1)
                     {
-                        blackboard.agent.enabled = false;
+                        bb.agent.enabled = false;
 
                         subState = SubState.EXITING;
                     }
@@ -118,7 +120,7 @@ public class WormAIWanderingState : WormAIBaseState
                     {
                         ++WPIndex;
                         currentWP = route.wayPoints[WPIndex].transform.position;
-                        blackboard.agent.SetDestination(currentWP);
+                        bb.agent.SetDestination(currentWP);
                     }
                 }
                 break;
@@ -128,12 +130,12 @@ public class WormAIWanderingState : WormAIBaseState
                 if(Vector3.Angle(head.forward, Vector3.down) > 1)
                 {
                     lookRotation = Quaternion.LookRotation(Vector3.down, head.forward);
-                    head.rotation = Quaternion.RotateTowards(head.rotation, lookRotation, Time.deltaTime * blackboard.worm.rotationSpeed);
+                    head.rotation = Quaternion.RotateTowards(head.rotation, lookRotation, Time.deltaTime * bb.rotationSpeed);
                 }
                 //go down
                 else if (head.position.y > currentWP.y - WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {
-                    head.position = Vector3.MoveTowards(head.position, currentWP - blackboard.navMeshLayersDistance, Time.deltaTime * blackboard.worm.floorSpeed);
+                    head.position = Vector3.MoveTowards(head.position, currentWP - bb.navMeshLayersDistance, Time.deltaTime * bb.floorSpeed);
                 }
                 //else decide what's next
                 else

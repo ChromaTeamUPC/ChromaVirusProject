@@ -3,11 +3,11 @@ using System.Collections;
 
 public class WormAIBaseState
 {
-    public WormBlackboard blackboard;
+    public WormBlackboard bb;
 
     public WormAIBaseState(WormBlackboard bb)
     {
-        blackboard = bb;
+        this.bb = bb;
     }
 
     virtual public void Init() { }

@@ -4,6 +4,7 @@ using System.Collections;
 
 public class ColoredObjectsManager : MonoBehaviour
 {
+    [Header("Basic Materials")]
     [SerializeField]
     private Material whiteMaterial;
     [SerializeField]
@@ -17,6 +18,7 @@ public class ColoredObjectsManager : MonoBehaviour
     private Color[] treeColors = new Color[4];
 
     //Player
+    [Header("Player Materials")]
     [SerializeField]
     private Material[] player1Mats = new Material[4];
 
@@ -27,10 +29,12 @@ public class ColoredObjectsManager : MonoBehaviour
     private Material[] player1TrailMats = new Material[4];
 
     //Voxel Materials
+    [Header("Voxel Materials")]
     [SerializeField]
     private Material[] voxelMats = new Material[6];
     private Material currentVoxelMat;
 
+    [Header("Enemies Materials")]
     //Spider Materials
     [SerializeField]
     private Material[] spiderMats = new Material[4];
@@ -43,12 +47,17 @@ public class ColoredObjectsManager : MonoBehaviour
 
     //Worm Materials
     [SerializeField]
-    private Material wormGreyMat;
+    private Material[] wormHeadMats = new Material[4];
     [SerializeField]
-    private Material wormWireframeMat;
+    private Material wormBodyGreyMat;
     [SerializeField]
-    private Material[] wormMats = new Material[4];
+    private Material wormBodyWireframeMat;
+    [SerializeField]
+    private Material[] wormBodyMats = new Material[4];
+    [SerializeField]
+    private Material[] wormBodyDimMats = new Material[4];
 
+    [Header("Stage Materials")]
     //Floor Materials
     [SerializeField]
     private Material floorWhiteMat;
@@ -59,6 +68,7 @@ public class ColoredObjectsManager : MonoBehaviour
     [SerializeField]
     private Material[] bridgeMats = new Material[4];
 
+    [Header("Props Materials")]
     //Capacitor Materials
     [SerializeField]
     private Material[] capacitorEmptyMats = new Material[4];
@@ -300,19 +310,29 @@ public class ColoredObjectsManager : MonoBehaviour
     }
 
     //Worm methods
-    public Material GetWormGreyMaterial()
+    public Material GetWormHeadMaterial(int chargeLevel)
     {
-        return wormGreyMat;
+        return wormHeadMats[chargeLevel];
     }
 
-    public Material GetWormWireframeMaterial()
+    public Material GetWormBodyGreyMaterial()
     {
-        return wormWireframeMat;
+        return wormBodyGreyMat;
+    }
+
+    public Material GetWormBodyWireframeMaterial()
+    {
+        return wormBodyWireframeMat;
     }
 
     public Material GetWormBodyMaterial(ChromaColor color)
     {
-        return GetMaterial(wormMats, color);
+        return GetMaterial(wormBodyMats, color);
+    }
+
+    public Material GetWormBodyDimMaterial(ChromaColor color)
+    {
+        return GetMaterial(wormBodyDimMats, color);
     }
 
     //Voxel methods

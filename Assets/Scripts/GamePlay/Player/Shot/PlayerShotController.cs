@@ -117,6 +117,12 @@ public class PlayerShotController : MonoBehaviour {
             if (worm != null)
                 worm.ImpactedByShot(color, damage, player);
         }
+        else if (collision.collider.tag == "WormHead")
+        {
+            WormAIBehaviour worm = collision.collider.GetComponent<WormAIBehaviour>();
+            if (worm != null)
+                worm.ImpactedByShot(color, damage, player);
+        }
 
         shotCollider.enabled = false;
         //We let the impactParticle do its job

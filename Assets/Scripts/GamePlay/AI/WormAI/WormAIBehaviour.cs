@@ -4,25 +4,29 @@ using System.Collections.Generic;
 
 public class WormAIBehaviour : MonoBehaviour
 {
-    private WormBlackboard blackboard;
+    private enum HeadSubState
+    {
+        DEACTIVATED,
+        ACTIVATED
+    }
 
-    public float floorSpeed = 8;
-    public float undergroundSpeed = 12;
-    public float rotationSpeed = 360;
+    private WormBlackboard bb;
 
-    public Transform head;
-    public Transform[] bodySegments;
-    private List<WormBodySegmentController> bodySegmentControllers;
-    public Transform tail;
-
-    public float headToSegmentDistance;
-    public float segmentToSegmentDistance;
-    public float segmentToTailDistance;
-
+    [Header("Route Settings")]
     public WormRoute[] routes;
     private WormWayPoint headWayPoint;
 
+    //Shortcuts
+    private Transform head;
+    private Transform[] bodySegments;
+    private Transform tail;
+
+    private HeadSubState headState;
     private WormAIBaseState currentState;
+
+    private BlinkController blinkController;
+    private Renderer rend;
+    private VoxelizationClient voxelization;
 
     private Color[] gizmosColors = { Color.blue, Color.cyan, Color.green, Color.grey, Color.magenta, Color.red, Color.yellow };
     //Debug
@@ -51,17 +55,25 @@ public class WormAIBehaviour : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        blackboard = new WormBlackboard();
-        blackboard.InitialSetup(gameObject);
-
-        SetInitialBodyWayPoints();
+        bb = GetComponent<WormBlackboard>();
+        blinkController = GetComponent<BlinkController>();
+        rend = GetComponentInChildren<Renderer>();
+        voxelization = GetComponentInChildren<VoxelizationClient>();
     }
 
     void Start()
     {
-        InitBodyParts();
+        head = bb.headTrf;
+        bodySegments = bb.bodySegmentsTrf;
+        tail = bb.tailTrf;
 
-        ChangeState(blackboard.wanderingState);
+        SetInitialBodyWayPoints();
+
+        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel) });
+
+        headState = HeadSubState.DEACTIVATED;
+
+        ChangeState(bb.wanderingState);
     }
 
     // Update is called once per frame
@@ -97,41 +109,88 @@ public class WormAIBehaviour : MonoBehaviour
 
     public void ChargeHead()
     {
+        bb.headChargeLevel++;
+        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel) });
 
+        if (bb.headChargeLevel >= bb.headChargeMaxLevel)
+        {
+            bb.DisableBodyParts();
+            headState = HeadSubState.ACTIVATED;
+        }
     }
 
     public void DischargeHead()
     {
-        ShuffleBodyParts();
+        bb.headChargeLevel = 0;
+        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel) });
+        bb.ShuffleBodyParts();
     }
 
-    //
-    public void InitBodyParts()
+    private void SetMaterial(Material[] materials)
     {
-        List<WormBodySegmentController> randomized = new List<WormBodySegmentController>(bodySegmentControllers);
+        Material[] mats = rend.sharedMaterials;
 
-        randomized.Shuffle();
-        randomized.Shuffle();
-
-        //Init each segment color
-        for (int i = 0; i < randomized.Count; ++i)
+        if (mats[0] != materials[0])
         {
-            randomized[i].Init((ChromaColor)(i % ChromaColorInfo.Count));
+            mats[0] = materials[0];
+            rend.sharedMaterials = mats;
+
+            blinkController.InvalidateMaterials();
         }
     }
 
-    public void ShuffleBodyParts()
+    public void ImpactedByShot(ChromaColor shotColor, float damage, PlayerController player)
     {
-        List<WormBodySegmentController> randomized = new List<WormBodySegmentController>(bodySegmentControllers);
+        if (headState != HeadSubState.ACTIVATED) return;
+   
+        bb.headCurrentHealth -= damage;
 
-        randomized.Shuffle();
-        randomized.Shuffle();
-
-        //Init each segment color
-        for (int i = 0; i < randomized.Count; ++i)
+        if (bb.headCurrentHealth <= 0)
         {
-            randomized[i].Reset((ChromaColor)(i % ChromaColorInfo.Count));
+            //If we are not reached last phase, keep going
+            if (bb.wormPhase < bb.wormMaxPhases)
+            {
+                bb.wormPhase++;
+                SetPhase();
+            }
+            //Else worm destroyed
+            else
+            {
+                ChangeState(bb.dyingState);
+            }
         }
+    }
+
+    private void SetPhase()
+    {
+        //Different settings each phase?
+        //reset head health
+        bb.headCurrentHealth = bb.headMaxHealth;
+        bb.headChargeLevel = 0;
+        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel) });
+        bb.ConsolidateBodyParts();
+    }
+
+    public void Explode()
+    {
+        StartCoroutine(RandomizeAndExplode());
+    }
+
+    private IEnumerator RandomizeAndExplode()
+    {
+        float elapsedTime = 0;
+        int chargeLevel = 0;
+
+        while (elapsedTime < bb.bodySettingMinTime)
+        {
+            SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(chargeLevel++ % 4) });
+
+            yield return new WaitForSeconds(bb.bodySettingChangeTime);
+            elapsedTime += bb.bodySettingChangeTime;
+        }
+
+        voxelization.SpawnFakeVoxels();
+        Destroy(gameObject);
     }
 
     //Body movement functions
@@ -144,12 +203,10 @@ public class WormAIBehaviour : MonoBehaviour
             headWayPoint = new WormWayPoint(tail.position, tail.rotation);
         }
 
-        bodySegmentControllers = new List<WormBodySegmentController>();
         for (int i = bodySegments.Length - 1; i >= 0; --i)
         {
             WormWayPoint segmentWayPoint = new WormWayPoint(bodySegments[i].position, bodySegments[i].rotation, (headWayPoint != null ? headWayPoint : null));
             headWayPoint = segmentWayPoint;
-            bodySegmentControllers.Add(bodySegments[i].GetComponent<WormBodySegmentController>());
         }
 
         if (head != null)
@@ -170,7 +227,7 @@ public class WormAIBehaviour : MonoBehaviour
             //if we are in the last waypoint, there is nothing more we can do, so we quit
             if (next == null) return;
 
-            float totalDistance = headToSegmentDistance;                            //Total distance we have to position the element from the head
+            float totalDistance = bb.headToSegmentDistance;                            //Total distance we have to position the element from the head
             float consolidatedDistance = 0f;                                        //Sum of the distances of evaluated waypoints
             float distanceBetween = (current.position - next.position).magnitude;   //Distance between current current and next waypoints
 
@@ -207,14 +264,14 @@ public class WormAIBehaviour : MonoBehaviour
                 //else add total distance for the next iteration
                 else
                 {
-                    totalDistance += segmentToSegmentDistance;
+                    totalDistance += bb.segmentToSegmentDistance;
                 }
             }
 
             //finally do the same for the tail
             if (tail != null)
             {
-                totalDistance += segmentToTailDistance;
+                totalDistance += bb.segmentToTailDistance;
 
                 //advance through waypoints until we find the proper distance
                 while (consolidatedDistance + distanceBetween < totalDistance)
