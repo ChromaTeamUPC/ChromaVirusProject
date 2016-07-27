@@ -154,8 +154,8 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     public override AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, float damage, Vector3 direction, PlayerController player)
     {
         //Harmless to other colors
-        /*if (barrelColor != color)
-            return null;*/
+        if (barrelColor != color)
+            return null;
 
         if (spiderBlackboard.canReceiveDamage && spiderBlackboard.HaveHealthRemaining())
         {
