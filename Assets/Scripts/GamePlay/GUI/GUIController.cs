@@ -149,7 +149,8 @@ public class GUIController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.BUTTON_HINT, ButtonHint);
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
-        rsc.eventMng.StartListening(EventManager.EventType.ZONE_REACHED, ZoneReached);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
+        rsc.eventMng.StartListening(EventManager.EventType.START_CUT_SCENE, StartCutScene);
         rsc.eventMng.StartListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
     }
 
@@ -168,7 +169,8 @@ public class GUIController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.BUTTON_HINT, ButtonHint);
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
-            rsc.eventMng.StopListening(EventManager.EventType.ZONE_REACHED, ZoneReached);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
+            rsc.eventMng.StopListening(EventManager.EventType.START_CUT_SCENE, StartCutScene);
             rsc.eventMng.StopListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
         }
     }
@@ -538,9 +540,16 @@ public class GUIController : MonoBehaviour
         nextColorSlider.value = 0f;
     }
 
-    private void ZoneReached(EventInfo eventInfo)
+    private void LevelStarted(EventInfo eventInfo)
     {
         infectionAndNextColorZone.SetActive(true);
+    }
+
+    private void StartCutScene(EventInfo eventInfo)
+    {
+        CutSceneEventInfo info = (CutSceneEventInfo)eventInfo;
+
+        skipHint.SetActive(info.skippeable);
     }
 
     private void CameraEnded(EventInfo eventInfo)

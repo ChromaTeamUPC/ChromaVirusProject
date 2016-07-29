@@ -77,6 +77,16 @@ public class CamerasManager : MonoBehaviour {
             ToggleCameraFollowPlayers();
     }
 
+    public void SetEntryCameraLevelAnimation(int levelAnimation)
+    {
+        entryCameraObj.GetComponent<EntryCameraController>().SetLevelAnimation(levelAnimation);
+    }
+
+    public void SetMainCameraPositionToEntryCameraPosition()
+    {
+        mainCameraObj.transform.position = entryCameraObj.transform.position;
+    }
+
     public void ChangeCamera(int cameraIndex)
     {
         //Disable all cameras

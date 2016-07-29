@@ -86,6 +86,13 @@ public class DeviceEventInfo : EventInfo
     public DeviceController device;
 }
 
+public class CutSceneEventInfo : EventInfo
+{
+    public static CutSceneEventInfo eventInfo = new CutSceneEventInfo();
+
+    public bool skippeable;
+}
+
 public class ButtonHintEventInfo : EventInfo
 {
     public enum ButtonType
@@ -150,6 +157,7 @@ public class EventManager : MonoBehaviour {
         COLOR_WILL_CHANGE,
         COLOR_CHANGED,
 
+        START_CUT_SCENE,
         CAMERA_ANIMATION_ENDED,
         CAMERA_CHANGED,
 

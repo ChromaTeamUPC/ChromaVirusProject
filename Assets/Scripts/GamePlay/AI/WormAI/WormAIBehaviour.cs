@@ -35,10 +35,7 @@ public class WormAIBehaviour : MonoBehaviour
 
         for (int i = 0; i < routes.Length; ++i)
         {
-            WormRoute route = routes[i];
-
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(route.wayPoints[0].transform.position, 1f);
+            WormRoute route = routes[i];         
 
             Gizmos.color = gizmosColors[i % gizmosColors.Length];
 
@@ -46,6 +43,9 @@ public class WormAIBehaviour : MonoBehaviour
             {
                 Gizmos.DrawLine(route.wayPoints[j - 1].transform.position, route.wayPoints[j].transform.position);
             }
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(route.wayPoints[0].transform.position, 1f);
 
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(route.wayPoints[route.wayPoints.Length-1].transform.position, 1f);
@@ -73,7 +73,7 @@ public class WormAIBehaviour : MonoBehaviour
 
         headState = HeadSubState.DEACTIVATED;
 
-        ChangeState(bb.wanderingState);
+        ChangeState(bb.spawningState);
     }
 
     // Update is called once per frame

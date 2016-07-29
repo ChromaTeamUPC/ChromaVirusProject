@@ -21,6 +21,7 @@ public class WormBlackboard : MonoBehaviour
     public Vector3 navMeshLayersDistance;
 
     [HideInInspector]
+    public WormAISpawningState spawningState;
     public WormAIWanderingState wanderingState;
 
     public WormAIDyingState dyingState;
@@ -44,6 +45,26 @@ public class WormBlackboard : MonoBehaviour
     public float undergroundSpeed = 10;
     public float rotationSpeed = 180;
 
+    [Header("Jump Settings")]
+    public float jumpOffset = 1.3f;
+    public float jumpHeightToDistanceRatio = 1f;
+    [HideInInspector]
+    public Vector3 jumpOrigin;
+    [HideInInspector]
+    public Vector3 jumpDestiny;
+    [HideInInspector]
+    public Vector3 jumpCenter;
+    [HideInInspector]
+    public float jumpDistance;
+    [HideInInspector]
+    public float jumpHalfDistance;
+    [HideInInspector]
+    public float jumpMaxHeight;
+    [HideInInspector]
+    public float jumpParabolaAperture;
+    [HideInInspector]
+    public Vector3 jumpDirectionVector;
+
     [Header("Body Settings")]
     public Transform headTrf;
     [HideInInspector]
@@ -53,6 +74,8 @@ public class WormBlackboard : MonoBehaviour
     public Transform tailTrf;
     [HideInInspector]
     public WormTailController tail;
+    [HideInInspector]
+    public bool tailIsUnderground;
 
     public float headToSegmentDistance;
     public float segmentToSegmentDistance;
@@ -61,6 +84,10 @@ public class WormBlackboard : MonoBehaviour
     public float bodySettingMinTime = 1f;
     public float bodySettingMaxTime = 3f;
     public float bodySettingChangeTime = 0.1f;
+
+    [Header("Test variables")]
+    public GameObject spawnEntry;
+    public GameObject spawnExit;
 
     public void Awake()
     {
@@ -71,6 +98,7 @@ public class WormBlackboard : MonoBehaviour
         animator = GetComponent<Animator>();
         navMeshLayersDistance = new Vector3(0, WormBlackboard.NAVMESH_LAYER_HEIGHT, 0);
         tail = tailTrf.gameObject.GetComponent<WormTailController>();
+        tail.SetBlackboard(this);
 
         bodySegmentControllers = new List<WormBodySegmentController>();
         for (int i = 0; i < bodySegmentsTrf.Length; ++i)
@@ -80,6 +108,7 @@ public class WormBlackboard : MonoBehaviour
             bodySegmentControllers.Add(ctrl);
         }
 
+        spawningState = new WormAISpawningState(this);
         wanderingState = new WormAIWanderingState(this);
         dyingState = new WormAIDyingState(this);
 
@@ -168,5 +197,78 @@ public class WormBlackboard : MonoBehaviour
         //head explode
         yield return new WaitForSeconds(0.2f);
         worm.Explode();
+    }
+
+    public void CalculateParabola()
+    {
+        /*Info needed to apply the formula ax^2 + bx + c = y:
+         * We can ignore bx completely
+         * Origin on y = 0. (Entry hexagon. Should be assigned before call this function)
+         * Destiny on y = 0. (Exit hexagon. Should be assigned before call this function)
+         * Distance between Origin and Destiny
+         * Half distance. this will be the x1 and x2 for the formula y to be 0
+         * Desired max height. Could be proportional to distance. This will be the c factor.
+         * Parabola aperture. This will be the a factor
+         */
+        jumpDirectionVector = (jumpDestiny - jumpOrigin).normalized;
+
+        Vector3 offsetVector = jumpDirectionVector * jumpOffset;
+        jumpOrigin += offsetVector;
+        jumpDestiny -= offsetVector;
+
+        jumpCenter = jumpOrigin + ((jumpDestiny - jumpOrigin) / 2);
+        jumpDistance = (jumpOrigin - jumpDestiny).magnitude;
+        jumpHalfDistance = jumpDistance / 2;
+
+        jumpMaxHeight = jumpDistance * jumpHeightToDistanceRatio;
+
+        jumpParabolaAperture = -jumpMaxHeight / (jumpHalfDistance * jumpHalfDistance);
+
+    }
+
+    public float GetJumpYGivenX(float x)
+    {
+        /* a*x^2 + c = y
+           jumpParabolaAperture * x^2 + jumpMaxHeight = y/
+         */
+
+        return (jumpParabolaAperture * (x * x)) + jumpMaxHeight;
+    }
+
+    public float GetJumpXGivenY(float y, bool positiveSide = true)
+    {
+        /* a*x^2 + c = y
+           jumpParabolaAperture * x^2 + jumpMaxHeight = y
+           x = +- sqrt(y - jumpMaxHeight / jumpParabolaAperture)
+         */
+
+        float x = Mathf.Sqrt((y - jumpMaxHeight) / jumpParabolaAperture);
+        if (!positiveSide)
+            x = -x;
+
+        return x;
+    }
+
+    private Vector3 GetJumpPosition(float x, float y)
+    {
+        Vector3 direction = jumpDirectionVector * x;
+        Vector3 position = jumpCenter + direction;
+        position.y = y;
+
+        return position;
+    }
+    
+    public Vector3 GetJumpPositionGivenX(float x)
+    {
+        float y = GetJumpYGivenX(x);
+
+        return GetJumpPosition(x, y);
+    }
+
+    public Vector3 GetJumpPositionGivenY(float y, bool positiveSide = true)
+    {
+        float x = GetJumpXGivenY(y, positiveSide);
+
+        return GetJumpPosition(x, y);
     }
 }

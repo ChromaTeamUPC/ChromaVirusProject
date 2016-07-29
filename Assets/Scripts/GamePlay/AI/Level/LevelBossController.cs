@@ -48,6 +48,7 @@ public class LevelBossController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameFinished);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameFinished);
 
+        rsc.camerasMng.SetEntryCameraLevelAnimation(-1);
 
         fadeScript.StartFadingToClear();
         rsc.audioMng.FadeInMainMusic();
@@ -67,6 +68,7 @@ public class LevelBossController : MonoBehaviour
 
     private void CameraEnded(EventInfo eventInfo)
     {
+        rsc.camerasMng.SetMainCameraPositionToEntryCameraPosition();
         rsc.camerasMng.ChangeCamera(0);
 
         if (rsc.gameInfo.player1Controller.Active)
@@ -79,6 +81,7 @@ public class LevelBossController : MonoBehaviour
         }
 
         rsc.colorMng.Activate();
+        rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_STARTED, EventInfo.emptyInfo);
     }
 
     private void PlayerOutOfZone(EventInfo eventInfo)

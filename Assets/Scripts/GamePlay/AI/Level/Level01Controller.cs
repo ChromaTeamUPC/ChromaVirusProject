@@ -171,6 +171,7 @@ public class Level01Controller : MonoBehaviour
             }
             rsc.colorMng.Activate();
             floor.Activate();
+            rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_STARTED, EventInfo.emptyInfo);
         }
 
         currentZoneObjects.ZoneReached();
