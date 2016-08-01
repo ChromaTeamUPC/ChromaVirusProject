@@ -5,16 +5,16 @@ public class PlayerInvisibleState : PlayerBaseState {
 
     public override void OnStateEnter()
     {
-        blackboard.horizontalDirection = Vector3.zero;
-        blackboard.blinkController.StopPreviousBlinkings();
-        blackboard.updateVerticalPosition = false;
-        blackboard.player.MakeInvisible();
+        bb.horizontalDirection = Vector3.zero;
+        bb.blinkController.StopPreviousBlinkings();
+        bb.updateVerticalPosition = false;
+        bb.player.MakeInvisible();
     }
 
     public override void OnStateExit()
     {
-        blackboard.updateVerticalPosition = true;
-        blackboard.player.MakeVisible();
+        bb.updateVerticalPosition = true;
+        bb.player.MakeVisible();
     }
 
     public override void RetrieveInput() { }

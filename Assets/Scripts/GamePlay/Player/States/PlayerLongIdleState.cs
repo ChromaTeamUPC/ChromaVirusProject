@@ -7,8 +7,8 @@ public class PlayerLongIdleState : PlayerBaseState
     public override void OnStateEnter()
     {
         //select random idle animation
-        blackboard.animator.SetTrigger("LongIdle");
-        blackboard.animationEnded = false;
+        bb.animator.SetTrigger("LongIdle");
+        bb.animationEnded = false;
     }
 
     public override void OnStateExit()
@@ -19,20 +19,20 @@ public class PlayerLongIdleState : PlayerBaseState
     {
         if (CanDoSpecial())
         {
-            return blackboard.specialState;
+            return bb.specialState;
         }
-        else if (blackboard.dashPressed)
+        else if (bb.dashPressed)
         {
-            return blackboard.dashingState;
+            return bb.dashingState;
             //return blackboard.speedBumpState;
         }
-        else if (blackboard.speedBumpPressed)
+        else if (bb.speedBumpPressed)
         {
-            return blackboard.speedBumpState;
+            return bb.speedBumpState;
         }
-        else if (blackboard.movePressed)
+        else if (bb.movePressed)
         {
-            return blackboard.movingState;
+            return bb.movingState;
         }
         else
         {
@@ -44,16 +44,16 @@ public class PlayerLongIdleState : PlayerBaseState
 
             Shoot();
 
-            if (blackboard.KeyPressed)
+            if (bb.KeyPressed)
             {
-                blackboard.animator.SetTrigger("KeyPressed");
-                return blackboard.idleState;
+                bb.animator.SetTrigger("KeyPressed");
+                return bb.idleState;
             }
         }
 
-        if (blackboard.animationEnded)
+        if (bb.animationEnded)
         {
-            return blackboard.idleState;
+            return bb.idleState;
         }
         
         return null;

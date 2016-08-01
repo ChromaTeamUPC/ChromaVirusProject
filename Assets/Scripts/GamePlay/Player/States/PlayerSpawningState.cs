@@ -7,25 +7,25 @@ public class PlayerSpawningState : PlayerBaseState {
 
     public override void OnStateEnter()
     {
-        blackboard.horizontalDirection = Vector3.zero;
+        bb.horizontalDirection = Vector3.zero;
 
-        blackboard.animator.Rebind();
+        bb.animator.Rebind();
         //trigger spawning animation
-        PlayerEventInfo.eventInfo.player = blackboard.player;
+        PlayerEventInfo.eventInfo.player = bb.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNING, PlayerEventInfo.eventInfo);
-        blackboard.player.StopTrail();
-        blackboard.player.DisableUI();
-        blackboard.alive = true;
-        blackboard.shield.SetActive(true);
-        blackboard.currentSpeed = blackboard.player.walkSpeed;
+        bb.player.StopTrail();
+        bb.player.DisableUI();
+        bb.alive = true;
+        bb.shield.SetActive(true);
+        bb.currentSpeed = bb.player.walkSpeed;
     }
 
     public override void OnStateExit()
     {
-        blackboard.player.StartTrail();
-        blackboard.player.EnableUI();
+        bb.player.StartTrail();
+        bb.player.EnableUI();
 
-        PlayerEventInfo.eventInfo.player = blackboard.player;
+        PlayerEventInfo.eventInfo.player = bb.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNED, PlayerEventInfo.eventInfo);
     }
 
@@ -38,10 +38,10 @@ public class PlayerSpawningState : PlayerBaseState {
         //return player.idleState;      
 
         elapsedTime += Time.deltaTime;
-        if (elapsedTime > blackboard.player.idleRandomAnimTime)
+        if (elapsedTime > bb.player.idleRandomAnimTime)
         {
             elapsedTime = 0f;
-            blackboard.animator.SetTrigger("LongIdle");
+            bb.animator.SetTrigger("LongIdle");
         }
 
         return null;

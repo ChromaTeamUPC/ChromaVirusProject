@@ -42,7 +42,7 @@ public class PlayerHealthBarController : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-        if (playerController.blackboard.active && playerController.blackboard.alive)
+        if (playerController.bb.active && playerController.bb.alive)
         {
             currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 2) + 1; //Values between 0.5 and 1.5
 
@@ -69,7 +69,7 @@ public class PlayerHealthBarController : MonoBehaviour
             playerHealthFill.color = currentHealthColor;
 
             //Always oriented the same
-            Vector3 lookAt = playerController.blackboard.GetScreenRelativeDirection(Vector3.up);
+            Vector3 lookAt = playerController.bb.GetScreenRelativeDirection(Vector3.up);
             lookAt.y = 0;
             lookAt = gameObject.transform.position + lookAt;
             gameObject.transform.LookAt(lookAt, Vector3.up);

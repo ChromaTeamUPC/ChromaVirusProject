@@ -98,6 +98,7 @@ public class PlayerBlackboard
     //Other gameplay variables
     public CapacitorController capacitor;
     public DeviceController device;
+    public List<HexagonController> hexagons;
 
     public void Init(PlayerController pl)
     {
@@ -105,6 +106,8 @@ public class PlayerBlackboard
         blinkController = player.GetComponent<BlinkController>();
 
         animator = player.GetComponent<Animator>();
+
+        hexagons = new List<HexagonController>();
 
         specialAttackDetector = player.specialDetector;
         specialAttackDetector.GetComponent<PlayerSpecialAttackDetector>().Blackboard = this;

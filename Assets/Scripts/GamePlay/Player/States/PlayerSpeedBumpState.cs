@@ -10,14 +10,14 @@ public class PlayerSpeedBumpState : PlayerBaseState
     {
         elapsedTime = 0f;
 
-        blackboard.currentSpeed = blackboard.player.fastMovingSpeed;
+        bb.currentSpeed = bb.player.fastMovingSpeed;
 
-        speedReductionOn = blackboard.player.fastMovingMaxSeconds * blackboard.player.fastMovingSpeedReductionOn;
+        speedReductionOn = bb.player.fastMovingMaxSeconds * bb.player.fastMovingSpeedReductionOn;
     }
 
     public override void OnStateExit()
     {
-        blackboard.currentSpeed = blackboard.player.walkSpeed;
+        bb.currentSpeed = bb.player.walkSpeed;
     }
 
     public override PlayerBaseState Update()
@@ -33,7 +33,7 @@ public class PlayerSpeedBumpState : PlayerBaseState
         elapsedTime += Time.deltaTime;
                 
         //if(!Input.GetButton(blackboard.dash))
-        if(!blackboard.controller.LeftTrigger.IsPressed)
+        if(!bb.controller.LeftTrigger.IsPressed)
         {
             return ReturnIdleOrMoving();
         }
@@ -47,22 +47,22 @@ public class PlayerSpeedBumpState : PlayerBaseState
                 return ReturnIdleOrMoving();
             }*/
 
-            if(elapsedTime >= blackboard.player.fastMovingMaxSeconds)
+            if(elapsedTime >= bb.player.fastMovingMaxSeconds)
             {
                 return ReturnIdleOrMoving();
             }
             else if (elapsedTime >= speedReductionOn)
             {
-                blackboard.currentSpeed = Mathf.Lerp(blackboard.player.walkSpeed, blackboard.player.fastMovingSpeed, 1-((elapsedTime - speedReductionOn) / (blackboard.player.fastMovingMaxSeconds - speedReductionOn)));
+                bb.currentSpeed = Mathf.Lerp(bb.player.walkSpeed, bb.player.fastMovingSpeed, 1-((elapsedTime - speedReductionOn) / (bb.player.fastMovingMaxSeconds - speedReductionOn)));
             }
 
-            if (!blackboard.isGrounded)
+            if (!bb.isGrounded)
             {
-                return blackboard.fallingState;
+                return bb.fallingState;
             }
             else if (CanDoSpecial())
             {
-                return blackboard.specialState;
+                return bb.specialState;
             }
             else
             {
@@ -70,13 +70,13 @@ public class PlayerSpeedBumpState : PlayerBaseState
 
                 Shoot();
 
-                if (blackboard.movePressed)
+                if (bb.movePressed)
                 {
                     Move();
                 }
                 else
                 {
-                    return blackboard.idleState;
+                    return bb.idleState;
                 }
 
                 return null;
@@ -86,9 +86,9 @@ public class PlayerSpeedBumpState : PlayerBaseState
 
     private PlayerBaseState ReturnIdleOrMoving()
     {
-        if (blackboard.movePressed)
-            return blackboard.movingState;
+        if (bb.movePressed)
+            return bb.movingState;
         else
-            return blackboard.idleState;
+            return bb.idleState;
     }
 }

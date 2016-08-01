@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private int playerId = 0;
 
-    public PlayerBlackboard blackboard;// = new PlayerBlackboard();
+    public PlayerBlackboard bb;// = new PlayerBlackboard();
 
     [Range(0f, 1f)]
     public float weak = 0f;
@@ -139,19 +139,19 @@ public class PlayerController : MonoBehaviour
 
     //Properties
     public bool Initialized { get { return init; } }
-    public bool Active { get { return blackboard.active; } set { blackboard.active = value; } }
-    public bool Alive { get { return blackboard.alive; } }
+    public bool Active { get { return bb.active; } set { bb.active = value; } }
+    public bool Alive { get { return bb.alive; } }
     public int Id { get { return playerId; } }
-    public int Lives { get { return blackboard.currentLives; } }
-    public float Health { get { return blackboard.currentHealth; } }
-    public float Energy { get { return blackboard.currentEnergy; } }
+    public int Lives { get { return bb.currentLives; } }
+    public float Health { get { return bb.currentHealth; } }
+    public float Energy { get { return bb.currentEnergy; } }
 
     void Awake()
     {
-        blackboard = new PlayerBlackboard();
-        blackboard.Init(this);
-        blackboard.shield = shield;
-        blackboard.laserAim = laserAim;
+        bb = new PlayerBlackboard();
+        bb.Init(this);
+        bb.shield = shield;
+        bb.laserAim = laserAim;
         shieldRend = shield.GetComponent<Renderer>();
         voxelization = GetComponentInChildren<VoxelizationClient>();
         ctrl = GetComponent<CharacterController>();
@@ -181,7 +181,7 @@ public class PlayerController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameStopped);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameStopped);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
-        blackboard.currentColor = rsc.colorMng.CurrentColor;
+        bb.currentColor = rsc.colorMng.CurrentColor;
         SetMaterial();
     }
 
@@ -205,7 +205,7 @@ public class PlayerController : MonoBehaviour
 
     private void GameStopped(EventInfo eventInfo)
     {
-        ChangeState(blackboard.blockedState);
+        ChangeState(bb.blockedState);
         //blackboard.horizontalDirection = Vector3.zero;
         //currentState = null;
     }
@@ -217,7 +217,7 @@ public class PlayerController : MonoBehaviour
 
     private void ColorChanged(EventInfo eventInfo)
     {
-        blackboard.currentColor = ((ColorEventInfo)eventInfo).newColor;
+        bb.currentColor = ((ColorEventInfo)eventInfo).newColor;
         SetMaterial();
     }
 
@@ -229,16 +229,16 @@ public class PlayerController : MonoBehaviour
         switch (playerId)
         {
             case 1:
-                bodyMat = coloredObjMng.GetPlayer1Material(blackboard.currentColor);
-                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(blackboard.currentColor);
+                bodyMat = coloredObjMng.GetPlayer1Material(bb.currentColor);
+                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(bb.currentColor);
                 break;
             case 2:
-                bodyMat = coloredObjMng.GetPlayer1Material(blackboard.currentColor); //TODO: Change to player2 material
-                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(blackboard.currentColor);
+                bodyMat = coloredObjMng.GetPlayer1Material(bb.currentColor); //TODO: Change to player2 material
+                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(bb.currentColor);
                 break;
             default:
-                bodyMat = coloredObjMng.GetPlayer1Material(blackboard.currentColor);
-                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(blackboard.currentColor);
+                bodyMat = coloredObjMng.GetPlayer1Material(bb.currentColor);
+                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(bb.currentColor);
                 break;
         }
         Material[] mats = bodyRend.sharedMaterials;
@@ -247,11 +247,11 @@ public class PlayerController : MonoBehaviour
 
         shieldRend.sharedMaterial = shieldMat;
 
-        blackboard.blinkController.InvalidateMaterials();
+        bb.blinkController.InvalidateMaterials();
 
-        trail.sharedMaterial = coloredObjMng.GetPlayer1TrailMaterial(blackboard.currentColor);
+        trail.sharedMaterial = coloredObjMng.GetPlayer1TrailMaterial(bb.currentColor);
 
-        Color color = rsc.coloredObjectsMng.GetColor(blackboard.currentColor);
+        Color color = rsc.coloredObjectsMng.GetColor(bb.currentColor);
         Color alpha = color;
         color.a = 0.5f;
         alpha.a = 0f;
@@ -262,9 +262,9 @@ public class PlayerController : MonoBehaviour
     public Vector3 PositionPrediction(float secondsPrediction = 1f)
     {
         //This case will be true only when dashing or speedwalking
-        if(blackboard.currentSpeed > walkSpeed)
+        if(bb.currentSpeed > walkSpeed)
         {
-            Vector3 calculatedDirection = totalHorizontalDirection / blackboard.currentSpeed * walkSpeed;
+            Vector3 calculatedDirection = totalHorizontalDirection / bb.currentSpeed * walkSpeed;
             return transform.position + (calculatedDirection * secondsPrediction);
         }
         else
@@ -273,25 +273,25 @@ public class PlayerController : MonoBehaviour
 
     public void GoToIdle()
     {
-        ChangeState(blackboard.idleState);
+        ChangeState(bb.idleState);
     }
 
     public void RechargeEnergy(float energy)
     {
-        if (blackboard.currentEnergy == blackboard.player.maxEnergy) return;
+        if (bb.currentEnergy == bb.player.maxEnergy) return;
 
-        blackboard.currentEnergy += energy;
-        if (blackboard.currentEnergy > blackboard.player.maxEnergy)
-            blackboard.currentEnergy = blackboard.player.maxEnergy;
+        bb.currentEnergy += energy;
+        if (bb.currentEnergy > bb.player.maxEnergy)
+            bb.currentEnergy = bb.player.maxEnergy;
     }
 
     public void SpendEnergy(float energy)
     {
-        if (blackboard.currentEnergy == 0) return;
+        if (bb.currentEnergy == 0) return;
 
-        blackboard.currentEnergy -= energy;
-        if (blackboard.currentEnergy < 0)
-            blackboard.currentEnergy = 0;
+        bb.currentEnergy -= energy;
+        if (bb.currentEnergy < 0)
+            bb.currentEnergy = 0;
     }
 
     public void MakeVisible()
@@ -310,30 +310,30 @@ public class PlayerController : MonoBehaviour
 
     public void AnimationEnded()
     {
-        blackboard.animationEnded = true;
+        bb.animationEnded = true;
     }
 
     public void AnimationTrigger()
     {
-        blackboard.animationTrigger = true;
+        bb.animationTrigger = true;
     }
 
     public void Reset()
     {
         //blackboard.animator.Rebind();
-        blackboard.ResetGameVariables();
+        bb.ResetGameVariables();
         //Debug.Log("Player Reset");
     }
 
     public void Spawn(bool invulnerabilityTime = false)
     {
-        blackboard.animator.Rebind();
-        blackboard.ResetLifeVariables();
+        bb.animator.Rebind();
+        bb.ResetLifeVariables();
 
         verticalVelocity = Physics.gravity.y;
 
         currentState = null;
-        ChangeState(blackboard.spawningState);
+        ChangeState(bb.spawningState);
 
         if (invulnerabilityTime)
             currentState.StartInvulnerabilityTime();
@@ -343,14 +343,14 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (blackboard.controller.GetControl(InputControlType.Back).IsPressed)
+        if (bb.controller.GetControl(InputControlType.Back).IsPressed)
             rsc.rumbleMng.AddContinousRumble(RumbleType.TEST, 0, weak, strong);
         else
             rsc.rumbleMng.RemoveContinousRumble(RumbleType.TEST);
 
-        if (blackboard.active && blackboard.alive)
+        if (bb.active && bb.alive)
         {
-            if (blackboard.currentEnergy == maxEnergy)
+            if (bb.currentEnergy == maxEnergy)
             {
                 currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 6.666f) + 0.45f; //Values between 0.3 and 0.6
                 Color newColor = Color.HSVToRGB(H, S, currentBrightness);
@@ -360,11 +360,11 @@ public class PlayerController : MonoBehaviour
                 bodyBaseMaterial.SetColor("_EmissionColor", originalBrightnessColor);
 
             //Reset flags
-            if (!blackboard.shootPressed)
+            if (!bb.shootPressed)
                 rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_SHOOT);
-            blackboard.ResetFlagVariables();
+            bb.ResetFlagVariables();
 
-            if(blackboard.contactFlag && currentState != null)
+            if(bb.contactFlag && currentState != null)
             {
                 PlayerBaseState newState = currentState.EnemyContactOnInvulnerabilityEnd();
                 if (newState != null)
@@ -400,13 +400,13 @@ public class PlayerController : MonoBehaviour
 
     public void UpdatePosition()
     {
-        totalHorizontalDirection = blackboard.horizontalDirection * blackboard.currentSpeed;
+        totalHorizontalDirection = bb.horizontalDirection * bb.currentSpeed;
 
         float otherModifier = 0f;
-        if (!blackboard.firstShot)
+        if (!bb.firstShot)
             otherModifier = Mathf.Max(otherModifier, speedRatioReductionWhileFiring);
 
-        if (blackboard.isAffectedByContact)
+        if (bb.isAffectedByContact)
             otherModifier = Mathf.Max(otherModifier, speedRatioReductionOnContact);
 
         if(otherModifier > 0)
@@ -414,7 +414,7 @@ public class PlayerController : MonoBehaviour
 
         Vector3 currentFrameDirection = totalHorizontalDirection;
 
-        if (blackboard.updateVerticalPosition)
+        if (bb.updateVerticalPosition)
         {
             currentFrameDirection.y = verticalVelocity;
         }
@@ -423,14 +423,14 @@ public class PlayerController : MonoBehaviour
 
         ctrl.Move(currentFrameDirection);
 
-        blackboard.isGrounded = ctrl.isGrounded;
+        bb.isGrounded = ctrl.isGrounded;
 
         UpdateVerticalVelocity();
     }
 
     private void UpdateVerticalVelocity()
     {
-        if (blackboard.isGrounded)
+        if (bb.isGrounded)
         {
             verticalVelocity = Physics.gravity.y * Time.deltaTime;
         }
@@ -500,9 +500,15 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Border")
+        if (other.tag == "Hexagon")
         {
-            blackboard.isInBorder = true;
+            HexagonController hex = other.GetComponent<HexagonController>();
+            bb.hexagons.Add(hex);
+            Debug.Log("Hexagon added");
+        }
+        else if (other.tag == "Border")
+        {
+            bb.isInBorder = true;
         }
         /*else if (other.tag == "Enemy")
         {
@@ -519,7 +525,7 @@ public class PlayerController : MonoBehaviour
         {           
             if(rsc.debugMng.godMode)
             {
-                PlayerEventInfo.eventInfo.player = blackboard.player;
+                PlayerEventInfo.eventInfo.player = bb.player;
                 rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerEventInfo.eventInfo);
             }
             else
@@ -529,9 +535,15 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Border")
+        if (other.tag == "Hexagon")
         {
-            blackboard.isInBorder = false;
+            HexagonController hex = other.GetComponent<HexagonController>();
+            bb.hexagons.Remove(hex);
+            Debug.Log("Hexagon removed");
+        }
+        else if (other.tag == "Border")
+        {
+            bb.isInBorder = false;
         }
         /*else if (other.tag == "Enemy")
         {
@@ -561,14 +573,14 @@ public class PlayerController : MonoBehaviour
 
     public void ActivateShield()
     {
-        blackboard.shield.SetActive(true);
-        blackboard.laserAim.SetActive(true);
+        bb.shield.SetActive(true);
+        bb.laserAim.SetActive(true);
     }
 
     public void DeactivateShield()
     {
-        blackboard.shield.SetActive(false);
-        blackboard.laserAim.SetActive(false);
+        bb.shield.SetActive(false);
+        bb.laserAim.SetActive(false);
     }
 
     public void SetCapacitor(CapacitorController capacitor)
@@ -579,7 +591,7 @@ public class PlayerController : MonoBehaviour
 
         rsc.eventMng.TriggerEvent(EventManager.EventType.BUTTON_HINT, ButtonHintEventInfo.eventInfo);
 
-        blackboard.capacitor = capacitor;
+        bb.capacitor = capacitor;
     }
 
     public void SetDevice(DeviceController device)
@@ -590,18 +602,18 @@ public class PlayerController : MonoBehaviour
 
         rsc.eventMng.TriggerEvent(EventManager.EventType.BUTTON_HINT, ButtonHintEventInfo.eventInfo);
 
-        blackboard.device = device;
+        bb.device = device;
     }
 
     //Particle Systems methods
     public void SpawnDashParticles()
     {
-        dashPSs[(int)blackboard.currentColor].Play();
+        dashPSs[(int)bb.currentColor].Play();
     }
 
     public void EnteredUSB()
     {
-        ChangeState(blackboard.invisibleState);
+        ChangeState(bb.invisibleState);
         rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_SHOOT);
         DeactivateShield();
         trail.enabled = false;
@@ -614,7 +626,7 @@ public class PlayerController : MonoBehaviour
         electricPS.Stop();
         trail.enabled = true;
         ui.SetActive(true);
-        ChangeState(blackboard.idleState);
+        ChangeState(bb.idleState);
     }
 
     public void StartTrail()

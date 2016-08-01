@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WormAIWanderingState : WormAIBaseState 
+public class WormAITestState : WormAIBaseState 
 {
     private enum SubState
     {
@@ -20,8 +20,8 @@ public class WormAIWanderingState : WormAIBaseState
     private Vector3 currentWPUG;
     private Vector3 nextWPUG;
     private Transform head;
-    private Vector3 lastPosition;
     private Quaternion lookRotation;
+    private Vector3 lastPosition;
 
     private int curveNum;
     private float t;
@@ -29,7 +29,7 @@ public class WormAIWanderingState : WormAIBaseState
     private float shouldMove;
     private float actuallyMoved;
 
-    public WormAIWanderingState(WormBlackboard bb) : base(bb)
+    public WormAITestState(WormBlackboard bb) : base(bb)
     { }
 
     public override void OnStateEnter()
@@ -47,20 +47,13 @@ public class WormAIWanderingState : WormAIBaseState
         //Set initial substate, nav mesh layer and select a random route
         subState = SubState.GOING_TO_ENTRY;
 
-        WormRoute newRoute;
-        do
-        {
-            int routeNum = Random.Range(0, bb.worm.routes.Length);
-            newRoute = bb.worm.routes[routeNum];
-        }
-        while (route == newRoute);
+        route = bb.worm.routes[4];
+        bb.agent.enabled = false;
 
-        route = newRoute;
-
-        bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
+        /*bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
         bb.agent.enabled = true;
         bb.agent.speed = bb.undergroundSpeed;
-        bb.agent.SetDestination(route.wayPoints[WPIndex].transform.position - bb.navMeshLayersDistance);
+        bb.agent.SetDestination(route.wayPoints[WPIndex].transform.position - bb.navMeshLayersDistance);*/
     }
 
     public override WormAIBaseState Update()
@@ -68,33 +61,28 @@ public class WormAIWanderingState : WormAIBaseState
         switch (subState)
         {
             case SubState.GOING_TO_ENTRY:
-                if(bb.agent.hasPath && bb.agent.remainingDistance <= 0.25f)
-                {
-                    bb.agent.enabled = false;
 
-                    currentWP = route.wayPoints[WPIndex].transform.position;
-                    nextWP = route.wayPoints[WPIndex +1].transform.position;
+                currentWP = route.wayPoints[WPIndex].transform.position;
+                nextWP = route.wayPoints[WPIndex +1].transform.position;
 
-                    currentWPUG = currentWP - bb.navMeshLayersDistance;
-                    nextWPUG = nextWP - bb.navMeshLayersDistance;
+                currentWPUG = currentWP - bb.navMeshLayersDistance;
+                nextWPUG = nextWP - bb.navMeshLayersDistance;
 
-                    head.position = currentWPUG;
-                    head.LookAt(nextWPUG, Vector3.up);
-                    bb.CalculateWorldEnterBezierPoints(bb.wormGO.transform);
+                Vector3 headUp = currentWPUG - nextWPUG;
+                //Rotate head
+                head.position = currentWPUG;
+                head.LookAt(nextWPUG, Vector3.up);
+                bb.CalculateWorldEnterBezierPoints(bb.wormGO.transform);
+                head.LookAt(currentWP, headUp);
 
-                    //Rotate head
-                    Vector3 headUp = currentWPUG - nextWPUG;
-                    head.LookAt(currentWP, headUp);
+                curveNum = 0;
+                t = 0;
 
-                    curveNum = 0;
-                    t = 0;
-
-                    subState = SubState.ENTERING;
-                }
+                subState = SubState.ENTERING;
                 break;
 
             case SubState.ENTERING:
-                if (curveNum <= 1)
+                if(curveNum <= 1)
                 {
                     shouldMove = Time.deltaTime * bb.floorSpeed;
                     actuallyMoved = 0;
@@ -117,8 +105,8 @@ public class WormAIWanderingState : WormAIBaseState
                     }
                     head.position = newPos;
                     head.LookAt(head.position + (head.position - lastPosition));
-
-                    if (t > 1)
+                   
+                    if(t > 1)
                     {
                         ++curveNum;
                         t = 0;
@@ -140,19 +128,47 @@ public class WormAIWanderingState : WormAIBaseState
                 break;
 
             case SubState.FOLLOWING_PATH:
-                if (!bb.agent.hasPath || (bb.agent.hasPath && bb.agent.remainingDistance <= 0.25))
+                if (bb.agent.hasPath)
                 {
+                    if (bb.agent.remainingDistance <= 0.25f)
+                    {
+                        //If it was the last WP, exit
+                        if (WPIndex == route.wayPoints.Length - 2)
+                        {
+                            bb.agent.enabled = false;
+
+                            currentWP = route.wayPoints[WPIndex].transform.position;
+                            nextWP = route.wayPoints[WPIndex + 1].transform.position;
+
+                            currentWPUG = currentWP - bb.navMeshLayersDistance;
+                            nextWPUG = nextWP - bb.navMeshLayersDistance;
+
+                            bb.CalculateWorldExitBezierPoints(bb.wormGO.transform);
+
+                            curveNum = 0;
+                            t = 0;
+
+                            subState = SubState.EXITING;
+                        }
+                        else
+                        {
+                            ++WPIndex;
+                            currentWP = route.wayPoints[WPIndex].transform.position;
+                            bb.agent.SetDestination(currentWP);
+                        }
+                    }
+                }
+                else
+                {                 
                     if (WPIndex == route.wayPoints.Length - 2)
                     {
                         bb.agent.enabled = false;
 
-                        currentWP = route.wayPoints[WPIndex].transform.position;
+                        currentWP = head.position;
                         nextWP = route.wayPoints[WPIndex + 1].transform.position;
 
                         currentWPUG = currentWP - bb.navMeshLayersDistance;
                         nextWPUG = nextWP - bb.navMeshLayersDistance;
-
-                        head.LookAt(nextWP, Vector3.up);
 
                         bb.CalculateWorldExitBezierPoints(bb.wormGO.transform);
 
@@ -171,6 +187,7 @@ public class WormAIWanderingState : WormAIBaseState
                 break;
 
             case SubState.EXITING:
+                
                 if (curveNum <= 1)
                 {
                     shouldMove = Time.deltaTime * bb.floorSpeed;
@@ -210,6 +227,7 @@ public class WormAIWanderingState : WormAIBaseState
                         //return blackboard.belowAttackState;
                         SetInitialState();
                 }
+
 
                 break;
 

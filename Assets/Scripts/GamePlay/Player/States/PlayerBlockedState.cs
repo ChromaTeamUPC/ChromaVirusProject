@@ -5,8 +5,8 @@ public class PlayerBlockedState : PlayerBaseState
 {
     public override void OnStateEnter()
     {
-        blackboard.horizontalDirection = Vector3.zero;
-        blackboard.blinkController.StopPreviousBlinkings();
+        bb.horizontalDirection = Vector3.zero;
+        bb.blinkController.StopPreviousBlinkings();
     }
     //In this state the player can not move nor take damage
     public override PlayerBaseState TakeDamage(float damage, bool triggerDamageAnim = true, bool whiteBlink = true)

@@ -35,4 +35,10 @@ public class WormAIDyingState : WormAIBaseState
     {      
         return null;
     }
+
+    public override WormAIBaseState ImpactedByShot(ChromaColor shotColor, float damage, PlayerController player)
+    {
+        //do nothing
+        return null;
+    }
 }

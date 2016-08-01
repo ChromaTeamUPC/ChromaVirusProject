@@ -16,6 +16,7 @@ public class WormAISpawningState : WormAIBaseState
 
     private float currentX;
     private Vector3 lastPosition;
+    private float rotation;
 
     public WormAISpawningState(WormBlackboard bb) : base(bb)
     { }
@@ -31,6 +32,8 @@ public class WormAISpawningState : WormAIBaseState
         bb.CalculateParabola();
 
         bb.agent.enabled = false;
+
+        rotation = 0f;
 
         subState = SubState.GOING_TO_ENTRY;
     }
@@ -55,7 +58,14 @@ public class WormAISpawningState : WormAIBaseState
                 lastPosition = head.position;
                 head.position = bb.GetJumpPositionGivenX(currentX);
 
-                head.LookAt(head.position + (head.position - lastPosition));
+                head.LookAt(head.position + (head.position - lastPosition), head.up);
+
+                if( lastPosition.y > head.position.y && rotation < 90f)
+                {
+                    float angle = 30 * Time.deltaTime;
+                    head.Rotate(new Vector3(0, 0, angle));
+                    rotation += angle;
+                }
 
                 if(head.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {

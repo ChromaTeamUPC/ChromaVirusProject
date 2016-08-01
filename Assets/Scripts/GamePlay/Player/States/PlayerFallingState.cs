@@ -6,17 +6,17 @@ public class PlayerFallingState : PlayerBaseState
     public override void OnStateEnter()
     {
         //play falling animation
-        blackboard.player.StopTrail();
-        blackboard.player.DisableUI();
-        blackboard.animator.SetBool("Falling", true);
+        bb.player.StopTrail();
+        bb.player.DisableUI();
+        bb.animator.SetBool("Falling", true);
     }
 
     public override void OnStateExit()
     {
-        blackboard.currentSpeed = blackboard.player.walkSpeed;
-        blackboard.player.StartTrail();
-        blackboard.player.EnableUI();
-        blackboard.animator.SetBool("Falling", false);
+        bb.currentSpeed = bb.player.walkSpeed;
+        bb.player.StartTrail();
+        bb.player.EnableUI();
+        bb.animator.SetBool("Falling", false);
     }
 
     public override PlayerBaseState Update()
@@ -30,14 +30,14 @@ public class PlayerFallingState : PlayerBaseState
         can he move?
         */
 
-        if (blackboard.isGrounded)
+        if (bb.isGrounded)
         {
-            return blackboard.idleState;
+            return bb.idleState;
         }
         else
         {
             //keep falling
-            blackboard.currentSpeed *= 0.95f;
+            bb.currentSpeed *= 0.95f;
 
             return null;
         }      

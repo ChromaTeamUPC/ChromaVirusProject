@@ -6,7 +6,7 @@ public class PlayerSwingingState : PlayerBaseState
     public override void OnStateEnter()
     {
         //play swinging animation
-        blackboard.horizontalDirection = Vector3.zero;
+        bb.horizontalDirection = Vector3.zero;
     }
 
     public override PlayerBaseState Update()
@@ -21,13 +21,13 @@ public class PlayerSwingingState : PlayerBaseState
         can he move?
         */
 
-        if (!blackboard.isGrounded)
+        if (!bb.isGrounded)
         {
-            return blackboard.fallingState;
+            return bb.fallingState;
         }
-        else if (!blackboard.isInBorder)
+        else if (!bb.isInBorder)
         {
-            return blackboard.idleState;
+            return bb.idleState;
         }
         else
         {

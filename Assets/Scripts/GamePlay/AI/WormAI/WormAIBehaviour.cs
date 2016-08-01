@@ -74,6 +74,7 @@ public class WormAIBehaviour : MonoBehaviour
         headState = HeadSubState.DEACTIVATED;
 
         ChangeState(bb.spawningState);
+        //ChangeState(bb.testState);
     }
 
     // Update is called once per frame
@@ -143,6 +144,19 @@ public class WormAIBehaviour : MonoBehaviour
     {
         if (headState != HeadSubState.ACTIVATED) return;
    
+        if (currentState != null)
+        {
+            WormAIBaseState newState = currentState.ImpactedByShot(shotColor, damage, player);
+
+            if (newState != null)
+            {
+                ChangeState(newState);
+            }
+        }
+    }
+
+    public WormAIBaseState ProcessShotImpact(ChromaColor shotColor, float damage, PlayerController player)
+    {
         bb.headCurrentHealth -= damage;
 
         if (bb.headCurrentHealth <= 0)
@@ -156,9 +170,11 @@ public class WormAIBehaviour : MonoBehaviour
             //Else worm destroyed
             else
             {
-                ChangeState(bb.dyingState);
+                 return bb.dyingState;
             }
         }
+
+        return null;
     }
 
     private void SetPhase()

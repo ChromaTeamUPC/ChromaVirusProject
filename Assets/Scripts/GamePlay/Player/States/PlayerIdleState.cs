@@ -7,7 +7,7 @@ public class PlayerIdleState : PlayerBaseState {
 
     public override void OnStateEnter()
     {
-        blackboard.horizontalDirection = Vector3.zero;
+        bb.horizontalDirection = Vector3.zero;
         elapsedTime = 0f;
     }
 
@@ -24,30 +24,30 @@ public class PlayerIdleState : PlayerBaseState {
         can he move?
         */
 
-        if (!blackboard.isGrounded)
+        if (!bb.isGrounded)
         {
-            return blackboard.fallingState;
+            return bb.fallingState;
         }
-        else if(blackboard.isInBorder)
+        else if(bb.isInBorder)
         {
-            return blackboard.swingingState;
+            return bb.swingingState;
         }
         else if (CanDoSpecial())
         {
-            return blackboard.specialState;
+            return bb.specialState;
         }
-        else if (blackboard.dashPressed)
+        else if (bb.dashPressed)
         {
-            return blackboard.dashingState;
+            return bb.dashingState;
             //return blackboard.speedBumpState;
         }
-        else if (blackboard.speedBumpPressed)
+        else if (bb.speedBumpPressed)
         {
-            return blackboard.speedBumpState;
+            return bb.speedBumpState;
         }
-        else if (blackboard.movePressed)
+        else if (bb.movePressed)
         {
-            return blackboard.movingState;
+            return bb.movingState;
         }
         else
         {
@@ -59,15 +59,15 @@ public class PlayerIdleState : PlayerBaseState {
 
             Shoot();
 
-            if (blackboard.KeyPressed)
+            if (bb.KeyPressed)
             {
                 elapsedTime = 0f;
             }
             else
             {
                 elapsedTime += Time.deltaTime;
-                if (elapsedTime > blackboard.player.idleRandomAnimTime)
-                    return blackboard.longIdleState;
+                if (elapsedTime > bb.player.idleRandomAnimTime)
+                    return bb.longIdleState;
             }  
         
             return null;

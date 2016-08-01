@@ -16,16 +16,16 @@ public class PlayerSpecialState : PlayerBaseState {
 
     public override void OnStateEnter()
     {
-        blackboard.horizontalDirection = Vector3.zero;
-        blackboard.animationTrigger = false;
-        blackboard.animationEnded = false;
-        blackboard.animator.SetTrigger("SpecialAttack");
+        bb.horizontalDirection = Vector3.zero;
+        bb.animationTrigger = false;
+        bb.animationEnded = false;
+        bb.animator.SetTrigger("SpecialAttack");
 
-        blackboard.specialAttackDetector.SetActive(true);
+        bb.specialAttackDetector.SetActive(true);
 
         if(!rsc.debugMng.godMode)
-            blackboard.player.SpendEnergy(blackboard.player.specialAttackNecessaryEnergy);
-        blackboard.player.StartSpecialEnergyCharging();
+            bb.player.SpendEnergy(bb.player.specialAttackNecessaryEnergy);
+        bb.player.StartSpecialEnergyCharging();
         state = State.MOVING;
         //elapsedTime = 0f;       
     }
@@ -35,26 +35,26 @@ public class PlayerSpecialState : PlayerBaseState {
         switch (state)
         {
             case State.MOVING:
-                if (blackboard.animationTrigger)
+                if (bb.animationTrigger)
                 {
-                    blackboard.animationTrigger = false;
-                    blackboard.player.StopSpecialEnergyCharging();
-                    blackboard.player.StartSpecial();
+                    bb.animationTrigger = false;
+                    bb.player.StopSpecialEnergyCharging();
+                    bb.player.StartSpecial();
 
-                    currentPos = blackboard.player.transform.position;
+                    currentPos = bb.player.transform.position;
 
-                    blackboard.player.StartCoroutine(SpecialExplosion());
+                    bb.player.StartCoroutine(SpecialExplosion());
 
                     state = State.EXPLODING;
-                    rsc.rumbleMng.Rumble(blackboard.player.Id, 1f, 0.25f, 1f);
+                    rsc.rumbleMng.Rumble(bb.player.Id, 1f, 0.25f, 1f);
                 }
 
                 return null;
 
             case State.EXPLODING:
-                if (blackboard.animationEnded)
+                if (bb.animationEnded)
                 {
-                    return blackboard.idleState;
+                    return bb.idleState;
                 }
                 else
                     return null;
@@ -93,16 +93,16 @@ public class PlayerSpecialState : PlayerBaseState {
     {
         yield return new WaitForSeconds(0.1f);
         DamageEnemies();
-        blackboard.specialAttackDetector.SetActive(false);
+        bb.specialAttackDetector.SetActive(false);
     }
 
     private void DamageEnemies()
     {
-        float damage = blackboard.player.specialAttackDamage;
-        float baseForceMultiplier = blackboard.player.forceMultiplierAtDistance1;
-        float forceAttenuation = blackboard.player.forceAttenuationByDistance;
+        float damage = bb.player.specialAttackDamage;
+        float baseForceMultiplier = bb.player.forceMultiplierAtDistance1;
+        float forceAttenuation = bb.player.forceAttenuationByDistance;
 
-        foreach (EnemyBaseAIBehaviour enemy in blackboard.enemiesInRange)
+        foreach (EnemyBaseAIBehaviour enemy in bb.enemiesInRange)
         {
             Vector3 direction = enemy.transform.position - currentPos;
             float distance = Vector3.Distance(enemy.transform.position, currentPos);
@@ -111,10 +111,10 @@ public class PlayerSpecialState : PlayerBaseState {
             direction.Normalize();
             float totalForceMultiplier = baseForceMultiplier / Mathf.Pow(forceAttenuation, distance - 1);
             direction *= totalForceMultiplier;
-            enemy.ImpactedBySpecial(damage, direction, blackboard.player);
+            enemy.ImpactedBySpecial(damage, direction, bb.player);
         }
 
-        foreach (EnemyShotControllerBase shot in blackboard.shotsInRange)
+        foreach (EnemyShotControllerBase shot in bb.shotsInRange)
         {
             shot.Impact();
         }

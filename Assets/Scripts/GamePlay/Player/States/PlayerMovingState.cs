@@ -5,7 +5,7 @@ public class PlayerMovingState : PlayerBaseState
 {
     public override void OnStateEnter()
     {
-        blackboard.currentSpeed = blackboard.player.walkSpeed;
+        bb.currentSpeed = bb.player.walkSpeed;
         Move();
     }
 
@@ -25,26 +25,26 @@ public class PlayerMovingState : PlayerBaseState
         can he move?
         */
 
-        if (!blackboard.isGrounded)
+        if (!bb.isGrounded)
         {
-            return blackboard.fallingState;
+            return bb.fallingState;
         }
         else if (CanDoSpecial())
         {
-            return blackboard.specialState;
+            return bb.specialState;
         }
-        else if (blackboard.dashPressed)
+        else if (bb.dashPressed)
         {
-            return blackboard.dashingState;
+            return bb.dashingState;
             //return blackboard.speedBumpState;
         }
-        else if (blackboard.speedBumpPressed)
+        else if (bb.speedBumpPressed)
         {
-            return blackboard.speedBumpState;
+            return bb.speedBumpState;
         }
-        else if (!blackboard.movePressed)
+        else if (!bb.movePressed)
         {
-            return blackboard.idleState;
+            return bb.idleState;
         }
         else
         {

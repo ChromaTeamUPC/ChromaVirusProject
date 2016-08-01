@@ -17,7 +17,8 @@ public class WormTailController : MonoBehaviour
 
     void Update()
     {
-        bb.tailIsUnderground = (trf.position.y < 0 - tailHeight);
+        if(bb!= null)
+            bb.tailIsUnderground = (trf.position.y < 0 - tailHeight);
     }
 
     public void SetBlackboard(WormBlackboard bb)

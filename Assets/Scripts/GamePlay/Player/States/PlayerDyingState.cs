@@ -7,15 +7,15 @@ public class PlayerDyingState : PlayerBaseState
     {
         EndColorMismatch(); //Ensure it is not active
 
-        blackboard.player.StopTrail();
-        blackboard.player.DisableUI();
-        blackboard.shield.SetActive(false);
-        blackboard.animator.SetTrigger("Die");
-        blackboard.animationEnded = false;
+        bb.player.StopTrail();
+        bb.player.DisableUI();
+        bb.shield.SetActive(false);
+        bb.animator.SetTrigger("Die");
+        bb.animationEnded = false;
 
-        rsc.rumbleMng.AddContinousRumble(RumbleType.PLAYER_DYING, blackboard.player.Id, 0.25f, 0f);
+        rsc.rumbleMng.AddContinousRumble(RumbleType.PLAYER_DYING, bb.player.Id, 0.25f, 0f);
 
-        PlayerEventInfo.eventInfo.player = blackboard.player;
+        PlayerEventInfo.eventInfo.player = bb.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DYING, PlayerEventInfo.eventInfo);
     }
 
@@ -28,18 +28,18 @@ public class PlayerDyingState : PlayerBaseState
 
     public override PlayerBaseState Update()
     {
-        blackboard.currentSpeed *= 0.95f;
+        bb.currentSpeed *= 0.95f;
 
-        if (blackboard.animationEnded)
+        if (bb.animationEnded)
         {
             rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_DYING);
-            rsc.rumbleMng.Rumble(blackboard.player.Id, 1f, 0.25f, 0.6f);
+            rsc.rumbleMng.Rumble(bb.player.Id, 1f, 0.25f, 0.6f);
 
-            blackboard.alive = false;
-            blackboard.currentLives--;
-            blackboard.blinkController.StopPreviousBlinkings();
-            blackboard.player.SpawnVoxels();
-            PlayerEventInfo.eventInfo.player = blackboard.player;
+            bb.alive = false;
+            bb.currentLives--;
+            bb.blinkController.StopPreviousBlinkings();
+            bb.player.SpawnVoxels();
+            PlayerEventInfo.eventInfo.player = bb.player;
             rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DIED, PlayerEventInfo.eventInfo);
             //blackboard.player.gameObject.SetActive(false);
             return null;

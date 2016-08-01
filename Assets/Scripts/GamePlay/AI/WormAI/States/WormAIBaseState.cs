@@ -20,4 +20,9 @@ public class WormAIBaseState
     {
         return null;
     }
+
+    public virtual WormAIBaseState ImpactedByShot(ChromaColor shotColor, float damage, PlayerController player)
+    {
+        return bb.worm.ProcessShotImpact(shotColor, damage, player);
+    }
 }

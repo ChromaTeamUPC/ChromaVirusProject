@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PlayerBaseState
 {   
-    protected PlayerBlackboard blackboard;
+    protected PlayerBlackboard bb;
 
     //Shoot variables
     private float nextFire;
@@ -16,7 +16,7 @@ public class PlayerBaseState
 
     public virtual void Init(PlayerBlackboard bb)
     {
-        blackboard = bb;
+        this.bb = bb;
 
         coloredObjMng = rsc.coloredObjectsMng;
     }
@@ -30,113 +30,113 @@ public class PlayerBaseState
         //Movement
         //float h = Input.GetAxisRaw(blackboard.moveHorizontal);
         //float v = Input.GetAxisRaw(blackboard.moveVertical);
-        float h = blackboard.controller.LeftStickX.Value;
-        float v = blackboard.controller.LeftStickY.Value;
+        float h = bb.controller.LeftStickX.Value;
+        float v = bb.controller.LeftStickY.Value;
 
-        blackboard.moveVector = Vector3.zero;
+        bb.moveVector = Vector3.zero;
 
         if (Mathf.Abs(v) > 0 || Mathf.Abs(h) > 0)
         {
-            blackboard.moveVector.x = h;
-            blackboard.moveVector.y = v;
-            if (blackboard.moveVector.magnitude > 1f)
-                blackboard.moveVector.Normalize();
+            bb.moveVector.x = h;
+            bb.moveVector.y = v;
+            if (bb.moveVector.magnitude > 1f)
+                bb.moveVector.Normalize();
 
-            blackboard.movePressed = true;
-            blackboard.animator.SetBool("Walking", true);
-            blackboard.KeyPressed = true;
+            bb.movePressed = true;
+            bb.animator.SetBool("Walking", true);
+            bb.KeyPressed = true;
         }
 
         //Aiming
         //h = Input.GetAxisRaw(blackboard.aimHorizontal);
         //v = Input.GetAxisRaw(blackboard.aimVertical);
-        h = blackboard.controller.RightStickX.Value;
-        v = blackboard.controller.RightStickY.Value;
+        h = bb.controller.RightStickX.Value;
+        v = bb.controller.RightStickY.Value;
 
-        blackboard.aimVector = Vector3.zero;
+        bb.aimVector = Vector3.zero;
 
-        if (Mathf.Abs(v) >= blackboard.player.aimThreshold || Mathf.Abs(h) >= blackboard.player.aimThreshold)
+        if (Mathf.Abs(v) >= bb.player.aimThreshold || Mathf.Abs(h) >= bb.player.aimThreshold)
         {
-            blackboard.aimVector.x = h;
-            blackboard.aimVector.y = v;
+            bb.aimVector.x = h;
+            bb.aimVector.y = v;
 
-            blackboard.aimPressed = true;
-            blackboard.animator.SetBool("Aiming", true);
-            blackboard.KeyPressed = true;
+            bb.aimPressed = true;
+            bb.animator.SetBool("Aiming", true);
+            bb.KeyPressed = true;
         }
 
         //Shoot
         //if (Input.GetAxisRaw(blackboard.fire) > 0.1f)
-        if (blackboard.controller.RightTrigger.Value > 0.1f)
+        if (bb.controller.RightTrigger.Value > 0.1f)
         {
-            blackboard.shootPressed = true;
-            blackboard.KeyPressed = true;
-            blackboard.animator.SetBool("Shooting", true);
+            bb.shootPressed = true;
+            bb.KeyPressed = true;
+            bb.animator.SetBool("Shooting", true);
         }
         else
         {
-            blackboard.firstShot = true;
-            blackboard.player.StopNoShoot();
+            bb.firstShot = true;
+            bb.player.StopNoShoot();
         }
 
         //Dash
         //if (Input.GetButtonDown(blackboard.dash))
-        if(blackboard.controller.LeftBumper.WasPressed)
+        if(bb.controller.LeftBumper.WasPressed)
         {
-            blackboard.dashPressed = true;
-            blackboard.KeyPressed = true;
+            bb.dashPressed = true;
+            bb.KeyPressed = true;
         }
 
         //Speed bump
         //if (Input.GetButtonDown(blackboard.dash))
-        if (blackboard.controller.LeftTrigger.WasPressed)
+        if (bb.controller.LeftTrigger.WasPressed)
         {
-            blackboard.speedBumpPressed = true;
-            blackboard.KeyPressed = true;
+            bb.speedBumpPressed = true;
+            bb.KeyPressed = true;
         }
 
         //Special
         //if (Input.GetButtonDown(blackboard.special))
-        if (blackboard.controller.RightBumper.WasPressed)
+        if (bb.controller.RightBumper.WasPressed)
         {
-            blackboard.specialPressed = true;
-            blackboard.KeyPressed = true;
+            bb.specialPressed = true;
+            bb.KeyPressed = true;
         }
 
         //A Button
         //if (Input.GetButton(blackboard.greenButton))
-        if (blackboard.controller.Action1.IsPressed)
+        if (bb.controller.Action1.IsPressed)
         {
-            blackboard.greenPressed = true;
-            blackboard.colorButtonsPressed = true;
-            blackboard.KeyPressed = true;
+            bb.greenPressed = true;
+            bb.colorButtonsPressed = true;
+            bb.KeyPressed = true;
         }
 
         //B Button
         //if (Input.GetButton(blackboard.redButton))
-        if (blackboard.controller.Action2.IsPressed)
+        if (bb.controller.Action2.IsPressed)
         {
-            blackboard.redPressed = true;
-            blackboard.colorButtonsPressed = true;
-            blackboard.KeyPressed = true;
+            bb.redPressed = true;
+            bb.colorButtonsPressed = true;
+            bb.KeyPressed = true;
         }
 
         //X Button
         //if (Input.GetButton(blackboard.blueButton))
-        if (blackboard.controller.Action3.IsPressed)
+        if (bb.controller.Action3.IsPressed)
         {
-            blackboard.bluePressed = true;
-            blackboard.colorButtonsPressed = true;
-            blackboard.KeyPressed = true;
+            bb.bluePressed = true;
+            bb.colorButtonsPressed = true;
+            bb.KeyPressed = true;
         }
 
         //Y Button
         //if (Input.GetButton(blackboard.yellowButton))
-        if (blackboard.controller.Action4.IsPressed)
+        if (bb.controller.Action4.IsPressed)
         {
-            blackboard.yellowPressed = true;
-            blackboard.colorButtonsPressed = true;
-            blackboard.KeyPressed = true;
+            bb.yellowPressed = true;
+            bb.colorButtonsPressed = true;
+            bb.KeyPressed = true;
         }
     }
 
@@ -159,41 +159,41 @@ public class PlayerBaseState
 
     protected void CapacitorCharge()
     {
-        if (blackboard.capacitor == null || !blackboard.colorButtonsPressed)
+        if (bb.capacitor == null || !bb.colorButtonsPressed)
             return;
 
-        if (blackboard.redPressed)
-            blackboard.capacitor.ManualCharge(ChromaColor.RED, blackboard.player);
-        else if (blackboard.greenPressed)
-            blackboard.capacitor.ManualCharge(ChromaColor.GREEN, blackboard.player);
-        else if (blackboard.bluePressed)
-            blackboard.capacitor.ManualCharge(ChromaColor.BLUE, blackboard.player);
-        else if (blackboard.yellowPressed)
-            blackboard.capacitor.ManualCharge(ChromaColor.YELLOW, blackboard.player);
+        if (bb.redPressed)
+            bb.capacitor.ManualCharge(ChromaColor.RED, bb.player);
+        else if (bb.greenPressed)
+            bb.capacitor.ManualCharge(ChromaColor.GREEN, bb.player);
+        else if (bb.bluePressed)
+            bb.capacitor.ManualCharge(ChromaColor.BLUE, bb.player);
+        else if (bb.yellowPressed)
+            bb.capacitor.ManualCharge(ChromaColor.YELLOW, bb.player);
     }
 
     protected void DisinfectDevice()
     {
-        if (blackboard.device == null || !blackboard.colorButtonsPressed)
+        if (bb.device == null || !bb.colorButtonsPressed)
             return;
 
-        if (blackboard.greenPressed)
-            blackboard.device.Disinfect();
+        if (bb.greenPressed)
+            bb.device.Disinfect();
     }
 
     private void LookAt(Vector3 destination)
     {
         Quaternion newRotation = Quaternion.LookRotation(destination);
-        newRotation = Quaternion.RotateTowards(blackboard.player.transform.rotation, newRotation, blackboard.player.angularSpeed * Time.deltaTime);
-        blackboard.player.transform.rotation = newRotation;
+        newRotation = Quaternion.RotateTowards(bb.player.transform.rotation, newRotation, bb.player.angularSpeed * Time.deltaTime);
+        bb.player.transform.rotation = newRotation;
     }
 
     protected void Turn()
     {
-        if (blackboard.aimPressed)
+        if (bb.aimPressed)
         {
-            blackboard.aimVector = blackboard.GetScreenRelativeDirection(blackboard.aimVector);
-            LookAt(blackboard.aimVector);
+            bb.aimVector = bb.GetScreenRelativeDirection(bb.aimVector);
+            LookAt(bb.aimVector);
         }
     }
 
@@ -211,55 +211,55 @@ public class PlayerBaseState
 
     protected bool Move()
     {
-        if(blackboard.movePressed)
+        if(bb.movePressed)
         {
-            float magnitude = blackboard.moveVector.magnitude;
+            float magnitude = bb.moveVector.magnitude;
 
-            blackboard.moveVector = blackboard.GetScreenRelativeDirection(blackboard.moveVector) * magnitude;
+            bb.moveVector = bb.GetScreenRelativeDirection(bb.moveVector) * magnitude;
 
-            blackboard.horizontalDirection = blackboard.moveVector;
+            bb.horizontalDirection = bb.moveVector;
 
             //If we are not aiming, rotate towards direction
-            if (!blackboard.aimPressed)
+            if (!bb.aimPressed)
             {
-                LookAt(blackboard.moveVector);
+                LookAt(bb.moveVector);
             }
             else
             {
-                int angleBetweenSticks = AngleBetween360(blackboard.aimVector, blackboard.moveVector);
+                int angleBetweenSticks = AngleBetween360(bb.aimVector, bb.moveVector);
 
                 float angleRad = angleBetweenSticks * Mathf.Deg2Rad;
                 float forward = Mathf.Cos(angleRad);
                 float lateral = Mathf.Sin(angleRad);
-                blackboard.animator.SetFloat("Forward", forward);
-                blackboard.animator.SetFloat("Lateral", lateral);
+                bb.animator.SetFloat("Forward", forward);
+                bb.animator.SetFloat("Lateral", lateral);
             }
         }
 
-        return blackboard.movePressed;
+        return bb.movePressed;
     }
 
     protected bool CanDoSpecial()
     {
-        return blackboard.specialPressed &&
-            ((blackboard.currentEnergy >= blackboard.player.specialAttackNecessaryEnergy) ||
+        return bb.specialPressed &&
+            ((bb.currentEnergy >= bb.player.specialAttackNecessaryEnergy) ||
             rsc.debugMng.godMode);
     }
 
     protected void Shoot()
     {
-        if (blackboard.shootPressed)
+        if (bb.shootPressed)
         {
-            if (blackboard.canShoot)
+            if (bb.canShoot)
             {
-                rsc.rumbleMng.AddContinousRumble(RumbleType.PLAYER_SHOOT, blackboard.player.Id, 0.22f, 0.104f);
+                rsc.rumbleMng.AddContinousRumble(RumbleType.PLAYER_SHOOT, bb.player.Id, 0.22f, 0.104f);
 
                 if (Time.time > nextFire)
                 {
-                    nextFire = Time.time + blackboard.player.fireRate;
+                    nextFire = Time.time + bb.player.fireRate;
 
                     // check if it's first shot (single projectile)...
-                    if (blackboard.firstShot)
+                    if (bb.firstShot)
                     {
                         //Get a shot from pool
                         PlayerShotController shot = coloredObjMng.GetPlayer1Shot();
@@ -267,20 +267,20 @@ public class PlayerBaseState
 
                         if (shot != null && muzzle != null)
                         {
-                            Transform shotSpawn = blackboard.player.shotSpawn;
+                            Transform shotSpawn = bb.player.shotSpawn;
                             shot.transform.position = shotSpawn.position;
                             shot.transform.rotation = shotSpawn.rotation;
                             shot.damage *= 2;
-                            shot.player = blackboard.player;
+                            shot.player = bb.player;
                             shot.Shoot();
 
-                            Transform muzzlePoint = blackboard.player.muzzlePoint;
+                            Transform muzzlePoint = bb.player.muzzlePoint;
                             muzzle.transform.SetParent(muzzlePoint);
                             muzzle.transform.position = muzzlePoint.position;
                             muzzle.transform.rotation = muzzlePoint.rotation;
                             muzzle.Play();
                         }
-                        blackboard.firstShot = false;
+                        bb.firstShot = false;
                     }
                     // ...or not (double projectile)
                     else
@@ -294,13 +294,13 @@ public class PlayerBaseState
 
                         if (shot1 != null && shot2 != null && muzzle1 != null && muzzle2 != null)
                         {
-                            Transform shotSpawn = blackboard.player.shotSpawn;
-                            Transform muzzlePoint = blackboard.player.muzzlePoint;
+                            Transform shotSpawn = bb.player.shotSpawn;
+                            Transform muzzlePoint = bb.player.muzzlePoint;
 
                             shot1.transform.rotation = shotSpawn.rotation;
                             shot1.transform.position = shotSpawn.position;
                             shot1.transform.Translate(new Vector3(shotSideOffset, 0, 0));
-                            shot1.player = blackboard.player;
+                            shot1.player = bb.player;
                             shot1.Shoot();
 
                             muzzle1.transform.position = muzzlePoint.position;
@@ -312,7 +312,7 @@ public class PlayerBaseState
                             shot2.transform.rotation = shotSpawn.rotation;
                             shot2.transform.position = shotSpawn.position;
                             shot2.transform.Translate(new Vector3(-shotSideOffset, 0, 0));
-                            shot2.player = blackboard.player;
+                            shot2.player = bb.player;
                             shot2.Shoot();
 
                             muzzle2.transform.position = muzzlePoint.position;
@@ -331,34 +331,34 @@ public class PlayerBaseState
             }
             else
             {
-                blackboard.player.StartNoShoot();
+                bb.player.StartNoShoot();
             }
         }
     }
 
     public virtual PlayerBaseState TakeDamage(float damage, bool triggerDamageAnim = true, bool whiteBlink = true)
     {
-        if (rsc.debugMng.godMode || blackboard.isInvulnerable) return null;
+        if (rsc.debugMng.godMode || bb.isInvulnerable) return null;
 
-        blackboard.blinkController.BlinkWhiteOnce();
+        bb.blinkController.BlinkWhiteOnce();
 
-        blackboard.currentHealth -= damage;
+        bb.currentHealth -= damage;
 
-        if (blackboard.currentHealth <= 0) blackboard.currentHealth = 0;
+        if (bb.currentHealth <= 0) bb.currentHealth = 0;
 
         //Send event
         PlayerDamagedEventInfo.eventInfo.damage = damage;
-        PlayerDamagedEventInfo.eventInfo.currentHealth = blackboard.currentHealth;
+        PlayerDamagedEventInfo.eventInfo.currentHealth = bb.currentHealth;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DAMAGED, PlayerDamagedEventInfo.eventInfo);
 
-        if (blackboard.currentHealth == 0)
+        if (bb.currentHealth == 0)
         {           
-            return blackboard.dyingState;
+            return bb.dyingState;
         }
         else
         {
             if (triggerDamageAnim)
-                return blackboard.receivingDamageState;
+                return bb.receivingDamageState;
         }
 
         return null;
@@ -373,10 +373,10 @@ public class PlayerBaseState
 
     public virtual PlayerBaseState AttackReceived(float damage, ChromaColor color, Vector3 origin)
     {
-        if (rsc.debugMng.godMode || blackboard.isInvulnerable) return null;
+        if (rsc.debugMng.godMode || bb.isInvulnerable) return null;
 
         //Shield will be deployed either while shooting or while aiming
-        bool isShieldDeployed = blackboard.shootPressed || blackboard.aimPressed;
+        bool isShieldDeployed = bb.shootPressed || bb.aimPressed;
 
         bool shouldTakeDamage = true;
         bool shouldRechargeEnergy = false;
@@ -384,45 +384,45 @@ public class PlayerBaseState
 
         if (isShieldDeployed)
         {
-            Vector3 forward = blackboard.player.transform.forward;
+            Vector3 forward = bb.player.transform.forward;
             forward.y = 0;
-            Vector3 playerEnemy = origin - blackboard.player.transform.position;
+            Vector3 playerEnemy = origin - bb.player.transform.position;
             playerEnemy.y = 0;
 
             float angle = Vector3.Angle(forward, playerEnemy);
 
             //Debug.Log("Angle: " + angle + " // Attack color: " + ChromaColorInfo.GetColorName(color) + " // Current color: " + ChromaColorInfo.GetColorName(blackboard.currentColor));
 
-            if (angle < blackboard.player.maxAngleToShieldBlocking)
+            if (angle < bb.player.maxAngleToShieldBlocking)
             {
-                if (color == blackboard.currentColor)
+                if (color == bb.currentColor)
                 {
                     shouldTakeDamage = false;
                     shouldRechargeEnergy = true;
                 }
                 else
                 {
-                    damageRatio = blackboard.player.damageRatioWhenBlockedWrongColor;
+                    damageRatio = bb.player.damageRatioWhenBlockedWrongColor;
                 }
             }
         }
 
         if (shouldRechargeEnergy)
         {
-            blackboard.player.PlayAttackBlocked();
-            blackboard.player.RechargeEnergy(blackboard.player.energyIncreaseWhenBlockedCorrectColor);
+            bb.player.PlayAttackBlocked();
+            bb.player.RechargeEnergy(bb.player.energyIncreaseWhenBlockedCorrectColor);
         }
 
         if (shouldTakeDamage)
         {
             PlayerBaseState result = TakeDamage((damage * damageRatio), color, true, false);
-            if (blackboard.isAffectedByContact || blackboard.isContactCooldown)
+            if (bb.isAffectedByContact || bb.isContactCooldown)
             {
-                blackboard.player.StopCoroutine(HandleEnemyTouched());
-                blackboard.isAffectedByContact = false;
-                blackboard.isContactCooldown = false;
+                bb.player.StopCoroutine(HandleEnemyTouched());
+                bb.isAffectedByContact = false;
+                bb.isContactCooldown = false;
             }
-            blackboard.player.StartCoroutine(HandleInvulnerabilityTime());
+            bb.player.StartCoroutine(HandleInvulnerabilityTime());
             return result;
         }
 
@@ -431,43 +431,43 @@ public class PlayerBaseState
 
     public virtual PlayerBaseState EnemyContactOnInvulnerabilityEnd()
     {
-        blackboard.contactFlag = false;
+        bb.contactFlag = false;
 
-        if (rsc.debugMng.godMode || blackboard.isInvulnerable) return null;
+        if (rsc.debugMng.godMode || bb.isInvulnerable) return null;
 
-        PlayerBaseState result = TakeDamage((blackboard.player.damageAfterInvulnerability), true, false);
-        if (blackboard.isAffectedByContact || blackboard.isContactCooldown)
+        PlayerBaseState result = TakeDamage((bb.player.damageAfterInvulnerability), true, false);
+        if (bb.isAffectedByContact || bb.isContactCooldown)
         {
-            blackboard.player.StopCoroutine(HandleEnemyTouched());
-            blackboard.isAffectedByContact = false;
-            blackboard.isContactCooldown = false;
+            bb.player.StopCoroutine(HandleEnemyTouched());
+            bb.isAffectedByContact = false;
+            bb.isContactCooldown = false;
         }
-        blackboard.player.StartCoroutine(HandleInvulnerabilityTime());
+        bb.player.StartCoroutine(HandleInvulnerabilityTime());
 
         return result;
     }
 
     public void StartInvulnerabilityTime()
     {
-        blackboard.player.StartCoroutine(HandleInvulnerabilityTime());
+        bb.player.StartCoroutine(HandleInvulnerabilityTime());
     }
 
     private IEnumerator HandleInvulnerabilityTime()
     {
-        blackboard.blinkController.BlinkTransparentMultipleTimes(blackboard.player.invulnerabilityTimeAfterHit);
+        bb.blinkController.BlinkTransparentMultipleTimes(bb.player.invulnerabilityTimeAfterHit);
 
-        blackboard.isInvulnerable = true;
-        Physics.IgnoreLayerCollision(blackboard.playerPhysicsLayer, blackboard.enemyPhysicsPlayer, true);
+        bb.isInvulnerable = true;
+        Physics.IgnoreLayerCollision(bb.playerPhysicsLayer, bb.enemyPhysicsPlayer, true);
 
-        yield return new WaitForSeconds(blackboard.player.invulnerabilityTimeAfterHit);
+        yield return new WaitForSeconds(bb.player.invulnerabilityTimeAfterHit);
 
-        blackboard.isInvulnerable = false;
+        bb.isInvulnerable = false;
 
         //If player are colliding with enemies when finishing invulnerability time, not reactivate collitions and set contact flat
-        if (blackboard.enemiesInRange.Count > 0)
-            blackboard.contactFlag = true;
+        if (bb.enemiesInRange.Count > 0)
+            bb.contactFlag = true;
         else
-            Physics.IgnoreLayerCollision(blackboard.playerPhysicsLayer, blackboard.enemyPhysicsPlayer, false);
+            Physics.IgnoreLayerCollision(bb.playerPhysicsLayer, bb.enemyPhysicsPlayer, false);
     }
 
 
@@ -476,11 +476,11 @@ public class PlayerBaseState
         if (rsc.debugMng.godMode) return null;
 
         //If touched by an enemy, speed reduction and damage take
-        if (!blackboard.isAffectedByContact && !blackboard.isContactCooldown && !blackboard.isInvulnerable)
+        if (!bb.isAffectedByContact && !bb.isContactCooldown && !bb.isInvulnerable)
         {
             Debug.Log("Enemy touched!");
-            blackboard.player.StartCoroutine(HandleEnemyTouched());
-            return TakeDamage(blackboard.player.damageOnContact, false);
+            bb.player.StartCoroutine(HandleEnemyTouched());
+            return TakeDamage(bb.player.damageOnContact, false);
         }
 
         return null;
@@ -488,16 +488,16 @@ public class PlayerBaseState
 
     private IEnumerator HandleEnemyTouched()
     {
-        blackboard.isAffectedByContact = true;
+        bb.isAffectedByContact = true;
 
-        yield return new WaitForSeconds(blackboard.player.speedReductionTimeOnContact);
+        yield return new WaitForSeconds(bb.player.speedReductionTimeOnContact);
 
-        blackboard.isAffectedByContact = false;
-        blackboard.isContactCooldown = true;
+        bb.isAffectedByContact = false;
+        bb.isContactCooldown = true;
 
-        yield return new WaitForSeconds(blackboard.player.cooldownTime);
+        yield return new WaitForSeconds(bb.player.cooldownTime);
 
-        blackboard.isContactCooldown = false;
+        bb.isContactCooldown = false;
     }
 
 
@@ -505,17 +505,17 @@ public class PlayerBaseState
     {
         if (rsc.debugMng.godMode) return null;
 
-        PlayerEventInfo.eventInfo.player = blackboard.player;
+        PlayerEventInfo.eventInfo.player = bb.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerEventInfo.eventInfo);
 
-        if (blackboard.player.fireSuppresionTimeOnColorMismatch > 0f)
+        if (bb.player.fireSuppresionTimeOnColorMismatch > 0f)
         {
-            if (blackboard.canShoot)
+            if (bb.canShoot)
             {
-                blackboard.player.StartCoroutine(ColorMismatchHandle());
+                bb.player.StartCoroutine(ColorMismatchHandle());
             }
         }
-        return TakeDamage(blackboard.player.selfDamageOnColorMismatch, false);
+        return TakeDamage(bb.player.selfDamageOnColorMismatch, false);
         
     }
 
@@ -523,23 +523,23 @@ public class PlayerBaseState
     {
         StartColorMismatch();     
 
-        yield return new WaitForSeconds(blackboard.player.fireSuppresionTimeOnColorMismatch);
+        yield return new WaitForSeconds(bb.player.fireSuppresionTimeOnColorMismatch);
 
         EndColorMismatch();
     }
 
     protected void StartColorMismatch()
     {
-        blackboard.canShoot = false;
-        PlayerEventInfo.eventInfo.player = blackboard.player;
+        bb.canShoot = false;
+        PlayerEventInfo.eventInfo.player = bb.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_COLOR_MISMATCH_START, PlayerEventInfo.eventInfo);
     }
 
     protected void EndColorMismatch()
     {
-        blackboard.canShoot = true;
-        blackboard.player.StopNoShoot();
-        PlayerEventInfo.eventInfo.player = blackboard.player;
+        bb.canShoot = true;
+        bb.player.StopNoShoot();
+        PlayerEventInfo.eventInfo.player = bb.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_COLOR_MISMATCH_END, PlayerEventInfo.eventInfo);
 
     }

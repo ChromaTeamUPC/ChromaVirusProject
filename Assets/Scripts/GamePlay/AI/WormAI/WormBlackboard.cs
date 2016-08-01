@@ -26,6 +26,8 @@ public class WormBlackboard : MonoBehaviour
 
     public WormAIDyingState dyingState;
 
+    public WormAITestState testState;
+
     //Reseteable values
     [Header("Health Settings")]
     public int wormMaxPhases = 4;
@@ -89,6 +91,40 @@ public class WormBlackboard : MonoBehaviour
     public GameObject spawnEntry;
     public GameObject spawnExit;
 
+    public GameObject enterBezierCtrl11;
+    public GameObject enterBezierCtrl12;
+    public GameObject enterBezierEnd1Start2;
+    public GameObject enterBezierCtrl21;
+    public GameObject enterBezierCtrl22;
+
+    public GameObject exitBezierCtrl11;
+    public GameObject exitBezierCtrl12;
+    public GameObject exitBezierEnd1Start2;
+    public GameObject exitBezierCtrl21;
+    public GameObject exitBezierCtrl22;
+
+    [HideInInspector]
+    public Vector3 worldEnterBezierCtrl11;
+    [HideInInspector]
+    public Vector3 worldEnterBezierCtrl12;
+    [HideInInspector]
+    public Vector3 worldEnterBezierEnd1Start2;
+    [HideInInspector]
+    public Vector3 worldEnterBezierCtrl21;
+    [HideInInspector]
+    public Vector3 worldEnterBezierCtrl22;
+
+    [HideInInspector]
+    public Vector3 worldExitBezierCtrl11;
+    [HideInInspector]
+    public Vector3 worldExitBezierCtrl12;
+    [HideInInspector]
+    public Vector3 worldExitBezierEnd1Start2;
+    [HideInInspector]
+    public Vector3 worldExitBezierCtrl21;
+    [HideInInspector]
+    public Vector3 worldExitBezierCtrl22;
+
     public void Awake()
     {
         wormGO = gameObject;
@@ -111,6 +147,8 @@ public class WormBlackboard : MonoBehaviour
         spawningState = new WormAISpawningState(this);
         wanderingState = new WormAIWanderingState(this);
         dyingState = new WormAIDyingState(this);
+
+        testState = new WormAITestState(this);
 
         ResetValues();
     }
@@ -270,5 +308,43 @@ public class WormBlackboard : MonoBehaviour
         float x = GetJumpXGivenY(y, positiveSide);
 
         return GetJumpPosition(x, y);
+    }
+
+    public Vector3 BezierQuadratic(Vector3 start, Vector3 control, Vector3 end, float t)
+    {
+        //B(t) = (1-t)2P0 + 2(1-t)tP1 + t2P2 , 0 < t < 1
+
+        return (Mathf.Pow(1 - t, 2) * start) +
+               (2 * (1 - t) * t * control) +
+               (Mathf.Pow(t, 2) * end);
+    }
+
+    public Vector3 BezierCubic(Vector3 start, Vector3 control1, Vector3 control2, Vector3 end, float t)
+    {
+        //B(t) = (1-t)3P0 + 3(1-t)2tP1 + 3(1-t)t2P2 + t3P3 , 0 < t < 1
+
+        return (Mathf.Pow(1 - t, 3) * start) +
+               (3 * Mathf.Pow(1 - t, 2) * t * control1) +
+               (3 * (1 - t) * Mathf.Pow(t, 2) * control2) +
+               (Mathf.Pow(t, 3) * end);
+
+    }
+
+    public void CalculateWorldEnterBezierPoints(Transform origin)
+    {
+        worldEnterBezierCtrl11 = origin.TransformPoint(enterBezierCtrl11.transform.position);
+        worldEnterBezierCtrl12 = origin.TransformPoint(enterBezierCtrl12.transform.position);
+        worldEnterBezierEnd1Start2 = origin.TransformPoint(enterBezierEnd1Start2.transform.position);
+        worldEnterBezierCtrl21 = origin.TransformPoint(enterBezierCtrl21.transform.position);
+        worldEnterBezierCtrl22 = origin.TransformPoint(enterBezierCtrl22.transform.position);
+    }
+
+    public void CalculateWorldExitBezierPoints(Transform origin)
+    {
+        worldExitBezierCtrl11 = origin.TransformPoint(exitBezierCtrl11.transform.position);
+        worldExitBezierCtrl12 = origin.TransformPoint(exitBezierCtrl12.transform.position);
+        worldExitBezierEnd1Start2 = origin.TransformPoint(exitBezierEnd1Start2.transform.position);
+        worldExitBezierCtrl21 = origin.TransformPoint(exitBezierCtrl21.transform.position);
+        worldExitBezierCtrl22 = origin.TransformPoint(exitBezierCtrl22.transform.position);
     }
 }
