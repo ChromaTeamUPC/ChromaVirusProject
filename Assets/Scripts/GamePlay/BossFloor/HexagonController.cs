@@ -33,6 +33,7 @@ public class HexagonController : MonoBehaviour
 
     //Movement variables
     private MovementState movementState;
+    public float minDistanceToPlayer = DISTANCE_BETWEEN_HEXAGONS * 4f;
     public float movementMinWaitTime = 1f;
     public float movementMaxWaitTime = 3f;
     private bool up;
@@ -43,7 +44,7 @@ public class HexagonController : MonoBehaviour
     public float downMinMovement = 1f;
     public float downMaxMovement = 2f;
     public float movementSpeed = 5f;
-    private bool canMove;
+    private int probesInRange;
 
     private GameObject model;
     private float modelOriginalY;
@@ -64,14 +65,14 @@ public class HexagonController : MonoBehaviour
         modelOriginalY = model.transform.position.y;
         rend = GetComponentInChildren<Renderer>();
         originalMat = rend.sharedMaterial;
-        canMove = true;
+        probesInRange = 0;
     }
 
     // Use this for initialization
     void Start () 
 	{
         CheckNeighbours();
-        StartCoroutine(TestMovement());
+        StartCoroutine(Move());
     }
 	
 	// Update is called once per frame
@@ -116,7 +117,7 @@ public class HexagonController : MonoBehaviour
                 {
                     model.transform.position = new Vector3(model.transform.position.x, modelOriginalY, model.transform.position.z);
                     movementState = MovementState.IDLE;
-                    StartCoroutine(TestMovement());
+                    StartCoroutine(Move());
                 }
 
                 break;
@@ -152,13 +153,20 @@ public class HexagonController : MonoBehaviour
     }
 
     //Test
-    private IEnumerator TestMovement()
+    private IEnumerator Move()
     {
         yield return new WaitForSeconds(Random.Range(movementMinWaitTime, movementMaxWaitTime));
-        if(canMove && infectionState == InfectionState.NORMAL)
+        if(CanMove())
             StartMovement();
         else
-            StartCoroutine(TestMovement());
+            StartCoroutine(Move());
+    }
+
+    private bool CanMove()
+    {
+        return infectionState == InfectionState.NORMAL
+            && probesInRange == 0
+            && rsc.enemyMng.MinDistanceToPlayer(gameObject) > minDistanceToPlayer;
     }
 
     private void SetMat()
@@ -185,7 +193,7 @@ public class HexagonController : MonoBehaviour
     {
         if(other.tag == "HexagonProbe")
         {
-            canMove = false;
+            ++probesInRange;
             if (movementState == MovementState.MOVING || movementState == MovementState.RETURNING)
             {
                 movementState = MovementState.FAST_RETURNING;
@@ -203,11 +211,11 @@ public class HexagonController : MonoBehaviour
     {
         if (other.tag == "HexagonProbe")
         {
-            canMove = true;
+            --probesInRange;
             if (infectionState == InfectionState.NORMAL)
             {
                 rend.sharedMaterial = originalMat;
-                StartCoroutine(TestMovement());
+                StartCoroutine(Move());
             }
         }
     }

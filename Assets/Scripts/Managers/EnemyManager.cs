@@ -430,6 +430,34 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    public float MinDistanceToPlayer(GameObject origin)
+    {
+        if (rsc.gameInfo.numberOfPlayers == 1)
+        {
+            if (rsc.gameInfo.player1Controller.Alive)
+                return Vector3.Distance(origin.transform.position, rsc.gameInfo.player1.transform.position);
+            else
+                return float.MaxValue;
+        }
+        else
+        {
+            //If both players active, return the closest one
+            if (rsc.gameInfo.player1Controller.Alive && rsc.gameInfo.player2Controller.Alive)
+            {
+                float toPlayer1 = Vector3.Distance(origin.transform.position, rsc.gameInfo.player1.transform.position);
+                float toPlayer2 = Vector3.Distance(origin.transform.position, rsc.gameInfo.player2.transform.position);
+
+                return Mathf.Min(toPlayer1, toPlayer2);
+            }
+            else if (rsc.gameInfo.player2Controller.Alive)
+                return Vector3.Distance(origin.transform.position, rsc.gameInfo.player2.transform.position);
+            else if (rsc.gameInfo.player1Controller.Alive)
+                return Vector3.Distance(origin.transform.position, rsc.gameInfo.player1.transform.position);
+            else
+                return float.MaxValue;
+        }
+    }
+
 
     void CreateAIActionLists()
     {
