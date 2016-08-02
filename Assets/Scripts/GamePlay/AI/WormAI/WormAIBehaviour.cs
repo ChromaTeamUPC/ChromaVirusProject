@@ -209,6 +209,16 @@ public class WormAIBehaviour : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public void SetVisible(bool visible)
+    {
+        rend.enabled = visible;
+    }
+
+    public bool IsVisible()
+    {
+        return rend.enabled;
+    }
+
     //Body movement functions
     private void SetInitialBodyWayPoints()
     {
@@ -216,18 +226,18 @@ public class WormAIBehaviour : MonoBehaviour
 
         if (tail != null)
         {
-            headWayPoint = new WormWayPoint(tail.position, tail.rotation);
+            headWayPoint = new WormWayPoint(tail.position, tail.rotation, false);
         }
 
         for (int i = bodySegments.Length - 1; i >= 0; --i)
         {
-            WormWayPoint segmentWayPoint = new WormWayPoint(bodySegments[i].position, bodySegments[i].rotation, (headWayPoint != null ? headWayPoint : null));
+            WormWayPoint segmentWayPoint = new WormWayPoint(bodySegments[i].position, bodySegments[i].rotation, false, (headWayPoint != null ? headWayPoint : null));
             headWayPoint = segmentWayPoint;
         }
 
         if (head != null)
         {
-            headWayPoint = new WormWayPoint(head.position, head.rotation, (headWayPoint != null ? headWayPoint : null));
+            headWayPoint = new WormWayPoint(head.position, head.rotation, false, (headWayPoint != null ? headWayPoint : null));
         }
     }
 
@@ -236,7 +246,7 @@ public class WormAIBehaviour : MonoBehaviour
         //If head has moved, create a new waypoint and recalculate all segments' position
         if ((head.position != headWayPoint.position))
         {
-            headWayPoint = new WormWayPoint(head.position, head.rotation, headWayPoint);
+            headWayPoint = new WormWayPoint(head.position, head.rotation, IsVisible(), headWayPoint);
 
             WormWayPoint current = headWayPoint;
             WormWayPoint next = current.next;
@@ -269,7 +279,7 @@ public class WormAIBehaviour : MonoBehaviour
 
                 bodySegments[i].position = current.position + direction;
                 bodySegments[i].rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
-
+                bb.bodySegmentControllers[i].SetVisible(current.visible || next.visible);
 
                 //if it was the final body part and there is no tail, release the oldest waypoints
                 if (i == bodySegments.Length - 1)
@@ -308,6 +318,7 @@ public class WormAIBehaviour : MonoBehaviour
 
                 tail.position = current.position + direction;
                 tail.rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
+                bb.tail.SetVisible(current.visible || next.visible);
 
                 //release the oldest waypoints
                 next.next = null; //Remove reference, let garbage collector do its job

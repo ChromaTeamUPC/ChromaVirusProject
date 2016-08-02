@@ -72,7 +72,8 @@ public class WormBlackboard : MonoBehaviour
     [HideInInspector]
     public WormAIBehaviour head; //same as worm variable
     public Transform[] bodySegmentsTrf;
-    private List<WormBodySegmentController> bodySegmentControllers;
+    [HideInInspector]
+    public List<WormBodySegmentController> bodySegmentControllers;
     public Transform tailTrf;
     [HideInInspector]
     public WormTailController tail;

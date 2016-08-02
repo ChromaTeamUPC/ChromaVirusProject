@@ -6,6 +6,7 @@ public class WormTailController : MonoBehaviour
     public float tailHeight;
     private Transform trf;
     private VoxelizationClient voxelization;
+    private Renderer rend;
 
     private WormBlackboard bb;
 
@@ -13,6 +14,7 @@ public class WormTailController : MonoBehaviour
     {
         trf = gameObject.transform;
         voxelization = GetComponentInChildren<VoxelizationClient>();
+        rend = GetComponentInChildren<Renderer>();
     }
 
     void Update()
@@ -30,5 +32,10 @@ public class WormTailController : MonoBehaviour
     {
         voxelization.SpawnVoxels();
         Destroy(gameObject);
+    }
+
+    public void SetVisible(bool visible)
+    {
+        rend.enabled = visible;
     }
 }

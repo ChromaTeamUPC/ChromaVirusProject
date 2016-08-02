@@ -48,6 +48,7 @@ public class WormAISpawningState : WormAIBaseState
                 Vector3 startPosition = bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false);
                 head.position = startPosition;
                 lastPosition = startPosition;
+                bb.worm.SetVisible(true);
 
                 subState = SubState.JUMPING;
                 break;
@@ -69,6 +70,7 @@ public class WormAISpawningState : WormAIBaseState
 
                 if(head.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {
+                    bb.worm.SetVisible(false);
                     subState = SubState.EXITING;
                 }
                 break;

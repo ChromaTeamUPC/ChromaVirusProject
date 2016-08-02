@@ -68,7 +68,7 @@ public class WormAIWanderingState : WormAIBaseState
         switch (subState)
         {
             case SubState.GOING_TO_ENTRY:
-                if(bb.agent.hasPath && bb.agent.remainingDistance <= 0.25f)
+                if(!bb.agent.hasPath || (bb.agent.hasPath && bb.agent.remainingDistance <= 0.25))
                 {
                     bb.agent.enabled = false;
 
@@ -81,6 +81,7 @@ public class WormAIWanderingState : WormAIBaseState
                     head.position = currentWPUG;
                     head.LookAt(nextWPUG, Vector3.up);
                     bb.CalculateWorldEnterBezierPoints(bb.wormGO.transform);
+                    bb.worm.SetVisible(true);
 
                     //Rotate head
                     Vector3 headUp = currentWPUG - nextWPUG;
@@ -203,6 +204,7 @@ public class WormAIWanderingState : WormAIBaseState
                 }
                 else
                 {
+                    bb.worm.SetVisible(false);
                     //TODO: If some random condition, attack else, new wandering state
                     if (true)
                         SetInitialState();

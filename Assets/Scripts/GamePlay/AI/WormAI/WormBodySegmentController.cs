@@ -26,7 +26,6 @@ public class WormBodySegmentController : MonoBehaviour
     private WormBlackboard bb;
     private WormAIBehaviour worm; //Shortcut
 
-
     void Awake()
     {
         blinkController = GetComponent<BlinkController>();
@@ -174,5 +173,10 @@ public class WormBodySegmentController : MonoBehaviour
 
             blinkController.InvalidateMaterials();
         }
+    }
+
+    public void SetVisible(bool visible)
+    {
+        rend.enabled = visible;
     }
 }
