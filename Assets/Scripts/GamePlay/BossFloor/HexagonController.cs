@@ -198,7 +198,7 @@ public class HexagonController : MonoBehaviour
             {
                 movementState = MovementState.FAST_RETURNING;
                 SetMat();
-                Debug.Log("Going to fast return");
+                //Debug.Log("Going to fast return");
             }
         }
         else if (other.tag == "WormHead")

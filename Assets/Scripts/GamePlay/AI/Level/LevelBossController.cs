@@ -9,8 +9,18 @@ public class LevelBossController : MonoBehaviour
 
     public Transform[] playerSpawnPoint;
 
+    public GameObject sceneCenter;
+    private HexagonController sceneCenterHexagon;
+
+    public WormAIBehaviour worm;
+
     [SerializeField]
     private FadeSceneScript fadeScript;
+
+    void Awake()
+    {
+        sceneCenterHexagon = sceneCenter.GetComponent<HexagonController>();
+    }
 
     // Use this for initialization
     void Start () 
@@ -52,6 +62,8 @@ public class LevelBossController : MonoBehaviour
 
         fadeScript.StartFadingToClear();
         rsc.audioMng.FadeInMainMusic();
+
+        StartCoroutine(InitWorm());
     }
 
     void OnDestroy()
@@ -64,6 +76,13 @@ public class LevelBossController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameFinished);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameFinished);
         }
+    }
+
+    private IEnumerator InitWorm()
+    {
+        yield return null; //Wait 1 frame to allow every module Start method to be called
+
+        worm.Init(sceneCenter);
     }
 
     private void CameraEnded(EventInfo eventInfo)

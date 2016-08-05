@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 68452a8d2d1994f44bff78f5e8b31b09
-timeCreated: 1461622129
+timeCreated: 1470290730
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
@@ -25,7 +25,7 @@ MonoImporter:
   - spiderGreen: {fileID: 2100000, guid: d1cce6cd4bd032749a6bd4c6af9252c9, type: 2}
   - spiderBlue: {fileID: 2100000, guid: 8374d47e529607e47bb31cc677a75df7, type: 2}
   - spiderYellow: {fileID: 2100000, guid: f56d0857f29c76649b1fd837b2439502, type: 2}
-  executionOrder: 0
+  executionOrder: -770
   icon: {instanceID: 0}
   userData: 
   assetBundleName: 

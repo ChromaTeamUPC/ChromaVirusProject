@@ -87,7 +87,7 @@ public class VortexController : MonoBehaviour
 	    if(active)
         {
             elapsedTime += Time.deltaTime;
-            if (elapsedTime > spawnDelay && rsc.enemyMng.blackboard.activeEnemies < maxEnemiesInScene)
+            if (elapsedTime > spawnDelay && rsc.enemyMng.bb.activeEnemies < maxEnemiesInScene)
             {
                 elapsedTime = 0f;
 

@@ -19,6 +19,10 @@ public class WormBlackboard : MonoBehaviour
     public Animator animator;
     [HideInInspector]
     public Vector3 navMeshLayersDistance;
+    [HideInInspector]
+    public GameObject sceneCenter;
+    [HideInInspector]
+    public HexagonController sceneCenterHexagon;
 
     [HideInInspector]
     public WormAISpawningState spawningState;
@@ -156,32 +160,32 @@ public class WormBlackboard : MonoBehaviour
 
     public void ResetValues()
     {
-        wormPhase = 1;
+        wormPhase = 0;
         headCurrentHealth = headMaxHealth;
         headChargeLevel = 0;
     }
 
-    void Start()
+    public void StartNewPhase()
     {
-        InitBodyParts();
+        wormPhase++;
+        Debug.Log("Worm phase: " + wormPhase);
+        headCurrentHealth = headMaxHealth;
+        headChargeLevel = 0;
+        ConsolidateBodyParts();
     }
 
     public void InitBodyParts()
     {
-        List<WormBodySegmentController> randomized = new List<WormBodySegmentController>(bodySegmentControllers);
-
-        randomized.Shuffle();
-        randomized.Shuffle();
-
         //Init each segment color
-        for (int i = 0; i < randomized.Count; ++i)
+        for (int i = 0; i < bodySegmentControllers.Count; ++i)
         {
-            randomized[i].SetInitialState((ChromaColor)(i % ChromaColorInfo.Count));
+            bodySegmentControllers[i].SetInitialState();
         }
     }
 
     public void ShuffleBodyParts()
     {
+        Debug.Log("Shuffle body parts");
         List<WormBodySegmentController> randomized = new List<WormBodySegmentController>(bodySegmentControllers);
 
         randomized.Shuffle();
@@ -192,18 +196,22 @@ public class WormBlackboard : MonoBehaviour
         {
             randomized[i].ResetColor((ChromaColor)(i % ChromaColorInfo.Count));
         }
+
+        rsc.colorMng.PrintColors();
     }
 
     public void DisableBodyParts()
     {
+        Debug.Log("Disable body parts");
         for (int i = 0; i < bodySegmentControllers.Count; ++i)
         {
             bodySegmentControllers[i].Disable();
-        }
+        }      
     }
 
     public void ConsolidateBodyParts()
     {
+        Debug.Log("Consolidate body parts");
         List<WormBodySegmentController> randomized = new List<WormBodySegmentController>(bodySegmentControllers);
 
         randomized.Shuffle();
@@ -214,6 +222,8 @@ public class WormBlackboard : MonoBehaviour
         {
             randomized[i].Consolidate((ChromaColor)(i % ChromaColorInfo.Count));
         }
+
+        rsc.colorMng.PrintColors();
     }
 
     public void Explode()
@@ -235,7 +245,7 @@ public class WormBlackboard : MonoBehaviour
 
         //head explode
         yield return new WaitForSeconds(0.2f);
-        worm.Explode();
+        worm.Explode();     
     }
 
     public void CalculateParabola()

@@ -17,6 +17,7 @@ public class WormAISpawningState : WormAIBaseState
     private float currentX;
     private Vector3 lastPosition;
     private float rotation;
+    private bool highestPointReached;
 
     public WormAISpawningState(WormBlackboard bb) : base(bb)
     { }
@@ -34,8 +35,11 @@ public class WormAISpawningState : WormAIBaseState
         bb.agent.enabled = false;
 
         rotation = 0f;
+        highestPointReached = false;
 
         subState = SubState.GOING_TO_ENTRY;
+
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SPAWNED, EventInfo.emptyInfo);
     }
 
     public override WormAIBaseState Update()
@@ -63,6 +67,12 @@ public class WormAISpawningState : WormAIBaseState
 
                 if( lastPosition.y > head.position.y && rotation < 90f)
                 {
+                    if(!highestPointReached)
+                    {
+                        bb.StartNewPhase();
+                        highestPointReached = true;
+                    }
+
                     float angle = 30 * Time.deltaTime;
                     head.Rotate(new Vector3(0, 0, angle));
                     rotation += angle;

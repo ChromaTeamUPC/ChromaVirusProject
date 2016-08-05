@@ -16,11 +16,12 @@ public class WormBodySegmentController : MonoBehaviour
     private float currentHealth;
     private float currentHealthWrongColor;
 
+    [SerializeField]
     private ChromaColor color;
 
     private BlinkController blinkController;
     private Renderer rend;
-    private BoxCollider collider;
+    private BoxCollider col;
     private VoxelizationClient voxelization;
 
     private WormBlackboard bb;
@@ -30,28 +31,52 @@ public class WormBodySegmentController : MonoBehaviour
     {
         blinkController = GetComponent<BlinkController>();
         rend = GetComponentInChildren<Renderer>();
-        collider = GetComponent<BoxCollider>();
+        col = GetComponent<BoxCollider>();
         voxelization = GetComponentInChildren<VoxelizationClient>();
+        state = State.NORMAL;
+    }
+
+    void Start()
+    {
+        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormBodyMaterial(color) });
     }
 
     public void SetBlackboard(WormBlackboard bb)
     {
         this.bb = bb;
         worm = bb.worm;
+        currentHealth = bb.bodyMaxHealth;
+        currentHealthWrongColor = bb.bodyMaxHealth;
     }
 
-    public void SetInitialState(ChromaColor color)
+    public void SetInitialState()
     {
-        this.color = color;
         currentHealth = bb.bodyMaxHealth;
         currentHealthWrongColor = bb.bodyMaxHealth;
         SetMaterial(new[] { rsc.coloredObjectsMng.GetWormBodyMaterial(color) });
+
+        ColorEventInfo.eventInfo.newColor = color;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SECTION_ACTIVATED, ColorEventInfo.eventInfo);
+
         state = State.NORMAL;
     }
 
     public void ResetColor(ChromaColor color)
     {
         if (state == State.DESTROYED) return;
+
+        ChromaColor oldColor = this.color;
+        if(state == State.DEACTIVATED)
+        {
+            ColorEventInfo.eventInfo.newColor = color;
+            rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SECTION_ACTIVATED, ColorEventInfo.eventInfo);
+        }
+        else
+        {
+            ColorEventInfo.eventInfo.oldColor = oldColor;
+            ColorEventInfo.eventInfo.newColor = color;
+            rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SECTION_COLOR_CHANGED, ColorEventInfo.eventInfo);
+        }
 
         this.color = color;
         currentHealth = bb.bodyMaxHealth;
@@ -69,15 +94,20 @@ public class WormBodySegmentController : MonoBehaviour
         {
             SetMaterial(new[] { rsc.coloredObjectsMng.GetWormBodyWireframeMaterial() });
             state = State.DESTROYED;
-            collider.enabled = false;
+            col.enabled = false;
         }
         else
         {
+            ChromaColor oldColor = this.color;
             this.color = color;
             currentHealth = bb.bodyMaxHealth;
             currentHealthWrongColor = bb.bodyMaxHealth;
-            state = State.SETTING;
 
+            ColorEventInfo.eventInfo.oldColor = oldColor;
+            ColorEventInfo.eventInfo.newColor = color;
+            rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SECTION_COLOR_CHANGED, ColorEventInfo.eventInfo);
+
+            state = State.SETTING;
             StartCoroutine(SetRandomColors());
         }
     }
@@ -142,6 +172,14 @@ public class WormBodySegmentController : MonoBehaviour
 
             if(currentHealthWrongColor <= 0)
             {
+                state = State.DEACTIVATED; //not really deactivated but flagged to allow notify properly when colors reset
+
+                EnemyDiedEventInfo.eventInfo.color = color;
+                EnemyDiedEventInfo.eventInfo.infectionValue = 0;
+                EnemyDiedEventInfo.eventInfo.killerPlayer = player;
+                EnemyDiedEventInfo.eventInfo.killedSameColor = (color == shotColor);
+                rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SECTION_DESTROYED, EnemyDiedEventInfo.eventInfo);
+
                 worm.DischargeHead();
             }
         }
@@ -156,6 +194,12 @@ public class WormBodySegmentController : MonoBehaviour
                 state = State.DEACTIVATED;
 
                 //Explosion FX?
+
+                EnemyDiedEventInfo.eventInfo.color = color;
+                EnemyDiedEventInfo.eventInfo.infectionValue = 0;
+                EnemyDiedEventInfo.eventInfo.killerPlayer = player;
+                EnemyDiedEventInfo.eventInfo.killedSameColor = (color == shotColor);
+                rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SECTION_DESTROYED, EnemyDiedEventInfo.eventInfo);
 
                 worm.ChargeHead();
             }

@@ -9,12 +9,12 @@ public class SpiderInfectingDeviceAIState : SpiderAIActionsBaseState
     public override void OnStateEnter()
     {
         base.OnStateEnter();
-        rsc.enemyMng.blackboard.SpiderStartsInfectingDevice();
+        rsc.enemyMng.bb.SpiderStartsInfectingDevice();
     }
 
     public override void OnStateExit()
     {
-        rsc.enemyMng.blackboard.SpiderStopsInfectingDevice();
+        rsc.enemyMng.bb.SpiderStopsInfectingDevice();
         base.OnStateExit();
     }
 

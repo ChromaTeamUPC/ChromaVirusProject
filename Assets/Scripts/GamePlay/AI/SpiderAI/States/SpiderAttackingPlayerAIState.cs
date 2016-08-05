@@ -9,13 +9,13 @@ public class SpiderAttackingPlayerAIState : SpiderAIActionsBaseState
 
     public override void OnStateEnter()
     {
-        rsc.enemyMng.blackboard.SpiderStartsAttacking();
+        rsc.enemyMng.bb.SpiderStartsAttacking();
         base.OnStateEnter();
     }
 
     public override void OnStateExit()
     {
-        rsc.enemyMng.blackboard.SpiderStopsAttacking();
+        rsc.enemyMng.bb.SpiderStopsAttacking();
         base.OnStateExit();
     }
 
@@ -28,8 +28,8 @@ public class SpiderAttackingPlayerAIState : SpiderAIActionsBaseState
 
         if ((spiderBlackboard.checkInfectingChipDelay >= spiderBlackboard.spider.checkDeviceEverySeconds))
         {
-            if ((rsc.enemyMng.blackboard.activeDevices.Count > 0)
-                && (rsc.enemyMng.blackboard.timeRemainingToNextDeviceInfect == 0f))
+            if ((rsc.enemyMng.bb.activeDevices.Count > 0)
+                && (rsc.enemyMng.bb.timeRemainingToNextDeviceInfect == 0f))
             {
                 return spiderBlackboard.infectingDeviceState;
             }

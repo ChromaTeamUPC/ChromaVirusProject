@@ -55,35 +55,6 @@ public class GameManager : MonoBehaviour {
             default:
                 break;
         }
-
-        /*if (gameStarted)
-        {
-            int ctrlNumber = 0;
-
-            while (ctrlNumber < rsc.gameInfo.numberOfPlayers)
-            {
-                //if (Input.GetButtonDown("Pause"))
-                if (ctrlNumber < InputManager.Devices.Count && InputManager.Devices[ctrlNumber].GetControl(InputControlType.Start).WasPressed)
-                {
-                    paused = !paused;
-
-                    if (paused)
-                    {
-                        Time.timeScale = 0.000000000001f;
-                        rsc.audioMng.PauseMainMusic();
-                        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_PAUSED, EventInfo.emptyInfo);
-                    }
-                    else
-                    {
-                        Time.timeScale = 1f;
-                        rsc.audioMng.ResumeMainMusic();
-                        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESUMED, EventInfo.emptyInfo);
-                    }
-                }
-
-                ++ctrlNumber;
-            }
-        }*/
 	}
 
     public void Pause()
@@ -173,7 +144,11 @@ public class GameManager : MonoBehaviour {
 
         switch(levelId)
         {
-            case 1: //Our only level for now
+            case 1: //Level01
+                StartCoroutine(GoToNextLevel("LevelBoss"));
+                break;
+
+            case -1: //Boss
                 GameFinished();
                 break;
         }
@@ -238,5 +213,16 @@ public class GameManager : MonoBehaviour {
         //Ensure all resources are in place (ie, enemies back to pool)
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
         SceneManager.LoadScene("Credits");
+    }
+
+    private IEnumerator GoToNextLevel(string nextLevel)
+    {
+        rsc.audioMng.FadeOutMainMusic(2.5f);
+
+        yield return new WaitForSeconds(3.0f);
+
+        //Ensure all resources are in place (ie, enemies back to pool)
+        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
+        SceneManager.LoadScene(nextLevel);
     }
 }

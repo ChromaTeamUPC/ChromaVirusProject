@@ -8,7 +8,8 @@ public class WormAIWanderingState : WormAIBaseState
         GOING_TO_ENTRY,
         ENTERING,
         FOLLOWING_PATH,
-        EXITING
+        EXITING,
+        WAITING_FOR_TAIL
     }
 
     private SubState subState;
@@ -22,6 +23,7 @@ public class WormAIWanderingState : WormAIBaseState
     private Transform head;
     private Vector3 lastPosition;
     private Quaternion lookRotation;
+    private Vector3 undergroundDirection;
 
     private int curveNum;
     private float t;
@@ -205,8 +207,27 @@ public class WormAIWanderingState : WormAIBaseState
                 else
                 {
                     bb.worm.SetVisible(false);
+
+                    //Set direction to scene center
+                    undergroundDirection = bb.sceneCenter.transform.position - head.position;
+                    undergroundDirection.y = 0;
+                    undergroundDirection.Normalize();
+
+                    subState = SubState.WAITING_FOR_TAIL;
+                }
+
+                break;
+
+            case SubState.WAITING_FOR_TAIL:
+                //move head until tail is undeground
+                if(!bb.tailIsUnderground)
+                {
+                    head.position = head.position + (undergroundDirection * bb.undergroundSpeed * Time.deltaTime);
+                }
+                else
+                {
                     //TODO: If some random condition, attack else, new wandering state
-                    if (true)
+                    if (Random.Range(0f, 1f) > 0.5f)
                         SetInitialState();
                     else
                         //return blackboard.belowAttackState;
@@ -214,7 +235,6 @@ public class WormAIWanderingState : WormAIBaseState
                 }
 
                 break;
-
 
             default:
                 break;

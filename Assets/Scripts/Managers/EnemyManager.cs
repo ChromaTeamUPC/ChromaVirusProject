@@ -20,7 +20,7 @@ public class EnemyManager : MonoBehaviour
     public int mosquitoWeakShotsThreshold = 5;
     public int mosquitoChancesReductionForEachWeakShot = 10;
 
-    public GlobalAIBlackboard blackboard;
+    public GlobalAIBlackboard bb;
 
     public List<AIAction> defaultSpiderInfect = new List<AIAction>();
 
@@ -154,7 +154,7 @@ public class EnemyManager : MonoBehaviour
     void Awake()
     {
         //Debug.Log("Enemy Manager created");
-        blackboard = new GlobalAIBlackboard();
+        bb = new GlobalAIBlackboard();
        
         currentPlan = null;
         currentPlanId = -1;
@@ -165,7 +165,7 @@ public class EnemyManager : MonoBehaviour
 
     void Start()
     {
-        blackboard.Init(this);
+        bb.Init(this);
         rsc.eventMng.StartListening(EventManager.EventType.ENEMY_SPAWNED, EnemySpawned);
         rsc.eventMng.StartListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
 
@@ -177,6 +177,12 @@ public class EnemyManager : MonoBehaviour
 
         rsc.eventMng.StartListening(EventManager.EventType.DEVICE_ACTIVATED, DeviceActivated);
         rsc.eventMng.StartListening(EventManager.EventType.DEVICE_DEACTIVATED, DeviceDeactivated);
+
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_SPAWNED, WormSpawned);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_DIED, WormDied);
+
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_ACTIVATED, WormHeadActivated);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
 
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameOver); 
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
@@ -198,6 +204,12 @@ public class EnemyManager : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.DEVICE_ACTIVATED, DeviceActivated);
             rsc.eventMng.StopListening(EventManager.EventType.DEVICE_DEACTIVATED, DeviceDeactivated);
 
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_SPAWNED, WormSpawned);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_DIED, WormDied);
+
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_ACTIVATED, WormHeadActivated);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
+
             rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameOver);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
         }
@@ -212,73 +224,101 @@ public class EnemyManager : MonoBehaviour
         executingWaves = 0;
         sequentialWavesIndex = 0;
 
-        blackboard.ResetValues();
+        bb.ResetValues();
     }
 
     private void EnemySpawned(EventInfo eventInfo)
     {
-        ++blackboard.activeEnemies;
+        ++bb.activeEnemies;
         //Debug.Log("Enemies++ = " + blackboard.activeEnemies);
     }
 
     private void EnemyDied(EventInfo eventInfo)
     {
-        --blackboard.activeEnemies;
+        --bb.activeEnemies;
 
         EnemyDiedEventInfo info = (EnemyDiedEventInfo)eventInfo;
-        blackboard.zoneCurrentInfectionLevel -= info.infectionValue;
+        bb.zoneCurrentInfectionLevel -= info.infectionValue;
 
         //Debug.Log("Enemies-- = " + blackboard.activeEnemies);
     }
 
     private void TurretSpawned(EventInfo eventInfo)
     {
-        ++blackboard.activeTurrets;
+        ++bb.activeTurrets;
     }
 
     private void TurretDestroyed(EventInfo eventInfo)
     {
-        --blackboard.activeTurrets;
+        --bb.activeTurrets;
     }
 
     private void VortexActivated(EventInfo eventInfo)
     {
-        ++blackboard.activeVortex;
+        ++bb.activeVortex;
 
-        blackboard.zoneTotalInfectionLevel += VortexController.infectionValue;
-        blackboard.zoneCurrentInfectionLevel += VortexController.infectionValue;
+        bb.zoneTotalInfectionLevel += VortexController.infectionValue;
+        bb.zoneCurrentInfectionLevel += VortexController.infectionValue;
 
         //Debug.Log("Vortex++ = " + blackboard.activeVortex);
     }
 
     private void VortexDestroyed(EventInfo eventInfo)
     {
-        --blackboard.activeVortex;
+        --bb.activeVortex;
 
-        blackboard.zoneCurrentInfectionLevel -= VortexController.infectionValue;
+        bb.zoneCurrentInfectionLevel -= VortexController.infectionValue;
         //Debug.Log("Vortex-- = " + blackboard.activeVortex);
+    }
+
+    private void WormSpawned(EventInfo eventInfo)
+    {
+        WormSpawnedEventInfo info = (WormSpawnedEventInfo)eventInfo;
+        bb.activeEnemies += info.wormPhases;
+        bb.zoneTotalInfectionLevel = 100;
+        bb.zoneCurrentInfectionLevel = 100;
+
+        //Debug.Log("Worm spawned = " + blackboard.activeEnemies);
+    }
+
+    private void WormDied(EventInfo eventInfo)
+    {
+        //Nothing to do right now
+    }
+
+    private void WormHeadActivated(EventInfo eventInfo)
+    {
+        //Nothing to do right now
+    }
+
+    private void WormHeadDestroyed(EventInfo eventInfo)
+    {
+        --bb.activeEnemies;
+
+        EnemyDiedEventInfo info = (EnemyDiedEventInfo)eventInfo;
+        bb.zoneCurrentInfectionLevel -= info.infectionValue;
     }
 
     public void AddVortexEnemyInfection(int infectionValue)
     {
-        blackboard.zoneCurrentInfectionLevel += infectionValue;
-        if (blackboard.zoneCurrentInfectionLevel > blackboard.zoneTotalInfectionLevel)
+        bb.zoneCurrentInfectionLevel += infectionValue;
+        if (bb.zoneCurrentInfectionLevel > bb.zoneTotalInfectionLevel)
         {     
-            blackboard.zoneTotalInfectionLevel = blackboard.zoneCurrentInfectionLevel;
+            bb.zoneTotalInfectionLevel = bb.zoneCurrentInfectionLevel;
         }
     }
 
     private void DeviceActivated(EventInfo eventInfo)
     {
         DeviceEventInfo info = (DeviceEventInfo)eventInfo;
-        blackboard.activeDevices.Add(info.device);
+        bb.activeDevices.Add(info.device);
         //Debug.Log("Devices++ = " + blackboard.activeDevices.Count);
     }
 
     private void DeviceDeactivated(EventInfo eventInfo)
     {
         DeviceEventInfo info = (DeviceEventInfo)eventInfo;
-        blackboard.activeDevices.Remove(info.device);
+        bb.activeDevices.Remove(info.device);
         //Debug.Log("Devices-- = " + blackboard.activeDevices.Count);
     }
 
@@ -310,13 +350,13 @@ public class EnemyManager : MonoBehaviour
 
         currentPlanId = planId;
 
-        blackboard.zoneTotalInfectionLevel = currentPlan.GetPlanTotalInfection();
-        blackboard.zoneCurrentInfectionLevel = blackboard.zoneTotalInfectionLevel;
+        bb.zoneTotalInfectionLevel = currentPlan.GetPlanTotalInfection();
+        bb.zoneCurrentInfectionLevel = bb.zoneTotalInfectionLevel;
 
-        blackboard.activeEnemies = 0;
-        blackboard.activeTurrets = 0;
-        blackboard.activeVortex = 0;
-        blackboard.activeDevices.Clear();
+        bb.activeEnemies = 0;
+        bb.activeTurrets = 0;
+        bb.activeVortex = 0;
+        bb.activeDevices.Clear();
 
         executingWaves = 0;
         sequentialWavesIndex = 0;
@@ -366,15 +406,15 @@ public class EnemyManager : MonoBehaviour
         if (currentPlan == null)
             return true;
 
-        return (blackboard.activeEnemies + blackboard.activeTurrets 
-            + blackboard.activeVortex + blackboard.GetTotalDevicesInfection()
+        return (bb.activeEnemies + bb.activeTurrets 
+            + bb.activeVortex + bb.GetTotalDevicesInfection()
             + executingWaves == 0) 
             && (sequentialWavesIndex == currentPlan.sequentialWaves.Count);
     }
 
     void Update()
     {
-        blackboard.DecrementTimes();
+        bb.DecrementTimes();
 
         if(currentPlan != null)
         {
@@ -388,7 +428,7 @@ public class EnemyManager : MonoBehaviour
             }
             else
             {
-                if(blackboard.activeEnemies < currentPlan.enemiesThreshold && executingWaves == 0 && sequentialWavesIndex < currentPlan.sequentialWaves.Count)
+                if(bb.activeEnemies < currentPlan.enemiesThreshold && executingWaves == 0 && sequentialWavesIndex < currentPlan.sequentialWaves.Count)
                 {
                     ++sequentialWavesIndex;
                     if(sequentialWavesIndex < currentPlan.sequentialWaves.Count)

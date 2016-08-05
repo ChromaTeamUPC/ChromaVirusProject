@@ -81,7 +81,10 @@ public class ColorManager : MonoBehaviour
     void Start()
     {    
         rsc.eventMng.StartListening(EventManager.EventType.ENEMY_SPAWNED, EnemySpawned);
-        rsc.eventMng.StartListening(EventManager.EventType.ENEMY_DIED, EnemyDied); 
+        rsc.eventMng.StartListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_SECTION_ACTIVATED, WormSectionActivated);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_SECTION_COLOR_CHANGED, WormSectionColorChanged);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_SECTION_DESTROYED, WormSectionDestroyed);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
     }
 
@@ -91,6 +94,9 @@ public class ColorManager : MonoBehaviour
         {
             rsc.eventMng.StopListening(EventManager.EventType.ENEMY_SPAWNED, EnemySpawned);
             rsc.eventMng.StopListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_SECTION_ACTIVATED, WormSectionActivated);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_SECTION_COLOR_CHANGED, WormSectionColorChanged);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_SECTION_DESTROYED, WormSectionDestroyed);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
         }
         //Debug.Log("Color Manager destroyed");
@@ -126,17 +132,42 @@ public class ColorManager : MonoBehaviour
         }
     }
 
-    public void EnemySpawned(EventInfo eventInfo)
+    private void EnemySpawned(EventInfo eventInfo)
     {
         ColorEventInfo info = (ColorEventInfo)eventInfo;
         ++colorCount[(int)info.newColor];
     }
 
-    public void EnemyDied(EventInfo eventInfo)
+    private void EnemyDied(EventInfo eventInfo)
     {
         EnemyDiedEventInfo info = (EnemyDiedEventInfo)eventInfo;
         --colorCount[(int)info.color];
         if (colorCount[(int)info.color] < 0) colorCount[(int)info.color] = 0;
+    }
+
+    private void WormSectionActivated(EventInfo eventInfo)
+    {
+        ColorEventInfo info = (ColorEventInfo)eventInfo;
+        ++colorCount[(int)info.newColor];;
+    }
+
+    private void WormSectionColorChanged(EventInfo eventInfo)
+    {
+        ColorEventInfo info = (ColorEventInfo)eventInfo;
+        --colorCount[(int)info.oldColor];
+        ++colorCount[(int)info.newColor];
+    }
+
+    private void WormSectionDestroyed(EventInfo eventInfo)
+    {
+        EnemyDiedEventInfo info = (EnemyDiedEventInfo)eventInfo;
+        --colorCount[(int)info.color];
+        if (colorCount[(int)info.color] < 0) colorCount[(int)info.color] = 0;
+    }
+
+    public void PrintColors()
+    {
+        Debug.Log("Red: " + colorCount[0] + " // Green: " + +colorCount[1] + " // Blue: " + +colorCount[2] + " // Yellow: " + +colorCount[3]);
     }
 
     void FixedUpdate ()

@@ -504,7 +504,7 @@ public class PlayerController : MonoBehaviour
         {
             HexagonController hex = other.GetComponent<HexagonController>();
             bb.hexagons.Add(hex);
-            Debug.Log("Hexagon added");
+            //Debug.Log("Hexagon added");
         }
         else if (other.tag == "Border")
         {
@@ -539,7 +539,7 @@ public class PlayerController : MonoBehaviour
         {
             HexagonController hex = other.GetComponent<HexagonController>();
             bb.hexagons.Remove(hex);
-            Debug.Log("Hexagon removed");
+            //Debug.Log("Hexagon removed");
         }
         else if (other.tag == "Border")
         {

@@ -21,7 +21,7 @@ public class MoveActionExecutor: BaseExecutor
         }
         else if (tId == "device")
         {
-            blackBoard.deviceController = rsc.enemyMng.blackboard.GetRandomDevice();
+            blackBoard.deviceController = rsc.enemyMng.bb.GetRandomDevice();
             if (blackBoard.deviceController != null)
                 blackBoard.target = blackBoard.deviceController.GetRandomEndPoint();
         }

@@ -8,13 +8,13 @@ public class MosquitoAttackingPlayerAIState : MosquitoAIActionsBaseState
 
     public override void OnStateEnter()
     {
-        rsc.enemyMng.blackboard.MosquitoStartsAttacking();
+        rsc.enemyMng.bb.MosquitoStartsAttacking();
         base.OnStateEnter();
     }
 
     public override void OnStateExit()
     {
-        rsc.enemyMng.blackboard.MosquitoStopsAttacking();
+        rsc.enemyMng.bb.MosquitoStopsAttacking();
         base.OnStateExit();
     }
 

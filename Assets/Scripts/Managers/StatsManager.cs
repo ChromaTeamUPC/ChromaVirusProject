@@ -43,6 +43,8 @@ public class StatsManager : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameFinished);
         rsc.eventMng.StartListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_DESTROYED, EnemyDied); //Same management as enemydied
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_SECTION_DESTROYED, EnemyDied); //Same management as enemydied
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
     }
 
@@ -55,6 +57,8 @@ public class StatsManager : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameFinished);
             rsc.eventMng.StopListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_DESTROYED, EnemyDied);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_SECTION_DESTROYED, EnemyDied);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
         }
     }

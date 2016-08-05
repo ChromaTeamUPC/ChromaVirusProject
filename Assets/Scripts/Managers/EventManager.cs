@@ -16,6 +16,7 @@ public class ColorEventInfo : EventInfo
 {
     public static ColorEventInfo eventInfo = new ColorEventInfo();
 
+    public ChromaColor oldColor;
     public ChromaColor newColor;
 }
 
@@ -65,6 +66,13 @@ public class EnemyDiedEventInfo : EventInfo
     public int infectionValue;
     public PlayerController killerPlayer;
     public bool killedSameColor;
+}
+
+public class WormSpawnedEventInfo : EventInfo
+{
+    public static WormSpawnedEventInfo eventInfo = new WormSpawnedEventInfo();
+
+    public int wormPhases;
 }
 
 public class LevelEventInfo : EventInfo
@@ -150,6 +158,16 @@ public class EventManager : MonoBehaviour {
 
         VORTEX_ACTIVATED,
         VORTEX_DESTROYED,
+
+        WORM_SPAWNED,
+        WORM_DIED,
+
+        WORM_HEAD_ACTIVATED,
+        WORM_HEAD_DESTROYED,
+
+        WORM_SECTION_ACTIVATED,
+        WORM_SECTION_COLOR_CHANGED,
+        WORM_SECTION_DESTROYED,
 
         ZONE_REACHED,
         ZONE_PLAN_FINISHED,

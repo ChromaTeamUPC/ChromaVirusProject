@@ -34,7 +34,7 @@ public class MosquitoFanProjectileAttackController : MosquitoMainAttackControlle
     {
         base.Shoot(s, p);
 
-        rsc.enemyMng.blackboard.MosquitoMainShotSpawned();
+        rsc.enemyMng.bb.MosquitoMainShotSpawned();
 
         bool left = true;
         int currentAngle = 0;
@@ -82,7 +82,7 @@ public class MosquitoFanProjectileAttackController : MosquitoMainAttackControlle
                 if (!oneDown && !projController[i].Active)
                 {
                     oneDown = true;
-                    rsc.enemyMng.blackboard.MosquitoMainShotDestroyed();
+                    rsc.enemyMng.bb.MosquitoMainShotDestroyed();
                 }
             }
 

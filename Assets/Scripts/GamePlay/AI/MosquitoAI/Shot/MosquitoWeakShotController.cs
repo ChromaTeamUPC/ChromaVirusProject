@@ -8,14 +8,14 @@ public class MosquitoWeakShotController : EnemyShotControllerBase
     {
         base.Shoot();
 
-        rsc.enemyMng.blackboard.MosquitoWeakShotSpawned();
+        rsc.enemyMng.bb.MosquitoWeakShotSpawned();
     }
 
     public override void Deactivate()
     {
         base.Deactivate();
 
-        rsc.enemyMng.blackboard.MosquitoWeakShotDestroyed();
+        rsc.enemyMng.bb.MosquitoWeakShotDestroyed();
 
         switch (color)
         {

@@ -72,9 +72,17 @@ public class WormAIBehaviour : MonoBehaviour
         SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel) });
 
         headState = HeadSubState.DEACTIVATED;
+    }
 
+    public void Init(GameObject sceneCenter)
+    {
+        bb.sceneCenter = sceneCenter;
+        bb.sceneCenterHexagon = sceneCenter.GetComponent<HexagonController>();
+
+        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel) });
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
+        bb.InitBodyParts();
         ChangeState(bb.spawningState);
-        //ChangeState(bb.testState);
     }
 
     // Update is called once per frame
@@ -118,6 +126,8 @@ public class WormAIBehaviour : MonoBehaviour
             bb.DisableBodyParts();
             headState = HeadSubState.ACTIVATED;
         }
+
+        rsc.colorMng.PrintColors();
     }
 
     public void DischargeHead()
@@ -161,11 +171,20 @@ public class WormAIBehaviour : MonoBehaviour
 
         if (bb.headCurrentHealth <= 0)
         {
+            headState = HeadSubState.DEACTIVATED;
+
+            EnemyDiedEventInfo.eventInfo.color = shotColor;
+            EnemyDiedEventInfo.eventInfo.infectionValue = 100 / bb.wormMaxPhases;
+            EnemyDiedEventInfo.eventInfo.killerPlayer = player;
+            EnemyDiedEventInfo.eventInfo.killedSameColor = true;
+            rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_DESTROYED, EnemyDiedEventInfo.eventInfo);
+
             //If we are not reached last phase, keep going
             if (bb.wormPhase < bb.wormMaxPhases)
             {
-                bb.wormPhase++;
-                SetPhase();
+                bb.StartNewPhase();
+                SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel) });
+                rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
             }
             //Else worm destroyed
             else
@@ -175,16 +194,6 @@ public class WormAIBehaviour : MonoBehaviour
         }
 
         return null;
-    }
-
-    private void SetPhase()
-    {
-        //Different settings each phase?
-        //reset head health
-        bb.headCurrentHealth = bb.headMaxHealth;
-        bb.headChargeLevel = 0;
-        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel) });
-        bb.ConsolidateBodyParts();
     }
 
     public void Explode()
@@ -206,6 +215,12 @@ public class WormAIBehaviour : MonoBehaviour
         }
 
         voxelization.SpawnFakeVoxels();
+
+        yield return new WaitForSeconds(2f);
+
+        LevelEventInfo.eventInfo.levelId = -1;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_CLEARED, LevelEventInfo.eventInfo);
+
         Destroy(gameObject);
     }
 

@@ -35,7 +35,7 @@ public class MosquitoMultipleProjectileAttackController : MosquitoMainAttackCont
     {
         base.Shoot(s, p);
 
-        rsc.enemyMng.blackboard.MosquitoMainShotSpawned();
+        rsc.enemyMng.bb.MosquitoMainShotSpawned();
 
         //Activate all at once
         for (int i = 0; i < numberOfProjectiles; ++i)
@@ -101,7 +101,7 @@ public class MosquitoMultipleProjectileAttackController : MosquitoMainAttackCont
                 if (!oneDown && !projController[i].Active)
                 {
                     oneDown = true;
-                    rsc.enemyMng.blackboard.MosquitoMainShotDestroyed();
+                    rsc.enemyMng.bb.MosquitoMainShotDestroyed();
                 }
             }
 

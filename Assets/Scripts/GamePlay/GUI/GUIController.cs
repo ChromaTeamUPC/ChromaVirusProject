@@ -305,7 +305,7 @@ public class GUIController : MonoBehaviour
         }
 
         //Current infection update
-        currentInfectionNumber = rsc.enemyMng.blackboard.GetCurrentInfectionPercentage();
+        currentInfectionNumber = rsc.enemyMng.bb.GetCurrentInfectionPercentage();
 
         if (currentInfectionNumber == 100)
         {
