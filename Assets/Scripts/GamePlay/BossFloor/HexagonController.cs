@@ -26,8 +26,8 @@ public class HexagonController : MonoBehaviour
         BOTTOM_LEFT,
         BOTTOM_RIGHT
     }
-    private const float DISTANCE_BETWEEN_HEXAGONS = 7.225f;
-    private static int hexagonLayer = LayerMask.NameToLayer("Hexagon");
+    public const float DISTANCE_BETWEEN_HEXAGONS = 7.225f;
+    public static int hexagonLayer = 1 << LayerMask.NameToLayer("Hexagon");
 
     private HexagonController[] Neighbours = new HexagonController[6];
 

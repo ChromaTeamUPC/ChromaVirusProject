@@ -7,12 +7,11 @@ public class WormAISpawningState : WormAIBaseState
     {
         GOING_TO_ENTRY,
         JUMPING,
-        EXITING
+        EXITING,
+        WAITING_FOR_TAIL
     }
 
     private SubState subState;
-
-    private Transform head;
 
     private float currentX;
     private Vector3 lastPosition;
@@ -26,8 +25,6 @@ public class WormAISpawningState : WormAIBaseState
     {
         base.OnStateEnter();
 
-        head = bb.headTrf.transform;
-
         bb.jumpOrigin = bb.spawnEntry.transform.position;
         bb.jumpDestiny = bb.spawnExit.transform.position;
         bb.CalculateParabola();
@@ -39,7 +36,8 @@ public class WormAISpawningState : WormAIBaseState
 
         subState = SubState.GOING_TO_ENTRY;
 
-        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SPAWNED, EventInfo.emptyInfo);
+        WormSpawnedEventInfo.eventInfo.wormPhases = bb.wormMaxPhases;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SPAWNED, WormSpawnedEventInfo.eventInfo);
     }
 
     public override WormAIBaseState Update()
@@ -81,6 +79,7 @@ public class WormAISpawningState : WormAIBaseState
                 if(head.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {
                     bb.worm.SetVisible(false);
+
                     subState = SubState.EXITING;
                 }
                 break;
@@ -98,11 +97,11 @@ public class WormAISpawningState : WormAIBaseState
                     pos.y = -WormBlackboard.NAVMESH_LAYER_HEIGHT;
                     head.position = pos;
 
-                    bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
+                    /*bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
                     bb.agent.enabled = true;
                     bb.agent.speed = bb.undergroundSpeed;
                     bb.agent.SetDestination(bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false)); //Back to entry in the underground
-
+                    */
                     return bb.wanderingState;
                 }
                 break;

@@ -571,6 +571,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public HexagonController GetNearestHexagon()
+    {
+        if (bb.hexagons.Count == 0) return null;
+
+        HexagonController result = bb.hexagons[0];
+        float distance = (result.transform.position - transform.position).sqrMagnitude;
+
+        for(int i = 1; i < bb.hexagons.Count; ++i)
+        {
+            float newDistance = (bb.hexagons[i].transform.position - transform.position).sqrMagnitude;
+
+            if(newDistance < distance)
+            {
+                distance = newDistance;
+                result = bb.hexagons[i];
+            }
+        }
+
+        return result;
+    }
+
     public void ActivateShield()
     {
         bb.shield.SetActive(true);

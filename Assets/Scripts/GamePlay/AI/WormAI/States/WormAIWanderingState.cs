@@ -20,10 +20,8 @@ public class WormAIWanderingState : WormAIBaseState
     private Vector3 nextWP;
     private Vector3 currentWPUG;
     private Vector3 nextWPUG;
-    private Transform head;
     private Vector3 lastPosition;
     private Quaternion lookRotation;
-    private Vector3 undergroundDirection;
 
     private int curveNum;
     private float t;
@@ -37,8 +35,6 @@ public class WormAIWanderingState : WormAIBaseState
     public override void OnStateEnter()
     {
         base.OnStateEnter();
-
-        head = bb.headTrf.transform;
 
         SetInitialState();
     }
@@ -206,12 +202,7 @@ public class WormAIWanderingState : WormAIBaseState
                 }
                 else
                 {
-                    bb.worm.SetVisible(false);
-
-                    //Set direction to scene center
-                    undergroundDirection = bb.sceneCenter.transform.position - head.position;
-                    undergroundDirection.y = 0;
-                    undergroundDirection.Normalize();
+                    SetUndergroundDirection();
 
                     subState = SubState.WAITING_FOR_TAIL;
                 }
@@ -222,16 +213,15 @@ public class WormAIWanderingState : WormAIBaseState
                 //move head until tail is undeground
                 if(!bb.tailIsUnderground)
                 {
-                    head.position = head.position + (undergroundDirection * bb.undergroundSpeed * Time.deltaTime);
+                    MoveUndergroundDirection();
                 }
                 else
                 {
                     //TODO: If some random condition, attack else, new wandering state
-                    if (Random.Range(0f, 1f) > 0.5f)
+                    /*if (Random.Range(0f, 1f) > 0.5f)
                         SetInitialState();
-                    else
-                        //return blackboard.belowAttackState;
-                        SetInitialState();
+                    else*/
+                        return bb.belowAttackState;
                 }
 
                 break;

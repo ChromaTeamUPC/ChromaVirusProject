@@ -27,7 +27,7 @@ public class WormBlackboard : MonoBehaviour
     [HideInInspector]
     public WormAISpawningState spawningState;
     public WormAIWanderingState wanderingState;
-
+    public WormAIBelowAttackState belowAttackState;
     public WormAIDyingState dyingState;
 
     public WormAITestState testState;
@@ -50,6 +50,41 @@ public class WormBlackboard : MonoBehaviour
     public float floorSpeed = 10;
     public float undergroundSpeed = 10;
     public float rotationSpeed = 180;
+
+    public GameObject enterBezierCtrl11;
+    public GameObject enterBezierCtrl12;
+    public GameObject enterBezierEnd1Start2;
+    public GameObject enterBezierCtrl21;
+    public GameObject enterBezierCtrl22;
+
+    public GameObject exitBezierCtrl11;
+    public GameObject exitBezierCtrl12;
+    public GameObject exitBezierEnd1Start2;
+    public GameObject exitBezierCtrl21;
+    public GameObject exitBezierCtrl22;
+
+    [HideInInspector]
+    public Vector3 worldEnterBezierCtrl11;
+    [HideInInspector]
+    public Vector3 worldEnterBezierCtrl12;
+    [HideInInspector]
+    public Vector3 worldEnterBezierEnd1Start2;
+    [HideInInspector]
+    public Vector3 worldEnterBezierCtrl21;
+    [HideInInspector]
+    public Vector3 worldEnterBezierCtrl22;
+
+    [HideInInspector]
+    public Vector3 worldExitBezierCtrl11;
+    [HideInInspector]
+    public Vector3 worldExitBezierCtrl12;
+    [HideInInspector]
+    public Vector3 worldExitBezierEnd1Start2;
+    [HideInInspector]
+    public Vector3 worldExitBezierCtrl21;
+    [HideInInspector]
+    public Vector3 worldExitBezierCtrl22;
+
 
     [Header("Jump Settings")]
     public float jumpOffset = 1.3f;
@@ -92,43 +127,14 @@ public class WormBlackboard : MonoBehaviour
     public float bodySettingMaxTime = 3f;
     public float bodySettingChangeTime = 0.1f;
 
-    [Header("Test variables")]
+    [Header("Attack Settings")]
+    public float belowAttackWaitTime = 2f;
+    public float belowAttackWarningTime = 0.5f;
+
+    [Header("Misc variables")]
     public GameObject spawnEntry;
     public GameObject spawnExit;
 
-    public GameObject enterBezierCtrl11;
-    public GameObject enterBezierCtrl12;
-    public GameObject enterBezierEnd1Start2;
-    public GameObject enterBezierCtrl21;
-    public GameObject enterBezierCtrl22;
-
-    public GameObject exitBezierCtrl11;
-    public GameObject exitBezierCtrl12;
-    public GameObject exitBezierEnd1Start2;
-    public GameObject exitBezierCtrl21;
-    public GameObject exitBezierCtrl22;
-
-    [HideInInspector]
-    public Vector3 worldEnterBezierCtrl11;
-    [HideInInspector]
-    public Vector3 worldEnterBezierCtrl12;
-    [HideInInspector]
-    public Vector3 worldEnterBezierEnd1Start2;
-    [HideInInspector]
-    public Vector3 worldEnterBezierCtrl21;
-    [HideInInspector]
-    public Vector3 worldEnterBezierCtrl22;
-
-    [HideInInspector]
-    public Vector3 worldExitBezierCtrl11;
-    [HideInInspector]
-    public Vector3 worldExitBezierCtrl12;
-    [HideInInspector]
-    public Vector3 worldExitBezierEnd1Start2;
-    [HideInInspector]
-    public Vector3 worldExitBezierCtrl21;
-    [HideInInspector]
-    public Vector3 worldExitBezierCtrl22;
 
     public void Awake()
     {
@@ -151,6 +157,7 @@ public class WormBlackboard : MonoBehaviour
 
         spawningState = new WormAISpawningState(this);
         wanderingState = new WormAIWanderingState(this);
+        belowAttackState = new WormAIBelowAttackState(this);
         dyingState = new WormAIDyingState(this);
 
         testState = new WormAITestState(this);

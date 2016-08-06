@@ -470,6 +470,34 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    public GameObject SelectPlayerRandom()
+    {
+        if (rsc.gameInfo.numberOfPlayers == 1)
+        {
+            if (rsc.gameInfo.player1Controller.Alive)
+                return rsc.gameInfo.player1;
+            else
+                return null;
+        }
+        else
+        {
+            //If both players active, return the closest one
+            if (rsc.gameInfo.player1Controller.Alive && rsc.gameInfo.player2Controller.Alive)
+            {
+                if (Random.Range(0f, 1f) > 0.5f)
+                    return rsc.gameInfo.player2;
+                else
+                    return rsc.gameInfo.player1;
+            }
+            else if (rsc.gameInfo.player2Controller.Alive)
+                return rsc.gameInfo.player2;
+            else if (rsc.gameInfo.player1Controller.Alive)
+                return rsc.gameInfo.player1;
+            else
+                return null;
+        }
+    }
+
     public float MinDistanceToPlayer(GameObject origin)
     {
         if (rsc.gameInfo.numberOfPlayers == 1)
