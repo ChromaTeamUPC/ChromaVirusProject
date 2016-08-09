@@ -6,7 +6,7 @@ public class WormBlackboard : MonoBehaviour
 {
     public const int NAVMESH_FLOOR_LAYER = 32;
     public const int NAVMESH_UNDERGROUND_LAYER = 64;
-    public const float NAVMESH_LAYER_HEIGHT = 6f;
+    public const float NAVMESH_LAYER_HEIGHT = 8f;
 
     //Non resetable values
     [HideInInspector]
@@ -130,6 +130,7 @@ public class WormBlackboard : MonoBehaviour
     [Header("Attack Settings")]
     public float belowAttackWaitTime = 2f;
     public float belowAttackWarningTime = 0.5f;
+    public float belowAttackRumbleDuration = 1f;
 
     [Header("Misc variables")]
     public GameObject spawnEntry;

@@ -273,8 +273,8 @@ public class EnemyManager : MonoBehaviour
 
     private void WormSpawned(EventInfo eventInfo)
     {
-        WormSpawnedEventInfo info = (WormSpawnedEventInfo)eventInfo;
-        bb.activeEnemies += info.wormPhases;
+        WormEventInfo info = (WormEventInfo)eventInfo;
+        bb.activeEnemies += info.wormBb.wormMaxPhases;
         bb.zoneTotalInfectionLevel = 100;
         bb.zoneCurrentInfectionLevel = 100;
 

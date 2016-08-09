@@ -249,6 +249,57 @@ public class BlinkController : MonoBehaviour {
         blinking = false;
     }
 
+
+    public void BlinkWhiteNoStop(float blinkInterval = blinkMultipleIntervalDefaultDuration,
+                                 float normalInterval = normalMultipleIntervalDefaultDuration)
+    {
+        StopPreviousBlinkings();
+        StartCoroutine(DoBlinkNoStop(white, blinkInterval, normalInterval));
+    }
+
+    public void BlinkTransparentNoStop(float blinkInterval = blinkMultipleIntervalDefaultDuration,
+                                       float normalInterval = normalMultipleIntervalDefaultDuration)
+    {
+        StopPreviousBlinkings();
+        StartCoroutine(DoBlinkNoStop(transparent, blinkInterval, normalInterval));
+    }
+
+    public void BlinkCustomNoStop(Material mat,
+                                  float blinkInterval = blinkMultipleIntervalDefaultDuration,
+                                  float normalInterval = normalMultipleIntervalDefaultDuration)
+    {
+        StopPreviousBlinkings();
+        StartCoroutine(DoBlinkNoStop(mat, blinkInterval, normalInterval));
+    }
+
+    private IEnumerator DoBlinkNoStop(Material mat, float blinkInterval, float normalInterval)
+    {
+        currentBlinkMaterial = mat;
+
+        if (materialsNeedUpdate) SaveMaterials();
+
+        blinking = true;
+
+        bool blink = true;
+
+        while (true)
+        {
+            if (blink)
+            {
+                SubstituteMaterials();
+                yield return new WaitForSeconds(blinkInterval);
+            }
+            else
+            {
+                RestoreMaterials();
+                yield return new WaitForSeconds(normalInterval);
+            }
+
+            blink = !blink;
+        }
+    }
+
+
     public void BlinkWhiteIncremental(float totalDuration = totalIncrementalDefaultDuration,
                                       float blinkInterval = blinkIncrementalIntervalDefaultDuration,
                                       float initialNormalInterval = normalIncrementalIntervalDefaultDuration,

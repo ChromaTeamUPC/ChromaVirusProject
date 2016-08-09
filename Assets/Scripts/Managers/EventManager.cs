@@ -68,11 +68,11 @@ public class EnemyDiedEventInfo : EventInfo
     public bool killedSameColor;
 }
 
-public class WormSpawnedEventInfo : EventInfo
+public class WormEventInfo : EventInfo
 {
-    public static WormSpawnedEventInfo eventInfo = new WormSpawnedEventInfo();
+    public static WormEventInfo eventInfo = new WormEventInfo();
 
-    public int wormPhases;
+    public WormBlackboard wormBb;
 }
 
 public class LevelEventInfo : EventInfo
@@ -168,6 +168,8 @@ public class EventManager : MonoBehaviour {
         WORM_SECTION_ACTIVATED,
         WORM_SECTION_COLOR_CHANGED,
         WORM_SECTION_DESTROYED,
+
+        WORM_BELOW_ATTACK_START,
 
         ZONE_REACHED,
         ZONE_PLAN_FINISHED,

@@ -19,6 +19,11 @@ public class PlayerBlockedState : PlayerBaseState
         return null;
     }
 
+    public override PlayerBaseState InfectionReceived(float damage, Vector3 origin)
+    {
+        return null;
+    }
+
     public override PlayerBaseState EnemyTouched()
     {
         return null;

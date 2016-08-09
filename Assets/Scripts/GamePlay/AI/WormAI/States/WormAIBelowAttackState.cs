@@ -31,30 +31,8 @@ public class WormAIBelowAttackState : WormAIBaseState
         base.OnStateEnter();
 
         origin = null;
-
-        GameObject playerGO = rsc.enemyMng.SelectPlayerRandom();
-        if(playerGO != null)
-        {
-            PlayerController player = playerGO.GetComponent<PlayerController>();
-            origin = player.GetNearestHexagon();
-
-            if(origin != null)
-            {
-                HexagonController destiny = GetHexagonFacingCenter();
-
-                bb.jumpOrigin = origin.transform.position;
-                bb.jumpDestiny = destiny.transform.position;
-                bb.CalculateParabola();
-
-                bb.agent.enabled = false;
-
-                rotation = 0f;
-                highestPointReached = false;
-            }
-
-            elapsedTime = 0f;
-            subState = SubState.WAITING;
-        }
+        elapsedTime = 0f;
+        subState = SubState.WAITING;     
     }
 
     private HexagonController GetHexagonFacingCenter()
@@ -101,17 +79,39 @@ public class WormAIBelowAttackState : WormAIBaseState
 
     public override WormAIBaseState Update()
     {
-        if (origin == null) return bb.wanderingState;
-
         switch (subState)
         {
             case SubState.WAITING:
                 if (elapsedTime >= bb.belowAttackWaitTime)
                 {
+                    GameObject playerGO = rsc.enemyMng.SelectPlayerRandom();
+                    if (playerGO != null)
+                    {
+                        PlayerController player = playerGO.GetComponent<PlayerController>();
+                        origin = player.GetNearestHexagon();
+
+                        if (origin != null)
+                        {
+                            HexagonController destiny = GetHexagonFacingCenter();
+
+                            bb.jumpOrigin = origin.transform.position;
+                            bb.jumpDestiny = destiny.transform.position;
+                            bb.CalculateParabola();
+
+                            bb.agent.enabled = false;
+
+                            rotation = 0f;
+                            highestPointReached = false;
+                        }
+                        else
+                            return bb.wanderingState;
+                    }
+                    else
+                        return bb.wanderingState;
+
+                    origin.WormBelowAttackWarning();
+
                     elapsedTime = 0f;
-
-                    //TODO: Activate hexagon
-
                     subState = SubState.WARNING_PLAYER;
                 }
                 else
@@ -129,6 +129,10 @@ public class WormAIBelowAttackState : WormAIBaseState
                     head.position = startPosition;
                     lastPosition = startPosition;
                     bb.worm.SetVisible(true);
+
+                    origin.WormBelowAttackStart();
+                    WormEventInfo.eventInfo.wormBb = bb;
+                    rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_BELOW_ATTACK_START, WormEventInfo.eventInfo);
 
                     subState = SubState.JUMPING;
                 }
@@ -149,7 +153,6 @@ public class WormAIBelowAttackState : WormAIBaseState
                 {
                     if (!highestPointReached)
                     {
-                        bb.StartNewPhase();
                         highestPointReached = true;
                     }
 

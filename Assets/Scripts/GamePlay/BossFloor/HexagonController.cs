@@ -3,20 +3,6 @@ using System.Collections;
 
 public class HexagonController : MonoBehaviour 
 {
-    private enum MovementState
-    {
-        IDLE,
-        MOVING,
-        RETURNING,
-        FAST_RETURNING
-    }
-
-    private enum InfectionState
-    {
-        NORMAL,
-        INFECTED
-    }
-
     private enum Neighbour
     {
         TOP,
@@ -26,167 +12,156 @@ public class HexagonController : MonoBehaviour
         BOTTOM_LEFT,
         BOTTOM_RIGHT
     }
+
     public const float DISTANCE_BETWEEN_HEXAGONS = 7.225f;
     public static int hexagonLayer = 1 << LayerMask.NameToLayer("Hexagon");
 
-    private HexagonController[] Neighbours = new HexagonController[6];
+    private HexagonController[] neighbours = new HexagonController[6];
+
+    private HexagonBaseState currentState;
+
+    public HexagonIdleState idleState;
+    public HexagonMovingState movingState;
+    public HexagonInfectedState infectedState;
+    public HexagonBelowAttackWarningState belowAttackWarningState;
+    public HexagonBelowAttackState belowAttackState;
+    public HexagonBelowAttackAdjacentState belowAttackAdjacentState;
+
 
     //Movement variables
-    private MovementState movementState;
-    public float minDistanceToPlayer = DISTANCE_BETWEEN_HEXAGONS * 4f;
+    [Header("Movement Settings")]
+    public float minHexagonsToPlayer = 4f;
+    [HideInInspector]
+    public float minDistanceToPlayer;
     public float movementMinWaitTime = 1f;
     public float movementMaxWaitTime = 3f;
-    private bool up;
-    private float totalMovement;
-    private float currentMovement;
     public float upMinMovement = 1f;
     public float upMaxMovement = 5f;
     public float downMinMovement = 1f;
     public float downMaxMovement = 2f;
     public float movementSpeed = 5f;
-    private int probesInRange;
+    private bool up;
+    private float totalMovement;
+    private float currentMovement;
+    [HideInInspector]
+    public bool isMoving;
+    [HideInInspector]
+    public int probesInRange;
 
-    private GameObject model;
-    private float modelOriginalY;
+    [Header("Notification Settings")]
+    public float belowAttackWarnInterval = 0.2f;
+    public float belowAttackBlinkInterval = 0.1f;
+
+    [Header("Infection Settings")]
+    public float infectionTimeAfterContactEnds = 2f;
+    public float infectionTimeAfterAttack = 1f;
+    [HideInInspector]
+    public float currentInfectionDuration;
+    [HideInInspector]
+    public bool countingInfectionTime;
+
+    [Header("Damage Settings")]
+    public float belowAttackDamage = 10f;
+    public float infectedCellDamage = 8f;
+
+    [Header("Materials")]
+    public Material planeTransparentMat;
+    public Material planeInfectedMaterial;
+    public Material planeBelowAttackWarningMat;
+
+    [Header("Fx's")]
+    public GameObject buffPurpleGO;
+    public ParticleSystem buffPurple;
+    public ParticleSystem continousPurple;
+
+    [HideInInspector]
+    public GameObject geometryOffset;
+    [HideInInspector]
+    public float geometryOriginalY;
 
     //Infection variables
-    private InfectionState infectionState;
-    public float infectionDuration = 5f;
 
-    private Renderer rend;
+    [Header("Objects")]
+    public GameObject column;
+    public Renderer columnRend;
+    public BlinkController columnBlinkController;
 
-    private Material originalMat;
-    public Material testMat;
-    public Material infectedMat;
+    public GameObject plane;
+    public Renderer planeRend;
+    public BlinkController planeBlinkController;
+
+    private bool adjacentCellsSetupTop; //true = top, bottom left, bottom right, false = bottom, top left, top right
 
     void Awake()
     {
-        model = transform.FindDeepChild("Model").gameObject;
-        modelOriginalY = model.transform.position.y;
-        rend = GetComponentInChildren<Renderer>();
-        originalMat = rend.sharedMaterial;
+        idleState = new HexagonIdleState(this);
+        movingState = new HexagonMovingState(this);
+        infectedState = new HexagonInfectedState(this);
+        belowAttackWarningState = new HexagonBelowAttackWarningState(this);
+        belowAttackState = new HexagonBelowAttackState(this);
+        belowAttackAdjacentState = new HexagonBelowAttackAdjacentState(this);
+
+        minDistanceToPlayer = minHexagonsToPlayer * DISTANCE_BETWEEN_HEXAGONS;
+
+        geometryOffset = transform.FindDeepChild("GeometryOffset").gameObject;
+        geometryOriginalY = geometryOffset.transform.position.y;
         probesInRange = 0;
+
+        currentState = idleState;
     }
 
     // Use this for initialization
     void Start () 
 	{
+        plane.SetActive(false);
         CheckNeighbours();
-        StartCoroutine(Move());
     }
 	
 	// Update is called once per frame
 	void Update () 
 	{
-        //Movement control
-        switch (movementState)
+        if (currentState != null)
         {
-            case MovementState.MOVING:
-                if (currentMovement < totalMovement)
-                {
-                    float displacement = Time.deltaTime * movementSpeed;
-                    if (up)
-                        model.transform.position += new Vector3(0f, displacement, 0f);
-                    else
-                        model.transform.position -= new Vector3(0f, displacement, 0f);
-                    currentMovement += displacement;
-                }
-                else
-                    movementState = MovementState.RETURNING;
-                break;
+            HexagonBaseState newState = currentState.Update();
+            if (newState != null)
+            {
+                ChangeState(newState);
+            }
+        }     
+    }
 
-            case MovementState.RETURNING:
-                if (currentMovement > 0f)
-                {
-                    float displacement = Time.deltaTime * movementSpeed;
-                    if (up)
-                    {
-                        model.transform.position -= new Vector3(0f, displacement, 0f);
-                        if(model.transform.position.y < modelOriginalY)
-                            model.transform.position = new Vector3(model.transform.position.x, modelOriginalY, model.transform.position.z);
-                    }
-                    else
-                    {
-                        model.transform.position += new Vector3(0f, displacement, 0f);
-                        if (model.transform.position.y > modelOriginalY)
-                            model.transform.position = new Vector3(model.transform.position.x, modelOriginalY, model.transform.position.z);
-                    }
-                    currentMovement -= displacement;
-                }
-                else
-                {
-                    model.transform.position = new Vector3(model.transform.position.x, modelOriginalY, model.transform.position.z);
-                    movementState = MovementState.IDLE;
-                    StartCoroutine(Move());
-                }
+    public void SetPlaneMaterial(Material mat)
+    {
+        planeRend.sharedMaterial = mat;
+        planeBlinkController.InvalidateMaterials();
+        plane.SetActive(true);
+    }
 
-                break;
+    public void SetColumnMaterial(Material mat)
+    {
+        columnRend.sharedMaterial = mat;
+        columnBlinkController.InvalidateMaterials();
+    }
 
-            case MovementState.FAST_RETURNING:
-                if (currentMovement > 0f)
-                {
-                    float displacement = Time.deltaTime * 20f;
-                    if (up)
-                    {
-                        model.transform.position -= new Vector3(0f, displacement, 0f);
-                        if (model.transform.position.y < modelOriginalY)
-                            model.transform.position = new Vector3(model.transform.position.x, modelOriginalY, model.transform.position.z);
-                    }
-                    else
-                    {
-                        model.transform.position += new Vector3(0f, displacement, 0f);
-                        if (model.transform.position.y > modelOriginalY)
-                            model.transform.position = new Vector3(model.transform.position.x, modelOriginalY, model.transform.position.z);
-                    }
-                    currentMovement -= displacement;
-                }
-                else
-                {
-                    Vector3 original = new Vector3(model.transform.position.x, modelOriginalY, model.transform.position.z);
-                    model.transform.position = original;
-                    movementState = MovementState.IDLE;
-                    //StartCoroutine(TestMovement());
+    private void ChangeStateIfNotNull(HexagonBaseState newState)
+    {
+        if (newState != null)
+            ChangeState(newState);
+    }
 
-                }
-                break;
+    private void ChangeState(HexagonBaseState newState)
+    {
+        if (currentState != null)
+        {
+            //Debug.Log("Hexagon Exiting: " + currentState.GetType().Name);
+            currentState.OnStateExit();
         }
-    }
-
-    //Test
-    private IEnumerator Move()
-    {
-        yield return new WaitForSeconds(Random.Range(movementMinWaitTime, movementMaxWaitTime));
-        if(CanMove())
-            StartMovement();
-        else
-            StartCoroutine(Move());
-    }
-
-    private bool CanMove()
-    {
-        return infectionState == InfectionState.NORMAL
-            && probesInRange == 0
-            && rsc.enemyMng.MinDistanceToPlayer(gameObject) > minDistanceToPlayer;
-    }
-
-    private void SetMat()
-    {
-        rend.sharedMaterial = testMat;
-    }
-
-    //Movement methods
-    public void StartMovement()
-    {
-        //Reset variables
-        currentMovement = 0f;
-
-        up = Random.Range(0f, 1f) >= 0.5f;
-        if (up)
-            totalMovement = Random.Range(upMinMovement, upMaxMovement);
-        else
-            totalMovement = Random.Range(downMinMovement, downMaxMovement);
-
-        movementState = MovementState.MOVING;
+        currentState = newState;
+        if (currentState != null)
+        {
+            //Debug.Log("Hexagon Entering: " + currentState.GetType().Name);
+            currentState.OnStateEnter();
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -194,16 +169,29 @@ public class HexagonController : MonoBehaviour
         if(other.tag == "HexagonProbe")
         {
             ++probesInRange;
-            if (movementState == MovementState.MOVING || movementState == MovementState.RETURNING)
-            {
-                movementState = MovementState.FAST_RETURNING;
-                SetMat();
-                //Debug.Log("Going to fast return");
-            }
+            ChangeStateIfNotNull(currentState.ProbeTouched());           
         }
         else if (other.tag == "WormHead")
         {
-            StartCoroutine(Infect());
+            ChangeStateIfNotNull(currentState.WormHeadEntered());
+        }
+        else if (other.tag == "WormTail")
+        {
+            ChangeStateIfNotNull(currentState.WormTailEntered());
+        }
+        else if (other.tag == "Player1" || other.tag == "Player2")
+        {
+            PlayerController player = other.GetComponent<PlayerController>();
+            ChangeStateIfNotNull(currentState.PlayerEntered(player));
+        }
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Player1" || other.tag == "Player2")
+        {
+            PlayerController player = other.GetComponent<PlayerController>();
+            ChangeStateIfNotNull(currentState.PlayerStay(player));
         }
     }
 
@@ -211,24 +199,86 @@ public class HexagonController : MonoBehaviour
     {
         if (other.tag == "HexagonProbe")
         {
-            --probesInRange;
-            if (infectionState == InfectionState.NORMAL)
-            {
-                rend.sharedMaterial = originalMat;
-                StartCoroutine(Move());
-            }
+            --probesInRange;            
+        }
+        else if (other.tag == "WormHead")
+        {
+            ChangeStateIfNotNull(currentState.WormHeadExited());
+        }
+        else if (other.tag == "WormTail")
+        {
+            ChangeStateIfNotNull(currentState.WormTailExited());
+        }
+        else if (other.tag == "Player1" || other.tag == "Player2")
+        {
+            PlayerController player = other.GetComponent<PlayerController>();
+            ChangeStateIfNotNull(currentState.PlayerExited(player));
         }
     }
 
-    private IEnumerator Infect()
+    public void WormBelowAttackWarning()
     {
-        infectionState = InfectionState.INFECTED;
-        rend.material = infectedMat;
+        //choose adjacent cells
+        adjacentCellsSetupTop = Random.Range(0f, 1f) < 0.5f;
 
-        yield return new WaitForSeconds(infectionDuration);
+        //Set adjacent cells state
+        //true = top, bottom left, bottom right, false = bottom, top left, top right
+        if (adjacentCellsSetupTop)
+        {
+            SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.TOP]);
+            SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.BOTTOM_LEFT]);
+            SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.BOTTOM_RIGHT]);
+        }
+        else
+        {
+            SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.BOTTOM]);
+            SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.TOP_LEFT]);
+            SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.TOP_RIGHT]);
+        }
 
-        rend.material = originalMat;
-        infectionState = InfectionState.NORMAL;
+        ChangeState(belowAttackWarningState);
+    }
+
+    private void SetWormBelowAttackAdjacentWarning(HexagonController adjacent)
+    {
+        if (adjacent != null)
+            adjacent.WormBelowAttackAdjacentWarning();
+    }
+
+    private void WormBelowAttackAdjacentWarning()
+    {
+        ChangeState(belowAttackWarningState);
+    }
+
+    public void WormBelowAttackStart()
+    {
+        //Set adjacent cells state
+        //true = top, bottom left, bottom right, false = bottom, top left, top right
+        if (adjacentCellsSetupTop)
+        {
+            SetWormBelowAttackAdjacentStart(neighbours[(int)Neighbour.TOP]);
+            SetWormBelowAttackAdjacentStart(neighbours[(int)Neighbour.BOTTOM_LEFT]);
+            SetWormBelowAttackAdjacentStart(neighbours[(int)Neighbour.BOTTOM_RIGHT]);
+        }
+        else
+        {
+            SetWormBelowAttackAdjacentStart(neighbours[(int)Neighbour.BOTTOM]);
+            SetWormBelowAttackAdjacentStart(neighbours[(int)Neighbour.TOP_LEFT]);
+            SetWormBelowAttackAdjacentStart(neighbours[(int)Neighbour.TOP_RIGHT]);
+        }
+
+        ChangeState(belowAttackState);
+    }
+
+    private void SetWormBelowAttackAdjacentStart(HexagonController adjacent)
+    {
+        if (adjacent != null)
+            adjacent.WormBelowAttackAdjacentStart();
+    }
+
+    private void WormBelowAttackAdjacentStart()
+    {
+        ChangeState(belowAttackAdjacentState);
     }
 
     //Neighbour control
@@ -237,7 +287,7 @@ public class HexagonController : MonoBehaviour
         Vector3 direction = Vector3.forward * DISTANCE_BETWEEN_HEXAGONS;
         Collider[] colliders;
 
-        if (Neighbours[(int)Neighbour.TOP] == null)
+        if (neighbours[(int)Neighbour.TOP] == null)
         {
             colliders = Physics.OverlapSphere(transform.position + direction, 1f, hexagonLayer);
             for (int i = 0; i < colliders.Length; ++i)
@@ -245,7 +295,7 @@ public class HexagonController : MonoBehaviour
                 if (colliders[i].tag == "Hexagon")
                 {
                     HexagonController neighbour = colliders[i].GetComponent<HexagonController>();
-                    Neighbours[(int)Neighbour.TOP] = neighbour;
+                    neighbours[(int)Neighbour.TOP] = neighbour;
 
                     neighbour.SetNeighbour(this, Neighbour.BOTTOM);
 
@@ -256,7 +306,7 @@ public class HexagonController : MonoBehaviour
 
         direction = Quaternion.Euler(0, 60, 0) * direction;
 
-        if (Neighbours[(int)Neighbour.TOP_RIGHT] == null)
+        if (neighbours[(int)Neighbour.TOP_RIGHT] == null)
         {
             colliders = Physics.OverlapSphere(transform.position + direction, 1f, hexagonLayer);
             for (int i = 0; i < colliders.Length; ++i)
@@ -264,7 +314,7 @@ public class HexagonController : MonoBehaviour
                 if (colliders[i].tag == "Hexagon")
                 {
                     HexagonController neighbour = colliders[i].GetComponent<HexagonController>();
-                    Neighbours[(int)Neighbour.TOP_RIGHT] = neighbour;
+                    neighbours[(int)Neighbour.TOP_RIGHT] = neighbour;
 
                     neighbour.SetNeighbour(this, Neighbour.BOTTOM_LEFT);
 
@@ -275,7 +325,7 @@ public class HexagonController : MonoBehaviour
 
         direction = Quaternion.Euler(0, 60, 0) * direction;
 
-        if (Neighbours[(int)Neighbour.BOTTOM_RIGHT] == null)
+        if (neighbours[(int)Neighbour.BOTTOM_RIGHT] == null)
         {
             colliders = Physics.OverlapSphere(transform.position + direction, 1f, hexagonLayer);
             for (int i = 0; i < colliders.Length; ++i)
@@ -283,7 +333,7 @@ public class HexagonController : MonoBehaviour
                 if (colliders[i].tag == "Hexagon")
                 {
                     HexagonController neighbour = colliders[i].GetComponent<HexagonController>();
-                    Neighbours[(int)Neighbour.BOTTOM_RIGHT] = neighbour;
+                    neighbours[(int)Neighbour.BOTTOM_RIGHT] = neighbour;
 
                     neighbour.SetNeighbour(this, Neighbour.TOP_LEFT);
 
@@ -295,6 +345,6 @@ public class HexagonController : MonoBehaviour
 
     private void SetNeighbour(HexagonController neighbour, Neighbour position)
     {
-        Neighbours[(int)position] = neighbour;
+        neighbours[(int)position] = neighbour;
     }
 }

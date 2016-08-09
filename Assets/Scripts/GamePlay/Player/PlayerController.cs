@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private int playerId = 0;
 
-    public PlayerBlackboard bb;// = new PlayerBlackboard();
+    public PlayerBlackboard bb;
 
     [Range(0f, 1f)]
     public float weak = 0f;
@@ -366,11 +366,7 @@ public class PlayerController : MonoBehaviour
 
             if(bb.contactFlag && currentState != null)
             {
-                PlayerBaseState newState = currentState.EnemyContactOnInvulnerabilityEnd();
-                if (newState != null)
-                {
-                    ChangeState(newState);
-                }
+                ChangeStateIfNotNull(currentState.EnemyContactOnInvulnerabilityEnd());
             }
 
             currentState.RetrieveInput();
@@ -378,11 +374,7 @@ public class PlayerController : MonoBehaviour
 
             if (currentState != null)
             {
-                PlayerBaseState newState = currentState.Update();
-                if (newState != null)
-                {
-                    ChangeState(newState);
-                }
+                ChangeStateIfNotNull(currentState.Update());
             }
 
             if(gameObject.activeSelf) //Check to avoid a warning trying to update CharacterController if we just died and deactivated gameObject
@@ -440,6 +432,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void ChangeStateIfNotNull(PlayerBaseState newState)
+    {
+        if (newState != null)
+            ChangeState(newState);
+    }
+
     private void ChangeState(PlayerBaseState newState)
     {
         if (currentState != null)
@@ -463,39 +461,27 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float damage, bool triggerDamageAnim = true)
     {
-        PlayerBaseState newState = currentState.TakeDamage(damage, triggerDamageAnim);
-        if (newState != null)
-        {
-            ChangeState(newState);
-        }     
+        ChangeStateIfNotNull(currentState.TakeDamage(damage, triggerDamageAnim));
     }
 
     public void TakeDamage(float damage, ChromaColor color, bool triggerDamageAnim = true)
     {
-        PlayerBaseState newState = currentState.TakeDamage(damage, color, triggerDamageAnim);
-        if (newState != null)
-        {
-            ChangeState(newState);
-        }
-
+        ChangeStateIfNotNull(currentState.TakeDamage(damage, color, triggerDamageAnim));
     }
 
     public void ReceiveAttack(float damage, ChromaColor color, Vector3 origin)
     {
-        PlayerBaseState newState = currentState.AttackReceived(damage, color, origin);
-        if (newState != null)
-        {
-            ChangeState(newState);
-        }
+        ChangeStateIfNotNull(currentState.AttackReceived(damage, color, origin));
+    }
+
+    public void ReceiveInfection(float damage, Vector3 origin)
+    {
+        ChangeStateIfNotNull(currentState.InfectionReceived(damage, origin));
     }
 
     public void ColorMismatch()
     {
-        PlayerBaseState newState = currentState.ColorMismatch();
-        if (newState != null)
-        {
-            ChangeState(newState);
-        }       
+        ChangeStateIfNotNull(currentState.ColorMismatch());       
     }
 
     void OnTriggerEnter(Collider other)
@@ -504,7 +490,7 @@ public class PlayerController : MonoBehaviour
         {
             HexagonController hex = other.GetComponent<HexagonController>();
             bb.hexagons.Add(hex);
-            //Debug.Log("Hexagon added");
+            Debug.Log("Hexagon added");
         }
         else if (other.tag == "Border")
         {
@@ -539,7 +525,7 @@ public class PlayerController : MonoBehaviour
         {
             HexagonController hex = other.GetComponent<HexagonController>();
             bb.hexagons.Remove(hex);
-            //Debug.Log("Hexagon removed");
+            Debug.Log("Hexagon removed");
         }
         else if (other.tag == "Border")
         {
@@ -562,12 +548,8 @@ public class PlayerController : MonoBehaviour
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.collider.tag == "Enemy")
-        {           
-            PlayerBaseState newState = currentState.EnemyTouched();
-            if (newState != null)
-            {
-                ChangeState(newState);
-            }        
+        {
+            ChangeStateIfNotNull(currentState.EnemyTouched());        
         }
     }
 

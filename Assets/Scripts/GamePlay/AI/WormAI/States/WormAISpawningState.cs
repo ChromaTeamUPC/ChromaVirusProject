@@ -36,8 +36,8 @@ public class WormAISpawningState : WormAIBaseState
 
         subState = SubState.GOING_TO_ENTRY;
 
-        WormSpawnedEventInfo.eventInfo.wormPhases = bb.wormMaxPhases;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SPAWNED, WormSpawnedEventInfo.eventInfo);
+        WormEventInfo.eventInfo.wormBb = bb;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SPAWNED, WormEventInfo.eventInfo);
     }
 
     public override WormAIBaseState Update()
