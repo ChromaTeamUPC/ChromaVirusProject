@@ -9,6 +9,8 @@ public class LevelBossController : MonoBehaviour
 
     public Transform[] playerSpawnPoint;
 
+    public BossFloorController floor;
+
     public GameObject sceneCenter;
     private HexagonController sceneCenterHexagon;
 
@@ -100,6 +102,7 @@ public class LevelBossController : MonoBehaviour
         }
 
         rsc.colorMng.Activate();
+        floor.Activate();
         rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_STARTED, EventInfo.emptyInfo);
     }
 
