@@ -6,11 +6,11 @@ using InControl;
 public class CreditsController : MonoBehaviour {
     private enum CreditsState
     {
-        FadingIn,
-        WaitingTitle,
-        Crawling,
-        WaitingCopyRight,
-        FadingOut
+        FADING_IN,
+        WAITING_TITLE,
+        CRAWLING,
+        WAITING_COPYRIGHT,
+        FADING_OUT
     }
     private CreditsState currentState;
 
@@ -29,7 +29,7 @@ public class CreditsController : MonoBehaviour {
 	void Start ()
     {
         buttonPressed = false;
-        currentState = CreditsState.FadingIn;
+        currentState = CreditsState.FADING_IN;
         fadeScript.StartFadingToClear();
         rsc.audioMng.FadeInCreditsMusic(1.5f);
 	}
@@ -39,21 +39,21 @@ public class CreditsController : MonoBehaviour {
 
         switch(currentState)
         {
-            case CreditsState.FadingIn:
+            case CreditsState.FADING_IN:
                 if (!fadeScript.FadingToClear)
                 {
-                    currentState = CreditsState.WaitingTitle;
+                    currentState = CreditsState.WAITING_TITLE;
                     waitingTime = 0;
                 }
                 break;
 
-            case CreditsState.WaitingTitle:
+            case CreditsState.WAITING_TITLE:
                 waitingTime += Time.deltaTime;
                 if (waitingTime > initialDelay)
-                    currentState = CreditsState.Crawling;
+                    currentState = CreditsState.CRAWLING;
                 break;
 
-            case CreditsState.Crawling:
+            case CreditsState.CRAWLING:
                 Vector3 displacement = Vector3.up * Time.deltaTime * crawlingSpeed;
                 credits.Translate(displacement);
                 copyright.Translate(displacement);
@@ -63,23 +63,23 @@ public class CreditsController : MonoBehaviour {
                 //if (copyright.transform.position.y > Screen.height/2)
                 if (copyScreenPos.y > Screen.height / 2)
                 {
-                    currentState = CreditsState.WaitingCopyRight;
+                    currentState = CreditsState.WAITING_COPYRIGHT;
                     waitingTime = 0;
                 }
                 break;
 
-            case CreditsState.WaitingCopyRight:
+            case CreditsState.WAITING_COPYRIGHT:
                 credits.Translate(Vector3.up * Time.deltaTime * crawlingSpeed);
                 waitingTime += Time.deltaTime;
                 if (waitingTime > finalDelay)
                 {
                     fadeScript.StartFadingToColor(Color.black, 4f);
                     rsc.audioMng.FadeOutCreditsMusic(4f);
-                    currentState = CreditsState.FadingOut;
+                    currentState = CreditsState.FADING_OUT;
                 }
                 break;
 
-            case CreditsState.FadingOut:
+            case CreditsState.FADING_OUT:
                 //Continue crawling
                 //credits.Translate(Vector3.up * Time.deltaTime * crawlingSpeed);
 
@@ -95,10 +95,10 @@ public class CreditsController : MonoBehaviour {
         {
             buttonPressed = true;
 
-            if (currentState != CreditsState.FadingOut)
+            if (currentState != CreditsState.FADING_OUT)
             {
                 fadeScript.StartFadingToColor(Color.black, 2f);
-                currentState = CreditsState.FadingOut;
+                currentState = CreditsState.FADING_OUT;
                 rsc.audioMng.FadeOutCreditsMusic(2f);
             }
         }

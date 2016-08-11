@@ -14,6 +14,9 @@ public enum RumbleType
 
 public class RumbleManager : MonoBehaviour 
 {
+    [HideInInspector]
+    public bool active;
+
     private class RumbleInfo
     {
         public int player = 0;
@@ -85,6 +88,7 @@ public class RumbleManager : MonoBehaviour
 
     void Awake()
     {
+        active = true;
         //Debug.Log("Rumble Manager created");       
     }
 
@@ -192,6 +196,8 @@ public class RumbleManager : MonoBehaviour
 
     public void Rumble(int player = 0, float duration = 0.5f, float weakMotor = 1f, float strongMotor = 1f, float startFading = -1f)
     {
+        if (!active) return;
+
         //Player 0 means both players
         TemporalRumbleInfo rumble = new TemporalRumbleInfo(player, weakMotor, strongMotor, duration, (startFading == -1f ? duration * 0.75f : startFading));
         temporalRumbleList.Add(rumble);
@@ -199,7 +205,9 @@ public class RumbleManager : MonoBehaviour
 
     public void AddContinousRumble(RumbleType rumbleId, int player = 0, float weakMotor = 1f, float strongMotor = 1f)
     {
-        if(!continousRumbleList.ContainsKey(rumbleId))
+        if (!active) return;
+
+        if (!continousRumbleList.ContainsKey(rumbleId))
         {
             ContinousRumbleInfo rumble = new ContinousRumbleInfo(player, weakMotor, strongMotor, rumbleId);
             continousRumbleList.Add(rumbleId, rumble);

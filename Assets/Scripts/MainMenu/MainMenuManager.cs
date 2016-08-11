@@ -8,13 +8,14 @@ public class MainMenuManager : MonoBehaviour {
 
     private enum MainMenuState
     {
-        FadingIn,
-        Idle,
-        ShowHelp,
-        SelectingPlayers,
-        FadingToGame,
-        FadingToCredits,
-        FadingOut
+        FADING_IN,
+        IDLE,
+        SHOW_HELP,
+        SELECTING_PLAYERS,
+        FADING_TO_GAME,
+        FADING_TO_CREDITS,
+        FADING_TO_OPTIONS,
+        FADING_OUT
     }
     private MainMenuState currentState;
 
@@ -53,8 +54,9 @@ public class MainMenuManager : MonoBehaviour {
 
     void Start()
     {
+        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
         DisableMainButtons();      
-        currentState = MainMenuState.FadingIn;
+        currentState = MainMenuState.FADING_IN;
         fadeScript.StartFadingToClear(Color.black, 1f);
         rsc.audioMng.FadeInMainMenuMusic();
     }
@@ -64,15 +66,15 @@ public class MainMenuManager : MonoBehaviour {
     {
         switch (currentState)
         {
-            case MainMenuState.FadingIn:
+            case MainMenuState.FADING_IN:
                 if (!fadeScript.FadingToClear)
                 {
                     EnableMainButtons();
-                    currentState = MainMenuState.Idle;
+                    currentState = MainMenuState.IDLE;
                 }
                 break;
 
-            case MainMenuState.ShowHelp:
+            case MainMenuState.SHOW_HELP:
                 //if(Input.GetButtonDown("Back"))
                 if((InputManager.Devices.Count >= 1 && InputManager.Devices[0].Action2.WasPressed)
                     || (InputManager.Devices.Count >= 2 && InputManager.Devices[1].Action2.WasPressed))
@@ -82,7 +84,7 @@ public class MainMenuManager : MonoBehaviour {
                 }
                 break;
 
-            case MainMenuState.SelectingPlayers:
+            case MainMenuState.SELECTING_PLAYERS:
                 //if (Input.GetButtonDown("Back"))
                 if ((InputManager.Devices.Count >= 1 && InputManager.Devices[0].Action2.WasPressed)
                     || (InputManager.Devices.Count >= 2 && InputManager.Devices[1].Action2.WasPressed))
@@ -93,17 +95,24 @@ public class MainMenuManager : MonoBehaviour {
                 }
                 break;
 
-            case MainMenuState.FadingToGame:
+            case MainMenuState.FADING_TO_GAME:
                 if(!fadeScript.FadingToColor)
                 {
                     rsc.gameMng.StartNewGame(playersNumber);
                 }
                 break;
 
-            case MainMenuState.FadingToCredits:
+            case MainMenuState.FADING_TO_CREDITS:
                 if (!fadeScript.FadingToColor)
                 {
                     SceneManager.LoadScene("Credits");
+                }
+                break;
+
+            case MainMenuState.FADING_TO_OPTIONS:
+                if (!fadeScript.FadingToColor)
+                {
+                    SceneManager.LoadScene("Options");
                 }
                 break;
         }
@@ -167,12 +176,12 @@ public class MainMenuManager : MonoBehaviour {
             {
                 playerSelection.SetActive(true);
                 EnablePlayerSelectionButtons();
-                currentState = MainMenuState.SelectingPlayers;
+                currentState = MainMenuState.SELECTING_PLAYERS;
             }
             else
             {
                 playersNumber = 1;
-                currentState = MainMenuState.FadingToGame;
+                currentState = MainMenuState.FADING_TO_GAME;
                 FadeOut();
             }          
         }
@@ -182,7 +191,7 @@ public class MainMenuManager : MonoBehaviour {
     {
         playersNumber = 1;
         DisablePlayerSelectionButtons();
-        currentState = MainMenuState.FadingToGame;
+        currentState = MainMenuState.FADING_TO_GAME;
         FadeOut();
     }
 
@@ -190,7 +199,7 @@ public class MainMenuManager : MonoBehaviour {
     {
         playersNumber = 2;
         DisablePlayerSelectionButtons();
-        currentState = MainMenuState.FadingToGame;
+        currentState = MainMenuState.FADING_TO_GAME;
         FadeOut();
     }
 
@@ -198,13 +207,20 @@ public class MainMenuManager : MonoBehaviour {
     {
         DisableMainButtons();
         help.SetActive(true);
-        currentState = MainMenuState.ShowHelp;
+        currentState = MainMenuState.SHOW_HELP;
     }
 
     public void OnClickCredits()
     {
         DisableMainButtons();
-        currentState = MainMenuState.FadingToCredits;
+        currentState = MainMenuState.FADING_TO_CREDITS;
+        FadeOut();
+    }
+
+    public void OnClickOptions()
+    {
+        DisableMainButtons();
+        currentState = MainMenuState.FADING_TO_OPTIONS;
         FadeOut();
     }
 
