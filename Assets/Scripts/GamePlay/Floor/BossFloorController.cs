@@ -47,7 +47,7 @@ public class BossFloorController : MonoBehaviour
     {        
         StopAllCoroutines();
 
-        color = rsc.coloredObjectsMng.GetColor(currentColor);
+        color = coloredObjMng.GetColor(currentColor);
         SetColor(color);
     }
 

@@ -53,8 +53,6 @@ public class PlayerController : MonoBehaviour
     public float minDashSpeed = 1;
     //public float dashStoppingSpeed = 1.0f;
 
-    private float verticalVelocity = 0f; 
-
     //Attack
     [Header("Energy Settings")]
     public float maxEnergy = 100f;
@@ -330,7 +328,7 @@ public class PlayerController : MonoBehaviour
         bb.animator.Rebind();
         bb.ResetLifeVariables();
 
-        verticalVelocity = Physics.gravity.y;
+        bb.verticalVelocity = Physics.gravity.y;
 
         currentState = null;
         ChangeState(bb.spawningState);
@@ -408,7 +406,7 @@ public class PlayerController : MonoBehaviour
 
         if (bb.updateVerticalPosition)
         {
-            currentFrameDirection.y = verticalVelocity;
+            currentFrameDirection.y = bb.verticalVelocity;
         }
 
         currentFrameDirection *= Time.deltaTime;
@@ -424,11 +422,11 @@ public class PlayerController : MonoBehaviour
     {
         if (bb.isGrounded)
         {
-            verticalVelocity = Physics.gravity.y * Time.deltaTime;
+            bb.verticalVelocity = Physics.gravity.y * Time.deltaTime;
         }
         else
         {
-            verticalVelocity += Physics.gravity.y * Time.deltaTime;
+            bb.verticalVelocity += Physics.gravity.y * Time.deltaTime;
         }
     }
 
@@ -459,14 +457,9 @@ public class PlayerController : MonoBehaviour
         voxelization.SpawnVoxels();
     }
 
-    public void TakeDamage(float damage, bool triggerDamageAnim = true)
+    public void TakeDamage(float damage)
     {
-        ChangeStateIfNotNull(currentState.TakeDamage(damage, triggerDamageAnim));
-    }
-
-    public void TakeDamage(float damage, ChromaColor color, bool triggerDamageAnim = true)
-    {
-        ChangeStateIfNotNull(currentState.TakeDamage(damage, color, triggerDamageAnim));
+        ChangeStateIfNotNull(currentState.TakeDamage(damage, bb.receivingDamageState));
     }
 
     public void ReceiveAttack(float damage, ChromaColor color, Vector3 origin)
@@ -474,9 +467,9 @@ public class PlayerController : MonoBehaviour
         ChangeStateIfNotNull(currentState.AttackReceived(damage, color, origin));
     }
 
-    public void ReceiveInfection(float damage, Vector3 origin)
+    public void ReceiveInfection(float damage, Vector3 origin, Vector2 infectionForces)
     {
-        ChangeStateIfNotNull(currentState.InfectionReceived(damage, origin));
+        ChangeStateIfNotNull(currentState.InfectionReceived(damage, origin, infectionForces));
     }
 
     public void ColorMismatch()
@@ -490,7 +483,7 @@ public class PlayerController : MonoBehaviour
         {
             HexagonController hex = other.GetComponent<HexagonController>();
             bb.hexagons.Add(hex);
-            Debug.Log("Hexagon added");
+            //Debug.Log("Hexagon added: " + bb.hexagons.Count);
         }
         else if (other.tag == "Border")
         {
@@ -525,7 +518,7 @@ public class PlayerController : MonoBehaviour
         {
             HexagonController hex = other.GetComponent<HexagonController>();
             bb.hexagons.Remove(hex);
-            Debug.Log("Hexagon removed");
+            //Debug.Log("Hexagon removed: " + bb.hexagons.Count);
         }
         else if (other.tag == "Border")
         {

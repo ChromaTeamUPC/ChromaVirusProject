@@ -8,7 +8,7 @@ public class PlayerReceivingDamageState : PlayerBaseState {
         bb.animationEnded = false;
         bb.animator.SetTrigger("Hit");
 
-        rsc.rumbleMng.Rumble(bb.player.Id, 0.3f, 0.4f, 0.2f, 0.3f);
+        rsc.rumbleMng.Rumble(bb.player.Id, 0.3f, 0.4f, 0.2f, 0.3f);       
     }
 
     public override void OnStateExit()
@@ -28,7 +28,7 @@ public class PlayerReceivingDamageState : PlayerBaseState {
         return null;
     }
 
-    public override PlayerBaseState TakeDamage(float damage, bool triggerDamageAnim = true, bool whiteBlink = true)
+    public override PlayerBaseState TakeDamage(float damage, PlayerBaseState nextStateIfDamaged = null, bool whiteBlink = true)
     {
         //can not take more damage during this state
         return null;

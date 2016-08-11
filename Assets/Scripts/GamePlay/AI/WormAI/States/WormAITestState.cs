@@ -19,7 +19,6 @@ public class WormAITestState : WormAIBaseState
     private Vector3 nextWP;
     private Vector3 currentWPUG;
     private Vector3 nextWPUG;
-    private Transform head;
     private Quaternion lookRotation;
     private Vector3 lastPosition;
 
@@ -35,8 +34,6 @@ public class WormAITestState : WormAIBaseState
     public override void OnStateEnter()
     {
         base.OnStateEnter();
-
-        head = bb.headTrf.transform;
 
         SetInitialState();
     }

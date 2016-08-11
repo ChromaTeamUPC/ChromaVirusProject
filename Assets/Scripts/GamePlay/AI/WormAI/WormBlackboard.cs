@@ -176,7 +176,7 @@ public class WormBlackboard : MonoBehaviour
     public void StartNewPhase()
     {
         wormPhase++;
-        Debug.Log("Worm phase: " + wormPhase);
+        //Debug.Log("Worm phase: " + wormPhase);
         headCurrentHealth = headMaxHealth;
         headChargeLevel = 0;
         ConsolidateBodyParts();
@@ -193,7 +193,7 @@ public class WormBlackboard : MonoBehaviour
 
     public void ShuffleBodyParts()
     {
-        Debug.Log("Shuffle body parts");
+        //Debug.Log("Shuffle body parts");
         List<WormBodySegmentController> randomized = new List<WormBodySegmentController>(bodySegmentControllers);
 
         randomized.Shuffle();
@@ -210,7 +210,7 @@ public class WormBlackboard : MonoBehaviour
 
     public void DisableBodyParts()
     {
-        Debug.Log("Disable body parts");
+        //Debug.Log("Disable body parts");
         for (int i = 0; i < bodySegmentControllers.Count; ++i)
         {
             bodySegmentControllers[i].Disable();
@@ -219,7 +219,7 @@ public class WormBlackboard : MonoBehaviour
 
     public void ConsolidateBodyParts()
     {
-        Debug.Log("Consolidate body parts");
+        //Debug.Log("Consolidate body parts");
         List<WormBodySegmentController> randomized = new List<WormBodySegmentController>(bodySegmentControllers);
 
         randomized.Shuffle();

@@ -17,7 +17,6 @@ public class WormAIDyingState : WormAIBaseState
     private int WPIndex;
     private Vector3 currentWP;
     private Vector3 nextWP;
-    private Transform head;
     private Quaternion lookRotation;
 
     public WormAIDyingState(WormBlackboard bb) : base(bb)

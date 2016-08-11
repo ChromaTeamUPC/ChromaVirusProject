@@ -47,7 +47,7 @@ public class PlayerSpawningState : PlayerBaseState {
         return null;
     }
 
-    public override PlayerBaseState TakeDamage(float damage, bool triggerDamageAnim = true, bool whiteBlink = true)
+    public override PlayerBaseState TakeDamage(float damage, PlayerBaseState nextStateIfDamaged = null, bool whiteBlink = true)
     {
         //can not take damage during this state
         return null;

@@ -28,6 +28,7 @@ public class PlayerBlackboard
     public PlayerSpecialState specialState;
     public PlayerSwingingState swingingState;
     public PlayerReceivingDamageState receivingDamageState;
+    public PlayerPushedState pushedState;
     public PlayerFallingState fallingState;
     public PlayerDyingState dyingState;
     public PlayerBlockedState blockedState;
@@ -84,6 +85,7 @@ public class PlayerBlackboard
     public bool isAffectedByContact;
     public bool isContactCooldown;
     public bool updateVerticalPosition;
+    public float verticalVelocity;
     //public float fastMovementCharge;
 
     //Shoot variables
@@ -99,6 +101,8 @@ public class PlayerBlackboard
     public CapacitorController capacitor;
     public DeviceController device;
     public List<HexagonController> hexagons;
+    public Vector3 infectionOrigin;
+    public Vector2 infectionForces;
 
     public void Init(PlayerController pl)
     {
@@ -125,6 +129,7 @@ public class PlayerBlackboard
         specialState = new PlayerSpecialState();
         swingingState = new PlayerSwingingState();
         receivingDamageState = new PlayerReceivingDamageState();
+        pushedState = new PlayerPushedState();
         fallingState = new PlayerFallingState();
         dyingState = new PlayerDyingState();
         blockedState = new PlayerBlockedState();
@@ -139,6 +144,7 @@ public class PlayerBlackboard
         specialState.Init(this);
         swingingState.Init(this);
         receivingDamageState.Init(this);
+        pushedState.Init(this);
         fallingState.Init(this);
         dyingState.Init(this);
         blockedState.Init(this);

@@ -336,7 +336,7 @@ public class PlayerBaseState
         }
     }
 
-    public virtual PlayerBaseState TakeDamage(float damage, bool triggerDamageAnim = true, bool whiteBlink = true)
+    public virtual PlayerBaseState TakeDamage(float damage, PlayerBaseState nextStateIfDamaged = null, bool whiteBlink = true)
     {
         if (rsc.debugMng.godMode || bb.isInvulnerable) return null;
 
@@ -357,18 +357,17 @@ public class PlayerBaseState
         }
         else
         {
-            if (triggerDamageAnim)
-                return bb.receivingDamageState;
+            /*if (triggerDamageAnim)
+                return bb.receivingDamageState;*/
+            return nextStateIfDamaged;
         }
-
-        return null;
     }
 
-    public virtual PlayerBaseState TakeDamage(float damage, ChromaColor color, bool triggerDamageAnim = true, bool whiteBlink = true)
+    public virtual PlayerBaseState TakeDamage(float damage, ChromaColor color, PlayerBaseState nextStateIfDamaged = null, bool whiteBlink = true)
     {
         //Check color if needed
 
-        return TakeDamage(damage, triggerDamageAnim);
+        return TakeDamage(damage, nextStateIfDamaged);
     }
 
     public virtual PlayerBaseState AttackReceived(float damage, ChromaColor color, Vector3 origin)
@@ -415,7 +414,7 @@ public class PlayerBaseState
 
         if (shouldTakeDamage)
         {
-            PlayerBaseState result = TakeDamage((damage * damageRatio), color, true, false);
+            PlayerBaseState result = TakeDamage((damage * damageRatio), color, bb.receivingDamageState, false);
             if (bb.isAffectedByContact || bb.isContactCooldown)
             {
                 bb.player.StopCoroutine(HandleEnemyTouched());
@@ -429,11 +428,14 @@ public class PlayerBaseState
         return null;
     }
 
-    public virtual PlayerBaseState InfectionReceived(float damage, Vector3 origin)
+    public virtual PlayerBaseState InfectionReceived(float damage, Vector3 origin, Vector2 infectionForces)
     {
         if (rsc.debugMng.godMode || bb.isInvulnerable) return null;
 
-        PlayerBaseState result = TakeDamage(damage, true, true);
+        bb.infectionOrigin = origin;
+        bb.infectionForces = infectionForces;
+
+        PlayerBaseState result = TakeDamage(damage, bb.pushedState, true);
        
         bb.player.StartCoroutine(HandleInvulnerabilityTime());
         return result;
@@ -445,7 +447,7 @@ public class PlayerBaseState
 
         if (rsc.debugMng.godMode || bb.isInvulnerable) return null;
 
-        PlayerBaseState result = TakeDamage((bb.player.damageAfterInvulnerability), true, false);
+        PlayerBaseState result = TakeDamage((bb.player.damageAfterInvulnerability), bb.receivingDamageState, false);
         if (bb.isAffectedByContact || bb.isContactCooldown)
         {
             bb.player.StopCoroutine(HandleEnemyTouched());
@@ -488,9 +490,9 @@ public class PlayerBaseState
         //If touched by an enemy, speed reduction and damage take
         if (!bb.isAffectedByContact && !bb.isContactCooldown && !bb.isInvulnerable)
         {
-            Debug.Log("Enemy touched!");
+            //Debug.Log("Enemy touched!");
             bb.player.StartCoroutine(HandleEnemyTouched());
-            return TakeDamage(bb.player.damageOnContact, false);
+            return TakeDamage(bb.player.damageOnContact);
         }
 
         return null;
@@ -525,7 +527,7 @@ public class PlayerBaseState
                 bb.player.StartCoroutine(ColorMismatchHandle());
             }
         }
-        return TakeDamage(bb.player.selfDamageOnColorMismatch, false);
+        return TakeDamage(bb.player.selfDamageOnColorMismatch);
         
     }
 

@@ -55,6 +55,7 @@ public class HexagonController : MonoBehaviour
     [Header("Infection Settings")]
     public float infectionTimeAfterContactEnds = 2f;
     public float infectionTimeAfterAttack = 1f;
+    public Vector2 infectionForces = new Vector2(10f, 10f);
     [HideInInspector]
     public float currentInfectionDuration;
     [HideInInspector]

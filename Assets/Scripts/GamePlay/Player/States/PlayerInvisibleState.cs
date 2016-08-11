@@ -20,7 +20,7 @@ public class PlayerInvisibleState : PlayerBaseState {
     public override void RetrieveInput() { }
 
     //In this state the player can not move nor take damage
-    public override PlayerBaseState TakeDamage(float damage, bool triggerDamageAnim = true, bool whiteBlink = true)
+    public override PlayerBaseState TakeDamage(float damage, PlayerBaseState nextStateIfDamaged = null, bool whiteBlink = true)
     {
         return null;
     }
@@ -30,7 +30,7 @@ public class PlayerInvisibleState : PlayerBaseState {
         return null;
     }
 
-    public override PlayerBaseState InfectionReceived(float damage, Vector3 origin)
+    public override PlayerBaseState InfectionReceived(float damage, Vector3 origin, Vector2 infectionForces)
     {
         return null;
     }
