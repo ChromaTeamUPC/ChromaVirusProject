@@ -8,6 +8,10 @@ public class EntryCameraController : MonoBehaviour
     private bool skipped = false;
     private Animator anim;
 
+    public float defaultShakeMaximum = 0.3f;
+    private float shakeDuration;
+    private float currentShakeMaximum;
+
     void Awake()
     {
         anim = GetComponent<Animator>();
@@ -15,8 +19,18 @@ public class EntryCameraController : MonoBehaviour
 
     void Start()
     {
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_ATTACK, WormAttack);
+
         CutSceneEventInfo.eventInfo.skippeable = skippeable;
         rsc.eventMng.TriggerEvent(EventManager.EventType.START_CUT_SCENE, CutSceneEventInfo.eventInfo);
+    }
+
+    void OnDestroy()
+    {
+        if (rsc.eventMng != null)
+        {
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_ATTACK, WormAttack);
+        }
     }
 
     public void SetLevelAnimation(int levelAnimation)
@@ -40,5 +54,29 @@ public class EntryCameraController : MonoBehaviour
                 rsc.eventMng.TriggerEvent(EventManager.EventType.CAMERA_ANIMATION_ENDED, EventInfo.emptyInfo);
             }
         }
+    }
+
+    private void WormAttack(EventInfo eventInfo)
+    {
+        WormEventInfo info = (WormEventInfo)eventInfo;
+
+        shakeDuration = info.wormBb.belowAttackRumbleDuration;
+        rsc.rumbleMng.Rumble(0, shakeDuration);
+    }
+
+    void LateUpdate()
+    {
+        if (shakeDuration > 0)
+        {
+            transform.position = transform.position + Random.insideUnitSphere * (currentShakeMaximum > 0 ? currentShakeMaximum : defaultShakeMaximum);
+
+            shakeDuration -= Time.deltaTime;
+
+            if (shakeDuration <= 0)
+            {
+                shakeDuration = 0f;
+                currentShakeMaximum = 0f;
+            }
+        }     	
     }
 }

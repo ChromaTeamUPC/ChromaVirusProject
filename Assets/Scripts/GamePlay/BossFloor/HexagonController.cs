@@ -22,10 +22,13 @@ public class HexagonController : MonoBehaviour
 
     public HexagonIdleState idleState;
     public HexagonMovingState movingState;
+    public HexagonEnterExitState enterExitState;
     public HexagonInfectedState infectedState;
     public HexagonBelowAttackWarningState belowAttackWarningState;
     public HexagonBelowAttackState belowAttackState;
     public HexagonBelowAttackAdjacentState belowAttackAdjacentState;
+    public HexagonAboveAttackState aboveAttackState;
+    public HexagonAboveAttackAdjacentState aboveAttackAdjacentState;
 
 
     //Movement variables
@@ -40,19 +43,24 @@ public class HexagonController : MonoBehaviour
     public float downMinMovement = 1f;
     public float downMaxMovement = 2f;
     public float movementSpeed = 5f;
-    private bool up;
-    private float totalMovement;
-    private float currentMovement;
+    public float earthquakeMinHeight = 1f;
+    public float earthquakeMaxHeight = 2f;
+    public float earthquakeUpDuration = 0.2f;
+    public float earthquakeDownDuration = 0.5f;
+
     [HideInInspector]
     public bool isMoving;
     [HideInInspector]
     public int probesInRange;
 
     [Header("Notification Settings")]
+    public float enterExitBlinkInterval = 0.1f;
     public float belowAttackWarnInterval = 0.2f;
     public float belowAttackBlinkInterval = 0.1f;
+    public float aboveAttackBlinkInterval = 0.1f;
 
     [Header("Infection Settings")]
+    public float infectionTimeAfterEnterExit = 2f;
     public float infectionTimeAfterContactEnds = 2f;
     public float infectionTimeAfterAttack = 1f;
     public Vector2 infectionForces = new Vector2(10f, 10f);
@@ -62,7 +70,9 @@ public class HexagonController : MonoBehaviour
     public bool countingInfectionTime;
 
     [Header("Damage Settings")]
+    public float enterExitDamage = 10f;
     public float belowAttackDamage = 10f;
+    public float aboveAttackDamage = 10f;
     public float infectedCellDamage = 8f;
 
     [Header("Materials")]
@@ -91,16 +101,22 @@ public class HexagonController : MonoBehaviour
     public Renderer planeRend;
     public BlinkController planeBlinkController;
 
+    [HideInInspector]
+    public Vector3 attackCenter;
+
     private bool adjacentCellsSetupTop; //true = top, bottom left, bottom right, false = bottom, top left, top right
 
     void Awake()
     {
         idleState = new HexagonIdleState(this);
         movingState = new HexagonMovingState(this);
+        enterExitState = new HexagonEnterExitState(this);
         infectedState = new HexagonInfectedState(this);
         belowAttackWarningState = new HexagonBelowAttackWarningState(this);
         belowAttackState = new HexagonBelowAttackState(this);
         belowAttackAdjacentState = new HexagonBelowAttackAdjacentState(this);
+        aboveAttackState = new HexagonAboveAttackState(this);
+        aboveAttackAdjacentState = new HexagonAboveAttackAdjacentState(this);
 
         minDistanceToPlayer = minHexagonsToPlayer * DISTANCE_BETWEEN_HEXAGONS;
 
@@ -133,9 +149,9 @@ public class HexagonController : MonoBehaviour
 
     public void SetPlaneMaterial(Material mat)
     {
+        plane.SetActive(true);
         planeRend.sharedMaterial = mat;
         planeBlinkController.InvalidateMaterials();
-        plane.SetActive(true);
     }
 
     public void SetColumnMaterial(Material mat)
@@ -217,6 +233,11 @@ public class HexagonController : MonoBehaviour
         }
     }
 
+    public void WormEnterExit()
+    {
+        ChangeState(enterExitState);
+    }
+
     public void WormBelowAttackWarning()
     {
         //choose adjacent cells
@@ -280,6 +301,29 @@ public class HexagonController : MonoBehaviour
     private void WormBelowAttackAdjacentStart()
     {
         ChangeState(belowAttackAdjacentState);
+    }
+
+    public void WormAboveAttackStart()
+    {
+        //Set adjacent cells state
+        for(int i = 0; i < neighbours.Length; ++i)
+        {
+            SetWormAboveAttackAdjacentStart(neighbours[i]);
+        }
+
+        ChangeState(aboveAttackState);
+    }
+
+    private void SetWormAboveAttackAdjacentStart(HexagonController adjacent)
+    {
+        if (adjacent != null)
+            adjacent.WormAboveAttackAdjacentStart(transform.position);
+    }
+
+    private void WormAboveAttackAdjacentStart(Vector3 attackCenter)
+    {
+        this.attackCenter = attackCenter;
+        ChangeState(aboveAttackAdjacentState);
     }
 
     //Neighbour control

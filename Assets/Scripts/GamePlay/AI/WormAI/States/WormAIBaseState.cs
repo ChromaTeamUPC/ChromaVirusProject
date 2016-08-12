@@ -46,4 +46,9 @@ public class WormAIBaseState
     {
         head.position = head.position + (undergroundDirection * bb.undergroundSpeed * Time.deltaTime);
     }
+
+    public virtual void PlayerTouched(PlayerController player, Vector3 origin)
+    {
+        player.ReceiveInfection(bb.contactDamage, origin, bb.infectionForces);
+    }
 }

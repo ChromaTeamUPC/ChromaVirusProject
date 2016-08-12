@@ -9,6 +9,8 @@ public class HexagonBelowAttackState : HexagonBaseState
     {
         base.OnStateEnter();
 
+        hex.SetPlaneMaterial(hex.planeInfectedMaterial);
+
         hex.columnBlinkController.InvalidateMaterials();
         hex.columnBlinkController.BlinkWhiteNoStop(hex.belowAttackBlinkInterval, hex.belowAttackBlinkInterval);
 

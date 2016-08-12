@@ -17,6 +17,11 @@ public class WormAISpawningState : WormAIBaseState
     private Vector3 lastPosition;
     private float rotation;
     private bool highestPointReached;
+    private float destinyInRangeDistance = 1f;
+    private bool destinyInRange;
+
+    private HexagonController origin;
+    private HexagonController destiny;
 
     public WormAISpawningState(WormBlackboard bb) : base(bb)
     { }
@@ -24,6 +29,9 @@ public class WormAISpawningState : WormAIBaseState
     public override void OnStateEnter()
     {
         base.OnStateEnter();
+
+        origin = bb.spawnEntry.GetComponent<HexagonController>();
+        destiny = bb.spawnExit.GetComponent<HexagonController>();
 
         bb.jumpOrigin = bb.spawnEntry.transform.position;
         bb.jumpDestiny = bb.spawnExit.transform.position;
@@ -51,6 +59,8 @@ public class WormAISpawningState : WormAIBaseState
                 head.position = startPosition;
                 lastPosition = startPosition;
                 bb.worm.SetVisible(true);
+             
+                origin.WormEnterExit();
 
                 subState = SubState.JUMPING;
                 break;
@@ -76,7 +86,18 @@ public class WormAISpawningState : WormAIBaseState
                     rotation += angle;
                 }
 
-                if(head.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
+                if (!destinyInRange)
+                {
+                    float distanceToDestiny = (head.position - destiny.transform.position).magnitude;
+                    if (distanceToDestiny <= destinyInRangeDistance)
+                    {
+                        destinyInRange = true;
+                        destiny.WormAboveAttackStart();
+                        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_ATTACK, WormEventInfo.eventInfo);
+                    }
+                }
+
+                if (head.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {
                     bb.worm.SetVisible(false);
 

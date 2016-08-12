@@ -118,16 +118,24 @@ public class WormBlackboard : MonoBehaviour
     public WormTailController tail;
     [HideInInspector]
     public bool tailIsUnderground;
+    public GameObject junctionPrefab;
+    [HideInInspector]
+    public Transform[] junctionsTrf;
 
-    public float headToSegmentDistance;
-    public float segmentToSegmentDistance;
-    public float segmentToTailDistance;
+    //public float headToSegmentDistance;
+    public float headToJunctionDistance;
+    //public float segmentToSegmentDistance;
+    public float segmentToJunctionDistance;
+    //public float segmentToTailDistance;
+    public float tailToJunctionDistance;
 
     public float bodySettingMinTime = 1f;
     public float bodySettingMaxTime = 3f;
     public float bodySettingChangeTime = 0.1f;
 
     [Header("Attack Settings")]
+    public float contactDamage = 12f;
+    public Vector2 infectionForces;
     public float belowAttackWaitTime = 2f;
     public float belowAttackWarningTime = 0.5f;
     public float belowAttackRumbleDuration = 1f;
@@ -156,6 +164,13 @@ public class WormBlackboard : MonoBehaviour
             bodySegmentControllers.Add(ctrl);
         }
 
+        junctionsTrf = new Transform[bodySegmentsTrf.Length + 1];
+        for(int i = 0; i < junctionsTrf.Length; ++i)
+        {
+            GameObject junction = Instantiate(junctionPrefab) as GameObject;
+            junctionsTrf[i] = junction.transform;
+        }
+
         spawningState = new WormAISpawningState(this);
         wanderingState = new WormAIWanderingState(this);
         belowAttackState = new WormAIBelowAttackState(this);
@@ -182,6 +197,7 @@ public class WormBlackboard : MonoBehaviour
         ConsolidateBodyParts();
     }
 
+    #region BodySegments
     public void InitBodyParts()
     {
         //Init each segment color
@@ -255,7 +271,9 @@ public class WormBlackboard : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         worm.Explode();     
     }
+    #endregion
 
+    #region Parabola
     public void CalculateParabola()
     {
         /*Info needed to apply the formula ax^2 + bx + c = y:
@@ -366,4 +384,5 @@ public class WormBlackboard : MonoBehaviour
         worldExitBezierCtrl21 = origin.TransformPoint(exitBezierCtrl21.transform.position);
         worldExitBezierCtrl22 = origin.TransformPoint(exitBezierCtrl22.transform.position);
     }
+    #endregion
 }

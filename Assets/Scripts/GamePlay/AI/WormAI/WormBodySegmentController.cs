@@ -38,7 +38,7 @@ public class WormBodySegmentController : MonoBehaviour
 
     void Start()
     {
-        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormBodyMaterial(color) });
+        SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(color));
     }
 
     public void SetBlackboard(WormBlackboard bb)
@@ -53,7 +53,7 @@ public class WormBodySegmentController : MonoBehaviour
     {
         currentHealth = bb.bodyMaxHealth;
         currentHealthWrongColor = bb.bodyMaxHealth;
-        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormBodyMaterial(color) });
+        SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(color));
 
         ColorEventInfo.eventInfo.newColor = color;
         rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SECTION_ACTIVATED, ColorEventInfo.eventInfo);
@@ -92,7 +92,7 @@ public class WormBodySegmentController : MonoBehaviour
 
         if (state == State.DEACTIVATED)
         {
-            SetMaterial(new[] { rsc.coloredObjectsMng.GetWormBodyWireframeMaterial() });
+            SetMaterial(rsc.coloredObjectsMng.GetWormBodyWireframeMaterial());
             state = State.DESTROYED;
             col.enabled = false;
         }
@@ -120,13 +120,13 @@ public class WormBodySegmentController : MonoBehaviour
 
         while(elapsedTime < duration)
         {
-            SetMaterial(new[] { rsc.coloredObjectsMng.GetWormBodyMaterial(ChromaColorInfo.Random) });
+            SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(ChromaColorInfo.Random));
 
             yield return new WaitForSeconds(bb.bodySettingChangeTime);
             elapsedTime += bb.bodySettingChangeTime;
         }
 
-        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormBodyMaterial(color) });
+        SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(color));
         state = State.NORMAL;
     }
 
@@ -134,7 +134,7 @@ public class WormBodySegmentController : MonoBehaviour
     {
         if (state != State.NORMAL) return;
 
-        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormBodyDimMaterial(color) });
+        SetMaterial(rsc.coloredObjectsMng.GetWormBodyDimMaterial(color));
         state = State.NORMAL_DISABLED;
     }
 
@@ -150,7 +150,7 @@ public class WormBodySegmentController : MonoBehaviour
 
         while (elapsedTime < bb.bodySettingMinTime)
         {
-            SetMaterial(new[] { rsc.coloredObjectsMng.GetWormBodyMaterial(ChromaColorInfo.Random) });
+            SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(ChromaColorInfo.Random));
 
             yield return new WaitForSeconds(bb.bodySettingChangeTime);
             elapsedTime += bb.bodySettingChangeTime;
@@ -190,7 +190,7 @@ public class WormBodySegmentController : MonoBehaviour
             if (currentHealth <= 0)
             {
                 //Set material grey
-                SetMaterial(new[] { rsc.coloredObjectsMng.GetWormBodyGreyMaterial() });
+                SetMaterial(rsc.coloredObjectsMng.GetWormBodyGreyMaterial());
                 state = State.DEACTIVATED;
 
                 //Explosion FX?
@@ -206,13 +206,34 @@ public class WormBodySegmentController : MonoBehaviour
         }
     }
 
+    private void SetMaterial(Material material)
+    {
+        Material[] mats = rend.sharedMaterials;
+
+        if (mats[1] != material)
+        {
+            mats[1] = material;
+            rend.sharedMaterials = mats;
+
+            blinkController.InvalidateMaterials();
+        }
+    }
+
     private void SetMaterial(Material[] materials)
     {
         Material[] mats = rend.sharedMaterials;
 
-        if (mats[1] != materials[0])
+        if (mats[0] != materials[0])
         {
-            mats[1] = materials[0];
+            mats[0] = materials[0];
+            rend.sharedMaterials = mats;
+
+            blinkController.InvalidateMaterials();
+        }
+
+        if (mats[1] != materials[1])
+        {
+            mats[1] = materials[1];
             rend.sharedMaterials = mats;
 
             blinkController.InvalidateMaterials();
@@ -222,5 +243,15 @@ public class WormBodySegmentController : MonoBehaviour
     public void SetVisible(bool visible)
     {
         rend.enabled = visible;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(other.tag);
+        if (other.tag == "Player1" || other.tag == "Player2")
+        {
+            PlayerController player = other.GetComponent<PlayerController>();
+            bb.worm.PlayerTouched(player, transform.position);
+        }
     }
 }

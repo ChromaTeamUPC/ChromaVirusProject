@@ -19,6 +19,7 @@ public class WormAIBehaviour : MonoBehaviour
     //Shortcuts
     private Transform head;
     private Transform[] bodySegments;
+    private Transform[] junctions;
     private Transform tail;
 
     private HeadSubState headState;
@@ -65,6 +66,7 @@ public class WormAIBehaviour : MonoBehaviour
     {
         head = bb.headTrf;
         bodySegments = bb.bodySegmentsTrf;
+        junctions = bb.junctionsTrf;
         tail = bb.tailTrf;
 
         SetInitialBodyWayPoints();
@@ -234,7 +236,23 @@ public class WormAIBehaviour : MonoBehaviour
         return rend.enabled;
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Player1" || other.tag == "Player2")
+        {
+            PlayerController player = other.GetComponent<PlayerController>();
+            PlayerTouched(player, transform.position);
+        }
+    }
+
+    public void PlayerTouched(PlayerController player, Vector3 origin)
+    {
+        if (currentState != null)
+            currentState.PlayerTouched(player, origin);
+    }
+
     //Body movement functions
+    #region BodyMovement
     private void SetInitialBodyWayPoints()
     {
         headWayPoint = null;
@@ -256,6 +274,7 @@ public class WormAIBehaviour : MonoBehaviour
         }
     }
 
+
     private void UpdateBodyMovement()
     {
         //If head has moved, create a new waypoint and recalculate all segments' position
@@ -268,13 +287,14 @@ public class WormAIBehaviour : MonoBehaviour
             //if we are in the last waypoint, there is nothing more we can do, so we quit
             if (next == null) return;
 
-            float totalDistance = bb.headToSegmentDistance;                            //Total distance we have to position the element from the head
+            float totalDistance = bb.headToJunctionDistance;                            //Total distance we have to position the element from the head
             float consolidatedDistance = 0f;                                        //Sum of the distances of evaluated waypoints
             float distanceBetween = (current.position - next.position).magnitude;   //Distance between current current and next waypoints
 
             //move each body segment through the virtual line
             for (int i = 0; i < bodySegments.Length; ++i)
             {
+                //---- Junction ----
                 //advance through waypoints until we find the proper distance
                 while (consolidatedDistance + distanceBetween < totalDistance)
                 {
@@ -291,6 +311,30 @@ public class WormAIBehaviour : MonoBehaviour
                 //We reached the line segment where this body part must be, so we calculate the point in current segment
                 float remainingDistance = totalDistance - consolidatedDistance;
                 Vector3 direction = (next.position - current.position).normalized * remainingDistance;
+
+                junctions[i].position = current.position + direction;
+                junctions[i].rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
+                junctions[i].gameObject.SetActive(current.visible || next.visible);
+
+                //---- Body ----
+                totalDistance += bb.segmentToJunctionDistance;
+
+                //advance through waypoints until we find the proper distance
+                while (consolidatedDistance + distanceBetween < totalDistance)
+                {
+                    consolidatedDistance += distanceBetween;
+
+                    current = next;
+                    next = current.next;
+                    //if we are in the last waypoint, there is nothing more we can do, so we quit
+                    if (next == null) return;
+
+                    distanceBetween = (current.position - next.position).magnitude;
+                }
+
+                //We reached the line segment where this body part must be, so we calculate the point in current segment
+                remainingDistance = totalDistance - consolidatedDistance;
+                direction = (next.position - current.position).normalized * remainingDistance;
 
                 bodySegments[i].position = current.position + direction;
                 bodySegments[i].rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
@@ -305,14 +349,15 @@ public class WormAIBehaviour : MonoBehaviour
                 //else add total distance for the next iteration
                 else
                 {
-                    totalDistance += bb.segmentToSegmentDistance;
+                    totalDistance += bb.segmentToJunctionDistance;
                 }
             }
 
             //finally do the same for the tail
             if (tail != null)
             {
-                totalDistance += bb.segmentToTailDistance;
+                //---- Junction ----
+                totalDistance += bb.segmentToJunctionDistance;
 
                 //advance through waypoints until we find the proper distance
                 while (consolidatedDistance + distanceBetween < totalDistance)
@@ -331,6 +376,30 @@ public class WormAIBehaviour : MonoBehaviour
                 float remainingDistance = totalDistance - consolidatedDistance;
                 Vector3 direction = (next.position - current.position).normalized * remainingDistance;
 
+                junctions[junctions.Length - 1].position = current.position + direction;
+                junctions[junctions.Length - 1].rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
+                junctions[junctions.Length - 1].gameObject.SetActive(current.visible || next.visible);
+
+                //---- Tail ----
+                totalDistance += bb.tailToJunctionDistance;
+
+                //advance through waypoints until we find the proper distance
+                while (consolidatedDistance + distanceBetween < totalDistance)
+                {
+                    consolidatedDistance += distanceBetween;
+
+                    current = next;
+                    next = current.next;
+                    //if we are in the last waypoint, there is nothing more we can do, so we quit
+                    if (next == null) return;
+
+                    distanceBetween = (current.position - next.position).magnitude;
+                }
+
+                //We reached the line segment where this body part must be, so we calculate the point in current segment
+                remainingDistance = totalDistance - consolidatedDistance;
+                direction = (next.position - current.position).normalized * remainingDistance;
+
                 tail.position = current.position + direction;
                 tail.rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
                 bb.tail.SetVisible(current.visible || next.visible);
@@ -340,4 +409,6 @@ public class WormAIBehaviour : MonoBehaviour
             }
         }
     }
+
+    #endregion
 }

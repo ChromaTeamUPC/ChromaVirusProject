@@ -33,35 +33,45 @@ public class BlinkController : MonoBehaviour {
 
     private RendMaterials[] rendererMaterials;
 
-    private Material white;
-    private Material transparent;
+    //private Material white;
+    //private Material transparent;
     private bool materialsNeedUpdate;
 
     private bool blinking;
     private Material currentBlinkMaterial;
 
+    void Awake()
+    {
+        FindRenderers();
+    }
+
     void Start()
     {
-        white = rsc.coloredObjectsMng.WhiteMaterial;
-        transparent = rsc.coloredObjectsMng.TransparentMaterial;
+        //white = rsc.coloredObjectsMng.WhiteMaterial;
+        //transparent = rsc.coloredObjectsMng.TransparentMaterial;
 
-        materialsNeedUpdate = false;
+        materialsNeedUpdate = true;
 
+        //FindRenderers();        
+
+        blinking = false;     
+    }
+
+    private void FindRenderers()
+    {
         GameObject model = transform.FindDeepChild("Model").gameObject;
         Renderer[] renderers = model.GetComponentsInChildren<Renderer>();
 
         if (renderers.Length > 0)
         {
             rendererMaterials = new RendMaterials[renderers.Length];
-            for(int i = 0; i < renderers.Length; ++i)
+            for (int i = 0; i < renderers.Length; ++i)
             {
                 rendererMaterials[i] = new RendMaterials();
                 rendererMaterials[i].renderer = renderers[i];
                 rendererMaterials[i].sharedMaterialsCopy = rendererMaterials[i].renderer.sharedMaterials;
             }
         }
-
-        blinking = false;     
     }
 
     void OnDisable()
@@ -158,14 +168,13 @@ public class BlinkController : MonoBehaviour {
     public void BlinkWhiteOnce(float duration = blinkOnceDefaultDuration)
     {
         StopPreviousBlinkings();
-
-        StartCoroutine(DoBlinkOnce(white, duration));
+        StartCoroutine(DoBlinkOnce(rsc.coloredObjectsMng.WhiteMaterial, duration));
     }
 
     public void BlinkTransparentOnce(float duration = blinkOnceDefaultDuration)
     {
         StopPreviousBlinkings();
-        StartCoroutine(DoBlinkOnce(transparent, duration));
+        StartCoroutine(DoBlinkOnce(rsc.coloredObjectsMng.TransparentMaterial, duration));
     }
 
     public void BlinkCustomOnce(Material mat, float duration = blinkOnceDefaultDuration)
@@ -195,7 +204,7 @@ public class BlinkController : MonoBehaviour {
                                         float normalInterval = normalMultipleIntervalDefaultDuration)
     {
         StopPreviousBlinkings();
-        StartCoroutine(DoBlinkMultiple(white, totalDuration, blinkInterval, normalInterval));
+        StartCoroutine(DoBlinkMultiple(rsc.coloredObjectsMng.WhiteMaterial, totalDuration, blinkInterval, normalInterval));
     }
 
     public void BlinkTransparentMultipleTimes(float totalDuration = totalMultipleDefaultDuration,
@@ -203,7 +212,7 @@ public class BlinkController : MonoBehaviour {
                                               float normalInterval = normalMultipleIntervalDefaultDuration)
     {
         StopPreviousBlinkings();
-        StartCoroutine(DoBlinkMultiple(transparent, totalDuration, blinkInterval, normalInterval));
+        StartCoroutine(DoBlinkMultiple(rsc.coloredObjectsMng.TransparentMaterial, totalDuration, blinkInterval, normalInterval));
     }
 
     public void BlinkCustomMultipleTimes(Material mat,
@@ -254,14 +263,14 @@ public class BlinkController : MonoBehaviour {
                                  float normalInterval = normalMultipleIntervalDefaultDuration)
     {
         StopPreviousBlinkings();
-        StartCoroutine(DoBlinkNoStop(white, blinkInterval, normalInterval));
+        StartCoroutine(DoBlinkNoStop(rsc.coloredObjectsMng.WhiteMaterial, blinkInterval, normalInterval));
     }
 
     public void BlinkTransparentNoStop(float blinkInterval = blinkMultipleIntervalDefaultDuration,
                                        float normalInterval = normalMultipleIntervalDefaultDuration)
     {
         StopPreviousBlinkings();
-        StartCoroutine(DoBlinkNoStop(transparent, blinkInterval, normalInterval));
+        StartCoroutine(DoBlinkNoStop(rsc.coloredObjectsMng.TransparentMaterial, blinkInterval, normalInterval));
     }
 
     public void BlinkCustomNoStop(Material mat,
@@ -306,7 +315,7 @@ public class BlinkController : MonoBehaviour {
                                       float normalIntervalReductionRatio = normalIntervalDefaultReductionRatio)
     {
         StopPreviousBlinkings();
-        StartCoroutine(DoBlinkIncremental(white, totalDuration, blinkInterval, initialNormalInterval, normalIntervalReductionRatio));
+        StartCoroutine(DoBlinkIncremental(rsc.coloredObjectsMng.WhiteMaterial, totalDuration, blinkInterval, initialNormalInterval, normalIntervalReductionRatio));
     }
 
     public void BlinkTransparentIncremental(float totalDuration = totalIncrementalDefaultDuration,
@@ -315,7 +324,7 @@ public class BlinkController : MonoBehaviour {
                                             float normalIntervalReductionRatio = normalIntervalDefaultReductionRatio)
     {
         StopPreviousBlinkings();
-        StartCoroutine(DoBlinkIncremental(transparent, totalDuration, blinkInterval, initialNormalInterval, normalIntervalReductionRatio));
+        StartCoroutine(DoBlinkIncremental(rsc.coloredObjectsMng.TransparentMaterial, totalDuration, blinkInterval, initialNormalInterval, normalIntervalReductionRatio));
     }
 
     public void BlinkCustomIncremental(Material mat, 

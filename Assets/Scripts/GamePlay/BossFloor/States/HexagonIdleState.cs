@@ -6,7 +6,10 @@ public class HexagonIdleState : HexagonBaseState
     private float moveWaitTime;
     private float elapsedTime;
 
-    public HexagonIdleState(HexagonController hex) : base(hex) { }
+    public HexagonIdleState(HexagonController hex) : base(hex)
+    {
+        ResetCounter();
+    }
 
     public override void OnStateEnter()
     {

@@ -88,6 +88,9 @@ public class WormAIWanderingState : WormAIBaseState
                     curveNum = 0;
                     t = 0;
 
+                    HexagonController hexagon = route.wayPoints[WPIndex].GetComponent<HexagonController>();
+                    hexagon.WormEnterExit();
+
                     subState = SubState.ENTERING;
                 }
                 break;
@@ -157,6 +160,9 @@ public class WormAIWanderingState : WormAIBaseState
 
                         curveNum = 0;
                         t = 0;
+
+                        HexagonController hexagon = route.wayPoints[WPIndex + 1].GetComponent<HexagonController>();
+                        hexagon.WormEnterExit();
 
                         subState = SubState.EXITING;
                     }

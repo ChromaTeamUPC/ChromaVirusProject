@@ -53,6 +53,8 @@ public class ColoredObjectsManager : MonoBehaviour
     [SerializeField]
     private Material wormBodyWireframeMat;
     [SerializeField]
+    private Material wormMainBodyWireframeMat;
+    [SerializeField]
     private Material[] wormBodyMats = new Material[4];
     [SerializeField]
     private Material[] wormBodyDimMats = new Material[4];
@@ -320,9 +322,9 @@ public class ColoredObjectsManager : MonoBehaviour
         return wormBodyGreyMat;
     }
 
-    public Material GetWormBodyWireframeMaterial()
+    public Material[] GetWormBodyWireframeMaterial()
     {
-        return wormBodyWireframeMat;
+        return new[] { wormMainBodyWireframeMat, wormBodyWireframeMat };
     }
 
     public Material GetWormBodyMaterial(ChromaColor color)

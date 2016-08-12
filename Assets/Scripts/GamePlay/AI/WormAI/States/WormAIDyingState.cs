@@ -43,4 +43,9 @@ public class WormAIDyingState : WormAIBaseState
         //do nothing
         return null;
     }
+
+    public override void PlayerTouched(PlayerController player, Vector3 origin)
+    {
+        //do nothing
+    }
 }

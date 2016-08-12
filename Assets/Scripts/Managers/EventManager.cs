@@ -169,7 +169,7 @@ public class EventManager : MonoBehaviour {
         WORM_SECTION_COLOR_CHANGED,
         WORM_SECTION_DESTROYED,
 
-        WORM_BELOW_ATTACK_START,
+        WORM_ATTACK,
 
         ZONE_REACHED,
         ZONE_PLAN_FINISHED,

@@ -15,11 +15,14 @@ public class WormAIBelowAttackState : WormAIBaseState
     private SubState subState;
 
     private HexagonController origin;
+    private HexagonController destiny;
 
     private float currentX;
     private Vector3 lastPosition;
     private float rotation;
     private bool highestPointReached;
+    private float destinyInRangeDistance = 1f;
+    private bool destinyInRange;
 
     private float elapsedTime;
 
@@ -92,7 +95,7 @@ public class WormAIBelowAttackState : WormAIBaseState
 
                         if (origin != null)
                         {
-                            HexagonController destiny = GetHexagonFacingCenter();
+                            destiny = GetHexagonFacingCenter();
 
                             bb.jumpOrigin = origin.transform.position;
                             bb.jumpDestiny = destiny.transform.position;
@@ -102,6 +105,7 @@ public class WormAIBelowAttackState : WormAIBaseState
 
                             rotation = 0f;
                             highestPointReached = false;
+                            destinyInRange = false;
                         }
                         else
                             return bb.wanderingState;
@@ -132,7 +136,7 @@ public class WormAIBelowAttackState : WormAIBaseState
 
                     origin.WormBelowAttackStart();
                     WormEventInfo.eventInfo.wormBb = bb;
-                    rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_BELOW_ATTACK_START, WormEventInfo.eventInfo);
+                    rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_ATTACK, WormEventInfo.eventInfo);
 
                     subState = SubState.JUMPING;
                 }
@@ -159,6 +163,16 @@ public class WormAIBelowAttackState : WormAIBaseState
                     float angle = 30 * Time.deltaTime;
                     head.Rotate(new Vector3(0, 0, angle));
                     rotation += angle;
+                }
+
+                if(!destinyInRange)
+                {
+                    float distanceToDestiny = (head.position - destiny.transform.position).magnitude;
+                    if(distanceToDestiny <= destinyInRangeDistance)
+                    {
+                        destinyInRange = true;
+                        destiny.WormEnterExit();
+                    }
                 }
 
                 if (head.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)

@@ -17,6 +17,11 @@ public class PlayerLongIdleState : PlayerBaseState
 
     public override PlayerBaseState Update()
     {
+        if (bb.KeyPressed)
+        {
+            bb.animator.SetTrigger("KeyPressed");
+        }
+
         if (CanDoSpecial())
         {
             return bb.specialState;
@@ -46,7 +51,6 @@ public class PlayerLongIdleState : PlayerBaseState
 
             if (bb.KeyPressed)
             {
-                bb.animator.SetTrigger("KeyPressed");
                 return bb.idleState;
             }
         }

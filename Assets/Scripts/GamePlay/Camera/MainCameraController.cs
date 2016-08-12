@@ -69,7 +69,7 @@ public class MainCameraController : MonoBehaviour {
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DASHED, PlayerEndDash);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerColorMismatch);
         rsc.eventMng.StartListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
-        rsc.eventMng.StartListening(EventManager.EventType.WORM_BELOW_ATTACK_START, WormBelowAttackStart);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_ATTACK, WormAttack);
     }
 
     void OnDestroy()
@@ -80,7 +80,7 @@ public class MainCameraController : MonoBehaviour {
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DASHED, PlayerEndDash);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerColorMismatch);
             rsc.eventMng.StopListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
-            rsc.eventMng.StopListening(EventManager.EventType.WORM_BELOW_ATTACK_START, WormBelowAttackStart);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_ATTACK, WormAttack);
         }
     }
 
@@ -107,7 +107,7 @@ public class MainCameraController : MonoBehaviour {
         rsc.rumbleMng.Rumble(0, shakeDuration);
     }
 
-    private void WormBelowAttackStart(EventInfo eventInfo)
+    private void WormAttack(EventInfo eventInfo)
     {
         WormEventInfo info = (WormEventInfo)eventInfo;
 

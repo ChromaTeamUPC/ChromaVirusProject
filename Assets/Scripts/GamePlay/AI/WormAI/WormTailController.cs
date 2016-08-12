@@ -38,4 +38,13 @@ public class WormTailController : MonoBehaviour
     {
         rend.enabled = visible;
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Player1" || other.tag == "Player2")
+        {
+            PlayerController player = other.GetComponent<PlayerController>();
+            bb.worm.PlayerTouched(player, transform.position);
+        }
+    }
 }
