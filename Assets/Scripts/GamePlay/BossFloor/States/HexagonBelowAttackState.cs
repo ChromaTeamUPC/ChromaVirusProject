@@ -22,6 +22,8 @@ public class HexagonBelowAttackState : HexagonBaseState
     {
         base.OnStateExit();
 
+        hex.LowerWallRing();
+
         hex.columnBlinkController.StopPreviousBlinkings();
         hex.continousPurple.Stop();
     }

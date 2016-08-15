@@ -5,12 +5,12 @@ public class HexagonController : MonoBehaviour
 {
     private enum Neighbour
     {
-        TOP,
         TOP_LEFT,
+        TOP,
         TOP_RIGHT,
+        BOTTOM_RIGHT,
         BOTTOM,
-        BOTTOM_LEFT,
-        BOTTOM_RIGHT
+        BOTTOM_LEFT
     }
 
     public const float DISTANCE_BETWEEN_HEXAGONS = 7.225f;
@@ -27,6 +27,7 @@ public class HexagonController : MonoBehaviour
     public HexagonBelowAttackWarningState belowAttackWarningState;
     public HexagonBelowAttackState belowAttackState;
     public HexagonBelowAttackAdjacentState belowAttackAdjacentState;
+    public HexagonBelowAttackWallState belowAttackWallState;
     public HexagonAboveAttackState aboveAttackState;
     public HexagonAboveAttackAdjacentState aboveAttackAdjacentState;
 
@@ -58,6 +59,12 @@ public class HexagonController : MonoBehaviour
     public float belowAttackWarnInterval = 0.2f;
     public float belowAttackBlinkInterval = 0.1f;
     public float aboveAttackBlinkInterval = 0.1f;
+
+    [Header("Wall Settings")]
+    public float wallHeight = 1f;
+    public float wallSpeed = 2f;
+    [HideInInspector]
+    public bool shouldBeWall = false;
 
     [Header("Infection Settings")]
     public float infectionTimeAfterEnterExit = 2f;
@@ -115,6 +122,7 @@ public class HexagonController : MonoBehaviour
         belowAttackWarningState = new HexagonBelowAttackWarningState(this);
         belowAttackState = new HexagonBelowAttackState(this);
         belowAttackAdjacentState = new HexagonBelowAttackAdjacentState(this);
+        belowAttackWallState = new HexagonBelowAttackWallState(this);
         aboveAttackState = new HexagonAboveAttackState(this);
         aboveAttackAdjacentState = new HexagonAboveAttackAdjacentState(this);
 
@@ -238,6 +246,8 @@ public class HexagonController : MonoBehaviour
         ChangeState(enterExitState);
     }
 
+
+    #region Below Attack
     public void WormBelowAttackWarning()
     {
         //choose adjacent cells
@@ -257,6 +267,8 @@ public class HexagonController : MonoBehaviour
             SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.TOP_LEFT]);
             SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.TOP_RIGHT]);
         }
+
+        RaiseWallRing();     
 
         ChangeState(belowAttackWarningState);
     }
@@ -303,6 +315,69 @@ public class HexagonController : MonoBehaviour
         ChangeState(belowAttackAdjacentState);
     }
 
+    private void RaiseWallRing()
+    {
+        for (int i = 0; i < neighbours.Length; ++i)
+            SetWormBelowAttackRaiseWall(neighbours[i], (Neighbour)((i + neighbours.Length / 2) % neighbours.Length));
+    }
+
+    private void SetWormBelowAttackRaiseWall(HexagonController adjacent, Neighbour origin)
+    {
+        if (adjacent != null)
+            adjacent.WormBelowAttackRaiseWall(origin);
+    }
+
+    private void WormBelowAttackRaiseWall(Neighbour origin)
+    {
+        int oposite1 = ((int)origin + (neighbours.Length / 2)) % neighbours.Length;
+        int oposite2 = ((int)origin + (neighbours.Length / 2) + 1) % neighbours.Length;
+
+        if (neighbours[oposite1] != null)
+            neighbours[oposite1].RaiseItself();
+
+        if (neighbours[oposite2] != null)
+            neighbours[oposite2].RaiseItself();
+    }
+
+    private void RaiseItself()
+    {
+        shouldBeWall = true;
+        ChangeState(belowAttackWallState);
+    }
+
+    public void LowerWallRing()
+    {
+        for (int i = 0; i < neighbours.Length; ++i)
+            SetWormBelowAttackLowerWall(neighbours[i], (Neighbour)((i + neighbours.Length / 2) % neighbours.Length));
+    }
+
+    private void SetWormBelowAttackLowerWall(HexagonController adjacent, Neighbour origin)
+    {
+        if (adjacent != null)
+            adjacent.WormBelowAttackLowerWall(origin);
+    }
+
+    private void WormBelowAttackLowerWall(Neighbour origin)
+    {
+        int oposite1 = ((int)origin + (neighbours.Length / 2)) % neighbours.Length;
+        int oposite2 = ((int)origin + (neighbours.Length / 2) + 1) % neighbours.Length;
+
+        if (neighbours[oposite1] != null)
+            neighbours[oposite1].LowerItself();
+
+        if (neighbours[oposite2] != null)
+            neighbours[oposite2].LowerItself();
+    }
+
+    private void LowerItself()
+    {
+        shouldBeWall = false;
+    }
+
+
+    #endregion
+
+    #region Above Attack
     public void WormAboveAttackStart()
     {
         //Set adjacent cells state
@@ -325,7 +400,9 @@ public class HexagonController : MonoBehaviour
         this.attackCenter = attackCenter;
         ChangeState(aboveAttackAdjacentState);
     }
+    #endregion
 
+    #region Neighbour Control
     //Neighbour control
     private void CheckNeighbours()
     {
@@ -392,4 +469,5 @@ public class HexagonController : MonoBehaviour
     {
         neighbours[(int)position] = neighbour;
     }
+    #endregion
 }
