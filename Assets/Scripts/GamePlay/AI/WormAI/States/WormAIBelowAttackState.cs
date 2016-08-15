@@ -138,6 +138,7 @@ public class WormAIBelowAttackState : WormAIBaseState
                     WormEventInfo.eventInfo.wormBb = bb;
                     rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_ATTACK, WormEventInfo.eventInfo);
 
+                    bb.isHeadOverground = true;
                     subState = SubState.JUMPING;
                 }
                 else
@@ -177,6 +178,7 @@ public class WormAIBelowAttackState : WormAIBaseState
 
                 if (head.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {
+                    bb.isHeadOverground = false;
                     bb.worm.SetVisible(false);
 
                     subState = SubState.EXITING;

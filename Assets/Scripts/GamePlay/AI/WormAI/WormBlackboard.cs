@@ -50,6 +50,8 @@ public class WormBlackboard : MonoBehaviour
     public float floorSpeed = 10;
     public float undergroundSpeed = 10;
     public float rotationSpeed = 180;
+    [HideInInspector]
+    public bool isHeadOverground;
 
     public GameObject enterBezierCtrl11;
     public GameObject enterBezierCtrl12;
@@ -183,6 +185,7 @@ public class WormBlackboard : MonoBehaviour
 
     public void ResetValues()
     {
+        isHeadOverground = false;
         wormPhase = 0;
         headCurrentHealth = headMaxHealth;
         headChargeLevel = 0;

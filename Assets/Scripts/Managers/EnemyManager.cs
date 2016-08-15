@@ -274,6 +274,7 @@ public class EnemyManager : MonoBehaviour
     private void WormSpawned(EventInfo eventInfo)
     {
         WormEventInfo info = (WormEventInfo)eventInfo;
+        bb.worm = info.wormBb;
         bb.activeEnemies += info.wormBb.wormMaxPhases;
         bb.zoneTotalInfectionLevel = 100;
         bb.zoneCurrentInfectionLevel = 100;
@@ -283,7 +284,7 @@ public class EnemyManager : MonoBehaviour
 
     private void WormDied(EventInfo eventInfo)
     {
-        //Nothing to do right now
+        bb.worm = null;
     }
 
     private void WormHeadActivated(EventInfo eventInfo)
@@ -526,6 +527,18 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    public GameObject GetWormGOIfNotVisible()
+    {
+        if(bb.worm != null && bb.worm.isHeadOverground)
+        {
+            if(!rsc.camerasMng.IsObjectVisible(bb.worm.gameObject))
+            {
+                return bb.worm.gameObject;
+            }
+        }
+
+        return null;
+    }
 
     void CreateAIActionLists()
     {

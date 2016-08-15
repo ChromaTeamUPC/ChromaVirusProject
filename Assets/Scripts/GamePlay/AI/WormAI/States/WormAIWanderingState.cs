@@ -91,6 +91,7 @@ public class WormAIWanderingState : WormAIBaseState
                     HexagonController hexagon = route.wayPoints[WPIndex].GetComponent<HexagonController>();
                     hexagon.WormEnterExit();
 
+                    bb.isHeadOverground = true;
                     subState = SubState.ENTERING;
                 }
                 break;
@@ -210,6 +211,7 @@ public class WormAIWanderingState : WormAIBaseState
                 {
                     SetUndergroundDirection();
 
+                    bb.isHeadOverground = false;
                     subState = SubState.WAITING_FOR_TAIL;
                 }
 

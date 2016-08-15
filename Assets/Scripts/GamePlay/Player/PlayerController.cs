@@ -124,6 +124,8 @@ public class PlayerController : MonoBehaviour
     private GameObject laserAim;
     [SerializeField]
     private GameObject ui;
+    [SerializeField]
+    private GameObject bossIndicator;
 
 
     private Renderer shieldRend;
@@ -342,13 +344,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        //TEST
         if (bb.controller.GetControl(InputControlType.Back).IsPressed)
             rsc.rumbleMng.AddContinousRumble(RumbleType.TEST, 0, weak, strong);
         else
             rsc.rumbleMng.RemoveContinousRumble(RumbleType.TEST);
+        //END TEST
 
         if (bb.active && bb.alive)
         {
+            //Glow if max energy
             if (bb.currentEnergy == maxEnergy)
             {
                 currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 6.666f) + 0.45f; //Values between 0.3 and 0.6
@@ -378,6 +383,19 @@ public class PlayerController : MonoBehaviour
 
             if(gameObject.activeSelf) //Check to avoid a warning trying to update CharacterController if we just died and deactivated gameObject
                 UpdatePosition();
+
+            //Show arrow to boss if needed
+            GameObject worm = rsc.enemyMng.GetWormGOIfNotVisible();
+            if (worm != null)
+            {
+                bossIndicator.SetActive(true);
+                Vector3 wormPos = worm.transform.position;
+                wormPos.y = bossIndicator.transform.position.y;
+
+                bossIndicator.transform.LookAt(wormPos);
+            }
+            else
+                bossIndicator.SetActive(false);
         }
     }  
 

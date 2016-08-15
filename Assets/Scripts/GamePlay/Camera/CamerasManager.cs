@@ -177,4 +177,10 @@ public class CamerasManager : MonoBehaviour {
         result.Normalize();
         return result;
     }
+
+    public bool IsObjectVisible(GameObject gameObject)
+    {
+        Vector3 screenPoint = currentCamera.WorldToViewportPoint(gameObject.transform.position);
+        return screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
+    }
 }

@@ -28,6 +28,8 @@ public class GlobalAIBlackboard
 
     public float timeRemainingToNextDeviceInfect;
 
+    public WormBlackboard worm;
+
 
     public void Init(EnemyManager eMng)
     {
@@ -58,6 +60,8 @@ public class GlobalAIBlackboard
         timeRemainingToNextPlayerAttack = 0f;
 
         timeRemainingToNextDeviceInfect = enemyMng.timeBetweenDeviceInfects;
+
+        worm = null;
     }
 
     public void SpiderStartsAttacking()
