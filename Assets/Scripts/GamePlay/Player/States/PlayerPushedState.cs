@@ -14,6 +14,7 @@ public class PlayerPushedState : PlayerBaseState
         Debug.Log("Entering player pushed state");
 
         startingY = bb.player.transform.position.y;
+        bb.currentGravity = Physics.gravity.y * bb.player.gravityRatioWhenPushed;
 
         Vector3 direction = bb.player.transform.position - bb.infectionOrigin;
         direction.y = 0;
@@ -31,6 +32,7 @@ public class PlayerPushedState : PlayerBaseState
 
     public override void OnStateExit()
     {
+        bb.currentGravity = Physics.gravity.y;
         bb.currentSpeed = bb.player.walkSpeed;
         bb.player.StartTrail();
         bb.player.EnableUI();

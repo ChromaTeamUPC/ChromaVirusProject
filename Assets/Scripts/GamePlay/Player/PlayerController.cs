@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     public int damageOnContact = 5;
     public float speedReductionTimeOnContact = 0.3f;
     public float cooldownTime = 1f;
+    public float gravityRatioWhenPushed = 2f;
 
     [Header("Fast Moving & Dash Settings")]
     public float fastMovingSpeed = 20f;
@@ -422,11 +423,11 @@ public class PlayerController : MonoBehaviour
     {
         if (bb.isGrounded)
         {
-            bb.verticalVelocity = Physics.gravity.y * Time.deltaTime;
+            bb.verticalVelocity = bb.currentGravity * Time.deltaTime;
         }
         else
         {
-            bb.verticalVelocity += Physics.gravity.y * Time.deltaTime;
+            bb.verticalVelocity += bb.currentGravity * Time.deltaTime;
         }
     }
 

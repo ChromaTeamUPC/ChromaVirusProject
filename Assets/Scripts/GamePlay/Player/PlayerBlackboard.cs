@@ -86,6 +86,7 @@ public class PlayerBlackboard
     public bool isContactCooldown;
     public bool updateVerticalPosition;
     public float verticalVelocity;
+    public float currentGravity;
     //public float fastMovementCharge;
 
     //Shoot variables
@@ -201,6 +202,7 @@ public class PlayerBlackboard
         isAffectedByContact = false;
         isContactCooldown = false;
         updateVerticalPosition = true;
+        currentGravity = Physics.gravity.y;
         //fastMovementCharge = 0f;
 
         canShoot = true;
