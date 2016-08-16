@@ -60,7 +60,7 @@ public class HexagonInfectedState : HexagonBaseState
 
     public override HexagonBaseState PlayerStay(PlayerController player)
     {
-        player.ReceiveInfection(hex.infectedCellDamage, hex.transform.position, hex.infectionForces);
+        player.ReceiveInfection(hex.infectedCellDamage);
         return null;
     }
 }

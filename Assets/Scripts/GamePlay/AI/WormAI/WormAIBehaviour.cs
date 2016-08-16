@@ -71,7 +71,7 @@ public class WormAIBehaviour : MonoBehaviour
 
         SetInitialBodyWayPoints();
 
-        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel) });
+        SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel));
 
         headState = HeadSubState.DEACTIVATED;
     }
@@ -81,7 +81,7 @@ public class WormAIBehaviour : MonoBehaviour
         bb.sceneCenter = sceneCenter;
         bb.sceneCenterHexagon = sceneCenter.GetComponent<HexagonController>();
 
-        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel) });
+        SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel));
         rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
         bb.InitBodyParts();
         ChangeState(bb.spawningState);
@@ -121,7 +121,7 @@ public class WormAIBehaviour : MonoBehaviour
     public void ChargeHead()
     {
         bb.headChargeLevel++;
-        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel) });
+        SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel));
 
         if (bb.headChargeLevel >= bb.headChargeMaxLevel)
         {
@@ -135,17 +135,17 @@ public class WormAIBehaviour : MonoBehaviour
     public void DischargeHead()
     {
         bb.headChargeLevel = 0;
-        SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel) });
+        SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel));
         bb.ShuffleBodyParts();
     }
 
-    private void SetMaterial(Material[] materials)
+    private void SetMaterial(Material materials)
     {
         Material[] mats = rend.sharedMaterials;
 
-        if (mats[0] != materials[0])
+        if (mats[1] != materials)
         {
-            mats[0] = materials[0];
+            mats[1] = materials;
             rend.sharedMaterials = mats;
 
             blinkController.InvalidateMaterials();
@@ -169,6 +169,8 @@ public class WormAIBehaviour : MonoBehaviour
 
     public WormAIBaseState ProcessShotImpact(ChromaColor shotColor, float damage, PlayerController player)
     {
+        blinkController.BlinkWhiteOnce();
+
         bb.headCurrentHealth -= damage;
 
         if (bb.headCurrentHealth <= 0)
@@ -185,7 +187,7 @@ public class WormAIBehaviour : MonoBehaviour
             if (bb.wormPhase < bb.wormMaxPhases)
             {
                 bb.StartNewPhase();
-                SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel) });
+                SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel));
                 rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
             }
             //Else worm destroyed
@@ -210,7 +212,7 @@ public class WormAIBehaviour : MonoBehaviour
 
         while (elapsedTime < bb.bodySettingMinTime)
         {
-            SetMaterial(new[] { rsc.coloredObjectsMng.GetWormHeadMaterial(chargeLevel++ % 4) });
+            SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(chargeLevel++ % 4));
 
             yield return new WaitForSeconds(bb.bodySettingChangeTime);
             elapsedTime += bb.bodySettingChangeTime;

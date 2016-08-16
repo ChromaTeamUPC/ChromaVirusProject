@@ -491,6 +491,11 @@ public class PlayerController : MonoBehaviour
         ChangeStateIfNotNull(currentState.InfectionReceived(damage, origin, infectionForces));
     }
 
+    public void ReceiveInfection(float damage)
+    {
+        ChangeStateIfNotNull(currentState.InfectionReceived(damage));
+    }
+
     public void ColorMismatch()
     {
         ChangeStateIfNotNull(currentState.ColorMismatch());       

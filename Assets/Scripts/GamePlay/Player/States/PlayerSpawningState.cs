@@ -25,6 +25,9 @@ public class PlayerSpawningState : PlayerBaseState {
         bb.player.StartTrail();
         bb.player.EnableUI();
 
+        if(!bb.animationEnded)
+            bb.animator.SetTrigger("KeyPressed");
+
         PlayerEventInfo.eventInfo.player = bb.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNED, PlayerEventInfo.eventInfo);
     }
@@ -42,6 +45,7 @@ public class PlayerSpawningState : PlayerBaseState {
         {
             elapsedTime = 0f;
             bb.animator.SetTrigger("LongIdle");
+            bb.animationEnded = false;
         }
 
         return null;

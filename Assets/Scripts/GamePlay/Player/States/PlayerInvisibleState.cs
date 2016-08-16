@@ -35,6 +35,11 @@ public class PlayerInvisibleState : PlayerBaseState {
         return null;
     }
 
+    public override PlayerBaseState InfectionReceived(float damage)
+    {
+        return null;
+    }
+
     public override PlayerBaseState EnemyTouched()
     {
         return null;

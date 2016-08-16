@@ -81,6 +81,11 @@ public class PlayerSpecialState : PlayerBaseState {
         return null;
     }
 
+    public override PlayerBaseState InfectionReceived(float damage)
+    {
+        return null;
+    }
+
     public override PlayerBaseState EnemyTouched()
     {
         //can not take damage during this state

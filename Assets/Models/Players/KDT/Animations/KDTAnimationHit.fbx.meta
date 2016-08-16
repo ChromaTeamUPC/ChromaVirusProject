@@ -101,7 +101,107 @@ ModelImporter:
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Hit
+      takeName: Hit
+      firstFrame: 427
+      lastFrame: 435
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: ikHandle2
+        weight: 1
+      - path: ikHandle4
+        weight: 1
+      - path: KDT
+        weight: 1
+      - path: Pantxa
+        weight: 1
+      - path: Pantxa/Cos
+        weight: 1
+      - path: Pantxa/Cos/Pit
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta/DitGordoDreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta/DitGordoDreta/DitGordo2Dreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta/DitGordoDreta/DitGordo2Dreta/DitGordo3Dreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta/DitGordoDreta/DitGordo2Dreta/DitGordo3Dreta/DitGordo4Dreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta/DitsDreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta/DitsDreta/Dits2Dreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Dreta/ColseDreta/MaDreta/DitsDreta/Dits2Dreta/Dits3Dreta"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra/DitGordoEsquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra/DitGordoEsquerra/DitGordo2Esquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra/DitGordoEsquerra/DitGordo2Esquerra/DitGordo3Esquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra/DitGordoEsquerra/DitGordo2Esquerra/DitGordo3Esquerra/DitGordo4Esquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra/DitsEsquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra/DitsEsquerra/Dits2Esquerra"
+        weight: 1
+      - path: "Pantxa/Cos/Pit/Bra\xE7Esquerra/ColseEsquerra/MaEsquerra/DitsEsquerra/Dits2Esquerra/Dits3Esquerra"
+        weight: 1
+      - path: Pantxa/Cos/Pit/Cap
+        weight: 1
+      - path: Pantxa/Cos/Pit/Cap/Auriculars
+        weight: 1
+      - path: Pantxa/Pelvis
+        weight: 1
+      - path: Pantxa/Pelvis/CamaDreta
+        weight: 1
+      - path: Pantxa/Pelvis/CamaDreta/GenollDreta
+        weight: 1
+      - path: Pantxa/Pelvis/CamaDreta/GenollDreta/PeuDreta
+        weight: 1
+      - path: Pantxa/Pelvis/CamaEsquerra
+        weight: 1
+      - path: Pantxa/Pelvis/CamaEsquerra/GenollEsquerra
+        weight: 1
+      - path: Pantxa/Pelvis/CamaEsquerra/GenollEsquerra/PeuEsquerra
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 420
     isReadable: 1
   meshes:
     lODScreenPercentages: []

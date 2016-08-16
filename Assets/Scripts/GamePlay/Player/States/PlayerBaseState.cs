@@ -441,6 +441,16 @@ public class PlayerBaseState
         return result;
     }
 
+    public virtual PlayerBaseState InfectionReceived(float damage)
+    {
+        if (rsc.debugMng.godMode || bb.isInvulnerable) return null;
+
+        PlayerBaseState result = TakeDamage(damage, bb.receivingDamageState, true);
+
+        bb.player.StartCoroutine(HandleInvulnerabilityTime());
+        return result;
+    }
+
     public virtual PlayerBaseState EnemyContactOnInvulnerabilityEnd()
     {
         bb.contactFlag = false;
