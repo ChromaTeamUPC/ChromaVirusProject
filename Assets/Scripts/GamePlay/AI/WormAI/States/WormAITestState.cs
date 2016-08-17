@@ -218,11 +218,11 @@ public class WormAITestState : WormAIBaseState
                 else
                 {
                     //TODO: If some random condition, attack else, new wandering state
-                    if (true)
+                    //if (true)
                         SetInitialState();
-                    else
+                    //else
                         //return blackboard.belowAttackState;
-                        SetInitialState();
+                        //SetInitialState();
                 }
 
 

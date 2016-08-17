@@ -143,6 +143,19 @@ public class WormAIWanderingState : WormAIBaseState
                 break;
 
             case SubState.FOLLOWING_PATH:
+
+                if(bb.worm.CheckPlayerInSight()) 
+                {
+                    bb.aboveAttackCurrentExposureTime += Time.deltaTime;
+                    //Debug.Log("Player in sight: " + bb.aboveAttackCurrentExposureTime);
+                }
+
+                if(bb.aboveAttackCurrentExposureTime >= bb.aboveAttackExposureTimeNeeded &&
+                    bb.aboveAttackCurrentCooldownTime <= 0f)
+                {
+                    return bb.aboveAttackState;
+                }
+
                 if (!bb.agent.hasPath || (bb.agent.hasPath && bb.agent.remainingDistance <= 0.25))
                 {
                     if (WPIndex == route.wayPoints.Length - 2)
@@ -225,11 +238,11 @@ public class WormAIWanderingState : WormAIBaseState
                 }
                 else
                 {
-                    //TODO: If some random condition, attack else, new wandering state
-                    /*if (Random.Range(0f, 1f) > 0.5f)
-                        SetInitialState();
-                    else*/
+                    //If some random condition attack, else new wandering state
+                    if (Random.Range(0f, 1f) <= bb.chancesOfBelowAttackAfterWandering / 100)
                         return bb.belowAttackState;
+                    else
+                        SetInitialState();
                 }
 
                 break;

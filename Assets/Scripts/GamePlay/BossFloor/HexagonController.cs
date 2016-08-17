@@ -24,7 +24,7 @@ public class HexagonController : MonoBehaviour
     public HexagonMovingState movingState;
     public HexagonEnterExitState enterExitState;
     public HexagonInfectedState infectedState;
-    public HexagonBelowAttackWarningState belowAttackWarningState;
+    public HexagonWarningState warningState;
     public HexagonBelowAttackState belowAttackState;
     public HexagonBelowAttackAdjacentState belowAttackAdjacentState;
     public HexagonBelowAttackWallState belowAttackWallState;
@@ -46,8 +46,8 @@ public class HexagonController : MonoBehaviour
     public float movementSpeed = 5f;
     public float earthquakeMinHeight = 1f;
     public float earthquakeMaxHeight = 2f;
-    public float earthquakeUpDuration = 0.2f;
-    public float earthquakeDownDuration = 0.5f;
+    public float earthquakeUpSpeed = 6.5f;
+    public float earthquakeDownSpeed = 4;
 
     [HideInInspector]
     public bool isMoving;
@@ -56,7 +56,7 @@ public class HexagonController : MonoBehaviour
 
     [Header("Notification Settings")]
     public float enterExitBlinkInterval = 0.1f;
-    public float belowAttackWarnInterval = 0.2f;
+    public float warningBlinkInterval = 0.2f;
     public float belowAttackBlinkInterval = 0.1f;
     public float aboveAttackBlinkInterval = 0.1f;
 
@@ -85,7 +85,7 @@ public class HexagonController : MonoBehaviour
     [Header("Materials")]
     public Material planeTransparentMat;
     public Material planeInfectedMaterial;
-    public Material planeBelowAttackWarningMat;
+    public Material planeWarningMat;
 
     [Header("Fx's")]
     public GameObject buffPurpleGO;
@@ -119,7 +119,7 @@ public class HexagonController : MonoBehaviour
         movingState = new HexagonMovingState(this);
         enterExitState = new HexagonEnterExitState(this);
         infectedState = new HexagonInfectedState(this);
-        belowAttackWarningState = new HexagonBelowAttackWarningState(this);
+        warningState = new HexagonWarningState(this);
         belowAttackState = new HexagonBelowAttackState(this);
         belowAttackAdjacentState = new HexagonBelowAttackAdjacentState(this);
         belowAttackWallState = new HexagonBelowAttackWallState(this);
@@ -270,7 +270,7 @@ public class HexagonController : MonoBehaviour
 
         RaiseWallRing();     
 
-        ChangeState(belowAttackWarningState);
+        ChangeState(warningState);
     }
 
     private void SetWormBelowAttackAdjacentWarning(HexagonController adjacent)
@@ -281,7 +281,7 @@ public class HexagonController : MonoBehaviour
 
     private void WormBelowAttackAdjacentWarning()
     {
-        ChangeState(belowAttackWarningState);
+        ChangeState(warningState);
     }
 
     public void WormBelowAttackStart()
@@ -378,6 +378,11 @@ public class HexagonController : MonoBehaviour
     #endregion
 
     #region Above Attack
+    public void WormAboveAttackWarning()
+    {
+        ChangeState(warningState);
+    }
+
     public void WormAboveAttackStart()
     {
         //Set adjacent cells state

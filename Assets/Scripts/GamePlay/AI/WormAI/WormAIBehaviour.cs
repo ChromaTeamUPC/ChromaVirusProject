@@ -90,6 +90,11 @@ public class WormAIBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(bb.aboveAttackCurrentCooldownTime > 0)
+        {
+            bb.aboveAttackCurrentCooldownTime -= Time.deltaTime;
+        }
+
         UpdateBodyMovement();
 
         if (currentState != null)
@@ -129,7 +134,7 @@ public class WormAIBehaviour : MonoBehaviour
             headState = HeadSubState.ACTIVATED;
         }
 
-        rsc.colorMng.PrintColors();
+        //rsc.colorMng.PrintColors();
     }
 
     public void DischargeHead()
@@ -219,6 +224,7 @@ public class WormAIBehaviour : MonoBehaviour
         }
 
         voxelization.SpawnFakeVoxels();
+        bb.headModel.SetActive(false);
 
         yield return new WaitForSeconds(2f);
 
@@ -251,6 +257,54 @@ public class WormAIBehaviour : MonoBehaviour
     {
         if (currentState != null)
             currentState.PlayerTouched(player, origin);
+    }
+
+    public bool CheckPlayerInSight()
+    {
+        Vector3 forward = transform.forward;
+        forward.y = 0;
+
+        //Check player 1
+        GameObject player = rsc.enemyMng.GetPlayerIfActive(1);
+
+        if(player != null)
+        {
+            Vector3 wormPlayer = player.transform.position - transform.position;
+            wormPlayer.y = 0;
+
+            //Check distance
+            float distance = wormPlayer.magnitude;
+            if (distance >= bb.aboveAttackExposureMinHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS
+                && distance <= bb.aboveAttackExposureMaxHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS)
+            {
+                //Check angle
+                float angle = Vector3.Angle(forward, wormPlayer);
+                if (angle <= bb.aboveAttackExposureMaxAngle)
+                    return true;
+            }
+        }
+
+        //Check player 2
+        player = rsc.enemyMng.GetPlayerIfActive(2);
+
+        if (player != null)
+        {
+            Vector3 wormPlayer = player.transform.position - transform.position;
+            wormPlayer.y = 0;
+
+            //Check distance
+            float distance = wormPlayer.magnitude;
+            if (distance >= bb.aboveAttackExposureMinHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS
+                && distance <= bb.aboveAttackExposureMaxHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS)
+            {
+                //Check angle
+                float angle = Vector3.Angle(forward, wormPlayer);
+                if (angle <= bb.aboveAttackExposureMaxAngle)
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     //Body movement functions

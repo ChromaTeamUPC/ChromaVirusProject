@@ -11,7 +11,7 @@ public class HexagonBelowAttackWallState : HexagonBaseState
     }
 
     private SubState subState;
-    private float currentMovement;
+    private float totalHeight;
 
     public HexagonBelowAttackWallState(HexagonController hex) : base(hex) { }
 
@@ -20,7 +20,7 @@ public class HexagonBelowAttackWallState : HexagonBaseState
         base.OnStateEnter();
 
         subState = SubState.GOING_UP;
-        currentMovement = 0f;
+        totalHeight = hex.geometryOriginalY + hex.wallHeight;
     }
 
     public override void OnStateExit()
@@ -37,15 +37,14 @@ public class HexagonBelowAttackWallState : HexagonBaseState
         switch (subState)
         {
             case SubState.GOING_UP:
-                if(currentMovement < hex.wallHeight)
+                if(hex.geometryOffset.transform.position.y < totalHeight)
                 {
                     float displacement = Time.deltaTime * hex.wallSpeed;
                     hex.geometryOffset.transform.position += new Vector3(0f, displacement, 0f);
-                    currentMovement += displacement;
                 }
                 else
                 {
-                    hex.geometryOffset.transform.position += new Vector3(0f, hex.geometryOriginalY + hex.wallHeight, 0f);
+                    hex.geometryOffset.transform.position += new Vector3(0f, totalHeight, 0f);
 
                     subState = SubState.IDLE;
                 }

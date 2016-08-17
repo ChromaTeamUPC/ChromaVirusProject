@@ -499,6 +499,26 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    public GameObject GetPlayerIfActive(int playerNumber)
+    {
+        switch (playerNumber)
+        {
+            case 1:
+                if (rsc.gameInfo.player1Controller.Alive)
+                    return rsc.gameInfo.player1;
+                else
+                    return null;
+
+            case 2:
+                if (rsc.gameInfo.player2Controller.Alive)
+                    return rsc.gameInfo.player2;
+                else
+                    return null;
+        }
+
+        return null;
+    }
+
     public float MinDistanceToPlayer(GameObject origin)
     {
         if (rsc.gameInfo.numberOfPlayers == 1)

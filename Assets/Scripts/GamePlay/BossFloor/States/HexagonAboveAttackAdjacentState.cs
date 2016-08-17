@@ -29,9 +29,7 @@ public class HexagonAboveAttackAdjacentState : HexagonBaseState
 
         totalMovement = upMovement;
         currentMovement = 0f;
-        //speed = totalMovement / hex.earthquakeUpDuration;
-        speed = 6.5f;
-        Debug.Log("Up speed: " + speed);
+        speed = hex.earthquakeUpSpeed;
 
         hex.buffPurpleGO.SetActive(true);
     }
@@ -56,9 +54,7 @@ public class HexagonAboveAttackAdjacentState : HexagonBaseState
                 {
                     totalMovement = upMovement + downMovement;
                     currentMovement = 0;
-                    //speed = totalMovement / hex.earthquakeDownDuration;
-                    speed = 4;
-                    Debug.Log("Down speed: " + speed);
+                    speed = hex.earthquakeDownSpeed;
                     subState = SubState.DOWN;
                 }
                 break;

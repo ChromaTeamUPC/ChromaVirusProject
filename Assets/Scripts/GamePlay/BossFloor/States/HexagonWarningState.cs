@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HexagonBelowAttackWarningState : HexagonBaseState
+public class HexagonWarningState : HexagonBaseState
 {
-    public HexagonBelowAttackWarningState(HexagonController hex) : base(hex) { }
+    public HexagonWarningState(HexagonController hex) : base(hex) { }
 
     public override void OnStateEnter()
     {
         base.OnStateEnter();
 
-        hex.SetPlaneMaterial(hex.planeBelowAttackWarningMat);
+        hex.SetPlaneMaterial(hex.planeWarningMat);
 
-        hex.planeBlinkController.BlinkTransparentNoStop(hex.belowAttackWarnInterval, hex.belowAttackWarnInterval);
+        hex.planeBlinkController.BlinkTransparentNoStop(hex.warningBlinkInterval, hex.warningBlinkInterval);
     }
 
     public override void OnStateExit()

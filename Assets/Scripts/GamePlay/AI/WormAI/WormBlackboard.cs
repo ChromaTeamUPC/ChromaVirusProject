@@ -28,6 +28,7 @@ public class WormBlackboard : MonoBehaviour
     public WormAISpawningState spawningState;
     public WormAIWanderingState wanderingState;
     public WormAIBelowAttackState belowAttackState;
+    public WormAIAboveAttackState aboveAttackState;
     public WormAIDyingState dyingState;
 
     public WormAITestState testState;
@@ -135,14 +136,32 @@ public class WormBlackboard : MonoBehaviour
     public float bodySettingMaxTime = 3f;
     public float bodySettingChangeTime = 0.1f;
 
-    [Header("Attack Settings")]
+    [Header("Contact Settings")]
     public float contactDamage = 12f;
     public Vector2 infectionForces;
+    public float attackRumbleDuration = 1f;
+
+    [Header("Below Attack Settings")]
+    public float chancesOfBelowAttackAfterWandering = 50f;
     public float belowAttackWaitTime = 2f;
     public float belowAttackWarningTime = 0.5f;
-    public float belowAttackRumbleDuration = 1f;
+    [Header("Above Attack Settings")]
+    public float aboveAttackExposureTimeNeeded = 3f;
+    public float aboveAttackExposureMaxAngle = 135f;
+    public float aboveAttackExposureMinHexagons = 2;
+    public float aboveAttackExposureMaxHexagons = 5;
+    public float aboveAttackCooldownTime = 10f;
+    public float aboveAttackWarningTime = 0.5f;
+    public float aboveAttackJumpDuration = 1f;
+    public float aboveAttackSelfRotation = 180f;
+    [HideInInspector]
+    public float aboveAttackCurrentExposureTime;
+    [HideInInspector]
+    public float aboveAttackCurrentCooldownTime;
+
 
     [Header("Misc variables")]
+    public GameObject headModel;
     public GameObject spawnEntry;
     public GameObject spawnExit;
 
@@ -176,6 +195,7 @@ public class WormBlackboard : MonoBehaviour
         spawningState = new WormAISpawningState(this);
         wanderingState = new WormAIWanderingState(this);
         belowAttackState = new WormAIBelowAttackState(this);
+        aboveAttackState = new WormAIAboveAttackState(this);
         dyingState = new WormAIDyingState(this);
 
         testState = new WormAITestState(this);
@@ -189,6 +209,8 @@ public class WormBlackboard : MonoBehaviour
         wormPhase = 0;
         headCurrentHealth = headMaxHealth;
         headChargeLevel = 0;
+        aboveAttackCurrentCooldownTime = aboveAttackCooldownTime;
+        aboveAttackCurrentExposureTime = 0f;
     }
 
     public void StartNewPhase()
@@ -224,7 +246,7 @@ public class WormBlackboard : MonoBehaviour
             randomized[i].ResetColor((ChromaColor)(i % ChromaColorInfo.Count));
         }
 
-        rsc.colorMng.PrintColors();
+        //rsc.colorMng.PrintColors();
     }
 
     public void DisableBodyParts()
@@ -250,7 +272,7 @@ public class WormBlackboard : MonoBehaviour
             randomized[i].Consolidate((ChromaColor)(i % ChromaColorInfo.Count));
         }
 
-        rsc.colorMng.PrintColors();
+        //rsc.colorMng.PrintColors();
     }
 
     public void Explode()
@@ -262,11 +284,13 @@ public class WormBlackboard : MonoBehaviour
     {
         //tail explode
         tail.Explode();
+        Destroy(junctionsTrf[junctionsTrf.Length-1].gameObject);
 
         //bodyparts explode
-        for(int i = bodySegmentControllers.Count -1; i >= 0; --i)
+        for (int i = bodySegmentControllers.Count -1; i >= 0; --i)
         {
             yield return new WaitForSeconds(0.2f);
+            Destroy(junctionsTrf[i].gameObject);
             bodySegmentControllers[i].Explode();
         }
 

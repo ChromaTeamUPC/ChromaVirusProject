@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
     private float currentBrightness;
     private float brightnessSpeed;
     private Color originalBrightnessColor;
-    private float H, S, V;
+    private float H, S;
 
 
     [Header("Fire Settings")]   
@@ -168,6 +168,7 @@ public class PlayerController : MonoBehaviour
             brightnessSpeed = 1;
 
         originalBrightnessColor = bodyBaseMaterial.GetColor("_EmissionColor");
+        float V;
         Color.RGBToHSV(originalBrightnessColor, out H, out S, out V);
         originalBrightnessColor = Color.HSVToRGB(H, S, standardBodyBrightness);
 

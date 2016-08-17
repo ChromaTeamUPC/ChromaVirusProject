@@ -11,7 +11,6 @@ public class PlayerPushedState : PlayerBaseState
         bb.animator.SetTrigger("Hit");
 
         rsc.rumbleMng.Rumble(bb.player.Id, 0.3f, 0.4f, 0.2f, 0.3f);
-        Debug.Log("Entering player pushed state");
 
         startingY = bb.player.transform.position.y;
         bb.currentGravity = Physics.gravity.y * bb.player.gravityRatioWhenPushed;
@@ -37,13 +36,12 @@ public class PlayerPushedState : PlayerBaseState
         bb.player.StartTrail();
         bb.player.EnableUI();
         bb.animator.SetBool("Falling", false);
-        Debug.Log("Exiting player pushed state");
     }
 
     public override PlayerBaseState Update()
     {
-        Debug.Log("H speed:" + bb.currentSpeed);
-        Debug.Log("V Velocity: " + bb.verticalVelocity);
+        //Debug.Log("H speed:" + bb.currentSpeed);
+        //Debug.Log("V Velocity: " + bb.verticalVelocity);
 
         if (bb.verticalVelocity < 0 && (startingY >= bb.player.transform.position.y || bb.isGrounded))
         {

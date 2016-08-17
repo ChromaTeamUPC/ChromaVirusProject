@@ -111,7 +111,7 @@ public class MainCameraController : MonoBehaviour {
     {
         WormEventInfo info = (WormEventInfo)eventInfo;
 
-        shakeDuration = info.wormBb.belowAttackRumbleDuration;
+        shakeDuration = info.wormBb.attackRumbleDuration;
         rsc.rumbleMng.Rumble(0, shakeDuration);
     }
 
