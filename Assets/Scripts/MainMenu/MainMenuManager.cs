@@ -31,10 +31,17 @@ public class MainMenuManager : MonoBehaviour {
     public Button p2Btn;
 
     public GameObject help;
+    private Image helpImg;
+    public Text helpPageNumberTxt;
+    public GameObject backArrow;
+    public GameObject forwardArrow;
     public GameObject playerSelection;
     private AsyncOperation loadResources;
     private bool loadingResources;
     private AsyncOperation loadLevel;
+
+    private int tutorialCurrentIndex;
+    private int tutorialTotalItems;
 
     private int playersNumber = 1;
 
@@ -53,8 +60,11 @@ public class MainMenuManager : MonoBehaviour {
     }
 
     void Start()
-    {
+    {      
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
+        helpImg = help.GetComponent<Image>();
+        tutorialCurrentIndex = 0;
+        tutorialTotalItems = rsc.tutorialMng.GetTotalImages();
         DisableMainButtons();      
         currentState = MainMenuState.FADING_IN;
         fadeScript.StartFadingToClear(Color.black, 1f);
@@ -76,7 +86,21 @@ public class MainMenuManager : MonoBehaviour {
 
             case MainMenuState.SHOW_HELP:
                 //if(Input.GetButtonDown("Back"))
-                if((InputManager.Devices.Count >= 1 && InputManager.Devices[0].Action2.WasPressed)
+                if (InputManager.GetAnyControllerWasLeft()
+                    && tutorialCurrentIndex > 0)
+                {
+                    tutorialCurrentIndex--;
+                    SetHelpImage();
+                }
+
+                if (InputManager.GetAnyControllerWasRight()
+                    && tutorialCurrentIndex < tutorialTotalItems - 1)
+                {
+                    tutorialCurrentIndex++;
+                    SetHelpImage();
+                }
+
+                if ((InputManager.Devices.Count >= 1 && InputManager.Devices[0].Action2.WasPressed)
                     || (InputManager.Devices.Count >= 2 && InputManager.Devices[1].Action2.WasPressed))
                 {
                     help.SetActive(false);
@@ -117,6 +141,19 @@ public class MainMenuManager : MonoBehaviour {
                 break;
         }
     }
+
+    private void SetHelpImage()
+    {
+        Sprite sprite = rsc.tutorialMng.GetImage(tutorialCurrentIndex);
+        if (sprite != null)
+        {
+            backArrow.SetActive(tutorialCurrentIndex == 0? false : true);
+            helpImg.sprite = sprite;
+            helpPageNumberTxt.text = (tutorialCurrentIndex + 1) + "/" + tutorialTotalItems;
+            forwardArrow.SetActive(tutorialCurrentIndex == tutorialTotalItems -1 ? false : true);
+        }
+    }
+
     private void FadeOut()
     {
         fadeScript.StartFadingToColor(2f);
@@ -206,6 +243,9 @@ public class MainMenuManager : MonoBehaviour {
     public void OnClickHelp()
     {
         DisableMainButtons();
+        tutorialCurrentIndex = 0;
+        SetHelpImage();
+
         help.SetActive(true);
         currentState = MainMenuState.SHOW_HELP;
     }

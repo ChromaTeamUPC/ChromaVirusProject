@@ -74,6 +74,11 @@ public class OptionsMenuManager : MonoBehaviour
             vibrationSlider.value = 1;
         else
             vibrationSlider.value = 0;
+
+        if (rsc.tutorialMng.active)
+            tutorialSlider.value = 1;
+        else
+            tutorialSlider.value = 0;
     }
 
     private void SaveValues()
@@ -82,6 +87,11 @@ public class OptionsMenuManager : MonoBehaviour
             rsc.rumbleMng.active = true;
         else
             rsc.rumbleMng.active = false;
+
+        if (tutorialSlider.value == 1)
+            rsc.tutorialMng.active = true;
+        else
+            rsc.tutorialMng.active = false;
     }
 
 

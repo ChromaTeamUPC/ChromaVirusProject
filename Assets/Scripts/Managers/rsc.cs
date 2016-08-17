@@ -9,6 +9,7 @@ public class rsc : MonoBehaviour
     public static DebugManager debugMng;
     public static EventManager eventMng;
     public static InControlManager inputMng;
+    public static TutorialManager tutorialMng;
     public static AudioManager audioMng;
     public static EnemyManager enemyMng;
     public static PoolManager poolMng;
@@ -51,6 +52,8 @@ public class rsc : MonoBehaviour
     private EventManager eventManager;
     [SerializeField]
     private InControlManager inputManager;
+    [SerializeField]
+    private TutorialManager tutorialManager;
     [SerializeField]
     private AudioManager audioManager;
     [SerializeField]
@@ -110,6 +113,12 @@ public class rsc : MonoBehaviour
             {
                 //Debug.Log("Storing Input Manager");
                 inputMng = inputManager;
+            }
+
+            if (tutorialMng == null)
+            {
+                //Debug.Log("Storing Tutorial Manager");
+                tutorialMng = tutorialManager;
             }
 
             if (audioMng == null)
