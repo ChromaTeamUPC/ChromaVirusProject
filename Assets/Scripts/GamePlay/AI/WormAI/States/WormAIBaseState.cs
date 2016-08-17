@@ -51,4 +51,9 @@ public class WormAIBaseState
     {
         player.ReceiveInfection(bb.contactDamage, origin, bb.infectionForces);
     }
+
+    public virtual void UpdateBodyMovement()
+    {
+        bb.worm.UpdateBodyMovement();
+    }
 }

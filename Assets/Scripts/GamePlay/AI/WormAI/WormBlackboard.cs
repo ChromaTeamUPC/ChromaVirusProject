@@ -284,13 +284,15 @@ public class WormBlackboard : MonoBehaviour
     {
         //tail explode
         tail.Explode();
-        Destroy(junctionsTrf[junctionsTrf.Length-1].gameObject);
+        //Destroy(junctionsTrf[junctionsTrf.Length-1].gameObject);
+        junctionsTrf[junctionsTrf.Length - 1].gameObject.SetActive(false);
 
         //bodyparts explode
         for (int i = bodySegmentControllers.Count -1; i >= 0; --i)
         {
             yield return new WaitForSeconds(0.2f);
-            Destroy(junctionsTrf[i].gameObject);
+            //Destroy(junctionsTrf[i].gameObject);
+            junctionsTrf[i].gameObject.SetActive(false);
             bodySegmentControllers[i].Explode();
         }
 

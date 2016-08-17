@@ -31,7 +31,8 @@ public class WormTailController : MonoBehaviour
     public void Explode()
     {
         voxelization.SpawnVoxels();
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     public void SetVisible(bool visible)

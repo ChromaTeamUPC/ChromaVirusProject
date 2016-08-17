@@ -157,7 +157,8 @@ public class WormBodySegmentController : MonoBehaviour
         }
 
         voxelization.SpawnFakeVoxels();
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     public void ImpactedByShot(ChromaColor shotColor, float damage, PlayerController player)

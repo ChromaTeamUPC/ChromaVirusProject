@@ -215,6 +215,7 @@ public class PlayerController : MonoBehaviour
     private void GameReset(EventInfo eventInfo)
     {
         transform.SetParent(null); //To avoid destruction if parented with some scene game object
+        gameObject.SetActive(false);
     }
 
     private void ColorChanged(EventInfo eventInfo)

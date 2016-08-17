@@ -95,10 +95,10 @@ public class WormAIBehaviour : MonoBehaviour
             bb.aboveAttackCurrentCooldownTime -= Time.deltaTime;
         }
 
-        UpdateBodyMovement();
-
         if (currentState != null)
         {
+            currentState.UpdateBodyMovement();
+
             WormAIBaseState newState = currentState.Update();
 
             if (newState != null)
@@ -231,7 +231,8 @@ public class WormAIBehaviour : MonoBehaviour
         LevelEventInfo.eventInfo.levelId = -1;
         rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_CLEARED, LevelEventInfo.eventInfo);
 
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     public void SetVisible(bool visible)
@@ -331,7 +332,7 @@ public class WormAIBehaviour : MonoBehaviour
     }
 
 
-    private void UpdateBodyMovement()
+    public void UpdateBodyMovement()
     {
         //If head has moved, create a new waypoint and recalculate all segments' position
         if ((head.position != headWayPoint.position))

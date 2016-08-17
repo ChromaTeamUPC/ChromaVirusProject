@@ -19,7 +19,7 @@ public class PlayerPushedState : PlayerBaseState
         direction.y = 0;
         direction.Normalize();
         bb.horizontalDirection = direction;
-        Debug.Log(bb.horizontalDirection);
+        //Debug.Log(bb.horizontalDirection);
 
         bb.currentSpeed = bb.infectionForces.x;
         bb.verticalVelocity = bb.infectionForces.y;
