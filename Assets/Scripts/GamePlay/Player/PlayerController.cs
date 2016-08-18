@@ -88,7 +88,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private ParticleSystem electricPS;
     [SerializeField]
-    private ParticleSystem chargePS;
+    private ParticleSystem lifeChargehargePS;
+    [SerializeField]
+    private ParticleSystem energyChargehargePS;
     [SerializeField]
     private ParticleSystem specialPS;
     private AudioSource specialSoundFX;
@@ -277,6 +279,17 @@ public class PlayerController : MonoBehaviour
     public void GoToIdle()
     {
         ChangeState(bb.idleState);
+    }
+
+    public void RechargeLife(bool extraLife, bool heal)
+    {
+        lifeChargehargePS.Play();
+
+        if (extraLife && bb.currentLives < maxLives)
+            bb.currentLives++;
+
+        if (heal)
+            bb.currentHealth = maxHealth;
     }
 
     public void RechargeEnergy(float energy)
@@ -647,6 +660,7 @@ public class PlayerController : MonoBehaviour
         DeactivateShield();
         trail.enabled = false;
         ui.SetActive(false);
+        lifeChargehargePS.Stop();
         electricPS.Play();
     }
 
@@ -680,12 +694,12 @@ public class PlayerController : MonoBehaviour
 
     public void StartSpecialEnergyCharging()
     {
-        chargePS.Play();
+        energyChargehargePS.Play();
     }
 
     public void StopSpecialEnergyCharging()
     {
-        chargePS.Stop();
+        energyChargehargePS.Stop();
     }
 
     public void StartSpecial()

@@ -14,7 +14,7 @@ public class HexagonController : MonoBehaviour
     }
 
     public const float DISTANCE_BETWEEN_HEXAGONS = 7.225f;
-    public static int hexagonLayer = 1 << LayerMask.NameToLayer("Hexagon");
+    public static int hexagonLayer = 0;
 
     private HexagonController[] neighbours = new HexagonController[6];
 
@@ -118,6 +118,9 @@ public class HexagonController : MonoBehaviour
 
     void Awake()
     {
+        if(hexagonLayer == 0)
+            hexagonLayer = 1 << LayerMask.NameToLayer("Hexagon");
+
         idleState = new HexagonIdleState(this);
         movingState = new HexagonMovingState(this);
         enterExitState = new HexagonEnterExitState(this);

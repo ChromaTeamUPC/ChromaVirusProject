@@ -6,6 +6,11 @@ public class ResourceAssurer : MonoBehaviour {
 
     [Range(1,2)]
     public int numberOfPlayers = 1;
+    public bool tutorial = true;
+    [Range(-80,0)]
+    public int musicVol = 0;
+    [Range(-80, 0)]
+    public int fxVol = 0;
 
     private bool resourcesForced;
 
@@ -29,6 +34,9 @@ public class ResourceAssurer : MonoBehaviour {
     {
 	    if(resourcesForced)
         {
+            rsc.tutorialMng.active = tutorial;
+            rsc.audioMng.audioMixer.SetFloat("MusicVolume", musicVol);
+            rsc.audioMng.audioMixer.SetFloat("FxVolume", fxVol);
             rsc.gameMng.InitPlayers(numberOfPlayers);
             rsc.gameMng.SetGameStartedDEBUG();
         }
