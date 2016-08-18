@@ -59,6 +59,8 @@ public class HexagonController : MonoBehaviour
     public float warningBlinkInterval = 0.2f;
     public float belowAttackBlinkInterval = 0.1f;
     public float aboveAttackBlinkInterval = 0.1f;
+    [HideInInspector]
+    public bool mainAttackHexagon;
 
     [Header("Wall Settings")]
     public float wallHeight = 1f;
@@ -85,7 +87,8 @@ public class HexagonController : MonoBehaviour
     [Header("Materials")]
     public Material planeTransparentMat;
     public Material planeInfectedMaterial;
-    public Material planeWarningMat;
+    public Material planeRedWarningMat;
+    public Material planeYellowWarningMat;
 
     [Header("Fx's")]
     public GameObject buffPurpleGO;
@@ -268,8 +271,9 @@ public class HexagonController : MonoBehaviour
             SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.TOP_RIGHT]);
         }
 
-        RaiseWallRing();     
+        RaiseWallRing();
 
+        mainAttackHexagon = true;
         ChangeState(warningState);
     }
 
@@ -281,6 +285,7 @@ public class HexagonController : MonoBehaviour
 
     private void WormBelowAttackAdjacentWarning()
     {
+        mainAttackHexagon = false;
         ChangeState(warningState);
     }
 
@@ -380,6 +385,7 @@ public class HexagonController : MonoBehaviour
     #region Above Attack
     public void WormAboveAttackWarning()
     {
+        mainAttackHexagon = true;
         ChangeState(warningState);
     }
 

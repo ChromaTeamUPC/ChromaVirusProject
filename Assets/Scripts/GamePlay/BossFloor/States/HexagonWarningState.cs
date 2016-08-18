@@ -9,7 +9,13 @@ public class HexagonWarningState : HexagonBaseState
     {
         base.OnStateEnter();
 
-        hex.SetPlaneMaterial(hex.planeWarningMat);
+        if (hex.mainAttackHexagon)
+        {
+            hex.plane.transform.localScale = new Vector3(1.1f, 1f, 1.1f);
+            hex.SetPlaneMaterial(hex.planeRedWarningMat);
+        }
+        else
+            hex.SetPlaneMaterial(hex.planeYellowWarningMat);
 
         hex.planeBlinkController.BlinkTransparentNoStop(hex.warningBlinkInterval, hex.warningBlinkInterval);
     }
@@ -20,6 +26,7 @@ public class HexagonWarningState : HexagonBaseState
 
         hex.planeBlinkController.StopPreviousBlinkings();
 
+        hex.plane.transform.localScale = Vector3.one;
         hex.plane.SetActive(false);
         //hex.SetPlaneMaterial(hex.planeTransparentMat);
     }

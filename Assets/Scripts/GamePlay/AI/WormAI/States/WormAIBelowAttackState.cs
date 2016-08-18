@@ -148,7 +148,7 @@ public class WormAIBelowAttackState : WormAIBaseState
 
             case SubState.JUMPING:
                 //While not again below underground navmesh layer advance
-                currentX += Time.deltaTime * bb.floorSpeed;
+                currentX += Time.deltaTime * bb.belowAttackSpeed;
                 lastPosition = head.position;
                 head.position = bb.GetJumpPositionGivenX(currentX);
 
@@ -186,7 +186,7 @@ public class WormAIBelowAttackState : WormAIBaseState
                 break;
 
             case SubState.EXITING:
-                currentX += Time.deltaTime * bb.floorSpeed;
+                currentX += Time.deltaTime * bb.belowAttackSpeed;
                 lastPosition = head.position;
                 head.position = bb.GetJumpPositionGivenX(currentX);
 

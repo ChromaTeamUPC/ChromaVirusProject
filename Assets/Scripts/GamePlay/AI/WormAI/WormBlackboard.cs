@@ -145,6 +145,8 @@ public class WormBlackboard : MonoBehaviour
     public float chancesOfBelowAttackAfterWandering = 50f;
     public float belowAttackWaitTime = 2f;
     public float belowAttackWarningTime = 0.5f;
+    public float belowAttackSpeed = 10f;
+
     [Header("Above Attack Settings")]
     public float aboveAttackExposureTimeNeeded = 3f;
     public float aboveAttackExposureMaxAngle = 135f;
