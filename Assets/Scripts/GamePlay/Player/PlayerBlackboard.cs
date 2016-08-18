@@ -97,6 +97,7 @@ public class PlayerBlackboard
     public List<EnemyBaseAIBehaviour> enemiesInRange = new List<EnemyBaseAIBehaviour>();
     public List<EnemyShotControllerBase> shotsInRange = new List<EnemyShotControllerBase>();
     public GameObject specialAttackDetector;
+    public bool specialAttackTutorialTriggered;
 
     //Other gameplay variables
     public CapacitorController capacitor;
@@ -182,7 +183,8 @@ public class PlayerBlackboard
     {
         active = false;
         alive = false;
-        currentLives = player.maxLives;       
+        currentLives = player.maxLives;
+        specialAttackTutorialTriggered = false;      
     }
 
     //This variables have to be reset every spawn

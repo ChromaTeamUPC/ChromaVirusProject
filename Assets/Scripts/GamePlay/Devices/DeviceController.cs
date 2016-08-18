@@ -47,6 +47,8 @@ public class DeviceController : MonoBehaviour
 
     private BlinkController blinkController;
 
+    private bool tutorialTriggered;
+
     public float CurrentGlobalInfectionValue { get { return (globalInfectionValue * (currentInfection / 100)); } }
 
     public float CurrentInfectionAmount { get { return currentInfection; } }
@@ -69,6 +71,8 @@ public class DeviceController : MonoBehaviour
             brightnessSpeed = 1 / brightnessCicleDuration;
         else
             brightnessSpeed = 1;
+
+        tutorialTriggered = false;
 
         SetTextColor();
     }
@@ -104,6 +108,13 @@ public class DeviceController : MonoBehaviour
     public void Infect()
     {
         if (!active) return;
+
+        if(!tutorialTriggered)
+        {
+            tutorialTriggered = true;
+            TutorialEventInfo.eventInfo.type = TutorialManager.Type.DEVICE;
+            rsc.eventMng.TriggerEvent(EventManager.EventType.SHOW_TUTORIAL, TutorialEventInfo.eventInfo);
+        }
 
         if (currentInfection < 100f)
         {

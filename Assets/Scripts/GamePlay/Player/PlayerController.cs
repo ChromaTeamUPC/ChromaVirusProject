@@ -283,6 +283,13 @@ public class PlayerController : MonoBehaviour
     {
         if (bb.currentEnergy == bb.player.maxEnergy) return;
 
+        if(!bb.specialAttackTutorialTriggered)
+        {
+            bb.specialAttackTutorialTriggered = true;
+            TutorialEventInfo.eventInfo.type = TutorialManager.Type.SPECIAL_ATTACK;
+            rsc.eventMng.TriggerEvent(EventManager.EventType.SHOW_TUTORIAL, TutorialEventInfo.eventInfo);
+        }
+
         bb.currentEnergy += energy;
         if (bb.currentEnergy > bb.player.maxEnergy)
             bb.currentEnergy = bb.player.maxEnergy;

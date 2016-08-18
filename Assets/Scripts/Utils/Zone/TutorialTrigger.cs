@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ZoneTrigger : MonoBehaviour {
-
-    public int zoneId;
+public class TutorialTrigger : MonoBehaviour 
+{
+    public TutorialManager.Type type;
     public bool triggerOnce = true;
     public bool triggerOnEnter = true;
 
@@ -22,13 +22,12 @@ public class ZoneTrigger : MonoBehaviour {
         {
             if (!triggerOnce || !triggered)
             {
-                ZoneReachedInfo.eventInfo.zoneId = zoneId;
-                ZoneReachedInfo.eventInfo.playerTag = other.tag;
-                rsc.eventMng.TriggerEvent(EventManager.EventType.ZONE_REACHED, ZoneReachedInfo.eventInfo);
+                TutorialEventInfo.eventInfo.type = type;
+                rsc.eventMng.TriggerEvent(EventManager.EventType.SHOW_TUTORIAL, TutorialEventInfo.eventInfo);
             }
 
             triggered = true;
-        }       
+        }
     }
 
     void OnTriggerExit(Collider other)
@@ -39,9 +38,8 @@ public class ZoneTrigger : MonoBehaviour {
         {
             if (!triggerOnce || !triggered)
             {
-                ZoneReachedInfo.eventInfo.zoneId = zoneId;
-                ZoneReachedInfo.eventInfo.playerTag = other.tag;
-                rsc.eventMng.TriggerEvent(EventManager.EventType.ZONE_REACHED, ZoneReachedInfo.eventInfo);
+                TutorialEventInfo.eventInfo.type = type;
+                rsc.eventMng.TriggerEvent(EventManager.EventType.SHOW_TUTORIAL, TutorialEventInfo.eventInfo);
             }
 
             triggered = true;

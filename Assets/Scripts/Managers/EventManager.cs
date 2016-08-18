@@ -94,6 +94,13 @@ public class DeviceEventInfo : EventInfo
     public DeviceController device;
 }
 
+public class TutorialEventInfo : EventInfo
+{
+    public static TutorialEventInfo eventInfo = new TutorialEventInfo();
+
+    public TutorialManager.Type type;
+}
+
 public class CutSceneEventInfo : EventInfo
 {
     public static CutSceneEventInfo eventInfo = new CutSceneEventInfo();
@@ -176,6 +183,11 @@ public class EventManager : MonoBehaviour {
 
         COLOR_WILL_CHANGE,
         COLOR_CHANGED,
+
+        SHOW_TUTORIAL,
+        HIDE_TUTORIAL,
+        TUTORIAL_OPENED,
+        TUTORIAL_CLOSED,
 
         START_CUT_SCENE,
         CAMERA_ANIMATION_ENDED,

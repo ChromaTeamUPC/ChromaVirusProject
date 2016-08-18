@@ -9,7 +9,8 @@ public class GameManager : MonoBehaviour {
     {
         NOT_STARTED,
         STARTED,
-        PAUSED
+        PAUSED,
+        SHOWING_TUTORIAL
     }
 
     private GameState state;
@@ -26,6 +27,7 @@ public class GameManager : MonoBehaviour {
     {
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
+        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
     }
 
     void OnDestroy()
@@ -34,6 +36,7 @@ public class GameManager : MonoBehaviour {
         {
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
             rsc.eventMng.StopListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
+            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
         }
     }
 	
@@ -51,6 +54,10 @@ public class GameManager : MonoBehaviour {
             case GameState.PAUSED:
                 if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Start))
                     Resume();
+                break;
+            case GameState.SHOWING_TUTORIAL:
+                if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action2))
+                    CloseTutorial();
                 break;
             default:
                 break;
@@ -75,6 +82,23 @@ public class GameManager : MonoBehaviour {
         Time.timeScale = 1f;
         rsc.audioMng.ResumeMainMusic();
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESUMED, EventInfo.emptyInfo);
+    }
+
+    public void TutorialOpened(EventInfo eventInfo)
+    {
+        state = GameState.SHOWING_TUTORIAL;
+        Time.timeScale = 0.000000000001f;
+        rsc.audioMng.PauseMainMusic();
+    }
+
+    public void CloseTutorial()
+    {
+        if (state != GameState.SHOWING_TUTORIAL) return;
+
+        state = GameState.STARTED;
+        Time.timeScale = 1f;
+        rsc.audioMng.ResumeMainMusic();
+        rsc.eventMng.TriggerEvent(EventManager.EventType.HIDE_TUTORIAL, EventInfo.emptyInfo);
     }
 
     public void SetGameStartedDEBUG()

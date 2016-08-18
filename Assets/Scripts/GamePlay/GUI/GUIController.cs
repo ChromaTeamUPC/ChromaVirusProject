@@ -85,6 +85,8 @@ public class GUIController : MonoBehaviour
     public Button quitBtn;
     public Button yesBtn;
     public Button noBtn;
+    public GameObject helpGO;
+    public Image helpImg;
     public Text youWinTxt;
     public Text gameOverTxt;
     public Text godModeTxt;
@@ -152,6 +154,8 @@ public class GUIController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
         rsc.eventMng.StartListening(EventManager.EventType.START_CUT_SCENE, StartCutScene);
         rsc.eventMng.StartListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
+        rsc.eventMng.StartListening(EventManager.EventType.SHOW_TUTORIAL, ShowTutorial);
+        rsc.eventMng.StartListening(EventManager.EventType.HIDE_TUTORIAL, HideTutorial);
     }
 
     void OnDestroy()
@@ -172,6 +176,8 @@ public class GUIController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
             rsc.eventMng.StopListening(EventManager.EventType.START_CUT_SCENE, StartCutScene);
             rsc.eventMng.StopListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
+            rsc.eventMng.StopListening(EventManager.EventType.SHOW_TUTORIAL, ShowTutorial);
+            rsc.eventMng.StopListening(EventManager.EventType.HIDE_TUTORIAL, HideTutorial);
         }
     }
 	
@@ -555,5 +561,29 @@ public class GUIController : MonoBehaviour
     private void CameraEnded(EventInfo eventInfo)
     {
         skipHint.SetActive(false);
+    }
+
+    private void ShowTutorial(EventInfo eventInfo)
+    {
+        TutorialEventInfo info = (TutorialEventInfo)eventInfo;
+        TutorialManager.Type type = info.type;
+
+        Sprite sprite = rsc.tutorialMng.GetImageIfNotShown(type);
+
+        if(sprite != null)
+        {
+            helpImg.sprite = sprite;
+            helpGO.SetActive(true);
+            rsc.eventMng.TriggerEvent(EventManager.EventType.TUTORIAL_OPENED, EventInfo.emptyInfo);
+        }
+    }
+
+    private void HideTutorial(EventInfo eventInfo)
+    {
+        if(helpGO.activeSelf)
+        {
+            helpGO.SetActive(false);
+            rsc.eventMng.TriggerEvent(EventManager.EventType.TUTORIAL_CLOSED, EventInfo.emptyInfo);
+        }
     }
 }

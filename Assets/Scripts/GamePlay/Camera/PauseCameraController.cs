@@ -12,7 +12,9 @@ public class PauseCameraController : MonoBehaviour
         blur = GetComponent<BlurOptimized>();
         rsc.eventMng.StartListening(EventManager.EventType.GAME_PAUSED, GamePaused);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESUMED, GameResumed);
-	}
+        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_OPENED, GamePaused);
+        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_CLOSED, GameResumed);
+    }
 
     void OnDestroy()
     {
@@ -20,6 +22,8 @@ public class PauseCameraController : MonoBehaviour
         {
             rsc.eventMng.StopListening(EventManager.EventType.GAME_PAUSED, GamePaused);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESUMED, GameResumed);
+            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_OPENED, GamePaused);
+            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_CLOSED, GameResumed);
         }
     }
 	
