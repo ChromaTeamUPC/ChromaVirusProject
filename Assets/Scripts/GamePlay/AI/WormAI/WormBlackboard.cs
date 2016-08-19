@@ -49,6 +49,20 @@ public class WormBlackboard : MonoBehaviour
 
     [Header("Movement Settings")]
     public float floorSpeed = 10;
+    [HideInInspector]
+    public bool applySinMovement;
+    public float sinLongitude = 12f;
+    public float sinAmplitude = 0.25f;
+    public float sinCycleDuration = 30f;
+    [HideInInspector]
+    public float sinDistanceFactor;
+    [HideInInspector]
+    public float sinTimeFactor;
+    [HideInInspector]
+    public float sinTimeOffset;
+    [HideInInspector]
+    public float sinElapsedTime;
+
     public float undergroundSpeed = 10;
     public float rotationSpeed = 180;
     [HideInInspector]
@@ -121,9 +135,11 @@ public class WormBlackboard : MonoBehaviour
     public WormTailController tail;
     [HideInInspector]
     public bool tailIsUnderground;
+    public Transform junctionsGroupTrf;
     public GameObject junctionPrefab;
     [HideInInspector]
     public Transform[] junctionsTrf;
+    private WormJunctionController[] junctionControllers;
 
     //public float headToSegmentDistance;
     public float headToJunctionDistance;
@@ -188,10 +204,13 @@ public class WormBlackboard : MonoBehaviour
         }
 
         junctionsTrf = new Transform[bodySegmentsTrf.Length + 1];
-        for(int i = 0; i < junctionsTrf.Length; ++i)
+        junctionControllers = new WormJunctionController[bodySegmentsTrf.Length + 1];
+        for (int i = 0; i < junctionsTrf.Length; ++i)
         {
             GameObject junction = Instantiate(junctionPrefab) as GameObject;
+            junction.transform.SetParent(junctionsGroupTrf);
             junctionsTrf[i] = junction.transform;
+            junctionControllers[i] = junction.GetComponent<WormJunctionController>();
         }
 
         spawningState = new WormAISpawningState(this);
@@ -201,6 +220,9 @@ public class WormBlackboard : MonoBehaviour
         dyingState = new WormAIDyingState(this);
 
         testState = new WormAITestState(this);
+
+        sinDistanceFactor = 360 / sinLongitude;
+        sinTimeFactor = 360 / sinCycleDuration;
 
         ResetValues();
     }
@@ -213,6 +235,8 @@ public class WormBlackboard : MonoBehaviour
         headChargeLevel = 0;
         aboveAttackCurrentCooldownTime = aboveAttackCooldownTime;
         aboveAttackCurrentExposureTime = 0f;
+        sinElapsedTime = 0;
+        applySinMovement = false;
     }
 
     public void StartNewPhase()
@@ -275,6 +299,14 @@ public class WormBlackboard : MonoBehaviour
         }
 
         //rsc.colorMng.PrintColors();
+        for(int i = 0; i < bodySegmentControllers.Count; ++i)
+        {
+            if(bodySegmentControllers[i].IsDestroyed())
+            {
+                junctionControllers[i].SetWireframe();
+                junctionControllers[i + 1].SetWireframe();
+            }
+        }
     }
 
     public void Explode()

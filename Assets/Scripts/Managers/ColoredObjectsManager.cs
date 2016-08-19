@@ -34,30 +34,39 @@ public class ColoredObjectsManager : MonoBehaviour
     private Material[] voxelMats = new Material[6];
     private Material currentVoxelMat;
 
-    [Header("Enemies Materials")]
+    [Header("Enemies Materials", order=0)]
+    [Header("Spider Materials", order=1)]
     //Spider Materials
     [SerializeField]
     private Material[] spiderMats = new Material[4];
     private Material currentSpiderMat;
 
+    [Header("Mosquito Materials")]
     //Mosquito Materials
     [SerializeField]
     private Material[] mosquitoMats = new Material[4];
     private Material currentMosquitoMat;
 
+    [Header("Worm Materials", order = 0)]
+    [Header("Worm Head Materials", order = 1)]
     //Worm Materials
     [SerializeField]
     private Material[] wormHeadMats = new Material[4];
+    [Header("Worm Body Materials")]
+    [SerializeField]
+    private Material wormMainBodyWireframeMat;
+    [Header("Worm Body Crystals Materials")]
     [SerializeField]
     private Material wormBodyGreyMat;
     [SerializeField]
     private Material wormBodyWireframeMat;
     [SerializeField]
-    private Material wormMainBodyWireframeMat;
-    [SerializeField]
     private Material[] wormBodyMats = new Material[4];
     [SerializeField]
     private Material[] wormBodyDimMats = new Material[4];
+    [Header("Worm Junction Materials")]
+    [SerializeField]
+    private Material wormJunctionWireframeMat;
 
     [Header("Stage Materials")]
     //Floor Materials
@@ -335,6 +344,11 @@ public class ColoredObjectsManager : MonoBehaviour
     public Material GetWormBodyDimMaterial(ChromaColor color)
     {
         return GetMaterial(wormBodyDimMats, color);
+    }
+
+    public Material GetWormJunctionWireframeMaterial()
+    {
+        return wormJunctionWireframeMat;
     }
 
     //Voxel methods

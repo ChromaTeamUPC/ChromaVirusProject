@@ -331,8 +331,181 @@ public class WormAIBehaviour : MonoBehaviour
         }
     }
 
+    /*public float sinLongitude = 6f;
+public float sinAmplitude = 1f;
+public float sinCycleSpeed = 3f;
+private float sinDistanceFactor;
+private float sinTimeFactor;
+private float sinTimeOffset;
+private float sinElapsedTime;*/
 
     public void UpdateBodyMovement()
+    {
+        bb.sinDistanceFactor = 360 / bb.sinLongitude;
+        bb.sinTimeFactor = 360 / bb.sinCycleDuration;
+
+        //If head has moved, create a new waypoint and recalculate all segments' position
+        if ((head.position != headWayPoint.position))
+        {
+            //Update sin time
+            bb.sinElapsedTime += Time.deltaTime;
+            if (bb.sinElapsedTime >= bb.sinCycleDuration)
+                bb.sinElapsedTime -= bb.sinCycleDuration;
+            bb.sinTimeOffset = bb.sinElapsedTime * bb.sinTimeFactor;          
+
+            headWayPoint = new WormWayPoint(head.position, head.rotation, IsVisible(), headWayPoint);
+
+            WormWayPoint current = headWayPoint;
+            WormWayPoint next = current.next;
+            //if we are in the last waypoint, there is nothing more we can do, so we quit
+            if (next == null) return;
+
+            float totalDistance = bb.headToJunctionDistance;                            //Total distance we have to position the element from the head
+            float consolidatedDistance = 0f;                                        //Sum of the distances of evaluated waypoints
+            float distanceBetween = (current.position - next.position).magnitude;   //Distance between current current and next waypoints
+
+            float effectiveDistance;
+            if (bb.applySinMovement)
+                effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * bb.sinDistanceFactor) + bb.sinTimeOffset) * bb.sinAmplitude);
+            else
+                effectiveDistance = totalDistance;
+
+            //move each body segment through the virtual line
+            for (int i = 0; i < bodySegments.Length; ++i)
+            {
+                //---- Junction ----
+                //advance through waypoints until we find the proper distance
+                while (consolidatedDistance + distanceBetween < effectiveDistance)
+                {
+                    consolidatedDistance += distanceBetween;
+
+                    current = next;
+                    next = current.next;
+                    //if we are in the last waypoint, there is nothing more we can do, so we quit
+                    if (next == null) return;
+
+                    distanceBetween = (current.position - next.position).magnitude;
+                }
+
+                //We reached the line segment where this body part must be, so we calculate the point in current segment
+                float remainingDistance = effectiveDistance - consolidatedDistance;
+                Vector3 direction = (next.position - current.position).normalized * remainingDistance;
+
+                junctions[i].position = current.position + direction;
+                junctions[i].rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
+                junctions[i].gameObject.SetActive(current.visible || next.visible);
+
+                //---- Body ----
+                totalDistance += bb.segmentToJunctionDistance;
+                if (bb.applySinMovement)
+                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * bb.sinDistanceFactor) + bb.sinTimeOffset) * bb.sinAmplitude);
+                else
+                    effectiveDistance = totalDistance;
+
+                //advance through waypoints until we find the proper distance
+                while (consolidatedDistance + distanceBetween < effectiveDistance)
+                {
+                    consolidatedDistance += distanceBetween;
+
+                    current = next;
+                    next = current.next;
+                    //if we are in the last waypoint, there is nothing more we can do, so we quit
+                    if (next == null) return;
+
+                    distanceBetween = (current.position - next.position).magnitude;
+                }
+
+                //We reached the line segment where this body part must be, so we calculate the point in current segment
+                remainingDistance = effectiveDistance - consolidatedDistance;
+                direction = (next.position - current.position).normalized * remainingDistance;
+
+                bodySegments[i].position = current.position + direction;
+                bodySegments[i].rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
+                bb.bodySegmentControllers[i].SetVisible(current.visible || next.visible);
+
+                //if it was the final body part and there is no tail, release the oldest waypoints
+                if (i == bodySegments.Length - 1)
+                {
+                    if (tail == null)
+                        next.next = null; //Remove reference, let garbage collector do its job
+                }
+                //else add total distance for the next iteration
+                else
+                {
+                    totalDistance += bb.segmentToJunctionDistance;
+                    if (bb.applySinMovement)
+                        effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * bb.sinDistanceFactor) + bb.sinTimeOffset) * bb.sinAmplitude);
+                    else
+                        effectiveDistance = totalDistance;
+                }
+            }
+
+            //finally do the same for the tail
+            if (tail != null)
+            {
+                //---- Junction ----
+                totalDistance += bb.segmentToJunctionDistance;
+                if (bb.applySinMovement)
+                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * bb.sinDistanceFactor) + bb.sinTimeOffset) * bb.sinAmplitude);
+                else
+                    effectiveDistance = totalDistance;
+
+                //advance through waypoints until we find the proper distance
+                while (consolidatedDistance + distanceBetween < effectiveDistance)
+                {
+                    consolidatedDistance += distanceBetween;
+
+                    current = next;
+                    next = current.next;
+                    //if we are in the last waypoint, there is nothing more we can do, so we quit
+                    if (next == null) return;
+
+                    distanceBetween = (current.position - next.position).magnitude;
+                }
+
+                //We reached the line segment where this body part must be, so we calculate the point in current segment
+                float remainingDistance = effectiveDistance - consolidatedDistance;
+                Vector3 direction = (next.position - current.position).normalized * remainingDistance;
+
+                junctions[junctions.Length - 1].position = current.position + direction;
+                junctions[junctions.Length - 1].rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
+                junctions[junctions.Length - 1].gameObject.SetActive(current.visible || next.visible);
+
+                //---- Tail ----
+                totalDistance += bb.tailToJunctionDistance;
+                if (bb.applySinMovement)
+                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * bb.sinDistanceFactor) + bb.sinTimeOffset) * bb.sinAmplitude);
+                else
+                    effectiveDistance = totalDistance;
+
+                //advance through waypoints until we find the proper distance
+                while (consolidatedDistance + distanceBetween < effectiveDistance)
+                {
+                    consolidatedDistance += distanceBetween;
+
+                    current = next;
+                    next = current.next;
+                    //if we are in the last waypoint, there is nothing more we can do, so we quit
+                    if (next == null) return;
+
+                    distanceBetween = (current.position - next.position).magnitude;
+                }
+
+                //We reached the line segment where this body part must be, so we calculate the point in current segment
+                remainingDistance = effectiveDistance - consolidatedDistance;
+                direction = (next.position - current.position).normalized * remainingDistance;
+
+                tail.position = current.position + direction;
+                tail.rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
+                bb.tail.SetVisible(current.visible || next.visible);
+
+                //release the oldest waypoints
+                next.next = null; //Remove reference, let garbage collector do its job
+            }
+        }
+    }
+
+    public void UpdateBodyMovementOld()
     {
         //If head has moved, create a new waypoint and recalculate all segments' position
         if ((head.position != headWayPoint.position))

@@ -61,6 +61,11 @@ public class WormBodySegmentController : MonoBehaviour
         state = State.NORMAL;
     }
 
+    public bool IsDestroyed()
+    {
+        return state == State.DESTROYED;
+    }
+
     public void ResetColor(ChromaColor color)
     {
         if (state == State.DESTROYED) return;

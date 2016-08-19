@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour {
     {
         state = GameState.SHOWING_TUTORIAL;
         Time.timeScale = 0.000000000001f;
-        rsc.audioMng.PauseMainMusic();
+        //rsc.audioMng.PauseMainMusic();
     }
 
     public void CloseTutorial()
@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour {
 
         state = GameState.STARTED;
         Time.timeScale = 1f;
-        rsc.audioMng.ResumeMainMusic();
+        //rsc.audioMng.ResumeMainMusic();
         rsc.eventMng.TriggerEvent(EventManager.EventType.HIDE_TUTORIAL, EventInfo.emptyInfo);
     }
 

@@ -92,6 +92,7 @@ public class WormAIWanderingState : WormAIBaseState
                     hexagon.WormEnterExit();
 
                     bb.isHeadOverground = true;
+                    bb.applySinMovement = true;
                     subState = SubState.ENTERING;
                 }
                 break;
@@ -238,6 +239,7 @@ public class WormAIWanderingState : WormAIBaseState
                 }
                 else
                 {
+                    bb.applySinMovement = false;
                     //If some random condition attack, else new wandering state
                     if (Random.Range(0f, 1f) <= bb.chancesOfBelowAttackAfterWandering / 100)
                         return bb.belowAttackState;
