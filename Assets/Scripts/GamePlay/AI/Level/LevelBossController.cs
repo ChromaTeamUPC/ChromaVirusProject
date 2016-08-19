@@ -12,16 +12,16 @@ public class LevelBossController : MonoBehaviour
     public BossFloorController floor;
 
     public GameObject sceneCenter;
-    private HexagonController sceneCenterHexagon;
+    //private HexagonController sceneCenterHexagon;
 
-    public WormAIBehaviour worm;
+    public WormBlackboard worm;
 
     [SerializeField]
     private FadeSceneScript fadeScript;
 
     void Awake()
     {
-        sceneCenterHexagon = sceneCenter.GetComponent<HexagonController>();
+        //sceneCenterHexagon = sceneCenter.GetComponent<HexagonController>();
     }
 
     // Use this for initialization

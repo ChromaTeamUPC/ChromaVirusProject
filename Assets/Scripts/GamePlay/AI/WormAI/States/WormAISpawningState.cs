@@ -33,11 +33,9 @@ public class WormAISpawningState : WormAIBaseState
         origin = bb.spawnEntry.GetComponent<HexagonController>();
         destiny = bb.spawnExit.GetComponent<HexagonController>();
 
-        bb.jumpOrigin = bb.spawnEntry.transform.position;
-        bb.jumpDestiny = bb.spawnExit.transform.position;
-        bb.CalculateParabola();
+        bb.CalculateParabola(bb.spawnEntry.transform.position, bb.spawnExit.transform.position);
 
-        bb.agent.enabled = false;
+        bb.head.agent.enabled = false;
 
         rotation = 0f;
         highestPointReached = false;
@@ -56,9 +54,9 @@ public class WormAISpawningState : WormAIBaseState
                 //Position head below entry point
                 currentX = bb.GetJumpXGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false);
                 Vector3 startPosition = bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false);
-                head.position = startPosition;
+                headTrf.position = startPosition;
                 lastPosition = startPosition;
-                bb.worm.SetVisible(true);
+                bb.head.SetVisible(true);
              
                 origin.WormEnterExit();
 
@@ -67,28 +65,28 @@ public class WormAISpawningState : WormAIBaseState
 
             case SubState.JUMPING:
                 //While not again below underground navmesh layer advance
-                currentX += Time.deltaTime * bb.floorSpeed;
-                lastPosition = head.position;
-                head.position = bb.GetJumpPositionGivenX(currentX);
+                currentX += Time.deltaTime * bb.wanderingSpeed;
+                lastPosition = headTrf.position;
+                headTrf.position = bb.GetJumpPositionGivenX(currentX);
 
-                head.LookAt(head.position + (head.position - lastPosition), head.up);
+                headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition), headTrf.up);
 
-                if( lastPosition.y > head.position.y && rotation < 90f)
+                if( lastPosition.y > headTrf.position.y && rotation < 90f)
                 {
                     if(!highestPointReached)
                     {
-                        bb.StartNewPhase();
+                        bb.head.StartNewPhase();
                         highestPointReached = true;
                     }
 
                     float angle = 30 * Time.deltaTime;
-                    head.Rotate(new Vector3(0, 0, angle));
+                    headTrf.Rotate(new Vector3(0, 0, angle));
                     rotation += angle;
                 }
 
                 if (!destinyInRange)
                 {
-                    float distanceToDestiny = (head.position - destiny.transform.position).magnitude;
+                    float distanceToDestiny = (headTrf.position - destiny.transform.position).magnitude;
                     if (distanceToDestiny <= destinyInRangeDistance)
                     {
                         destinyInRange = true;
@@ -97,33 +95,33 @@ public class WormAISpawningState : WormAIBaseState
                     }
                 }
 
-                if (head.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
+                if (headTrf.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {
-                    bb.worm.SetVisible(false);
+                    bb.head.SetVisible(false);
 
                     subState = SubState.EXITING;
                 }
                 break;
 
             case SubState.EXITING:
-                currentX += Time.deltaTime * bb.floorSpeed;
-                lastPosition = head.position;
-                head.position = bb.GetJumpPositionGivenX(currentX);
+                currentX += Time.deltaTime * bb.wanderingSpeed;
+                lastPosition = headTrf.position;
+                headTrf.position = bb.GetJumpPositionGivenX(currentX);
 
-                head.LookAt(head.position + (head.position - lastPosition));
+                headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition));
 
-                if (bb.tailIsUnderground)
+                if (bb.isTailUnderground)
                 {
-                    Vector3 pos = head.position;
+                    Vector3 pos = headTrf.position;
                     pos.y = -WormBlackboard.NAVMESH_LAYER_HEIGHT;
-                    head.position = pos;
+                    headTrf.position = pos;
 
                     /*bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
                     bb.agent.enabled = true;
                     bb.agent.speed = bb.undergroundSpeed;
                     bb.agent.SetDestination(bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false)); //Back to entry in the underground
                     */
-                    return bb.wanderingState;
+                    return bb.head.wanderingState;
                 }
                 break;
 

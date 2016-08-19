@@ -20,7 +20,6 @@ public class WormAIBelowAttackState : WormAIBaseState
     private float currentX;
     private Vector3 lastPosition;
     private float rotation;
-    private bool highestPointReached;
     private float destinyInRangeDistance = 1f;
     private bool destinyInRange;
 
@@ -97,21 +96,18 @@ public class WormAIBelowAttackState : WormAIBaseState
                         {
                             destiny = GetHexagonFacingCenter();
 
-                            bb.jumpOrigin = origin.transform.position;
-                            bb.jumpDestiny = destiny.transform.position;
-                            bb.CalculateParabola();
+                            bb.CalculateParabola(origin.transform.position, destiny.transform.position);
 
-                            bb.agent.enabled = false;
+                            bb.head.agent.enabled = false;
 
                             rotation = 0f;
-                            highestPointReached = false;
                             destinyInRange = false;
                         }
                         else
-                            return bb.wanderingState;
+                            return bb.head.wanderingState;
                     }
                     else
-                        return bb.wanderingState;
+                        return bb.head.wanderingState;
 
                     origin.WormBelowAttackWarning();
 
@@ -130,9 +126,9 @@ public class WormAIBelowAttackState : WormAIBaseState
                     //Position head below entry point
                     currentX = bb.GetJumpXGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false);
                     Vector3 startPosition = bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false);
-                    head.position = startPosition;
+                    headTrf.position = startPosition;
                     lastPosition = startPosition;
-                    bb.worm.SetVisible(true);
+                    bb.head.SetVisible(true);
 
                     origin.WormBelowAttackStart();
                     WormEventInfo.eventInfo.wormBb = bb;
@@ -149,26 +145,18 @@ public class WormAIBelowAttackState : WormAIBaseState
             case SubState.JUMPING:
                 //While not again below underground navmesh layer advance
                 currentX += Time.deltaTime * bb.belowAttackSpeed;
-                lastPosition = head.position;
-                head.position = bb.GetJumpPositionGivenX(currentX);
+                lastPosition = headTrf.position;
+                headTrf.position = bb.GetJumpPositionGivenX(currentX);
 
-                head.LookAt(head.position + (head.position - lastPosition), head.up);
+                headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition), headTrf.up);
 
-                if (lastPosition.y > head.position.y && rotation < 90f)
+                float angle = bb.belowAttackRotationSpeed * Time.deltaTime;
+                headTrf.Rotate(new Vector3(0, 0, angle));
+                rotation += angle;
+
+                if (!destinyInRange)
                 {
-                    if (!highestPointReached)
-                    {
-                        highestPointReached = true;
-                    }
-
-                    float angle = 30 * Time.deltaTime;
-                    head.Rotate(new Vector3(0, 0, angle));
-                    rotation += angle;
-                }
-
-                if(!destinyInRange)
-                {
-                    float distanceToDestiny = (head.position - destiny.transform.position).magnitude;
+                    float distanceToDestiny = (headTrf.position - destiny.transform.position).magnitude;
                     if(distanceToDestiny <= destinyInRangeDistance)
                     {
                         destinyInRange = true;
@@ -176,10 +164,10 @@ public class WormAIBelowAttackState : WormAIBaseState
                     }
                 }
 
-                if (head.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
+                if (headTrf.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {
                     bb.isHeadOverground = false;
-                    bb.worm.SetVisible(false);
+                    bb.head.SetVisible(false);
 
                     subState = SubState.EXITING;
                 }
@@ -187,23 +175,23 @@ public class WormAIBelowAttackState : WormAIBaseState
 
             case SubState.EXITING:
                 currentX += Time.deltaTime * bb.belowAttackSpeed;
-                lastPosition = head.position;
-                head.position = bb.GetJumpPositionGivenX(currentX);
+                lastPosition = headTrf.position;
+                headTrf.position = bb.GetJumpPositionGivenX(currentX);
 
-                head.LookAt(head.position + (head.position - lastPosition));
+                headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition));
 
-                if (bb.tailIsUnderground)
+                if (bb.isTailUnderground)
                 {
-                    Vector3 pos = head.position;
+                    Vector3 pos = headTrf.position;
                     pos.y = -WormBlackboard.NAVMESH_LAYER_HEIGHT;
-                    head.position = pos;
+                    headTrf.position = pos;
 
                     /*bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
                     bb.agent.enabled = true;
                     bb.agent.speed = bb.undergroundSpeed;
                     bb.agent.SetDestination(bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false)); //Back to entry in the underground
                     */
-                    return bb.wanderingState;
+                    return bb.head.wanderingState;
                 }
                 break;
 

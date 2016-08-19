@@ -20,7 +20,7 @@ public class WormTailController : MonoBehaviour
     void Update()
     {
         if(bb!= null)
-            bb.tailIsUnderground = (trf.position.y < 0 - tailHeight);
+            bb.isTailUnderground = (trf.position.y < 0 - tailHeight);
     }
 
     public void SetBlackboard(WormBlackboard bb)
@@ -45,7 +45,7 @@ public class WormTailController : MonoBehaviour
         if (other.tag == "Player1" || other.tag == "Player2")
         {
             PlayerController player = other.GetComponent<PlayerController>();
-            bb.worm.PlayerTouched(player, transform.position);
+            bb.head.PlayerTouched(player, transform.position);
         }
     }
 }

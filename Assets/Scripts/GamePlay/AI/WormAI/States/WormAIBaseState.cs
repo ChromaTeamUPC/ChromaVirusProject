@@ -5,13 +5,13 @@ public class WormAIBaseState
 {
     public WormBlackboard bb;
 
-    protected Transform head; //Shortcut
+    protected Transform headTrf; //Shortcut
     private Vector3 undergroundDirection;
 
     public WormAIBaseState(WormBlackboard bb)
     {
         this.bb = bb;
-        head = bb.headTrf.transform;
+        headTrf = bb.headTrf.transform;
     }
 
     virtual public void Init() { }
@@ -27,24 +27,24 @@ public class WormAIBaseState
 
     public virtual WormAIBaseState ImpactedByShot(ChromaColor shotColor, float damage, PlayerController player)
     {
-        return bb.worm.ProcessShotImpact(shotColor, damage, player);
+        return bb.head.ProcessShotImpact(shotColor, damage, player);
     }
 
     protected void SetUndergroundDirection()
     {
-        bb.worm.SetVisible(false);
+        bb.head.SetVisible(false);
 
         //Set direction to scene center
-        undergroundDirection = bb.sceneCenter.transform.position - head.position;
+        undergroundDirection = bb.sceneCenter.transform.position - headTrf.position;
         undergroundDirection.y = 0;
         undergroundDirection.Normalize();
 
-        head.LookAt(head.position + undergroundDirection, Vector3.up);
+        headTrf.LookAt(headTrf.position + undergroundDirection, Vector3.up);
     }
 
     protected void MoveUndergroundDirection()
     {
-        head.position = head.position + (undergroundDirection * bb.undergroundSpeed * Time.deltaTime);
+        headTrf.position = headTrf.position + (undergroundDirection * bb.undergroundSpeed * Time.deltaTime);
     }
 
     public virtual void PlayerTouched(PlayerController player, Vector3 origin)
@@ -54,6 +54,6 @@ public class WormAIBaseState
 
     public virtual void UpdateBodyMovement()
     {
-        bb.worm.UpdateBodyMovement();
+        bb.UpdateBodyMovement();
     }
 }

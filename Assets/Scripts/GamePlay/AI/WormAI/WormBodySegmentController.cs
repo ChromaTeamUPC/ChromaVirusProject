@@ -19,13 +19,20 @@ public class WormBodySegmentController : MonoBehaviour
     [SerializeField]
     private ChromaColor color;
 
+    [Header("Fx")]
+    public GameObject[] bodyDeactivatePrefabs;
+    public GameObject bodyDestructionPrefab;
+
+    private ParticleSystem[] bodyDeactivate;
+    private ParticleSystem bodyDestruction;
+
     private BlinkController blinkController;
     private Renderer rend;
     private BoxCollider col;
     private VoxelizationClient voxelization;
 
     private WormBlackboard bb;
-    private WormAIBehaviour worm; //Shortcut
+    private WormAIBehaviour head; //Shortcut
 
     void Awake()
     {
@@ -34,6 +41,24 @@ public class WormBodySegmentController : MonoBehaviour
         col = GetComponent<BoxCollider>();
         voxelization = GetComponentInChildren<VoxelizationClient>();
         state = State.NORMAL;
+
+        bodyDeactivate = new ParticleSystem[bodyDeactivatePrefabs.Length];
+
+        Transform fx = transform.FindDeepChild("FX");
+
+        GameObject temp;
+        for (int i = 0; i < bodyDeactivatePrefabs.Length; ++i)
+        {
+            temp = Instantiate(bodyDeactivatePrefabs[i]);
+            temp.transform.SetParent(fx);
+            temp.transform.localPosition = Vector3.zero;
+            bodyDeactivate[i] = temp.GetComponent<ParticleSystem>();
+        }
+
+        temp = Instantiate(bodyDestructionPrefab);
+        temp.transform.SetParent(fx);
+        temp.transform.localPosition = Vector3.zero;
+        bodyDestruction = temp.GetComponent<ParticleSystem>();
     }
 
     void Start()
@@ -44,13 +69,14 @@ public class WormBodySegmentController : MonoBehaviour
     public void SetBlackboard(WormBlackboard bb)
     {
         this.bb = bb;
-        worm = bb.worm;
+        head = bb.head;
         currentHealth = bb.bodyMaxHealth;
         currentHealthWrongColor = bb.bodyMaxHealth;
     }
 
-    public void SetInitialState()
+    public void SetInitialState(ChromaColor c)
     {
+        color = c;
         currentHealth = bb.bodyMaxHealth;
         currentHealthWrongColor = bb.bodyMaxHealth;
         SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(color));
@@ -98,6 +124,7 @@ public class WormBodySegmentController : MonoBehaviour
         if (state == State.DEACTIVATED)
         {
             SetMaterial(rsc.coloredObjectsMng.GetWormBodyWireframeMaterial());
+            bodyDestruction.Play();
             state = State.DESTROYED;
             col.enabled = false;
         }
@@ -119,7 +146,7 @@ public class WormBodySegmentController : MonoBehaviour
 
     private IEnumerator SetRandomColors()
     {
-        float duration = Random.Range(bb.bodySettingMinTime, bb.bodySettingMaxTime);
+        float duration = Random.Range(bb.bodyColorsCarrouselMinTime, bb.bodyColorsCarrouselMaxTime);
 
         float elapsedTime = 0;
 
@@ -127,8 +154,8 @@ public class WormBodySegmentController : MonoBehaviour
         {
             SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(ChromaColorInfo.Random));
 
-            yield return new WaitForSeconds(bb.bodySettingChangeTime);
-            elapsedTime += bb.bodySettingChangeTime;
+            yield return new WaitForSeconds(bb.bodyColorsCarrouselChangeInterval);
+            elapsedTime += bb.bodyColorsCarrouselChangeInterval;
         }
 
         SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(color));
@@ -153,12 +180,12 @@ public class WormBodySegmentController : MonoBehaviour
     {
         float elapsedTime = 0;
 
-        while (elapsedTime < bb.bodySettingMinTime)
+        while (elapsedTime < bb.bodyColorsCarrouselMinTime)
         {
             SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(ChromaColorInfo.Random));
 
-            yield return new WaitForSeconds(bb.bodySettingChangeTime);
-            elapsedTime += bb.bodySettingChangeTime;
+            yield return new WaitForSeconds(bb.bodyColorsCarrouselChangeInterval);
+            elapsedTime += bb.bodyColorsCarrouselChangeInterval;
         }
 
         voxelization.SpawnFakeVoxels();
@@ -186,7 +213,7 @@ public class WormBodySegmentController : MonoBehaviour
                 EnemyDiedEventInfo.eventInfo.killedSameColor = (color == shotColor);
                 rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SECTION_DESTROYED, EnemyDiedEventInfo.eventInfo);
 
-                worm.DischargeHead();
+                head.DischargeHead();
             }
         }
         else
@@ -197,6 +224,7 @@ public class WormBodySegmentController : MonoBehaviour
             {
                 //Set material grey
                 SetMaterial(rsc.coloredObjectsMng.GetWormBodyGreyMaterial());
+                bodyDeactivate[(int)color].Play();
                 state = State.DEACTIVATED;
 
                 //Explosion FX?
@@ -207,7 +235,7 @@ public class WormBodySegmentController : MonoBehaviour
                 EnemyDiedEventInfo.eventInfo.killedSameColor = (color == shotColor);
                 rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SECTION_DESTROYED, EnemyDiedEventInfo.eventInfo);
 
-                worm.ChargeHead();
+                head.ChargeHead();
             }
         }
     }
@@ -257,7 +285,7 @@ public class WormBodySegmentController : MonoBehaviour
         if (other.tag == "Player1" || other.tag == "Player2")
         {
             PlayerController player = other.GetComponent<PlayerController>();
-            bb.worm.PlayerTouched(player, transform.position);
+            bb.head.PlayerTouched(player, transform.position);
         }
     }
 }

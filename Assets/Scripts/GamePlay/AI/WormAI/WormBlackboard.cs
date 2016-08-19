@@ -2,21 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class WormBlackboard : MonoBehaviour
+public class WormBlackboard : MonoBehaviour 
 {
     public const int NAVMESH_FLOOR_LAYER = 32;
     public const int NAVMESH_UNDERGROUND_LAYER = 64;
     public const float NAVMESH_LAYER_HEIGHT = 8f;
 
-    //Non resetable values
-    [HideInInspector]
-    public GameObject wormGO;
-    [HideInInspector]
-    public WormAIBehaviour worm;
-    [HideInInspector]
-    public NavMeshAgent agent;
-    [HideInInspector]
-    public Animator animator;
+    #region Settings
+    [Header("Scene Related Settings")]
     [HideInInspector]
     public Vector3 navMeshLayersDistance;
     [HideInInspector]
@@ -24,34 +17,69 @@ public class WormBlackboard : MonoBehaviour
     [HideInInspector]
     public HexagonController sceneCenterHexagon;
 
+    [Header("Body Construction Settings")]
+    public Vector3 initialPosition;
+    public GameObject bodyPrefab;
+    public GameObject junctionPrefab;
+    public int bodyParts = 12;
+    public float headToJunctionDistance = 3;
+    public float segmentToJunctionDistance = 2;
+    public float tailToJunctionDistance = 1.6f;
+
+    //Head
     [HideInInspector]
-    public WormAISpawningState spawningState;
-    public WormAIWanderingState wanderingState;
-    public WormAIBelowAttackState belowAttackState;
-    public WormAIAboveAttackState aboveAttackState;
-    public WormAIDyingState dyingState;
+    public Transform headTrf;
+    [HideInInspector]
+    public WormAIBehaviour head;
 
-    public WormAITestState testState;
+    //Body parts
+    [HideInInspector]
+    public Transform bodySegmentsGroupTrf;
 
-    //Reseteable values
-    [Header("Health Settings")]
+    [HideInInspector]
+    public Transform[] bodySegmentsTrf;
+    [HideInInspector]
+    public WormBodySegmentController[] bodySegmentControllers;
+
+    //Junctions
+    [HideInInspector]
+    public Transform junctionsGroupTrf;
+
+    [HideInInspector]
+    public Transform[] junctionsTrf;
+    [HideInInspector]
+    public WormJunctionController[] junctionControllers;
+
+    //Tail
+    [HideInInspector]
+    public Transform tailTrf;
+    [HideInInspector]
+    public WormTailController tailController;
+
+    private WormWayPoint headWayPoint;
+
+    [Header("Head Settings")]
     public int wormMaxPhases = 4;
     [HideInInspector]
-    public int wormPhase = 1;
+    public int wormCurrentPhase = 1;
     public float headMaxHealth = 100f;
     [HideInInspector]
     public float headCurrentHealth;
     public int headChargeMaxLevel = 3;
     [HideInInspector]
     public int headChargeLevel;
+
+    [Header("Body Segment Settings")]
     public float bodyMaxHealth = 50;
     public float bodyWrongColorDamageModifier = 0.5f;
+    public float bodyColorsCarrouselMinTime = 1f;
+    public float bodyColorsCarrouselMaxTime = 3f;
+    public float bodyColorsCarrouselChangeInterval = 0.1f;
 
-    [Header("Movement Settings")]
-    public float floorSpeed = 10;
-    [HideInInspector]
-    public bool applySinMovement;
-    public float sinLongitude = 12f;
+    [Header("Wandering Settings")]
+    public GameObject bezierCurvesPrefab;
+    public float wanderingSpeed = 10;
+    public float sinLongitude = 3f;
     public float sinAmplitude = 0.25f;
     public float sinCycleDuration = 30f;
     [HideInInspector]
@@ -62,106 +90,63 @@ public class WormBlackboard : MonoBehaviour
     public float sinTimeOffset;
     [HideInInspector]
     public float sinElapsedTime;
-
+    [HideInInspector]
+    public bool applySinMovement;
     public float undergroundSpeed = 10;
-    public float rotationSpeed = 180;
     [HideInInspector]
     public bool isHeadOverground;
+    [HideInInspector]
+    public bool isTailUnderground;
 
-    public GameObject enterBezierCtrl11;
-    public GameObject enterBezierCtrl12;
-    public GameObject enterBezierEnd1Start2;
-    public GameObject enterBezierCtrl21;
-    public GameObject enterBezierCtrl22;
+    //Local bezier points
+    private Vector3 localEnterBezier11;
+    private Vector3 localEnterBezier12;
+    private Vector3 localEnterBezierMiddle;
+    private Vector3 localEnterBezier21;
+    private Vector3 localEnterBezier22;
 
-    public GameObject exitBezierCtrl11;
-    public GameObject exitBezierCtrl12;
-    public GameObject exitBezierEnd1Start2;
-    public GameObject exitBezierCtrl21;
-    public GameObject exitBezierCtrl22;
+    private Vector3 localExitBezier11;
+    private Vector3 localExitBezier12;
+    private Vector3 localExitBezierMiddle;
+    private Vector3 localExitBezier21;
+    private Vector3 localExitBezier22;
 
-    [HideInInspector]
-    public Vector3 worldEnterBezierCtrl11;
-    [HideInInspector]
-    public Vector3 worldEnterBezierCtrl12;
-    [HideInInspector]
-    public Vector3 worldEnterBezierEnd1Start2;
-    [HideInInspector]
-    public Vector3 worldEnterBezierCtrl21;
-    [HideInInspector]
-    public Vector3 worldEnterBezierCtrl22;
+    //World bezier points
+    private Vector3 worldEnterBezier11;
+    private Vector3 worldEnterBezier12;
+    private Vector3 worldEnterBezierMiddle;
+    private Vector3 worldEnterBezier21;
+    private Vector3 worldEnterBezier22;
 
-    [HideInInspector]
-    public Vector3 worldExitBezierCtrl11;
-    [HideInInspector]
-    public Vector3 worldExitBezierCtrl12;
-    [HideInInspector]
-    public Vector3 worldExitBezierEnd1Start2;
-    [HideInInspector]
-    public Vector3 worldExitBezierCtrl21;
-    [HideInInspector]
-    public Vector3 worldExitBezierCtrl22;
-
+    private Vector3 worldExitBezier11;
+    private Vector3 worldExitBezier12;
+    private Vector3 worldExitBezierMiddle;
+    private Vector3 worldExitBezier21;
+    private Vector3 worldExitBezier22;
 
     [Header("Jump Settings")]
-    public float jumpOffset = 1.3f;
-    public float jumpHeightToDistanceRatio = 1f;
-    [HideInInspector]
-    public Vector3 jumpOrigin;
-    [HideInInspector]
-    public Vector3 jumpDestiny;
-    [HideInInspector]
-    public Vector3 jumpCenter;
-    [HideInInspector]
-    public float jumpDistance;
-    [HideInInspector]
-    public float jumpHalfDistance;
-    [HideInInspector]
-    public float jumpMaxHeight;
-    [HideInInspector]
-    public float jumpParabolaAperture;
-    [HideInInspector]
-    public Vector3 jumpDirectionVector;
-
-    [Header("Body Settings")]
-    public Transform headTrf;
-    [HideInInspector]
-    public WormAIBehaviour head; //same as worm variable
-    public Transform[] bodySegmentsTrf;
-    [HideInInspector]
-    public List<WormBodySegmentController> bodySegmentControllers;
-    public Transform tailTrf;
-    [HideInInspector]
-    public WormTailController tail;
-    [HideInInspector]
-    public bool tailIsUnderground;
-    public Transform junctionsGroupTrf;
-    public GameObject junctionPrefab;
-    [HideInInspector]
-    public Transform[] junctionsTrf;
-    private WormJunctionController[] junctionControllers;
-
-    //public float headToSegmentDistance;
-    public float headToJunctionDistance;
-    //public float segmentToSegmentDistance;
-    public float segmentToJunctionDistance;
-    //public float segmentToTailDistance;
-    public float tailToJunctionDistance;
-
-    public float bodySettingMinTime = 1f;
-    public float bodySettingMaxTime = 3f;
-    public float bodySettingChangeTime = 0.1f;
+    public float jumpOffset = 0f;
+    public float jumpHeightToDistanceRatio = 0.5f;
+    private Vector3 jumpOrigin;
+    private Vector3 jumpDestiny;
+    private Vector3 jumpCenter;
+    private float jumpDistance;
+    private float jumpHalfDistance;
+    private float jumpMaxHeight;
+    private float jumpParabolaAperture;
+    private Vector3 jumpDirectionVector;
 
     [Header("Contact Settings")]
     public float contactDamage = 12f;
-    public Vector2 infectionForces;
+    public Vector2 infectionForces = new Vector2(5, 9);
     public float attackRumbleDuration = 1f;
 
     [Header("Below Attack Settings")]
     public float chancesOfBelowAttackAfterWandering = 50f;
     public float belowAttackWaitTime = 2f;
-    public float belowAttackWarningTime = 0.5f;
+    public float belowAttackWarningTime = 1f;
     public float belowAttackSpeed = 10f;
+    public float belowAttackRotationSpeed = 180f;
 
     [Header("Above Attack Settings")]
     public float aboveAttackExposureTimeNeeded = 3f;
@@ -177,60 +162,73 @@ public class WormBlackboard : MonoBehaviour
     [HideInInspector]
     public float aboveAttackCurrentCooldownTime;
 
-
     [Header("Misc variables")]
-    public GameObject headModel;
     public GameObject spawnEntry;
     public GameObject spawnExit;
 
-
-    public void Awake()
-    {
-        wormGO = gameObject;
-        worm = GetComponent<WormAIBehaviour>();
-        head = worm;
-        agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
+    #endregion
+    void Awake () 
+	{
         navMeshLayersDistance = new Vector3(0, WormBlackboard.NAVMESH_LAYER_HEIGHT, 0);
-        tail = tailTrf.gameObject.GetComponent<WormTailController>();
-        tail.SetBlackboard(this);
 
-        bodySegmentControllers = new List<WormBodySegmentController>();
+        headTrf = transform.FindDeepChild("Head");
+        head = headTrf.GetComponent<WormAIBehaviour>();
+        head.SetBlackboard(this);
+
+        bodySegmentsGroupTrf = transform.FindDeepChild("BodyParts");
+        bodySegmentsTrf = new Transform[bodyParts];
+        bodySegmentControllers = new WormBodySegmentController[bodyParts];
+
         for (int i = 0; i < bodySegmentsTrf.Length; ++i)
         {
-            WormBodySegmentController ctrl = bodySegmentsTrf[i].GetComponent<WormBodySegmentController>();
-            ctrl.SetBlackboard(this);
-            bodySegmentControllers.Add(ctrl);
+            GameObject bodySegment = Instantiate(bodyPrefab, initialPosition, Quaternion.identity) as GameObject;
+            bodySegmentsTrf[i] = bodySegment.transform;
+            bodySegmentsTrf[i].SetParent(bodySegmentsGroupTrf);
+            bodySegmentControllers[i] = bodySegment.GetComponent<WormBodySegmentController>();
+            bodySegmentControllers[i].SetBlackboard(this);
         }
 
-        junctionsTrf = new Transform[bodySegmentsTrf.Length + 1];
-        junctionControllers = new WormJunctionController[bodySegmentsTrf.Length + 1];
+        junctionsGroupTrf = transform.FindDeepChild("Junctions");
+
+        junctionsTrf = new Transform[bodyParts + 1];
+        junctionControllers = new WormJunctionController[bodyParts + 1];
         for (int i = 0; i < junctionsTrf.Length; ++i)
         {
-            GameObject junction = Instantiate(junctionPrefab) as GameObject;
-            junction.transform.SetParent(junctionsGroupTrf);
+            GameObject junction = Instantiate(junctionPrefab, initialPosition, Quaternion.identity) as GameObject;
             junctionsTrf[i] = junction.transform;
+            junctionsTrf[i].SetParent(junctionsGroupTrf);
             junctionControllers[i] = junction.GetComponent<WormJunctionController>();
         }
 
-        spawningState = new WormAISpawningState(this);
-        wanderingState = new WormAIWanderingState(this);
-        belowAttackState = new WormAIBelowAttackState(this);
-        aboveAttackState = new WormAIAboveAttackState(this);
-        dyingState = new WormAIDyingState(this);
+        tailTrf = transform.FindDeepChild("Tail");
+        tailController = tailTrf.GetComponent<WormTailController>();
+        tailController.SetBlackboard(this);
 
-        testState = new WormAITestState(this);
+        GameObject bezierContainer = Instantiate(bezierCurvesPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+        Transform bezierTrf = bezierContainer.transform;
+        localEnterBezier11 = bezierTrf.FindDeepChild("Enter11").position;
+        localEnterBezier12 = bezierTrf.FindDeepChild("Enter12").position;
+        localEnterBezierMiddle = bezierTrf.FindDeepChild("EnterMiddle").position;
+        localEnterBezier21 = bezierTrf.FindDeepChild("Enter21").position;
+        localEnterBezier22 = bezierTrf.FindDeepChild("Enter22").position;
+
+        localExitBezier11 = bezierTrf.FindDeepChild("Exit11").position;
+        localExitBezier12 = bezierTrf.FindDeepChild("Exit12").position;
+        localExitBezierMiddle = bezierTrf.FindDeepChild("ExitMiddle").position;
+        localExitBezier21 = bezierTrf.FindDeepChild("Exit21").position;
+        localExitBezier22 = bezierTrf.FindDeepChild("Exit22").position;
 
         sinDistanceFactor = 360 / sinLongitude;
         sinTimeFactor = 360 / sinCycleDuration;
 
         ResetValues();
+        SetInitialBodyWayPoints();
     }
 
     public void ResetValues()
     {
         isHeadOverground = false;
-        wormPhase = 0;
+        wormCurrentPhase = 0;
         headCurrentHealth = headMaxHealth;
         headChargeLevel = 0;
         aboveAttackCurrentCooldownTime = aboveAttackCooldownTime;
@@ -239,22 +237,23 @@ public class WormBlackboard : MonoBehaviour
         applySinMovement = false;
     }
 
-    public void StartNewPhase()
+    public void Init(GameObject screenCnt)
     {
-        wormPhase++;
-        //Debug.Log("Worm phase: " + wormPhase);
-        headCurrentHealth = headMaxHealth;
-        headChargeLevel = 0;
-        ConsolidateBodyParts();
+        sceneCenter = screenCnt;
+        sceneCenterHexagon = sceneCenter.GetComponent<HexagonController>();
+
+        head.Init();
+        InitBodyParts();
     }
 
-    #region BodySegments
+    //Body segments management
+    #region Body Segments
     public void InitBodyParts()
     {
         //Init each segment color
-        for (int i = 0; i < bodySegmentControllers.Count; ++i)
+        for (int i = 0; i < bodySegmentControllers.Length; ++i)
         {
-            bodySegmentControllers[i].SetInitialState();
+            bodySegmentControllers[i].SetInitialState((ChromaColor)(i % ChromaColorInfo.Count));
         }
     }
 
@@ -278,10 +277,10 @@ public class WormBlackboard : MonoBehaviour
     public void DisableBodyParts()
     {
         //Debug.Log("Disable body parts");
-        for (int i = 0; i < bodySegmentControllers.Count; ++i)
+        for (int i = 0; i < bodySegmentControllers.Length; ++i)
         {
             bodySegmentControllers[i].Disable();
-        }      
+        }
     }
 
     public void ConsolidateBodyParts()
@@ -299,9 +298,9 @@ public class WormBlackboard : MonoBehaviour
         }
 
         //rsc.colorMng.PrintColors();
-        for(int i = 0; i < bodySegmentControllers.Count; ++i)
+        for (int i = 0; i < bodySegmentControllers.Length; ++i)
         {
-            if(bodySegmentControllers[i].IsDestroyed())
+            if (bodySegmentControllers[i].IsDestroyed())
             {
                 junctionControllers[i].SetWireframe();
                 junctionControllers[i + 1].SetWireframe();
@@ -317,12 +316,12 @@ public class WormBlackboard : MonoBehaviour
     private IEnumerator SequentialExplode()
     {
         //tail explode
-        tail.Explode();
+        tailController.Explode();
         //Destroy(junctionsTrf[junctionsTrf.Length-1].gameObject);
         junctionsTrf[junctionsTrf.Length - 1].gameObject.SetActive(false);
 
         //bodyparts explode
-        for (int i = bodySegmentControllers.Count -1; i >= 0; --i)
+        for (int i = bodySegmentControllers.Length - 1; i >= 0; --i)
         {
             yield return new WaitForSeconds(0.2f);
             //Destroy(junctionsTrf[i].gameObject);
@@ -332,12 +331,13 @@ public class WormBlackboard : MonoBehaviour
 
         //head explode
         yield return new WaitForSeconds(0.2f);
-        worm.Explode();     
+        head.Explode();
     }
     #endregion
 
+    //Parabola calculation functions
     #region Parabola
-    public void CalculateParabola()
+    public void CalculateParabola(Vector3 origin, Vector3 destiny)
     {
         /*Info needed to apply the formula ax^2 + bx + c = y:
          * We can ignore bx completely
@@ -348,6 +348,9 @@ public class WormBlackboard : MonoBehaviour
          * Desired max height. Could be proportional to distance. This will be the c factor.
          * Parabola aperture. This will be the a factor
          */
+        jumpOrigin = origin;
+        jumpDestiny = destiny;
+
         jumpDirectionVector = (jumpDestiny - jumpOrigin).normalized;
 
         Vector3 offsetVector = jumpDirectionVector * jumpOffset;
@@ -395,7 +398,7 @@ public class WormBlackboard : MonoBehaviour
 
         return position;
     }
-    
+
     public Vector3 GetJumpPositionGivenX(float x)
     {
         float y = GetJumpYGivenX(x);
@@ -409,8 +412,55 @@ public class WormBlackboard : MonoBehaviour
 
         return GetJumpPosition(x, y);
     }
+    #endregion
 
-    public Vector3 BezierQuadratic(Vector3 start, Vector3 control, Vector3 end, float t)
+    //Bezier curves functions
+    #region Bezier curves
+    public Vector3 GetEnterCurvePosition(Vector3 start, Vector3 end, float t)
+    {
+        //0 < t < 1 => first enter curve
+        if (t < 1)
+        {
+            return BezierCubic(start, worldEnterBezier11, worldEnterBezier12, worldEnterBezierMiddle, t);
+        }
+        // t = 1 => middle point
+        else if (t == 1)
+        {
+            return worldEnterBezierMiddle;
+        }
+        //1 < t < 2 => second enter curve
+        else if (t <= 2)
+        {
+            t -= 1;
+            return BezierCubic(worldEnterBezierMiddle, worldEnterBezier21, worldEnterBezier22, end, t);
+        }
+
+        return Vector3.zero;
+    }
+
+    public Vector3 GetExitCurvePosition(Vector3 start, Vector3 end, float t)
+    {
+        //0 < t < 1 => first enter curve
+        if (t < 1)
+        {
+            return BezierCubic(start, worldExitBezier11, worldExitBezier12, worldExitBezierMiddle, t);
+        }
+        // t = 1 => middle point
+        else if (t == 1)
+        {
+            return worldEnterBezierMiddle;
+        }
+        //1 < t < 2 => second enter curve
+        else if (t <= 2)
+        {
+            t -= 1;
+            return BezierCubic(worldExitBezierMiddle, worldExitBezier21, worldExitBezier22, end, t);
+        }
+
+        return Vector3.zero;
+    }
+
+    private Vector3 BezierQuadratic(Vector3 start, Vector3 control, Vector3 end, float t)
     {
         //B(t) = (1-t)2P0 + 2(1-t)tP1 + t2P2 , 0 < t < 1
 
@@ -419,7 +469,7 @@ public class WormBlackboard : MonoBehaviour
                (Mathf.Pow(t, 2) * end);
     }
 
-    public Vector3 BezierCubic(Vector3 start, Vector3 control1, Vector3 control2, Vector3 end, float t)
+    private Vector3 BezierCubic(Vector3 start, Vector3 control1, Vector3 control2, Vector3 end, float t)
     {
         //B(t) = (1-t)3P0 + 3(1-t)2tP1 + 3(1-t)t2P2 + t3P3 , 0 < t < 1
 
@@ -432,20 +482,210 @@ public class WormBlackboard : MonoBehaviour
 
     public void CalculateWorldEnterBezierPoints(Transform origin)
     {
-        worldEnterBezierCtrl11 = origin.TransformPoint(enterBezierCtrl11.transform.position);
-        worldEnterBezierCtrl12 = origin.TransformPoint(enterBezierCtrl12.transform.position);
-        worldEnterBezierEnd1Start2 = origin.TransformPoint(enterBezierEnd1Start2.transform.position);
-        worldEnterBezierCtrl21 = origin.TransformPoint(enterBezierCtrl21.transform.position);
-        worldEnterBezierCtrl22 = origin.TransformPoint(enterBezierCtrl22.transform.position);
+        worldEnterBezier11 = origin.TransformPoint(localEnterBezier11);
+        worldEnterBezier12 = origin.TransformPoint(localEnterBezier12);
+        worldEnterBezierMiddle = origin.TransformPoint(localEnterBezierMiddle);
+        worldEnterBezier21 = origin.TransformPoint(localEnterBezier21);
+        worldEnterBezier22 = origin.TransformPoint(localEnterBezier22);
     }
 
     public void CalculateWorldExitBezierPoints(Transform origin)
     {
-        worldExitBezierCtrl11 = origin.TransformPoint(exitBezierCtrl11.transform.position);
-        worldExitBezierCtrl12 = origin.TransformPoint(exitBezierCtrl12.transform.position);
-        worldExitBezierEnd1Start2 = origin.TransformPoint(exitBezierEnd1Start2.transform.position);
-        worldExitBezierCtrl21 = origin.TransformPoint(exitBezierCtrl21.transform.position);
-        worldExitBezierCtrl22 = origin.TransformPoint(exitBezierCtrl22.transform.position);
+        worldExitBezier11 = origin.TransformPoint(localExitBezier11);
+        worldExitBezier12 = origin.TransformPoint(localExitBezier12);
+        worldExitBezierMiddle = origin.TransformPoint(localExitBezierMiddle);
+        worldExitBezier21 = origin.TransformPoint(localExitBezier21);
+        worldExitBezier22 = origin.TransformPoint(localExitBezier22);
+    }
+    #endregion
+
+    //Body movement functions
+    #region BodyMovement
+    private void SetInitialBodyWayPoints()
+    {
+        headWayPoint = null;
+
+        if (tailTrf != null)
+        {
+            headWayPoint = new WormWayPoint(tailTrf.position, tailTrf.rotation, false);
+        }
+
+        for (int i = bodySegmentsTrf.Length - 1; i >= 0; --i)
+        {
+            WormWayPoint segmentWayPoint = new WormWayPoint(bodySegmentsTrf[i].position, bodySegmentsTrf[i].rotation, false, (headWayPoint != null ? headWayPoint : null));
+            headWayPoint = segmentWayPoint;
+        }
+
+        if (headTrf != null)
+        {
+            headWayPoint = new WormWayPoint(headTrf.position, headTrf.rotation, false, (headWayPoint != null ? headWayPoint : null));
+        }
+    }
+
+    public void UpdateBodyMovement()
+    {
+        sinDistanceFactor = 360 / sinLongitude;
+        sinTimeFactor = 360 / sinCycleDuration;
+
+        //If head has moved, create a new waypoint and recalculate all segments' position
+        if ((headTrf.position != headWayPoint.position))
+        {
+            //Update sin time
+            sinElapsedTime += Time.deltaTime;
+            if (sinElapsedTime >= sinCycleDuration)
+                sinElapsedTime -= sinCycleDuration;
+            sinTimeOffset = sinElapsedTime * sinTimeFactor;
+
+            headWayPoint = new WormWayPoint(headTrf.position, headTrf.rotation, head.IsVisible(), headWayPoint);
+
+            WormWayPoint current = headWayPoint;
+            WormWayPoint next = current.next;
+            //if we are in the last waypoint, there is nothing more we can do, so we quit
+            if (next == null) return;
+
+            float totalDistance = headToJunctionDistance;                            //Total distance we have to position the element from the head
+            float consolidatedDistance = 0f;                                        //Sum of the distances of evaluated waypoints
+            float distanceBetween = (current.position - next.position).magnitude;   //Distance between current current and next waypoints
+
+            float effectiveDistance;
+            if (applySinMovement)
+                effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * sinAmplitude);
+            else
+                effectiveDistance = totalDistance;
+
+            //move each body segment through the virtual line
+            for (int i = 0; i < bodySegmentsTrf.Length; ++i)
+            {
+                //---- Junction ----
+                //advance through waypoints until we find the proper distance
+                while (consolidatedDistance + distanceBetween < effectiveDistance)
+                {
+                    consolidatedDistance += distanceBetween;
+
+                    current = next;
+                    next = current.next;
+                    //if we are in the last waypoint, there is nothing more we can do, so we quit
+                    if (next == null) return;
+
+                    distanceBetween = (current.position - next.position).magnitude;
+                }
+
+                //We reached the line segment where this body part must be, so we calculate the point in current segment
+                float remainingDistance = effectiveDistance - consolidatedDistance;
+                Vector3 direction = (next.position - current.position).normalized * remainingDistance;
+
+                junctionsTrf[i].position = current.position + direction;
+                junctionsTrf[i].rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
+                junctionsTrf[i].gameObject.SetActive(current.visible || next.visible);
+
+                //---- Body ----
+                totalDistance += segmentToJunctionDistance;
+                if (applySinMovement)
+                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * sinAmplitude);
+                else
+                    effectiveDistance = totalDistance;
+
+                //advance through waypoints until we find the proper distance
+                while (consolidatedDistance + distanceBetween < effectiveDistance)
+                {
+                    consolidatedDistance += distanceBetween;
+
+                    current = next;
+                    next = current.next;
+                    //if we are in the last waypoint, there is nothing more we can do, so we quit
+                    if (next == null) return;
+
+                    distanceBetween = (current.position - next.position).magnitude;
+                }
+
+                //We reached the line segment where this body part must be, so we calculate the point in current segment
+                remainingDistance = effectiveDistance - consolidatedDistance;
+                direction = (next.position - current.position).normalized * remainingDistance;
+
+                bodySegmentsTrf[i].position = current.position + direction;
+                bodySegmentsTrf[i].rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
+                bodySegmentControllers[i].SetVisible(current.visible || next.visible);
+
+                //if it was the final body part and there is no tail, release the oldest waypoints
+                if (i == bodySegmentsTrf.Length - 1)
+                {
+                    if (tailTrf == null)
+                        next.next = null; //Remove reference, let garbage collector do its job
+                }
+                //else add total distance for the next iteration
+                else
+                {
+                    totalDistance += segmentToJunctionDistance;
+                    if (applySinMovement)
+                        effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * sinAmplitude);
+                    else
+                        effectiveDistance = totalDistance;
+                }
+            }
+
+            //finally do the same for the tail
+            if (tailTrf != null)
+            {
+                //---- Junction ----
+                totalDistance += segmentToJunctionDistance;
+                if (applySinMovement)
+                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * sinAmplitude);
+                else
+                    effectiveDistance = totalDistance;
+
+                //advance through waypoints until we find the proper distance
+                while (consolidatedDistance + distanceBetween < effectiveDistance)
+                {
+                    consolidatedDistance += distanceBetween;
+
+                    current = next;
+                    next = current.next;
+                    //if we are in the last waypoint, there is nothing more we can do, so we quit
+                    if (next == null) return;
+
+                    distanceBetween = (current.position - next.position).magnitude;
+                }
+
+                //We reached the line segment where this body part must be, so we calculate the point in current segment
+                float remainingDistance = effectiveDistance - consolidatedDistance;
+                Vector3 direction = (next.position - current.position).normalized * remainingDistance;
+
+                junctionsTrf[junctionsTrf.Length - 1].position = current.position + direction;
+                junctionsTrf[junctionsTrf.Length - 1].rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
+                junctionsTrf[junctionsTrf.Length - 1].gameObject.SetActive(current.visible || next.visible);
+
+                //---- Tail ----
+                totalDistance += tailToJunctionDistance;
+                if (applySinMovement)
+                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * sinAmplitude);
+                else
+                    effectiveDistance = totalDistance;
+
+                //advance through waypoints until we find the proper distance
+                while (consolidatedDistance + distanceBetween < effectiveDistance)
+                {
+                    consolidatedDistance += distanceBetween;
+
+                    current = next;
+                    next = current.next;
+                    //if we are in the last waypoint, there is nothing more we can do, so we quit
+                    if (next == null) return;
+
+                    distanceBetween = (current.position - next.position).magnitude;
+                }
+
+                //We reached the line segment where this body part must be, so we calculate the point in current segment
+                remainingDistance = effectiveDistance - consolidatedDistance;
+                direction = (next.position - current.position).normalized * remainingDistance;
+
+                tailTrf.position = current.position + direction;
+                tailTrf.rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
+                tailController.SetVisible(current.visible || next.visible);
+
+                //release the oldest waypoints
+                next.next = null; //Remove reference, let garbage collector do its job
+            }
+        }
     }
     #endregion
 }

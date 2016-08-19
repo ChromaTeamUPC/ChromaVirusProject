@@ -48,17 +48,17 @@ public class WormAIWanderingState : WormAIBaseState
         WormRoute newRoute;
         do
         {
-            int routeNum = Random.Range(0, bb.worm.routes.Length);
-            newRoute = bb.worm.routes[routeNum];
+            int routeNum = Random.Range(0, bb.head.routes.Length);
+            newRoute = bb.head.routes[routeNum];
         }
         while (route == newRoute);
 
         route = newRoute;
 
-        bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
-        bb.agent.enabled = true;
-        bb.agent.speed = bb.undergroundSpeed;
-        bb.agent.SetDestination(route.wayPoints[WPIndex].transform.position - bb.navMeshLayersDistance);
+        bb.head.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
+        bb.head.agent.enabled = true;
+        bb.head.agent.speed = bb.undergroundSpeed;
+        bb.head.agent.SetDestination(route.wayPoints[WPIndex].transform.position - bb.navMeshLayersDistance);
     }
 
     public override WormAIBaseState Update()
@@ -66,9 +66,9 @@ public class WormAIWanderingState : WormAIBaseState
         switch (subState)
         {
             case SubState.GOING_TO_ENTRY:
-                if(!bb.agent.hasPath || (bb.agent.hasPath && bb.agent.remainingDistance <= 0.25))
+                if(!bb.head.agent.hasPath || (bb.head.agent.hasPath && bb.head.agent.remainingDistance <= 0.25))
                 {
-                    bb.agent.enabled = false;
+                    bb.head.agent.enabled = false;
 
                     currentWP = route.wayPoints[WPIndex].transform.position;
                     nextWP = route.wayPoints[WPIndex +1].transform.position;
@@ -76,16 +76,15 @@ public class WormAIWanderingState : WormAIBaseState
                     currentWPUG = currentWP - bb.navMeshLayersDistance;
                     nextWPUG = nextWP - bb.navMeshLayersDistance;
 
-                    head.position = currentWPUG;
-                    head.LookAt(nextWPUG, Vector3.up);
-                    bb.CalculateWorldEnterBezierPoints(bb.wormGO.transform);
-                    bb.worm.SetVisible(true);
+                    headTrf.position = currentWPUG;
+                    headTrf.LookAt(nextWPUG, Vector3.up);
+                    bb.CalculateWorldEnterBezierPoints(bb.head.transform);
+                    bb.head.SetVisible(true);
 
                     //Rotate head
                     Vector3 headUp = currentWPUG - nextWPUG;
-                    head.LookAt(currentWP, headUp);
+                    headTrf.LookAt(currentWP, headUp);
 
-                    curveNum = 0;
                     t = 0;
 
                     HexagonController hexagon = route.wayPoints[WPIndex].GetComponent<HexagonController>();
@@ -98,45 +97,33 @@ public class WormAIWanderingState : WormAIBaseState
                 break;
 
             case SubState.ENTERING:
-                if (curveNum <= 1)
+                if (t <= 2)
                 {
-                    shouldMove = Time.deltaTime * bb.floorSpeed;
+                    shouldMove = Time.deltaTime * bb.wanderingSpeed;
                     actuallyMoved = 0;
-                    lastPosition = head.position;
+                    lastPosition = headTrf.position;
                     Vector3 newPos = Vector3.zero;
 
-                    while (actuallyMoved < shouldMove && t <= 1)
+                    while (actuallyMoved < shouldMove && t <= 2)
                     {
-                        if (curveNum == 0)
-                        {
-                            newPos = bb.BezierCubic(currentWPUG, bb.worldEnterBezierCtrl11, bb.worldEnterBezierCtrl12, bb.worldEnterBezierEnd1Start2, t);
-                        }
-                        else
-                        {
-                            newPos = bb.BezierCubic(bb.worldEnterBezierEnd1Start2, bb.worldEnterBezierCtrl21, bb.worldEnterBezierCtrl22, nextWP, t);
-                        }
+                        newPos = bb.GetEnterCurvePosition(currentWPUG, nextWP, t);
+                        
                         actuallyMoved = (newPos - lastPosition).magnitude;
 
                         t += Time.deltaTime / duration;
                     }
-                    head.position = newPos;
-                    head.LookAt(head.position + (head.position - lastPosition));
-
-                    if (t > 1)
-                    {
-                        ++curveNum;
-                        t = 0;
-                    }
+                    headTrf.position = newPos;
+                    headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition));
                 }
                 else
                 {
                     ++WPIndex;
                     currentWP = route.wayPoints[WPIndex].transform.position;
 
-                    bb.agent.areaMask = WormBlackboard.NAVMESH_FLOOR_LAYER;
-                    bb.agent.enabled = true;
-                    bb.agent.speed = bb.floorSpeed;
-                    bb.agent.SetDestination(currentWP);
+                    bb.head.agent.areaMask = WormBlackboard.NAVMESH_FLOOR_LAYER;
+                    bb.head.agent.enabled = true;
+                    bb.head.agent.speed = bb.wanderingSpeed;
+                    bb.head.agent.SetDestination(currentWP);
 
                     subState = SubState.FOLLOWING_PATH;
                 }
@@ -145,7 +132,7 @@ public class WormAIWanderingState : WormAIBaseState
 
             case SubState.FOLLOWING_PATH:
 
-                if(bb.worm.CheckPlayerInSight()) 
+                if(bb.head.CheckPlayerInSight()) 
                 {
                     bb.aboveAttackCurrentExposureTime += Time.deltaTime;
                     //Debug.Log("Player in sight: " + bb.aboveAttackCurrentExposureTime);
@@ -154,14 +141,14 @@ public class WormAIWanderingState : WormAIBaseState
                 if(bb.aboveAttackCurrentExposureTime >= bb.aboveAttackExposureTimeNeeded &&
                     bb.aboveAttackCurrentCooldownTime <= 0f)
                 {
-                    return bb.aboveAttackState;
+                    return bb.head.aboveAttackState;
                 }
 
-                if (!bb.agent.hasPath || (bb.agent.hasPath && bb.agent.remainingDistance <= 0.25))
+                if (!bb.head.agent.hasPath || (bb.head.agent.hasPath && bb.head.agent.remainingDistance <= 0.25))
                 {
                     if (WPIndex == route.wayPoints.Length - 2)
                     {
-                        bb.agent.enabled = false;
+                        bb.head.agent.enabled = false;
 
                         currentWP = route.wayPoints[WPIndex].transform.position;
                         nextWP = route.wayPoints[WPIndex + 1].transform.position;
@@ -169,11 +156,10 @@ public class WormAIWanderingState : WormAIBaseState
                         currentWPUG = currentWP - bb.navMeshLayersDistance;
                         nextWPUG = nextWP - bb.navMeshLayersDistance;
 
-                        head.LookAt(nextWP, Vector3.up);
+                        headTrf.LookAt(nextWP, Vector3.up);
 
-                        bb.CalculateWorldExitBezierPoints(bb.wormGO.transform);
+                        bb.CalculateWorldExitBezierPoints(bb.head.transform);
 
-                        curveNum = 0;
                         t = 0;
 
                         HexagonController hexagon = route.wayPoints[WPIndex + 1].GetComponent<HexagonController>();
@@ -185,41 +171,28 @@ public class WormAIWanderingState : WormAIBaseState
                     {
                         ++WPIndex;
                         currentWP = route.wayPoints[WPIndex].transform.position;
-                        bb.agent.SetDestination(currentWP);
+                        bb.head.agent.SetDestination(currentWP);
                     }
                 }
                 break;
 
             case SubState.EXITING:
-                if (curveNum <= 1)
+                if (t <= 2)
                 {
-                    shouldMove = Time.deltaTime * bb.floorSpeed;
+                    shouldMove = Time.deltaTime * bb.wanderingSpeed;
                     actuallyMoved = 0;
-                    lastPosition = head.position;
+                    lastPosition = headTrf.position;
                     Vector3 newPos = Vector3.zero;
 
-                    while (actuallyMoved < shouldMove && t <= 1)
+                    while (actuallyMoved < shouldMove && t <= 2)
                     {
-                        if (curveNum == 0)
-                        {
-                            newPos = bb.BezierCubic(currentWP, bb.worldExitBezierCtrl11, bb.worldExitBezierCtrl12, bb.worldExitBezierEnd1Start2, t);
-                        }
-                        else
-                        {
-                            newPos = bb.BezierCubic(bb.worldExitBezierEnd1Start2, bb.worldExitBezierCtrl21, bb.worldExitBezierCtrl22, nextWPUG, t);
-                        }
+                        newPos = bb.GetExitCurvePosition(currentWP, nextWPUG, t);                       
                         actuallyMoved = (newPos - lastPosition).magnitude;
 
                         t += Time.deltaTime / duration;
                     }
-                    head.position = newPos;
-                    head.LookAt(head.position + (head.position - lastPosition));
-
-                    if (t > 1)
-                    {
-                        ++curveNum;
-                        t = 0;
-                    }
+                    headTrf.position = newPos;
+                    headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition));
                 }
                 else
                 {
@@ -233,7 +206,7 @@ public class WormAIWanderingState : WormAIBaseState
 
             case SubState.WAITING_FOR_TAIL:
                 //move head until tail is undeground
-                if(!bb.tailIsUnderground)
+                if(!bb.isTailUnderground)
                 {
                     MoveUndergroundDirection();
                 }
@@ -242,7 +215,7 @@ public class WormAIWanderingState : WormAIBaseState
                     bb.applySinMovement = false;
                     //If some random condition attack, else new wandering state
                     if (Random.Range(0f, 1f) <= bb.chancesOfBelowAttackAfterWandering / 100)
-                        return bb.belowAttackState;
+                        return bb.head.belowAttackState;
                     else
                         SetInitialState();
                 }

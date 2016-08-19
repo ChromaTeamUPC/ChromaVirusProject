@@ -551,9 +551,9 @@ public class EnemyManager : MonoBehaviour
     {
         if(bb.worm != null && bb.worm.isHeadOverground)
         {
-            if(!rsc.camerasMng.IsObjectVisible(bb.worm.gameObject))
+            if(!rsc.camerasMng.IsObjectVisible(bb.worm.head.gameObject))
             {
-                return bb.worm.gameObject;
+                return bb.worm.head.gameObject;
             }
         }
 

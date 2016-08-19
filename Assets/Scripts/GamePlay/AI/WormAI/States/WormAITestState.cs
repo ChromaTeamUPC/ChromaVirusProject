@@ -44,8 +44,8 @@ public class WormAITestState : WormAIBaseState
         //Set initial substate, nav mesh layer and select a random route
         subState = SubState.GOING_TO_ENTRY;
 
-        route = bb.worm.routes[4];
-        bb.agent.enabled = false;
+        //route = bb.worm.routes[4];
+        //bb.agent.enabled = false;
 
         /*bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
         bb.agent.enabled = true;
@@ -67,10 +67,10 @@ public class WormAITestState : WormAIBaseState
 
                 Vector3 headUp = currentWPUG - nextWPUG;
                 //Rotate head
-                head.position = currentWPUG;
-                head.LookAt(nextWPUG, Vector3.up);
-                bb.CalculateWorldEnterBezierPoints(bb.wormGO.transform);
-                head.LookAt(currentWP, headUp);
+                headTrf.position = currentWPUG;
+                headTrf.LookAt(nextWPUG, Vector3.up);
+                bb.CalculateWorldEnterBezierPoints(bb.head.transform);
+                headTrf.LookAt(currentWP, headUp);
 
                 curveNum = 0;
                 t = 0;
@@ -81,27 +81,27 @@ public class WormAITestState : WormAIBaseState
             case SubState.ENTERING:
                 if(curveNum <= 1)
                 {
-                    shouldMove = Time.deltaTime * bb.floorSpeed;
+                    shouldMove = Time.deltaTime * bb.wanderingSpeed;
                     actuallyMoved = 0;
-                    lastPosition = head.position;
+                    lastPosition = headTrf.position;
                     Vector3 newPos = Vector3.zero;
 
                     while (actuallyMoved < shouldMove && t <= 1)
                     {
                         if (curveNum == 0)
                         {
-                            newPos = bb.BezierCubic(currentWPUG, bb.worldEnterBezierCtrl11, bb.worldEnterBezierCtrl12, bb.worldEnterBezierEnd1Start2, t);
+                            //newPos = bb.BezierCubic(currentWPUG, bb.worldEnterBezierCtrl11, bb.worldEnterBezierCtrl12, bb.worldEnterBezierEnd1Start2, t);
                         }
                         else
                         {
-                            newPos = bb.BezierCubic(bb.worldEnterBezierEnd1Start2, bb.worldEnterBezierCtrl21, bb.worldEnterBezierCtrl22, nextWP, t);
+                            //newPos = bb.BezierCubic(bb.worldEnterBezierEnd1Start2, bb.worldEnterBezierCtrl21, bb.worldEnterBezierCtrl22, nextWP, t);
                         }
                         actuallyMoved = (newPos - lastPosition).magnitude;
 
                         t += Time.deltaTime / duration;
                     }
-                    head.position = newPos;
-                    head.LookAt(head.position + (head.position - lastPosition));
+                    headTrf.position = newPos;
+                    headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition));
                    
                     if(t > 1)
                     {
@@ -114,10 +114,10 @@ public class WormAITestState : WormAIBaseState
                     ++WPIndex;
                     currentWP = route.wayPoints[WPIndex].transform.position;
 
-                    bb.agent.areaMask = WormBlackboard.NAVMESH_FLOOR_LAYER;
-                    bb.agent.enabled = true;
-                    bb.agent.speed = bb.floorSpeed;
-                    bb.agent.SetDestination(currentWP);
+                    bb.head.agent.areaMask = WormBlackboard.NAVMESH_FLOOR_LAYER;
+                    bb.head.agent.enabled = true;
+                    bb.head.agent.speed = bb.wanderingSpeed;
+                    bb.head.agent.SetDestination(currentWP);
 
                     subState = SubState.FOLLOWING_PATH;
                 }
@@ -125,14 +125,14 @@ public class WormAITestState : WormAIBaseState
                 break;
 
             case SubState.FOLLOWING_PATH:
-                if (bb.agent.hasPath)
+                if (bb.head.agent.hasPath)
                 {
-                    if (bb.agent.remainingDistance <= 0.25f)
+                    if (bb.head.agent.remainingDistance <= 0.25f)
                     {
                         //If it was the last WP, exit
                         if (WPIndex == route.wayPoints.Length - 2)
                         {
-                            bb.agent.enabled = false;
+                            bb.head.agent.enabled = false;
 
                             currentWP = route.wayPoints[WPIndex].transform.position;
                             nextWP = route.wayPoints[WPIndex + 1].transform.position;
@@ -140,7 +140,7 @@ public class WormAITestState : WormAIBaseState
                             currentWPUG = currentWP - bb.navMeshLayersDistance;
                             nextWPUG = nextWP - bb.navMeshLayersDistance;
 
-                            bb.CalculateWorldExitBezierPoints(bb.wormGO.transform);
+                            bb.CalculateWorldExitBezierPoints(bb.head.transform);
 
                             curveNum = 0;
                             t = 0;
@@ -151,7 +151,7 @@ public class WormAITestState : WormAIBaseState
                         {
                             ++WPIndex;
                             currentWP = route.wayPoints[WPIndex].transform.position;
-                            bb.agent.SetDestination(currentWP);
+                            bb.head.agent.SetDestination(currentWP);
                         }
                     }
                 }
@@ -159,15 +159,15 @@ public class WormAITestState : WormAIBaseState
                 {                 
                     if (WPIndex == route.wayPoints.Length - 2)
                     {
-                        bb.agent.enabled = false;
+                        bb.head.agent.enabled = false;
 
-                        currentWP = head.position;
+                        currentWP = headTrf.position;
                         nextWP = route.wayPoints[WPIndex + 1].transform.position;
 
                         currentWPUG = currentWP - bb.navMeshLayersDistance;
                         nextWPUG = nextWP - bb.navMeshLayersDistance;
 
-                        bb.CalculateWorldExitBezierPoints(bb.wormGO.transform);
+                        bb.CalculateWorldExitBezierPoints(bb.head.transform);
 
                         curveNum = 0;
                         t = 0;
@@ -178,7 +178,7 @@ public class WormAITestState : WormAIBaseState
                     {
                         ++WPIndex;
                         currentWP = route.wayPoints[WPIndex].transform.position;
-                        bb.agent.SetDestination(currentWP);
+                        bb.head.agent.SetDestination(currentWP);
                     }
                 }
                 break;
@@ -187,27 +187,27 @@ public class WormAITestState : WormAIBaseState
                 
                 if (curveNum <= 1)
                 {
-                    shouldMove = Time.deltaTime * bb.floorSpeed;
+                    shouldMove = Time.deltaTime * bb.wanderingSpeed;
                     actuallyMoved = 0;
-                    lastPosition = head.position;
+                    lastPosition = headTrf.position;
                     Vector3 newPos = Vector3.zero;
 
                     while (actuallyMoved < shouldMove && t <= 1)
                     {
                         if (curveNum == 0)
                         {
-                            newPos = bb.BezierCubic(currentWP, bb.worldExitBezierCtrl11, bb.worldExitBezierCtrl12, bb.worldExitBezierEnd1Start2, t);
+                            //newPos = bb.BezierCubic(currentWP, bb.worldExitBezierCtrl11, bb.worldExitBezierCtrl12, bb.worldExitBezierEnd1Start2, t);
                         }
                         else
                         {
-                            newPos = bb.BezierCubic(bb.worldExitBezierEnd1Start2, bb.worldExitBezierCtrl21, bb.worldExitBezierCtrl22, nextWPUG, t);
+                            //newPos = bb.BezierCubic(bb.worldExitBezierEnd1Start2, bb.worldExitBezierCtrl21, bb.worldExitBezierCtrl22, nextWPUG, t);
                         }
                         actuallyMoved = (newPos - lastPosition).magnitude;
 
                         t += Time.deltaTime / duration;
                     }
-                    head.position = newPos;
-                    head.LookAt(head.position + (head.position - lastPosition));
+                    headTrf.position = newPos;
+                    headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition));
 
                     if (t > 1)
                     {
