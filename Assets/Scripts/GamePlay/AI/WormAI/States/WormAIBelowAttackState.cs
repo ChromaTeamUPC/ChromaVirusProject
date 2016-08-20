@@ -98,16 +98,16 @@ public class WormAIBelowAttackState : WormAIBaseState
 
                             bb.CalculateParabola(origin.transform.position, destiny.transform.position);
 
-                            bb.head.agent.enabled = false;
+                            head.agent.enabled = false;
 
                             rotation = 0f;
                             destinyInRange = false;
                         }
                         else
-                            return bb.head.wanderingState;
+                            return head.wanderingState;
                     }
                     else
-                        return bb.head.wanderingState;
+                        return head.wanderingState;
 
                     origin.WormBelowAttackWarning();
 
@@ -128,7 +128,7 @@ public class WormAIBelowAttackState : WormAIBaseState
                     Vector3 startPosition = bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false);
                     headTrf.position = startPosition;
                     lastPosition = startPosition;
-                    bb.head.SetVisible(true);
+                    head.SetVisible(true);
 
                     origin.WormBelowAttackStart();
                     WormEventInfo.eventInfo.wormBb = bb;
@@ -167,7 +167,7 @@ public class WormAIBelowAttackState : WormAIBaseState
                 if (headTrf.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {
                     bb.isHeadOverground = false;
-                    bb.head.SetVisible(false);
+                    head.SetVisible(false);
 
                     subState = SubState.EXITING;
                 }
@@ -191,7 +191,7 @@ public class WormAIBelowAttackState : WormAIBaseState
                     bb.agent.speed = bb.undergroundSpeed;
                     bb.agent.SetDestination(bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false)); //Back to entry in the underground
                     */
-                    return bb.head.wanderingState;
+                    return head.wanderingState;
                 }
                 break;
 

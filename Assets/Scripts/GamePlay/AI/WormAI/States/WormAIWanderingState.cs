@@ -48,17 +48,17 @@ public class WormAIWanderingState : WormAIBaseState
         WormRoute newRoute;
         do
         {
-            int routeNum = Random.Range(0, bb.head.routes.Length);
-            newRoute = bb.head.routes[routeNum];
+            int routeNum = Random.Range(0, head.routes.Length);
+            newRoute = head.routes[routeNum];
         }
         while (route == newRoute);
 
         route = newRoute;
 
-        bb.head.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
-        bb.head.agent.enabled = true;
-        bb.head.agent.speed = bb.undergroundSpeed;
-        bb.head.agent.SetDestination(route.wayPoints[WPIndex].transform.position - bb.navMeshLayersDistance);
+        head.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
+        head.agent.enabled = true;
+        head.agent.speed = bb.undergroundSpeed;
+        head.agent.SetDestination(route.wayPoints[WPIndex].transform.position - bb.navMeshLayersDistance);
     }
 
     public override WormAIBaseState Update()
@@ -66,9 +66,9 @@ public class WormAIWanderingState : WormAIBaseState
         switch (subState)
         {
             case SubState.GOING_TO_ENTRY:
-                if(!bb.head.agent.hasPath || (bb.head.agent.hasPath && bb.head.agent.remainingDistance <= 0.25))
+                if(!head.agent.hasPath || (head.agent.hasPath && head.agent.remainingDistance <= 0.25))
                 {
-                    bb.head.agent.enabled = false;
+                    head.agent.enabled = false;
 
                     currentWP = route.wayPoints[WPIndex].transform.position;
                     nextWP = route.wayPoints[WPIndex +1].transform.position;
@@ -78,8 +78,8 @@ public class WormAIWanderingState : WormAIBaseState
 
                     headTrf.position = currentWPUG;
                     headTrf.LookAt(nextWPUG, Vector3.up);
-                    bb.CalculateWorldEnterBezierPoints(bb.head.transform);
-                    bb.head.SetVisible(true);
+                    bb.CalculateWorldEnterBezierPoints(headTrf);
+                    head.SetVisible(true);
 
                     //Rotate head
                     Vector3 headUp = currentWPUG - nextWPUG;
@@ -120,10 +120,10 @@ public class WormAIWanderingState : WormAIBaseState
                     ++WPIndex;
                     currentWP = route.wayPoints[WPIndex].transform.position;
 
-                    bb.head.agent.areaMask = WormBlackboard.NAVMESH_FLOOR_LAYER;
-                    bb.head.agent.enabled = true;
-                    bb.head.agent.speed = bb.wanderingSpeed;
-                    bb.head.agent.SetDestination(currentWP);
+                    head.agent.areaMask = WormBlackboard.NAVMESH_FLOOR_LAYER;
+                    head.agent.enabled = true;
+                    head.agent.speed = bb.wanderingSpeed;
+                    head.agent.SetDestination(currentWP);
 
                     subState = SubState.FOLLOWING_PATH;
                 }
@@ -132,7 +132,7 @@ public class WormAIWanderingState : WormAIBaseState
 
             case SubState.FOLLOWING_PATH:
 
-                if(bb.head.CheckPlayerInSight()) 
+                if(head.CheckPlayerInSight()) 
                 {
                     bb.aboveAttackCurrentExposureTime += Time.deltaTime;
                     //Debug.Log("Player in sight: " + bb.aboveAttackCurrentExposureTime);
@@ -141,14 +141,14 @@ public class WormAIWanderingState : WormAIBaseState
                 if(bb.aboveAttackCurrentExposureTime >= bb.aboveAttackExposureTimeNeeded &&
                     bb.aboveAttackCurrentCooldownTime <= 0f)
                 {
-                    return bb.head.aboveAttackState;
+                    return head.aboveAttackState;
                 }
 
-                if (!bb.head.agent.hasPath || (bb.head.agent.hasPath && bb.head.agent.remainingDistance <= 0.25))
+                if (!head.agent.hasPath || (head.agent.hasPath && head.agent.remainingDistance <= 0.25))
                 {
                     if (WPIndex == route.wayPoints.Length - 2)
                     {
-                        bb.head.agent.enabled = false;
+                        head.agent.enabled = false;
 
                         currentWP = route.wayPoints[WPIndex].transform.position;
                         nextWP = route.wayPoints[WPIndex + 1].transform.position;
@@ -158,7 +158,7 @@ public class WormAIWanderingState : WormAIBaseState
 
                         headTrf.LookAt(nextWP, Vector3.up);
 
-                        bb.CalculateWorldExitBezierPoints(bb.head.transform);
+                        bb.CalculateWorldExitBezierPoints(headTrf);
 
                         t = 0;
 
@@ -171,7 +171,7 @@ public class WormAIWanderingState : WormAIBaseState
                     {
                         ++WPIndex;
                         currentWP = route.wayPoints[WPIndex].transform.position;
-                        bb.head.agent.SetDestination(currentWP);
+                        head.agent.SetDestination(currentWP);
                     }
                 }
                 break;
@@ -215,7 +215,7 @@ public class WormAIWanderingState : WormAIBaseState
                     bb.applySinMovement = false;
                     //If some random condition attack, else new wandering state
                     if (Random.Range(0f, 1f) <= bb.chancesOfBelowAttackAfterWandering / 100)
-                        return bb.head.belowAttackState;
+                        return head.belowAttackState;
                     else
                         SetInitialState();
                 }

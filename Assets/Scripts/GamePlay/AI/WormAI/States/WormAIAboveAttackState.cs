@@ -46,7 +46,7 @@ public class WormAIAboveAttackState : WormAIBaseState
 
                 bb.CalculateParabola(headTrf.position, destiny.transform.position);
 
-                bb.head.agent.enabled = false;
+                head.agent.enabled = false;
 
                 rotation = 0f;
                 destinyInRange = false;
@@ -64,6 +64,7 @@ public class WormAIAboveAttackState : WormAIBaseState
 
                 bb.isHeadOverground = true;
 
+                head.audioSource.PlayOneShot(bb.aboveAttackWarningSound);
                 destiny.WormAboveAttackWarning();
                 subState = SubState.WARNING_PLAYER;
             }
@@ -80,7 +81,7 @@ public class WormAIAboveAttackState : WormAIBaseState
 
     public override WormAIBaseState Update()
     {
-        if (destiny == null) return bb.head.wanderingState;
+        if (destiny == null) return head.wanderingState;
 
         switch (subState)
         {
@@ -126,7 +127,7 @@ public class WormAIAboveAttackState : WormAIBaseState
                 if (headTrf.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {
                     bb.isHeadOverground = false;
-                    bb.head.SetVisible(false);
+                    head.SetVisible(false);
 
                     subState = SubState.EXITING;
                 }
@@ -150,7 +151,7 @@ public class WormAIAboveAttackState : WormAIBaseState
                     bb.agent.speed = bb.undergroundSpeed;
                     bb.agent.SetDestination(bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false)); //Back to entry in the underground
                     */
-                    return bb.head.wanderingState;
+                    return head.wanderingState;
                 }
                 break;
             default:

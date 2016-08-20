@@ -38,6 +38,8 @@ public class WormAIBehaviour : MonoBehaviour
     public NavMeshAgent agent;
     [HideInInspector]
     public Animator animator;
+    [HideInInspector]
+    public AudioSource audioSource;
 
     private BlinkController blinkController;
     private Renderer rend;
@@ -72,6 +74,7 @@ public class WormAIBehaviour : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         blinkController = GetComponent<BlinkController>();
         rend = GetComponentInChildren<Renderer>();
         voxelization = GetComponentInChildren<VoxelizationClient>();       

@@ -35,7 +35,7 @@ public class WormAISpawningState : WormAIBaseState
 
         bb.CalculateParabola(bb.spawnEntry.transform.position, bb.spawnExit.transform.position);
 
-        bb.head.agent.enabled = false;
+        head.agent.enabled = false;
 
         rotation = 0f;
         highestPointReached = false;
@@ -56,7 +56,7 @@ public class WormAISpawningState : WormAIBaseState
                 Vector3 startPosition = bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false);
                 headTrf.position = startPosition;
                 lastPosition = startPosition;
-                bb.head.SetVisible(true);
+                head.SetVisible(true);
              
                 origin.WormEnterExit();
 
@@ -75,7 +75,7 @@ public class WormAISpawningState : WormAIBaseState
                 {
                     if(!highestPointReached)
                     {
-                        bb.head.StartNewPhase();
+                        head.StartNewPhase();
                         highestPointReached = true;
                     }
 
@@ -97,7 +97,7 @@ public class WormAISpawningState : WormAIBaseState
 
                 if (headTrf.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {
-                    bb.head.SetVisible(false);
+                    head.SetVisible(false);
 
                     subState = SubState.EXITING;
                 }
@@ -121,7 +121,7 @@ public class WormAISpawningState : WormAIBaseState
                     bb.agent.speed = bb.undergroundSpeed;
                     bb.agent.SetDestination(bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false)); //Back to entry in the underground
                     */
-                    return bb.head.wanderingState;
+                    return head.wanderingState;
                 }
                 break;
 

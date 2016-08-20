@@ -69,7 +69,7 @@ public class WormAITestState : WormAIBaseState
                 //Rotate head
                 headTrf.position = currentWPUG;
                 headTrf.LookAt(nextWPUG, Vector3.up);
-                bb.CalculateWorldEnterBezierPoints(bb.head.transform);
+                bb.CalculateWorldEnterBezierPoints(headTrf);
                 headTrf.LookAt(currentWP, headUp);
 
                 curveNum = 0;
@@ -114,10 +114,10 @@ public class WormAITestState : WormAIBaseState
                     ++WPIndex;
                     currentWP = route.wayPoints[WPIndex].transform.position;
 
-                    bb.head.agent.areaMask = WormBlackboard.NAVMESH_FLOOR_LAYER;
-                    bb.head.agent.enabled = true;
-                    bb.head.agent.speed = bb.wanderingSpeed;
-                    bb.head.agent.SetDestination(currentWP);
+                    head.agent.areaMask = WormBlackboard.NAVMESH_FLOOR_LAYER;
+                    head.agent.enabled = true;
+                    head.agent.speed = bb.wanderingSpeed;
+                    head.agent.SetDestination(currentWP);
 
                     subState = SubState.FOLLOWING_PATH;
                 }
@@ -125,14 +125,14 @@ public class WormAITestState : WormAIBaseState
                 break;
 
             case SubState.FOLLOWING_PATH:
-                if (bb.head.agent.hasPath)
+                if (head.agent.hasPath)
                 {
-                    if (bb.head.agent.remainingDistance <= 0.25f)
+                    if (head.agent.remainingDistance <= 0.25f)
                     {
                         //If it was the last WP, exit
                         if (WPIndex == route.wayPoints.Length - 2)
                         {
-                            bb.head.agent.enabled = false;
+                            head.agent.enabled = false;
 
                             currentWP = route.wayPoints[WPIndex].transform.position;
                             nextWP = route.wayPoints[WPIndex + 1].transform.position;
@@ -140,7 +140,7 @@ public class WormAITestState : WormAIBaseState
                             currentWPUG = currentWP - bb.navMeshLayersDistance;
                             nextWPUG = nextWP - bb.navMeshLayersDistance;
 
-                            bb.CalculateWorldExitBezierPoints(bb.head.transform);
+                            bb.CalculateWorldExitBezierPoints(headTrf);
 
                             curveNum = 0;
                             t = 0;
@@ -151,7 +151,7 @@ public class WormAITestState : WormAIBaseState
                         {
                             ++WPIndex;
                             currentWP = route.wayPoints[WPIndex].transform.position;
-                            bb.head.agent.SetDestination(currentWP);
+                            head.agent.SetDestination(currentWP);
                         }
                     }
                 }
@@ -159,7 +159,7 @@ public class WormAITestState : WormAIBaseState
                 {                 
                     if (WPIndex == route.wayPoints.Length - 2)
                     {
-                        bb.head.agent.enabled = false;
+                        head.agent.enabled = false;
 
                         currentWP = headTrf.position;
                         nextWP = route.wayPoints[WPIndex + 1].transform.position;
@@ -167,7 +167,7 @@ public class WormAITestState : WormAIBaseState
                         currentWPUG = currentWP - bb.navMeshLayersDistance;
                         nextWPUG = nextWP - bb.navMeshLayersDistance;
 
-                        bb.CalculateWorldExitBezierPoints(bb.head.transform);
+                        bb.CalculateWorldExitBezierPoints(headTrf);
 
                         curveNum = 0;
                         t = 0;
@@ -178,7 +178,7 @@ public class WormAITestState : WormAIBaseState
                     {
                         ++WPIndex;
                         currentWP = route.wayPoints[WPIndex].transform.position;
-                        bb.head.agent.SetDestination(currentWP);
+                        head.agent.SetDestination(currentWP);
                     }
                 }
                 break;

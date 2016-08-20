@@ -161,6 +161,7 @@ public class WormBlackboard : MonoBehaviour
     public float aboveAttackCurrentExposureTime;
     [HideInInspector]
     public float aboveAttackCurrentCooldownTime;
+    public AudioClip aboveAttackWarningSound;
 
     [Header("Misc variables")]
     public GameObject spawnEntry;

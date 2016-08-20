@@ -5,13 +5,15 @@ public class WormAIBaseState
 {
     public WormBlackboard bb;
 
+    protected WormAIBehaviour head; //Shortcut
     protected Transform headTrf; //Shortcut
     private Vector3 undergroundDirection;
 
     public WormAIBaseState(WormBlackboard bb)
     {
         this.bb = bb;
-        headTrf = bb.headTrf.transform;
+        head = bb.head;
+        headTrf = bb.headTrf;
     }
 
     virtual public void Init() { }
@@ -27,12 +29,12 @@ public class WormAIBaseState
 
     public virtual WormAIBaseState ImpactedByShot(ChromaColor shotColor, float damage, PlayerController player)
     {
-        return bb.head.ProcessShotImpact(shotColor, damage, player);
+        return head.ProcessShotImpact(shotColor, damage, player);
     }
 
     protected void SetUndergroundDirection()
     {
-        bb.head.SetVisible(false);
+        head.SetVisible(false);
 
         //Set direction to scene center
         undergroundDirection = bb.sceneCenter.transform.position - headTrf.position;

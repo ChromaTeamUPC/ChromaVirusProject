@@ -285,7 +285,7 @@ public class WormBodySegmentController : MonoBehaviour
         if (other.tag == "Player1" || other.tag == "Player2")
         {
             PlayerController player = other.GetComponent<PlayerController>();
-            bb.head.PlayerTouched(player, transform.position);
+            head.PlayerTouched(player, transform.position);
         }
     }
 }
