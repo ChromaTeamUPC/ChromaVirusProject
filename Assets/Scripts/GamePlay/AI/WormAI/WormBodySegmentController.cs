@@ -281,7 +281,6 @@ public class WormBodySegmentController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.tag);
         if (other.tag == "Player1" || other.tag == "Player2")
         {
             PlayerController player = other.GetComponent<PlayerController>();
