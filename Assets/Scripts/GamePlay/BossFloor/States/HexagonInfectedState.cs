@@ -3,6 +3,9 @@ using System.Collections;
 
 public class HexagonInfectedState : HexagonBaseState
 {
+    private const float INFECTION_MAX_WAIT_TIME = 10f;
+    private float elapsedTime;
+
     private float halfDuration;
     private Vector3 half;
 
@@ -17,6 +20,7 @@ public class HexagonInfectedState : HexagonBaseState
 
         hex.SetPlaneMaterial(hex.planeInfectedMaterial);
         halfDuration = hex.currentInfectionDuration / 2;
+        elapsedTime = 0;
     }
 
     public override void OnStateExit()
@@ -33,6 +37,13 @@ public class HexagonInfectedState : HexagonBaseState
     public override HexagonBaseState Update()
     {
         ReturnToPlace();
+
+        //Security check. Sometimes tail collition is not detected so cell remains infected permanently
+        elapsedTime += Time.deltaTime;
+        if(elapsedTime >= INFECTION_MAX_WAIT_TIME && !hex.countingInfectionTime)
+        {
+            hex.countingInfectionTime = true;
+        }
 
         if(hex.countingInfectionTime)
         {
