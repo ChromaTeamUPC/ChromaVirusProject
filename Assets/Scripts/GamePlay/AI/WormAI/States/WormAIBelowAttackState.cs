@@ -84,7 +84,7 @@ public class WormAIBelowAttackState : WormAIBaseState
         switch (subState)
         {
             case SubState.WAITING:
-                if (elapsedTime >= bb.belowAttackWaitTime)
+                if (elapsedTime >= bb.BelowAttackSettingsPhase.belowAttackWaitTime)
                 {
                     GameObject playerGO = rsc.enemyMng.SelectPlayerRandom();
                     if (playerGO != null)
@@ -109,7 +109,7 @@ public class WormAIBelowAttackState : WormAIBaseState
                     else
                         return head.wanderingState;
 
-                    origin.WormBelowAttackWarning();
+                    origin.WormBelowAttackWarning(bb.BelowAttackSettingsPhase.belowAttackAdjacentCells);
 
                     elapsedTime = 0f;
                     subState = SubState.WARNING_PLAYER;
@@ -121,7 +121,7 @@ public class WormAIBelowAttackState : WormAIBaseState
 
             case SubState.WARNING_PLAYER:
 
-                if (elapsedTime >= bb.belowAttackWarningTime)
+                if (elapsedTime >= bb.BelowAttackSettingsPhase.belowAttackWarningTime)
                 {
                     //Position head below entry point
                     currentX = bb.GetJumpXGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false);
@@ -144,13 +144,13 @@ public class WormAIBelowAttackState : WormAIBaseState
 
             case SubState.JUMPING:
                 //While not again below underground navmesh layer advance
-                currentX += Time.deltaTime * bb.belowAttackSpeed;
+                currentX += Time.deltaTime * bb.BelowAttackSettingsPhase.belowAttackSpeed;
                 lastPosition = headTrf.position;
                 headTrf.position = bb.GetJumpPositionGivenX(currentX);
 
                 headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition), headTrf.up);
 
-                float angle = bb.belowAttackRotationSpeed * Time.deltaTime;
+                float angle = bb.BelowAttackSettingsPhase.belowAttackRotationSpeed * Time.deltaTime;
                 headTrf.Rotate(new Vector3(0, 0, angle));
                 rotation += angle;
 
@@ -174,7 +174,7 @@ public class WormAIBelowAttackState : WormAIBaseState
                 break;
 
             case SubState.EXITING:
-                currentX += Time.deltaTime * bb.belowAttackSpeed;
+                currentX += Time.deltaTime * bb.BelowAttackSettingsPhase.belowAttackSpeed;
                 lastPosition = headTrf.position;
                 headTrf.position = bb.GetJumpPositionGivenX(currentX);
 
@@ -188,7 +188,7 @@ public class WormAIBelowAttackState : WormAIBaseState
 
                     /*bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
                     bb.agent.enabled = true;
-                    bb.agent.speed = bb.undergroundSpeed;
+                    bb.agent.speed = bb.WanderingSettingsPhase.undergroundSpeed;
                     bb.agent.SetDestination(bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false)); //Back to entry in the underground
                     */
                     return head.wanderingState;

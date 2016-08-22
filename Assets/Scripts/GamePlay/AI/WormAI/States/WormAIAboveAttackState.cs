@@ -42,7 +42,7 @@ public class WormAIAboveAttackState : WormAIBaseState
 
             if (destiny != null)
             {
-                speed = (headTrf.position - destiny.transform.position).magnitude / bb.aboveAttackJumpDuration;
+                speed = (headTrf.position - destiny.transform.position).magnitude / bb.AboveAttackSettingsPhase.aboveAttackJumpDuration;
 
                 bb.CalculateParabola(headTrf.position, destiny.transform.position);
 
@@ -75,7 +75,7 @@ public class WormAIAboveAttackState : WormAIBaseState
     {
         base.OnStateExit();
 
-        bb.aboveAttackCurrentCooldownTime = bb.aboveAttackCooldownTime;
+        bb.aboveAttackCurrentCooldownTime = 0f;
         bb.aboveAttackCurrentExposureTime = 0f;
     }
 
@@ -86,9 +86,9 @@ public class WormAIAboveAttackState : WormAIBaseState
         switch (subState)
         {
             case SubState.WARNING_PLAYER:
-                headTrf.rotation = Quaternion.RotateTowards(headTrf.rotation, initialRotation, 90 / bb.aboveAttackWarningTime * Time.deltaTime);
+                headTrf.rotation = Quaternion.RotateTowards(headTrf.rotation, initialRotation, 90 / bb.AboveAttackSettingsPhase.aboveAttackWarningTime * Time.deltaTime);
 
-                if (elapsedTime >= bb.aboveAttackWarningTime)
+                if (elapsedTime >= bb.AboveAttackSettingsPhase.aboveAttackWarningTime)
                 {
                     subState = SubState.JUMPING;
                 }
@@ -105,9 +105,9 @@ public class WormAIAboveAttackState : WormAIBaseState
 
                 headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition), headTrf.up);
 
-                if (rotation < bb.aboveAttackSelfRotation)
+                if (rotation < bb.AboveAttackSettingsPhase.aboveAttackSelfRotation)
                 {
-                    float angle = bb.aboveAttackSelfRotation / bb.aboveAttackJumpDuration * Time.deltaTime;
+                    float angle = bb.AboveAttackSettingsPhase.aboveAttackSelfRotation / bb.AboveAttackSettingsPhase.aboveAttackJumpDuration * Time.deltaTime;
                     headTrf.Rotate(new Vector3(0, 0, angle));
                     rotation += angle;
                 }
@@ -148,7 +148,7 @@ public class WormAIAboveAttackState : WormAIBaseState
 
                     /*bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
                     bb.agent.enabled = true;
-                    bb.agent.speed = bb.undergroundSpeed;
+                    bb.agent.speed = bb.WanderingSettingsPhase.undergroundSpeed;
                     bb.agent.SetDestination(bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false)); //Back to entry in the underground
                     */
                     return head.wanderingState;

@@ -65,7 +65,7 @@ public class WormAISpawningState : WormAIBaseState
 
             case SubState.JUMPING:
                 //While not again below underground navmesh layer advance
-                currentX += Time.deltaTime * bb.wanderingSpeed;
+                currentX += Time.deltaTime * bb.WanderingSettingsPhase.wanderingSpeed;
                 lastPosition = headTrf.position;
                 headTrf.position = bb.GetJumpPositionGivenX(currentX);
 
@@ -75,7 +75,7 @@ public class WormAISpawningState : WormAIBaseState
                 {
                     if(!highestPointReached)
                     {
-                        head.StartNewPhase();
+                        //head.StartNewPhase();
                         highestPointReached = true;
                     }
 
@@ -104,7 +104,7 @@ public class WormAISpawningState : WormAIBaseState
                 break;
 
             case SubState.EXITING:
-                currentX += Time.deltaTime * bb.wanderingSpeed;
+                currentX += Time.deltaTime * bb.WanderingSettingsPhase.wanderingSpeed;
                 lastPosition = headTrf.position;
                 headTrf.position = bb.GetJumpPositionGivenX(currentX);
 
@@ -118,7 +118,7 @@ public class WormAISpawningState : WormAIBaseState
 
                     /*bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
                     bb.agent.enabled = true;
-                    bb.agent.speed = bb.undergroundSpeed;
+                    bb.agent.speed = bb.WanderingSettingsPhase.undergroundSpeed;
                     bb.agent.SetDestination(bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false)); //Back to entry in the underground
                     */
                     return head.wanderingState;

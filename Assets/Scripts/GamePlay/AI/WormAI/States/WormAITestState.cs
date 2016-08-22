@@ -49,7 +49,7 @@ public class WormAITestState : WormAIBaseState
 
         /*bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
         bb.agent.enabled = true;
-        bb.agent.speed = bb.undergroundSpeed;
+        bb.agent.speed = bb.WanderingSettingsPhase.undergroundSpeed;
         bb.agent.SetDestination(route.wayPoints[WPIndex].transform.position - bb.navMeshLayersDistance);*/
     }
 
@@ -81,7 +81,7 @@ public class WormAITestState : WormAIBaseState
             case SubState.ENTERING:
                 if(curveNum <= 1)
                 {
-                    shouldMove = Time.deltaTime * bb.wanderingSpeed;
+                    shouldMove = Time.deltaTime * bb.WanderingSettingsPhase.wanderingSpeed;
                     actuallyMoved = 0;
                     lastPosition = headTrf.position;
                     Vector3 newPos = Vector3.zero;
@@ -116,7 +116,7 @@ public class WormAITestState : WormAIBaseState
 
                     head.agent.areaMask = WormBlackboard.NAVMESH_FLOOR_LAYER;
                     head.agent.enabled = true;
-                    head.agent.speed = bb.wanderingSpeed;
+                    head.agent.speed = bb.WanderingSettingsPhase.wanderingSpeed;
                     head.agent.SetDestination(currentWP);
 
                     subState = SubState.FOLLOWING_PATH;
@@ -187,7 +187,7 @@ public class WormAITestState : WormAIBaseState
                 
                 if (curveNum <= 1)
                 {
-                    shouldMove = Time.deltaTime * bb.wanderingSpeed;
+                    shouldMove = Time.deltaTime * bb.WanderingSettingsPhase.wanderingSpeed;
                     actuallyMoved = 0;
                     lastPosition = headTrf.position;
                     Vector3 newPos = Vector3.zero;

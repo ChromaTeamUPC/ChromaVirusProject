@@ -1,12 +1,51 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class WormBlackboard : MonoBehaviour 
 {
     public const int NAVMESH_FLOOR_LAYER = 32;
     public const int NAVMESH_UNDERGROUND_LAYER = 64;
     public const float NAVMESH_LAYER_HEIGHT = 8f;
+
+    [Serializable]
+    public class WanderingSettings
+    {
+        public int routeMinId = 0;
+        public int routeMaxId = 1;
+        public float wanderingSpeed = 10;
+        public float sinLongitude = 3f;
+        public float sinAmplitude = 0.25f;
+        public float sinCycleDuration = 30f;
+        public float undergroundSpeed = 10;
+    }
+
+    [Serializable]
+    public class BelowAttackSettings
+    {
+        public bool active = true;
+        public float chancesOfBelowAttackAfterWandering = 50f;
+        public float belowAttackWaitTime = 2f;
+        public float belowAttackWarningTime = 1f;
+        public int belowAttackAdjacentCells = 3;
+        public float belowAttackSpeed = 10f;
+        public float belowAttackRotationSpeed = 180f;
+    }
+
+    [Serializable]
+    public class AboveAttackSettings
+    {
+        public bool active = true;
+        public float aboveAttackExposureTimeNeeded = 3f;
+        public float aboveAttackExposureMaxAngle = 135f;
+        public float aboveAttackExposureMinHexagons = 2;
+        public float aboveAttackExposureMaxHexagons = 5;
+        public float aboveAttackCooldownTime = 10f;
+        public float aboveAttackWarningTime = 0.5f;
+        public float aboveAttackJumpDuration = 1f;
+        public float aboveAttackSelfRotation = 180f;
+    }
 
     #region Settings
     [Header("Scene Related Settings")]
@@ -61,7 +100,7 @@ public class WormBlackboard : MonoBehaviour
     [Header("Head Settings")]
     public int wormMaxPhases = 4;
     [HideInInspector]
-    public int wormCurrentPhase = 1;
+    public int wormCurrentPhase = -1;
     public float headMaxHealth = 100f;
     [HideInInspector]
     public float headCurrentHealth;
@@ -77,11 +116,15 @@ public class WormBlackboard : MonoBehaviour
     public float bodyColorsCarrouselChangeInterval = 0.1f;
 
     [Header("Wandering Settings")]
-    public GameObject bezierCurvesPrefab;
-    public float wanderingSpeed = 10;
+    /*public float wanderingSpeed = 10;
     public float sinLongitude = 3f;
     public float sinAmplitude = 0.25f;
     public float sinCycleDuration = 30f;
+    public float undergroundSpeed = 10;*/
+    [SerializeField]
+    public WanderingSettings[] wanderingSettings = new WanderingSettings[4];
+    public WanderingSettings WanderingSettingsPhase { get { return wanderingSettings[wormCurrentPhase]; } }
+    public GameObject bezierCurvesPrefab;
     [HideInInspector]
     public float sinDistanceFactor;
     [HideInInspector]
@@ -92,7 +135,6 @@ public class WormBlackboard : MonoBehaviour
     public float sinElapsedTime;
     [HideInInspector]
     public bool applySinMovement;
-    public float undergroundSpeed = 10;
     [HideInInspector]
     public bool isHeadOverground;
     [HideInInspector]
@@ -142,21 +184,27 @@ public class WormBlackboard : MonoBehaviour
     public float attackRumbleDuration = 1f;
 
     [Header("Below Attack Settings")]
-    public float chancesOfBelowAttackAfterWandering = 50f;
+    /*public float chancesOfBelowAttackAfterWandering = 50f;
     public float belowAttackWaitTime = 2f;
     public float belowAttackWarningTime = 1f;
     public float belowAttackSpeed = 10f;
-    public float belowAttackRotationSpeed = 180f;
+    public float belowAttackRotationSpeed = 180f;*/
+    [SerializeField]
+    public BelowAttackSettings[] belowAttackSettings = new BelowAttackSettings[4];
+    public BelowAttackSettings BelowAttackSettingsPhase { get { return belowAttackSettings[wormCurrentPhase]; } }
 
     [Header("Above Attack Settings")]
-    public float aboveAttackExposureTimeNeeded = 3f;
+    /*public float aboveAttackExposureTimeNeeded = 3f;
     public float aboveAttackExposureMaxAngle = 135f;
     public float aboveAttackExposureMinHexagons = 2;
     public float aboveAttackExposureMaxHexagons = 5;
     public float aboveAttackCooldownTime = 10f;
     public float aboveAttackWarningTime = 0.5f;
     public float aboveAttackJumpDuration = 1f;
-    public float aboveAttackSelfRotation = 180f;
+    public float aboveAttackSelfRotation = 180f;*/
+    [SerializeField]
+    public AboveAttackSettings[] aboveAttackSettings = new AboveAttackSettings[4];
+    public AboveAttackSettings AboveAttackSettingsPhase { get { return aboveAttackSettings[wormCurrentPhase]; } } 
     [HideInInspector]
     public float aboveAttackCurrentExposureTime;
     [HideInInspector]
@@ -219,8 +267,8 @@ public class WormBlackboard : MonoBehaviour
         localExitBezier21 = bezierTrf.FindDeepChild("Exit21").position;
         localExitBezier22 = bezierTrf.FindDeepChild("Exit22").position;
 
-        sinDistanceFactor = 360 / sinLongitude;
-        sinTimeFactor = 360 / sinCycleDuration;
+        sinDistanceFactor = 360 / WanderingSettingsPhase.sinLongitude;
+        sinTimeFactor = 360 / WanderingSettingsPhase.sinCycleDuration;
 
         ResetValues();
         SetInitialBodyWayPoints();
@@ -229,10 +277,10 @@ public class WormBlackboard : MonoBehaviour
     public void ResetValues()
     {
         isHeadOverground = false;
-        wormCurrentPhase = 0;
+        wormCurrentPhase = -1;
         headCurrentHealth = headMaxHealth;
         headChargeLevel = 0;
-        aboveAttackCurrentCooldownTime = aboveAttackCooldownTime;
+        aboveAttackCurrentCooldownTime = 0f;
         aboveAttackCurrentExposureTime = 0f;
         sinElapsedTime = 0;
         applySinMovement = false;
@@ -525,16 +573,16 @@ public class WormBlackboard : MonoBehaviour
 
     public void UpdateBodyMovement()
     {
-        sinDistanceFactor = 360 / sinLongitude;
-        sinTimeFactor = 360 / sinCycleDuration;
+        sinDistanceFactor = 360 / WanderingSettingsPhase.sinLongitude;
+        sinTimeFactor = 360 / WanderingSettingsPhase.sinCycleDuration;
 
         //If head has moved, create a new waypoint and recalculate all segments' position
         if ((headTrf.position != headWayPoint.position))
         {
             //Update sin time
             sinElapsedTime += Time.deltaTime;
-            if (sinElapsedTime >= sinCycleDuration)
-                sinElapsedTime -= sinCycleDuration;
+            if (sinElapsedTime >= WanderingSettingsPhase.sinCycleDuration)
+                sinElapsedTime -= WanderingSettingsPhase.sinCycleDuration;
             sinTimeOffset = sinElapsedTime * sinTimeFactor;
 
             headWayPoint = new WormWayPoint(headTrf.position, headTrf.rotation, head.IsVisible(), headWayPoint);
@@ -550,7 +598,7 @@ public class WormBlackboard : MonoBehaviour
 
             float effectiveDistance;
             if (applySinMovement)
-                effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * sinAmplitude);
+                effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
             else
                 effectiveDistance = totalDistance;
 
@@ -582,7 +630,7 @@ public class WormBlackboard : MonoBehaviour
                 //---- Body ----
                 totalDistance += segmentToJunctionDistance;
                 if (applySinMovement)
-                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * sinAmplitude);
+                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
                 else
                     effectiveDistance = totalDistance;
 
@@ -618,7 +666,7 @@ public class WormBlackboard : MonoBehaviour
                 {
                     totalDistance += segmentToJunctionDistance;
                     if (applySinMovement)
-                        effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * sinAmplitude);
+                        effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
                     else
                         effectiveDistance = totalDistance;
                 }
@@ -630,7 +678,7 @@ public class WormBlackboard : MonoBehaviour
                 //---- Junction ----
                 totalDistance += segmentToJunctionDistance;
                 if (applySinMovement)
-                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * sinAmplitude);
+                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
                 else
                     effectiveDistance = totalDistance;
 
@@ -658,7 +706,7 @@ public class WormBlackboard : MonoBehaviour
                 //---- Tail ----
                 totalDistance += tailToJunctionDistance;
                 if (applySinMovement)
-                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * sinAmplitude);
+                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
                 else
                     effectiveDistance = totalDistance;
 

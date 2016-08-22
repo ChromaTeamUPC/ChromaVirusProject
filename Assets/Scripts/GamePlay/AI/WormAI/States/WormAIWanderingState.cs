@@ -48,7 +48,8 @@ public class WormAIWanderingState : WormAIBaseState
         WormRoute newRoute;
         do
         {
-            int routeNum = Random.Range(0, head.routes.Length);
+            //int routeNum = Random.Range(0, head.routes.Length);
+            int routeNum = Random.Range(bb.WanderingSettingsPhase.routeMinId, bb.WanderingSettingsPhase.routeMaxId + 1);
             newRoute = head.routes[routeNum];
         }
         while (route == newRoute);
@@ -57,7 +58,7 @@ public class WormAIWanderingState : WormAIBaseState
 
         head.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
         head.agent.enabled = true;
-        head.agent.speed = bb.undergroundSpeed;
+        head.agent.speed = bb.WanderingSettingsPhase.undergroundSpeed;
         head.agent.SetDestination(route.wayPoints[WPIndex].transform.position - bb.navMeshLayersDistance);
     }
 
@@ -99,7 +100,7 @@ public class WormAIWanderingState : WormAIBaseState
             case SubState.ENTERING:
                 if (t <= 2)
                 {
-                    shouldMove = Time.deltaTime * bb.wanderingSpeed;
+                    shouldMove = Time.deltaTime * bb.WanderingSettingsPhase.wanderingSpeed;
                     actuallyMoved = 0;
                     lastPosition = headTrf.position;
                     Vector3 newPos = Vector3.zero;
@@ -122,7 +123,7 @@ public class WormAIWanderingState : WormAIBaseState
 
                     head.agent.areaMask = WormBlackboard.NAVMESH_FLOOR_LAYER;
                     head.agent.enabled = true;
-                    head.agent.speed = bb.wanderingSpeed;
+                    head.agent.speed = bb.WanderingSettingsPhase.wanderingSpeed;
                     head.agent.SetDestination(currentWP);
 
                     subState = SubState.FOLLOWING_PATH;
@@ -138,8 +139,8 @@ public class WormAIWanderingState : WormAIBaseState
                     //Debug.Log("Player in sight: " + bb.aboveAttackCurrentExposureTime);
                 }
 
-                if(bb.aboveAttackCurrentExposureTime >= bb.aboveAttackExposureTimeNeeded &&
-                    bb.aboveAttackCurrentCooldownTime <= 0f)
+                if(bb.AboveAttackSettingsPhase.active && bb.aboveAttackCurrentExposureTime >= bb.AboveAttackSettingsPhase.aboveAttackExposureTimeNeeded &&
+                    bb.aboveAttackCurrentCooldownTime >= bb.AboveAttackSettingsPhase.aboveAttackCooldownTime)
                 {
                     return head.aboveAttackState;
                 }
@@ -179,7 +180,7 @@ public class WormAIWanderingState : WormAIBaseState
             case SubState.EXITING:
                 if (t <= 2)
                 {
-                    shouldMove = Time.deltaTime * bb.wanderingSpeed;
+                    shouldMove = Time.deltaTime * bb.WanderingSettingsPhase.wanderingSpeed;
                     actuallyMoved = 0;
                     lastPosition = headTrf.position;
                     Vector3 newPos = Vector3.zero;
@@ -214,7 +215,8 @@ public class WormAIWanderingState : WormAIBaseState
                 {
                     bb.applySinMovement = false;
                     //If some random condition attack, else new wandering state
-                    if (Random.Range(0f, 1f) <= bb.chancesOfBelowAttackAfterWandering / 100)
+                    if (bb.BelowAttackSettingsPhase.active &&
+                        Random.Range(0f, 1f) <= bb.BelowAttackSettingsPhase.chancesOfBelowAttackAfterWandering / 100)
                         return head.belowAttackState;
                     else
                         SetInitialState();

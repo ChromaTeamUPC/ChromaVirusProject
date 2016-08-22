@@ -9,14 +9,6 @@ public class PositionSuperClusterItems : MonoBehaviour
     private Transform center;
     private Transform[] neigbours = new Transform[6]; 
 
-	// Use this for initialization
-	void Start () 
-	{
-        if (EditorApplication.isPlaying) return;
-        Debug.Log("Script started");
-        action = false;       
-    }
-
     void Update()
     {
         if (EditorApplication.isPlaying) return;
