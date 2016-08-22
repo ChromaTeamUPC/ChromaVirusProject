@@ -21,6 +21,7 @@ public class WormAIBehaviour : MonoBehaviour
 
     [Header("Misc Settings")]
     public GameObject headModel;
+    public GameObject testSphere;
 
     private HeadSubState headState;
 

@@ -39,6 +39,12 @@ public class WormAIWanderingState : WormAIBaseState
         SetInitialState();
     }
 
+    public override void OnStateExit()
+    {
+        bb.head.testSphere.SetActive(false);
+        base.OnStateExit();
+    }
+
     private void SetInitialState()
     {
         WPIndex = 0;
@@ -137,6 +143,11 @@ public class WormAIWanderingState : WormAIBaseState
                 {
                     bb.aboveAttackCurrentExposureTime += Time.deltaTime;
                     //Debug.Log("Player in sight: " + bb.aboveAttackCurrentExposureTime);
+                    bb.head.testSphere.SetActive(true);
+                }
+                else
+                {
+                    bb.head.testSphere.SetActive(false);
                 }
 
                 if(bb.AboveAttackSettingsPhase.active && bb.aboveAttackCurrentExposureTime >= bb.AboveAttackSettingsPhase.aboveAttackExposureTimeNeeded &&
