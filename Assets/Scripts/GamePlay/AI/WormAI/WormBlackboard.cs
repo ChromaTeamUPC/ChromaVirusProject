@@ -291,8 +291,8 @@ public class WormBlackboard : MonoBehaviour
         sceneCenter = screenCnt;
         sceneCenterHexagon = sceneCenter.GetComponent<HexagonController>();
 
-        head.Init();
         InitBodyParts();
+        head.Init();
     }
 
     //Body segments management

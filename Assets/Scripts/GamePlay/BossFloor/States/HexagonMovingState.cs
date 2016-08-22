@@ -75,6 +75,9 @@ public class HexagonMovingState : HexagonBaseState
 
     public override HexagonBaseState ProbeTouched()
     {
-        return hex.idleState;
+        if (hex.isBorder)
+            return hex.borderWallState;
+        else
+            return hex.idleState;
     }
 }

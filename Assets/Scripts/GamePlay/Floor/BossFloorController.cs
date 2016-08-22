@@ -59,7 +59,7 @@ public class BossFloorController : MonoBehaviour
 
     private void SetColor(Color mainColor)
     {
-        hexagonMaterial.SetColor("_Color", mainColor);
+        //hexagonMaterial.SetColor("_Color", mainColor);
         hexagonMaterial.SetColor("_EmissionColor", mainColor);
     }
 

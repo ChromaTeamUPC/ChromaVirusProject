@@ -44,7 +44,7 @@ public class HexagonBelowAttackWallState : HexagonBaseState
                 }
                 else
                 {
-                    hex.geometryOffset.transform.position += new Vector3(0f, totalHeight, 0f);
+                    hex.geometryOffset.transform.position = new Vector3(hex.geometryOffset.transform.position.x, totalHeight, hex.geometryOffset.transform.position.z);
 
                     subState = SubState.IDLE;
                 }
@@ -58,7 +58,7 @@ public class HexagonBelowAttackWallState : HexagonBaseState
                 }
                 else
                 {
-                    hex.geometryOffset.transform.position += new Vector3(0f, hex.geometryOriginalY, 0f);
+                    hex.geometryOffset.transform.position = new Vector3(hex.geometryOffset.transform.position.x, hex.geometryOriginalY, hex.geometryOffset.transform.position.z);
                     return hex.idleState;
                 }
                 break;

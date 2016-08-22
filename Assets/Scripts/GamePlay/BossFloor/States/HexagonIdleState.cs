@@ -59,4 +59,12 @@ public class HexagonIdleState : HexagonBaseState
         hex.currentInfectionDuration = hex.infectionTimeAfterContactEnds;
         return hex.infectedState;
     }
+
+    public override HexagonBaseState ProbeTouched()
+    {
+        if (hex.isBorder)
+            return hex.borderWallState;
+
+        return null;
+    }
 }

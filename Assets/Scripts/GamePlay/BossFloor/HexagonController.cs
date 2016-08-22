@@ -21,6 +21,7 @@ public class HexagonController : MonoBehaviour
     private HexagonBaseState currentState;
 
     public HexagonIdleState idleState;
+    public HexagonBorderWallState borderWallState;
     public HexagonMovingState movingState;
     public HexagonEnterExitState enterExitState;
     public HexagonInfectedState infectedState;
@@ -53,6 +54,13 @@ public class HexagonController : MonoBehaviour
     public bool isMoving;
     [HideInInspector]
     public int probesInRange;
+
+    [Header("Border Settings")]
+    public float borderMinHeight = 3f;
+    public float borderMaxHeight = 5f;
+    public float borderSpeed = 10f;
+    [HideInInspector]
+    public bool isBorder;
 
     [Header("Notification Settings")]
     public float enterExitBlinkInterval = 0.1f;
@@ -122,6 +130,7 @@ public class HexagonController : MonoBehaviour
             hexagonLayer = 1 << LayerMask.NameToLayer("Hexagon");
 
         idleState = new HexagonIdleState(this);
+        borderWallState = new HexagonBorderWallState(this);
         movingState = new HexagonMovingState(this);
         enterExitState = new HexagonEnterExitState(this);
         infectedState = new HexagonInfectedState(this);
@@ -138,6 +147,7 @@ public class HexagonController : MonoBehaviour
         geometryOriginalY = geometryOffset.transform.position.y;
         probesInRange = 0;
 
+        CheckNeighbours();
         currentState = idleState;
     }
 
@@ -145,7 +155,16 @@ public class HexagonController : MonoBehaviour
     void Start () 
 	{
         plane.SetActive(false);
-        CheckNeighbours();
+
+        isBorder = false;
+        for (int i = 0; i < neighbours.Length; ++i)
+        {
+            if (neighbours[i] == null)
+            {
+                isBorder = true;
+                break;
+            }
+        }
     }
 	
 	// Update is called once per frame
@@ -334,6 +353,8 @@ public class HexagonController : MonoBehaviour
 
     private void WormBelowAttackAdjacentWarning()
     {
+        if (isBorder) return;
+
         mainAttackHexagon = false;
         ChangeState(warningState);
     }
@@ -370,7 +391,9 @@ public class HexagonController : MonoBehaviour
 
     private void WormBelowAttackAdjacentStart()
     {
-        if(currentState == warningState)
+        if (isBorder) return;
+
+        if (currentState == warningState)
             ChangeState(belowAttackAdjacentState);
     }
 
@@ -400,6 +423,8 @@ public class HexagonController : MonoBehaviour
 
     private void RaiseItself()
     {
+        if (isBorder) return;
+
         shouldBeWall = true;
         ChangeState(belowAttackWallState);
     }
@@ -432,8 +457,6 @@ public class HexagonController : MonoBehaviour
     {
         shouldBeWall = false;
     }
-
-
     #endregion
 
     #region Above Attack
