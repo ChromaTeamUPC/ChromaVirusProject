@@ -142,7 +142,14 @@ public class WormAIWanderingState : WormAIBaseState
                 if(bb.AboveAttackSettingsPhase.active && bb.aboveAttackCurrentExposureTime >= bb.AboveAttackSettingsPhase.aboveAttackExposureTimeNeeded &&
                     bb.aboveAttackCurrentCooldownTime >= bb.AboveAttackSettingsPhase.aboveAttackCooldownTime)
                 {
-                    return head.aboveAttackState;
+                    GameObject playerGO = rsc.enemyMng.SelectPlayerRandom();
+                    if (playerGO != null)
+                    {
+                        PlayerController player = playerGO.GetComponent<PlayerController>();
+                        HexagonController destiny = player.GetNearestHexagon();
+                        if (destiny.isWormSelectable)
+                            return head.aboveAttackState;
+                    }
                 }
 
                 if (!head.agent.hasPath || (head.agent.hasPath && head.agent.remainingDistance <= 0.25))

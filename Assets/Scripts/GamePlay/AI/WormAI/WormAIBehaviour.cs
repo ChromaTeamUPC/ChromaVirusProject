@@ -83,7 +83,7 @@ public class WormAIBehaviour : MonoBehaviour
 
     void Start()
     {
-        SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel));
+        SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
     }
 
     public void SetBlackboard(WormBlackboard bb)
@@ -102,7 +102,7 @@ public class WormAIBehaviour : MonoBehaviour
     public void Init()
     {
         StartNewPhase();
-        SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel));
+        SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
         rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
         ChangeState(spawningState);
     }
@@ -144,10 +144,10 @@ public class WormAIBehaviour : MonoBehaviour
 
     public void ChargeHead()
     {
-        bb.headChargeLevel++;
-        SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel));
+        bb.headCurrentChargeLevel++;
+        SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
 
-        if (bb.headChargeLevel >= bb.headChargeMaxLevel)
+        if (bb.headCurrentChargeLevel >= bb.headMaxChargeLevel)
         {
             bb.DisableBodyParts();
             headState = HeadSubState.ACTIVATED;
@@ -158,8 +158,8 @@ public class WormAIBehaviour : MonoBehaviour
 
     public void DischargeHead()
     {
-        bb.headChargeLevel = 0;
-        SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel));
+        bb.headCurrentChargeLevel = 0;
+        SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
         bb.ShuffleBodyParts();
     }
 
@@ -195,9 +195,9 @@ public class WormAIBehaviour : MonoBehaviour
     {
         blinkController.BlinkWhiteOnce();
 
-        bb.headCurrentHealth -= damage;
+        bb.headCurrentDamage += damage;
 
-        if (bb.headCurrentHealth <= 0)
+        if (bb.headCurrentDamage >= bb.HealthSettingsPhase.headMaxHealth)
         {
             phaseExplosion.Play();
             headState = HeadSubState.DEACTIVATED;
@@ -212,7 +212,7 @@ public class WormAIBehaviour : MonoBehaviour
             if (bb.wormCurrentPhase < bb.wormMaxPhases -1)
             {
                 StartNewPhase();
-                SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headChargeLevel));
+                SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
                 rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
             }
             //Else worm destroyed
@@ -229,8 +229,8 @@ public class WormAIBehaviour : MonoBehaviour
     {
         bb.wormCurrentPhase++;
         //Debug.Log("Worm phase: " + wormPhase);
-        bb.headCurrentHealth = bb.headMaxHealth;
-        bb.headChargeLevel = 0;
+        bb.headCurrentDamage = 0;
+        bb.headCurrentChargeLevel = 0;
         bb.ConsolidateBodyParts();
     }
 

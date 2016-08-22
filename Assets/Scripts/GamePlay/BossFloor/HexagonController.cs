@@ -49,6 +49,7 @@ public class HexagonController : MonoBehaviour
     public float earthquakeMaxHeight = 2f;
     public float earthquakeUpSpeed = 6.5f;
     public float earthquakeDownSpeed = 4;
+    public bool isWormSelectable = true;
 
     [HideInInspector]
     public bool isMoving;
@@ -59,8 +60,7 @@ public class HexagonController : MonoBehaviour
     public float borderMinHeight = 3f;
     public float borderMaxHeight = 5f;
     public float borderSpeed = 10f;
-    [HideInInspector]
-    public bool isBorder;
+    public bool isBorder = false;
 
     [Header("Notification Settings")]
     public float enterExitBlinkInterval = 0.1f;
@@ -156,7 +156,6 @@ public class HexagonController : MonoBehaviour
 	{
         plane.SetActive(false);
 
-        isBorder = false;
         for (int i = 0; i < neighbours.Length; ++i)
         {
             if (neighbours[i] == null)

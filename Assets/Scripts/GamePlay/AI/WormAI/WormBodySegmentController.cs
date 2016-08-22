@@ -13,8 +13,8 @@ public class WormBodySegmentController : MonoBehaviour
     }
 
     private State state;
-    private float currentHealth;
-    private float currentHealthWrongColor;
+    private float currentDamage;
+    private float currentDamageWrongColor;
 
     [SerializeField]
     private ChromaColor color;
@@ -70,15 +70,15 @@ public class WormBodySegmentController : MonoBehaviour
     {
         this.bb = bb;
         head = bb.head;
-        currentHealth = bb.bodyMaxHealth;
-        currentHealthWrongColor = bb.bodyMaxHealth;
+        currentDamage = 0;
+        currentDamageWrongColor = 0;
     }
 
     public void SetInitialState(ChromaColor c)
     {
         color = c;
-        currentHealth = bb.bodyMaxHealth;
-        currentHealthWrongColor = bb.bodyMaxHealth;
+        currentDamage = 0;
+        currentDamageWrongColor = 0;
         SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(color));
 
         ColorEventInfo.eventInfo.newColor = color;
@@ -110,8 +110,8 @@ public class WormBodySegmentController : MonoBehaviour
         }
 
         this.color = color;
-        currentHealth = bb.bodyMaxHealth;
-        currentHealthWrongColor = bb.bodyMaxHealth;
+        currentDamage = 0;
+        currentDamageWrongColor = 0;
         state = State.SETTING;
 
         StartCoroutine(SetRandomColors());
@@ -132,8 +132,8 @@ public class WormBodySegmentController : MonoBehaviour
         {
             ChromaColor oldColor = this.color;
             this.color = color;
-            currentHealth = bb.bodyMaxHealth;
-            currentHealthWrongColor = bb.bodyMaxHealth;
+            currentDamage = 0;
+            currentDamageWrongColor = 0;
 
             ColorEventInfo.eventInfo.oldColor = oldColor;
             ColorEventInfo.eventInfo.newColor = color;
@@ -201,9 +201,9 @@ public class WormBodySegmentController : MonoBehaviour
 
         if (shotColor != color)
         {
-            currentHealthWrongColor -= damage * bb.bodyWrongColorDamageModifier;
+            currentDamageWrongColor += damage * bb.HealthSettingsPhase.bodyWrongColorDamageModifier;
 
-            if(currentHealthWrongColor <= 0)
+            if(currentDamageWrongColor >= bb.HealthSettingsPhase.bodyMaxHealth)
             {
                 state = State.DEACTIVATED; //not really deactivated but flagged to allow notify properly when colors reset
 
@@ -218,9 +218,9 @@ public class WormBodySegmentController : MonoBehaviour
         }
         else
         {
-            currentHealth -= damage;
+            currentDamage += damage;
 
-            if (currentHealth <= 0)
+            if (currentDamage >= bb.HealthSettingsPhase.bodyMaxHealth)
             {
                 //Set material grey
                 SetMaterial(rsc.coloredObjectsMng.GetWormBodyGreyMaterial());

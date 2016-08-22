@@ -10,6 +10,14 @@ public class WormBlackboard : MonoBehaviour
     public const float NAVMESH_LAYER_HEIGHT = 8f;
 
     [Serializable]
+    public class HealthSettings
+    {
+        public float headMaxHealth = 100f;
+        public float bodyMaxHealth = 50;
+        public float bodyWrongColorDamageModifier = 0.5f;
+    }
+
+    [Serializable]
     public class WanderingSettings
     {
         public int routeMinId = 0;
@@ -64,6 +72,12 @@ public class WormBlackboard : MonoBehaviour
     public float headToJunctionDistance = 3;
     public float segmentToJunctionDistance = 2;
     public float tailToJunctionDistance = 1.6f;
+    public int wormMaxPhases = 4;
+    [HideInInspector]
+    public int wormCurrentPhase = -1;
+    public int headMaxChargeLevel = 3;
+    [HideInInspector]
+    public int headCurrentChargeLevel;
 
     //Head
     [HideInInspector]
@@ -97,20 +111,17 @@ public class WormBlackboard : MonoBehaviour
 
     private WormWayPoint headWayPoint;
 
-    [Header("Head Settings")]
-    public int wormMaxPhases = 4;
-    [HideInInspector]
-    public int wormCurrentPhase = -1;
-    public float headMaxHealth = 100f;
-    [HideInInspector]
-    public float headCurrentHealth;
-    public int headChargeMaxLevel = 3;
-    [HideInInspector]
-    public int headChargeLevel;
-
-    [Header("Body Segment Settings")]
+    [Header("Health Settings")]
+    /*public float headMaxHealth = 100f;
     public float bodyMaxHealth = 50;
-    public float bodyWrongColorDamageModifier = 0.5f;
+    public float bodyWrongColorDamageModifier = 0.5f;*/
+    [SerializeField]
+    public HealthSettings[] healthSettings = new HealthSettings[4];
+    public HealthSettings HealthSettingsPhase { get { return healthSettings[wormCurrentPhase]; } }
+    [HideInInspector]
+    public float headCurrentDamage;
+
+    [Header("Body Changing Color Settings")]
     public float bodyColorsCarrouselMinTime = 1f;
     public float bodyColorsCarrouselMaxTime = 3f;
     public float bodyColorsCarrouselChangeInterval = 0.1f;
@@ -278,8 +289,8 @@ public class WormBlackboard : MonoBehaviour
     {
         isHeadOverground = false;
         wormCurrentPhase = -1;
-        headCurrentHealth = headMaxHealth;
-        headChargeLevel = 0;
+        //headCurrentHealth = headMaxHealth;
+        headCurrentChargeLevel = 0;
         aboveAttackCurrentCooldownTime = 0f;
         aboveAttackCurrentExposureTime = 0f;
         sinElapsedTime = 0;

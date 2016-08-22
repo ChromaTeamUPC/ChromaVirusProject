@@ -94,6 +94,9 @@ public class WormAIBelowAttackState : WormAIBaseState
 
                         if (origin != null)
                         {
+                            if (!origin.isWormSelectable)
+                                return head.wanderingState;
+
                             destiny = GetHexagonFacingCenter();
 
                             bb.CalculateParabola(origin.transform.position, destiny.transform.position);
