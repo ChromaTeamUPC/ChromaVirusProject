@@ -29,6 +29,7 @@ public class WormAIBehaviour : MonoBehaviour
     public WormAIWanderingState wanderingState;
     public WormAIBelowAttackState belowAttackState;
     public WormAIAboveAttackState aboveAttackState;
+    public WormAIHeadDestroyedState headDestroyedState;
     public WormAIDyingState dyingState;
 
     public WormAITestState testState;
@@ -95,6 +96,7 @@ public class WormAIBehaviour : MonoBehaviour
         wanderingState = new WormAIWanderingState(bb);
         belowAttackState = new WormAIBelowAttackState(bb);
         aboveAttackState = new WormAIAboveAttackState(bb);
+        headDestroyedState = new WormAIHeadDestroyedState(bb);
         dyingState = new WormAIDyingState(bb);
 
         testState = new WormAITestState(bb);
@@ -103,6 +105,7 @@ public class WormAIBehaviour : MonoBehaviour
     public void Init()
     {
         StartNewPhase();
+        bb.ConsolidateBodyParts();
         SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
         rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
         ChangeState(spawningState);
@@ -164,7 +167,7 @@ public class WormAIBehaviour : MonoBehaviour
         bb.ShuffleBodyParts();
     }
 
-    private void SetMaterial(Material materials)
+    public void SetMaterial(Material materials)
     {
         Material[] mats = rend.sharedMaterials;
 
@@ -200,14 +203,12 @@ public class WormAIBehaviour : MonoBehaviour
 
         if (bb.headCurrentDamage >= bb.HealthSettingsPhase.headMaxHealth)
         {
-            phaseExplosion.Play();
+            bb.killerPlayer = player;
             headState = HeadSubState.DEACTIVATED;
 
-            EnemyDiedEventInfo.eventInfo.color = shotColor;
-            EnemyDiedEventInfo.eventInfo.infectionValue = 100 / bb.wormMaxPhases;
-            EnemyDiedEventInfo.eventInfo.killerPlayer = player;
-            EnemyDiedEventInfo.eventInfo.killedSameColor = true;
-            rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_DESTROYED, EnemyDiedEventInfo.eventInfo);
+            return headDestroyedState;
+
+            /*phaseExplosion.Play();
 
             //If we are not reached last phase, keep going
             if (bb.wormCurrentPhase < bb.wormMaxPhases -1)
@@ -220,7 +221,7 @@ public class WormAIBehaviour : MonoBehaviour
             else
             {
                  return dyingState;
-            }
+            }*/
         }
 
         return null;
@@ -232,7 +233,6 @@ public class WormAIBehaviour : MonoBehaviour
         //Debug.Log("Worm phase: " + wormPhase);
         bb.headCurrentDamage = 0;
         bb.headCurrentChargeLevel = 0;
-        bb.ConsolidateBodyParts();
     }
 
     public void Explode()

@@ -42,6 +42,7 @@ public class WormAIWanderingState : WormAIBaseState
     public override void OnStateExit()
     {
         bb.head.testSphere.SetActive(false);
+        head.agent.enabled = true;
         base.OnStateExit();
     }
 

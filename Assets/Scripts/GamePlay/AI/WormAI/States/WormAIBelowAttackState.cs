@@ -72,7 +72,7 @@ public class WormAIBelowAttackState : WormAIBaseState
             if (newDistance < distance)
             {
                 distance = newDistance;
-                result = colliders[i].GetComponent<HexagonController>(); ;
+                result = colliders[i].GetComponent<HexagonController>();
             }
         }
 

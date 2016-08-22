@@ -126,6 +126,13 @@ public class WormBlackboard : MonoBehaviour
     public float bodyColorsCarrouselMaxTime = 3f;
     public float bodyColorsCarrouselChangeInterval = 0.1f;
 
+    [Header("Head Destroyed Settings")]
+    public float headDestroyedWaitTime = 3f;
+    public float headDestoryedBodyWaitTime = 1f;
+    public float headDestroyedLookRotationSpeed = 50;
+    public float headDestroyedJumpDuration = 1f;
+    public float headDestroyedRotationSpeed = 360f;
+
     [Header("Wandering Settings")]
     /*public float wanderingSpeed = 10;
     public float sinLongitude = 3f;
@@ -225,6 +232,9 @@ public class WormBlackboard : MonoBehaviour
     [Header("Misc variables")]
     public GameObject spawnEntry;
     public GameObject spawnExit;
+
+    [HideInInspector]
+    public PlayerController killerPlayer;
 
     #endregion
     void Awake () 

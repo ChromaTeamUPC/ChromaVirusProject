@@ -16,12 +16,12 @@ public class WormAIAboveAttackState : WormAIBaseState
 
     private float currentX;
     private Vector3 lastPosition;
+    private Quaternion initialRotation;
     private float rotation;
     private float destinyInRangeDistance = 1f;
     private bool destinyInRange;
     private float speed;
 
-    private Quaternion initialRotation;
     private float elapsedTime;
 
     public WormAIAboveAttackState(WormBlackboard bb) : base(bb)
