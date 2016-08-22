@@ -140,7 +140,7 @@ public class WormAIWanderingState : WormAIBaseState
 
             case SubState.FOLLOWING_PATH:
 
-                if(head.CheckPlayerInSight()) 
+                if(head.CheckPlayerInSight(false, false)) 
                 {
                     bb.aboveAttackCurrentExposureTime += Time.deltaTime;
                     //Debug.Log("Player in sight: " + bb.aboveAttackCurrentExposureTime);
@@ -151,17 +151,16 @@ public class WormAIWanderingState : WormAIBaseState
                     bb.head.testSphere.SetActive(false);
                 }
 
-                if(bb.AboveAttackSettingsPhase.active && bb.aboveAttackCurrentExposureTime >= bb.AboveAttackSettingsPhase.aboveAttackExposureTimeNeeded &&
-                    bb.aboveAttackCurrentCooldownTime >= bb.AboveAttackSettingsPhase.aboveAttackCooldownTime)
+                if (bb.AboveAttackSettingsPhase.active && bb.aboveAttackCurrentExposureTime >= bb.AboveAttackSettingsPhase.aboveAttackExposureTimeNeeded &&
+                    bb.aboveAttackCurrentCooldownTime >= bb.AboveAttackSettingsPhase.aboveAttackCooldownTime &&
+                    head.CheckPlayerInSight(true, true))
                 {
-                    GameObject playerGO = rsc.enemyMng.SelectPlayerRandom();
-                    if (playerGO != null)
+                    if (bb.playerInSight != null)
                     {
-                        PlayerController player = playerGO.GetComponent<PlayerController>();
-                        HexagonController destiny = player.GetNearestHexagon();
+                        HexagonController destiny = bb.playerInSight.GetNearestHexagon();
                         if (destiny.isWormSelectable)
                             return head.aboveAttackState;
-                    }
+                    }                   
                 }
 
                 if (!head.agent.hasPath || (head.agent.hasPath && head.agent.remainingDistance <= 0.25))

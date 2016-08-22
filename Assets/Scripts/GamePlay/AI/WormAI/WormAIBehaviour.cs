@@ -7,7 +7,8 @@ public class WormAIBehaviour : MonoBehaviour
     private enum HeadSubState
     {
         DEACTIVATED,
-        ACTIVATED
+        ACTIVATED,
+        KNOCKED_OUT
     }
 
     private WormBlackboard bb;
@@ -290,10 +291,20 @@ public class WormAIBehaviour : MonoBehaviour
             currentState.PlayerTouched(player, origin);
     }
 
-    public bool CheckPlayerInSight()
+    public bool CheckPlayerInSight(bool filterMinDistance, bool savePlayer)
     {
+        bb.playerInSight = null;
+
         Vector3 forward = transform.forward;
         forward.y = 0;
+        bool result = false;
+
+        PlayerController player1 = null;
+        float distanceP1 = 0; ;
+        float angleP1 = 0;
+        PlayerController player2 = null;
+        float distanceP2 = 0; ;
+        float angleP2 = 0; ;
 
         //Check player 1
         GameObject player = rsc.enemyMng.GetPlayerIfActive(1);
@@ -304,14 +315,22 @@ public class WormAIBehaviour : MonoBehaviour
             wormPlayer.y = 0;
 
             //Check distance
-            float distance = wormPlayer.magnitude;
-            if (distance >= bb.AboveAttackSettingsPhase.aboveAttackExposureMinHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS
-                && distance <= bb.AboveAttackSettingsPhase.aboveAttackExposureMaxHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS)
+            distanceP1 = wormPlayer.magnitude;
+            if ((!filterMinDistance || distanceP1 >= bb.AboveAttackSettingsPhase.aboveAttackExposureMinHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS)
+                && distanceP1 <= bb.AboveAttackSettingsPhase.aboveAttackExposureMaxHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS)
             {
                 //Check angle
-                float angle = Vector3.Angle(forward, wormPlayer);
-                if (angle <= bb.AboveAttackSettingsPhase.aboveAttackExposureMaxAngle)
-                    return true;
+                angleP1 = Vector3.Angle(forward, wormPlayer);
+                if (angleP1 <= bb.AboveAttackSettingsPhase.aboveAttackExposureMaxAngle)
+                {
+                    if(!savePlayer)
+                        return true;
+                    else
+                    {
+                        result = true;
+                        player1 = player.GetComponent<PlayerController>();
+                    }
+                }
             }
         }
 
@@ -324,17 +343,37 @@ public class WormAIBehaviour : MonoBehaviour
             wormPlayer.y = 0;
 
             //Check distance
-            float distance = wormPlayer.magnitude;
-            if (distance >= bb.AboveAttackSettingsPhase.aboveAttackExposureMinHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS
-                && distance <= bb.AboveAttackSettingsPhase.aboveAttackExposureMaxHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS)
+            distanceP2 = wormPlayer.magnitude;
+            if ((!filterMinDistance || distanceP2 >= bb.AboveAttackSettingsPhase.aboveAttackExposureMinHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS)
+                && distanceP2 <= bb.AboveAttackSettingsPhase.aboveAttackExposureMaxHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS)
             {
                 //Check angle
-                float angle = Vector3.Angle(forward, wormPlayer);
-                if (angle <= bb.AboveAttackSettingsPhase.aboveAttackExposureMaxAngle)
-                    return true;
+                angleP2 = Vector3.Angle(forward, wormPlayer);
+                if (angleP2 <= bb.AboveAttackSettingsPhase.aboveAttackExposureMaxAngle)
+                {
+                    if (!savePlayer)
+                        return true;
+                    else
+                    {
+                        result = true;
+                        player2 = player.GetComponent<PlayerController>();
+                    }
+                }
             }
         }
 
-        return false;
+        if(result && savePlayer)
+        {
+            if (player1 != null && player2 != null)
+            {
+                bb.playerInSight = (angleP1 <= angleP2 ? player1 : player2);
+            }
+            else if (player1 != null)
+                bb.playerInSight = player1;
+            else
+                bb.playerInSight = player2;
+        }
+
+        return result;
     }   
 }

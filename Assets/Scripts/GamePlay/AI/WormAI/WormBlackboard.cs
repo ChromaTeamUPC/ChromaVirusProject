@@ -235,6 +235,8 @@ public class WormBlackboard : MonoBehaviour
 
     [HideInInspector]
     public PlayerController killerPlayer;
+    [HideInInspector]
+    public PlayerController playerInSight;
 
     #endregion
     void Awake () 
