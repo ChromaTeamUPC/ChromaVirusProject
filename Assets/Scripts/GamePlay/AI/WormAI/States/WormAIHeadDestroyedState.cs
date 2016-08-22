@@ -165,7 +165,11 @@ public class WormAIHeadDestroyedState : WormAIBaseState
 
     private HexagonController GetExitHexagon()
     {
-        Vector3 offset = headTrf.forward * HexagonController.DISTANCE_BETWEEN_HEXAGONS * 2;
+        Vector3 offset = headTrf.forward;
+        offset.y = 0;
+        offset.Normalize();
+
+        offset *= (HexagonController.DISTANCE_BETWEEN_HEXAGONS * 2);
         Vector3 position = headTrf.position + offset;
         position.y = 0;
 

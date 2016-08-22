@@ -29,6 +29,8 @@ public class WormAIWanderingState : WormAIBaseState
     private float shouldMove;
     private float actuallyMoved;
 
+    private bool angryEyes;
+
     public WormAIWanderingState(WormBlackboard bb) : base(bb)
     { }
 
@@ -41,13 +43,15 @@ public class WormAIWanderingState : WormAIBaseState
 
     public override void OnStateExit()
     {
-        bb.head.testSphere.SetActive(false);
         head.agent.enabled = true;
         base.OnStateExit();
     }
 
     private void SetInitialState()
     {
+        angryEyes = false;
+        head.angryEyes.Stop();
+
         WPIndex = 0;
         //Set initial substate, nav mesh layer and select a random route
         subState = SubState.GOING_TO_ENTRY;
@@ -143,12 +147,20 @@ public class WormAIWanderingState : WormAIBaseState
                 if(head.CheckPlayerInSight(false, false)) 
                 {
                     bb.aboveAttackCurrentExposureTime += Time.deltaTime;
-                    //Debug.Log("Player in sight: " + bb.aboveAttackCurrentExposureTime);
-                    bb.head.testSphere.SetActive(true);
+
+                    if (!angryEyes)
+                    {
+                        angryEyes = true;
+                        head.angryEyes.Play();
+                    }
                 }
                 else
                 {
-                    bb.head.testSphere.SetActive(false);
+                    if (angryEyes)
+                    {
+                        angryEyes = false;
+                        head.angryEyes.Stop();
+                    }
                 }
 
                 if (bb.AboveAttackSettingsPhase.active && bb.aboveAttackCurrentExposureTime >= bb.AboveAttackSettingsPhase.aboveAttackExposureTimeNeeded &&
@@ -159,7 +171,14 @@ public class WormAIWanderingState : WormAIBaseState
                     {
                         HexagonController destiny = bb.playerInSight.GetNearestHexagon();
                         if (destiny.isWormSelectable)
+                        {
+                            if (angryEyes)
+                            {
+                                angryEyes = false;
+                                head.angryEyes.Stop();
+                            }
                             return head.aboveAttackState;
+                        }
                     }                   
                 }
 
@@ -183,6 +202,12 @@ public class WormAIWanderingState : WormAIBaseState
 
                         HexagonController hexagon = route.wayPoints[WPIndex + 1].GetComponent<HexagonController>();
                         hexagon.WormEnterExit();
+
+                        if (angryEyes)
+                        {
+                            angryEyes = false;
+                            head.angryEyes.Stop();
+                        }
 
                         subState = SubState.EXITING;
                     }

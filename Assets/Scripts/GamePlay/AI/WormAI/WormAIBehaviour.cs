@@ -19,10 +19,10 @@ public class WormAIBehaviour : MonoBehaviour
 
     [Header("Fx")]
     public ParticleSystem phaseExplosion;
+    public ParticleSystem angryEyes;
 
     [Header("Misc Settings")]
     public GameObject headModel;
-    public GameObject testSphere;
 
     private HeadSubState headState;
 
