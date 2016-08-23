@@ -129,5 +129,10 @@ public class PlayerSpecialState : PlayerBaseState {
         {
             shot.Impact();
         }
+
+        if (bb.worm != null)
+        {
+            bb.worm.ImpactedBySpecial(damage, bb.player);
+        }
     }
 }

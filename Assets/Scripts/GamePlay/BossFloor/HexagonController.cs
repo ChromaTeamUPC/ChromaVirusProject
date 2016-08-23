@@ -81,10 +81,12 @@ public class HexagonController : MonoBehaviour
     public float infectionTimeAfterContactEnds = 2f;
     public float infectionTimeAfterAttack = 1f;
     public Vector2 infectionForces = new Vector2(10f, 10f);
+    private float currentInfectionDuration;
+    private float infectionHalfDuration;
+    public float CurrentInfectionDuration { get { return currentInfectionDuration; } set { currentInfectionDuration = value; infectionHalfDuration = currentInfectionDuration / 2; } }
+    public float InfectionHalfDuration { get { return infectionHalfDuration; } }
     [HideInInspector]
-    public float currentInfectionDuration;
-    [HideInInspector]
-    public bool countingInfectionTime;
+    public bool isWormTouchingHexagon;
 
     [Header("Damage Settings")]
     public float enterExitDamage = 10f;
@@ -164,6 +166,16 @@ public class HexagonController : MonoBehaviour
                 break;
             }
         }
+
+        isWormTouchingHexagon = false;
+    }
+
+    void FixedUpdate()
+    {
+        if(currentInfectionDuration > 0f && !isWormTouchingHexagon)
+            currentInfectionDuration -= Time.fixedDeltaTime;
+
+        isWormTouchingHexagon = false;
     }
 	
 	// Update is called once per frame
@@ -176,7 +188,7 @@ public class HexagonController : MonoBehaviour
             {
                 ChangeState(newState);
             }
-        }     
+        }   
     }
 
     public void SetPlaneMaterial(Material mat)
@@ -242,6 +254,11 @@ public class HexagonController : MonoBehaviour
             PlayerController player = other.GetComponent<PlayerController>();
             ChangeStateIfNotNull(currentState.PlayerStay(player));
         }
+        else if (other.tag == "WormHead" || other.tag == "WormBody" || other.tag == "WormTail")
+        {
+            isWormTouchingHexagon = true;
+        }
+
     }
 
     void OnTriggerExit(Collider other)

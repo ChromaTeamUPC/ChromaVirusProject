@@ -41,12 +41,6 @@ public class WormAIWanderingState : WormAIBaseState
         SetInitialState();
     }
 
-    public override void OnStateExit()
-    {
-        head.agent.enabled = true;
-        base.OnStateExit();
-    }
-
     private void SetInitialState()
     {
         angryEyes = false;

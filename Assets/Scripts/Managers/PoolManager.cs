@@ -31,6 +31,7 @@ public class PoolManager : MonoBehaviour
 
     public VoxelPool voxelPool = new VoxelPool();
     public EnergyVoxelPool energyVoxelPool = new EnergyVoxelPool();
+    public EnergyVoxelPool bigEnergyVoxelPool = new EnergyVoxelPool();
     public ObjectPool voxelColliderPool = new ObjectPool();
 
     public SpiderPool spiderPool = new SpiderPool();
@@ -62,6 +63,7 @@ public class PoolManager : MonoBehaviour
 
         voxelPool.Init(gameObject, poolContainerPrefab);
         energyVoxelPool.Init(gameObject, poolContainerPrefab);
+        bigEnergyVoxelPool.Init(gameObject, poolContainerPrefab);
         voxelColliderPool.Init(gameObject, poolContainerPrefab);
 
         spiderPool.Init(gameObject, poolContainerPrefab);

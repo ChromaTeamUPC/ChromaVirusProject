@@ -116,11 +116,6 @@ public class WormAISpawningState : WormAIBaseState
                     pos.y = -WormBlackboard.NAVMESH_LAYER_HEIGHT;
                     headTrf.position = pos;
 
-                    /*bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
-                    bb.agent.enabled = true;
-                    bb.agent.speed = bb.WanderingSettingsPhase.undergroundSpeed;
-                    bb.agent.SetDestination(bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false)); //Back to entry in the underground
-                    */
                     return head.wanderingState;
                 }
                 break;

@@ -3,25 +3,27 @@ using System.Collections;
 
 public class PlayerSpecialAttackDetector : MonoBehaviour 
 {
-    private PlayerBlackboard blackboard = null;
+    private PlayerBlackboard bb = null;
 
-    public PlayerBlackboard Blackboard { set { blackboard = value; } }
+    public PlayerBlackboard Blackboard { set { bb = value; } }
 
     void OnEnable()
     {
-        if (blackboard != null)
+        if (bb != null)
         {
-            blackboard.enemiesInRange.Clear();
-            blackboard.shotsInRange.Clear();
+            bb.worm = null;
+            bb.enemiesInRange.Clear();
+            bb.shotsInRange.Clear();
         }
     }
 
     void OnDisable()
     {
-        if (blackboard != null)
+        if (bb != null)
         {
-            blackboard.enemiesInRange.Clear();
-            blackboard.shotsInRange.Clear();
+            bb.worm = null;
+            bb.enemiesInRange.Clear();
+            bb.shotsInRange.Clear();
         }
     }
 
@@ -36,15 +38,22 @@ public class PlayerSpecialAttackDetector : MonoBehaviour
                 enemy = other.GetComponentInParent<EnemyBaseAIBehaviour>();
 
             if (enemy != null)
-                blackboard.enemiesInRange.Add(enemy);
+                bb.enemiesInRange.Add(enemy);
         }  
         else if (other.tag == "Shot")
         {
             EnemyShotControllerBase shot = other.GetComponent<EnemyShotControllerBase>();
 
             if (shot != null)
-                blackboard.shotsInRange.Add(shot);
-        }     
+                bb.shotsInRange.Add(shot);
+        } 
+        else if (other.tag == "WormHead")
+        {
+            WormAIBehaviour worm = other.GetComponent<WormAIBehaviour>();
+
+            if (worm != null)
+                bb.worm = worm;
+        }    
     }
 
     void OnTriggerExit(Collider other)
@@ -58,14 +67,21 @@ public class PlayerSpecialAttackDetector : MonoBehaviour
                 enemy = other.GetComponentInParent<EnemyBaseAIBehaviour>();
 
             if (enemy != null)
-                blackboard.enemiesInRange.Remove(enemy);
+                bb.enemiesInRange.Remove(enemy);
         }
         else if (other.tag == "Shot")
         {
             EnemyShotControllerBase shot = other.GetComponent<EnemyShotControllerBase>();
 
             if (shot != null)
-                blackboard.shotsInRange.Remove(shot);
+                bb.shotsInRange.Remove(shot);
+        }
+        else if (other.tag == "WormHead")
+        {
+            WormAIBehaviour worm = other.GetComponent<WormAIBehaviour>();
+
+            if (worm != null)
+                bb.worm = null;
         }
     }
 }

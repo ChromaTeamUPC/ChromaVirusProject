@@ -23,8 +23,7 @@ public class HexagonBelowAttackAdjacentState : HexagonBaseState
         //After Fx, infect
         if (!hex.buffPurple.isPlaying)
         {
-            hex.currentInfectionDuration = hex.infectionTimeAfterAttack;
-            hex.countingInfectionTime = true;
+            hex.CurrentInfectionDuration = hex.infectionTimeAfterAttack;
             return hex.infectedState;
         }
 

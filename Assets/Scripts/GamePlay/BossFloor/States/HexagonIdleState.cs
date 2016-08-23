@@ -56,7 +56,7 @@ public class HexagonIdleState : HexagonBaseState
 
     public override HexagonBaseState WormHeadEntered()
     {
-        hex.currentInfectionDuration = hex.infectionTimeAfterContactEnds;
+        hex.CurrentInfectionDuration = hex.infectionTimeAfterContactEnds;
         return hex.infectedState;
     }
 

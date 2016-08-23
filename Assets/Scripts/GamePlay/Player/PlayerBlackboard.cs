@@ -96,6 +96,7 @@ public class PlayerBlackboard
     //Special attack variables
     public List<EnemyBaseAIBehaviour> enemiesInRange = new List<EnemyBaseAIBehaviour>();
     public List<EnemyShotControllerBase> shotsInRange = new List<EnemyShotControllerBase>();
+    public WormAIBehaviour worm;
     public GameObject specialAttackDetector;
     public bool specialAttackTutorialTriggered;
 
@@ -210,6 +211,7 @@ public class PlayerBlackboard
         canShoot = true;
         firstShot = true;
 
+        worm = null;
         enemiesInRange.Clear();
         specialAttackDetector.SetActive(false);
 

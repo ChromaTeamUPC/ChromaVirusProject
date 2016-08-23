@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WormAIHeadDestroyedState : WormAIBaseState
+public class WormAIKnockOutState : WormAIBaseState
 {
     private enum SubState
     {
-        WAITING_HEAD,
-        WAITING_BODY,
+        KNOCKED_OUT,
+        MOVING_HEAD,
         JUMPING,
         EXITING
     }
@@ -22,7 +22,7 @@ public class WormAIHeadDestroyedState : WormAIBaseState
     private bool destinyInRange;
     private float speed;
 
-    public WormAIHeadDestroyedState(WormBlackboard bb) : base(bb)
+    public WormAIKnockOutState(WormBlackboard bb) : base(bb)
     { }
 
     public override void OnStateEnter()
@@ -33,25 +33,31 @@ public class WormAIHeadDestroyedState : WormAIBaseState
         destinyInRange = false;
         elapsedTime = 0f;
 
-        head.phaseExplosion.Play();
-        //TODO: animation?
+        head.SpawnEnergyVoxels();
+        head.HeadKnockOut();
+        //TODO: knockout animation play?
 
-        EnemyDiedEventInfo.eventInfo.infectionValue = 100 / bb.wormMaxPhases;
-        EnemyDiedEventInfo.eventInfo.killerPlayer = bb.killerPlayer;
-        EnemyDiedEventInfo.eventInfo.killedSameColor = true;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_DESTROYED, EnemyDiedEventInfo.eventInfo);
+        subState = SubState.KNOCKED_OUT;
+    }
 
-        subState = SubState.WAITING_HEAD;
+    public override void OnStateExit()
+    {
+        base.OnStateExit();
+        //knockout animation stop
+
+        head.DeactivateHead();
     }
 
     public override WormAIBaseState Update()
     {
         switch (subState)
         {
-            //Wait for head Fx and animation
-            case SubState.WAITING_HEAD:
-                if(elapsedTime >= bb.headDestroyedWaitTime)
+            case SubState.KNOCKED_OUT:
+                if (elapsedTime >= bb.HealthSettingsPhase.knockOutTime)
                 {
+                    //Restore
+                    head.ResetPhase();
+
                     destiny = GetExitHexagon();
                     bb.CalculateParabola(headTrf.position, destiny.transform.position);
                     speed = (headTrf.position - destiny.transform.position).magnitude / bb.headDestroyedJumpDuration;
@@ -67,32 +73,19 @@ public class WormAIHeadDestroyedState : WormAIBaseState
                     Vector3 nextPosition = bb.GetJumpPositionGivenX(fakeNextX);
                     initialRotation = Quaternion.LookRotation(nextPosition - startPosition, headTrf.up);
 
-                    bb.ConsolidateBodyParts();
-                    subState = SubState.WAITING_BODY;
+                    subState = SubState.MOVING_HEAD;
                     elapsedTime = 0f;
                 }
                 else
-                {
                     elapsedTime += Time.deltaTime;
-                }
                 break;
 
-            //Wait for body parts destruction
-            case SubState.WAITING_BODY:
-                if(bb.wormCurrentPhase < bb.wormMaxPhases - 1)
-                    headTrf.rotation = Quaternion.RotateTowards(headTrf.rotation, initialRotation, bb.headDestroyedLookRotationSpeed * Time.deltaTime);
+            case SubState.MOVING_HEAD:
+                headTrf.rotation = Quaternion.RotateTowards(headTrf.rotation, initialRotation, bb.headDestroyedLookRotationSpeed * Time.deltaTime);
 
                 if (elapsedTime >= bb.headDestoryedBodyWaitTime)
                 {
-                    if (bb.wormCurrentPhase == bb.wormMaxPhases -1)
-                        return head.dyingState;
-                    else
-                    {
-                        head.StartNewPhase();
-                        head.SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
-                        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
-                        subState = SubState.JUMPING;
-                    }
+                    subState = SubState.JUMPING;
                 }
                 else
                 {
@@ -150,8 +143,16 @@ public class WormAIHeadDestroyedState : WormAIBaseState
 
             default:
                 break;
-        }
+        }       
 
         return null;
+    }
+
+    public override WormAIBaseState ImpactedBySpecial(float damage, PlayerController player)
+    {
+        if (subState != SubState.KNOCKED_OUT) return null;
+
+        bb.killerPlayer = player;
+        return head.headDestroyedState;
     }
 }

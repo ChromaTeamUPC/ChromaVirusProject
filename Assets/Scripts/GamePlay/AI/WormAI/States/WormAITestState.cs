@@ -46,11 +46,6 @@ public class WormAITestState : WormAIBaseState
 
         //route = bb.worm.routes[4];
         //bb.agent.enabled = false;
-
-        /*bb.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
-        bb.agent.enabled = true;
-        bb.agent.speed = bb.WanderingSettingsPhase.undergroundSpeed;
-        bb.agent.SetDestination(route.wayPoints[WPIndex].transform.position - bb.navMeshLayersDistance);*/
     }
 
     public override WormAIBaseState Update()

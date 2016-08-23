@@ -35,8 +35,7 @@ public class HexagonAboveAttackState : HexagonBaseState
 
     public override HexagonBaseState WormTailExited()
     {
-        hex.currentInfectionDuration = hex.infectionTimeAfterAttack;
-        hex.countingInfectionTime = true;
+        hex.CurrentInfectionDuration = hex.infectionTimeAfterAttack;
         return hex.infectedState;
     }
 

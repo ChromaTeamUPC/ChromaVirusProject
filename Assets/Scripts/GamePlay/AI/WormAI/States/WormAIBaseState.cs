@@ -32,6 +32,11 @@ public class WormAIBaseState
         return head.ProcessShotImpact(shotColor, damage, player);
     }
 
+    public virtual WormAIBaseState ImpactedBySpecial(float damage, PlayerController player)
+    {
+        return null;
+    }
+
     protected void SetUndergroundDirection()
     {
         head.SetVisible(false);
@@ -57,5 +62,36 @@ public class WormAIBaseState
     public virtual void UpdateBodyMovement()
     {
         bb.UpdateBodyMovement();
+    }
+
+    protected HexagonController GetExitHexagon(int hexagonsDistance = 2)
+    {
+        Vector3 offset = headTrf.forward;
+        offset.y = 0;
+        offset.Normalize();
+
+        offset *= (HexagonController.DISTANCE_BETWEEN_HEXAGONS * hexagonsDistance);
+        Vector3 position = headTrf.position + offset;
+        position.y = 0;
+
+        Collider[] colliders = Physics.OverlapSphere(position, 1f, HexagonController.hexagonLayer);
+
+        if (colliders.Length == 0) return null;
+
+        HexagonController result = colliders[0].GetComponent<HexagonController>();
+        float distance = (position - colliders[0].transform.position).sqrMagnitude;
+
+        for (int i = 1; i < colliders.Length; ++i)
+        {
+            float newDistance = (colliders[i].transform.position - position).sqrMagnitude;
+
+            if (newDistance > distance)
+            {
+                distance = newDistance;
+                result = colliders[i].GetComponent<HexagonController>();
+            }
+        }
+
+        return result;
     }
 }

@@ -15,6 +15,7 @@ public class WormBlackboard : MonoBehaviour
         public float headMaxHealth = 100f;
         public float bodyMaxHealth = 50;
         public float bodyWrongColorDamageModifier = 0.5f;
+        public float knockOutTime = 7f;
     }
 
     [Serializable]
@@ -118,6 +119,10 @@ public class WormBlackboard : MonoBehaviour
     [SerializeField]
     public HealthSettings[] healthSettings = new HealthSettings[4];
     public HealthSettings HealthSettingsPhase { get { return healthSettings[wormCurrentPhase]; } }
+    public float headVulnerableBlinkInterval = 0.4f;
+    public float knockOutBlinkInterval = 0.2f;
+    public int knockOutEnergyVoxelsSpawned = 20;
+    public float knockOutHexagonsRotationSpeed = 360f;
     [HideInInspector]
     public float headCurrentDamage;
 

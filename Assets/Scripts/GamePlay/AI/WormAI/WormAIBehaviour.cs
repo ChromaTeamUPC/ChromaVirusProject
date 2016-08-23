@@ -20,6 +20,7 @@ public class WormAIBehaviour : MonoBehaviour
     [Header("Fx")]
     public ParticleSystem phaseExplosion;
     public ParticleSystem angryEyes;
+    public GameObject knockOutFx;
 
     [Header("Misc Settings")]
     public GameObject headModel;
@@ -30,6 +31,7 @@ public class WormAIBehaviour : MonoBehaviour
     public WormAIWanderingState wanderingState;
     public WormAIBelowAttackState belowAttackState;
     public WormAIAboveAttackState aboveAttackState;
+    public WormAIKnockOutState knockOutState;
     public WormAIHeadDestroyedState headDestroyedState;
     public WormAIDyingState dyingState;
 
@@ -97,6 +99,7 @@ public class WormAIBehaviour : MonoBehaviour
         wanderingState = new WormAIWanderingState(bb);
         belowAttackState = new WormAIBelowAttackState(bb);
         aboveAttackState = new WormAIAboveAttackState(bb);
+        knockOutState = new WormAIKnockOutState(bb);
         headDestroyedState = new WormAIHeadDestroyedState(bb);
         dyingState = new WormAIDyingState(bb);
 
@@ -155,7 +158,7 @@ public class WormAIBehaviour : MonoBehaviour
         if (bb.headCurrentChargeLevel >= bb.headMaxChargeLevel)
         {
             bb.DisableBodyParts();
-            headState = HeadSubState.ACTIVATED;
+            ActivateHead();
         }
 
         //rsc.colorMng.PrintColors();
@@ -178,6 +181,56 @@ public class WormAIBehaviour : MonoBehaviour
             rend.sharedMaterials = mats;
 
             blinkController.InvalidateMaterials();
+        }
+    }
+
+    public void DeactivateHead()
+    {
+        if (headState == HeadSubState.DEACTIVATED) return;
+
+        knockOutFx.SetActive(false);
+        StopAllCoroutines();
+        headState = HeadSubState.DEACTIVATED;
+    }
+
+    public void ActivateHead()
+    {
+        if (headState == HeadSubState.ACTIVATED) return;
+
+        StopAllCoroutines();
+        headState = HeadSubState.ACTIVATED;
+        StartCoroutine(BlinkHeadActivated());
+    }
+
+    public IEnumerator BlinkHeadActivated()
+    {
+        while (true)
+        {
+            SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headMaxChargeLevel));
+            yield return new WaitForSeconds(bb.headVulnerableBlinkInterval);
+            SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(0));
+            yield return new WaitForSeconds(bb.headVulnerableBlinkInterval);
+        }
+    }
+
+    public void HeadKnockOut()
+    {
+        if (headState == HeadSubState.KNOCKED_OUT) return;
+
+        knockOutFx.SetActive(true);
+        StopAllCoroutines();
+        headState = HeadSubState.KNOCKED_OUT;
+        StartCoroutine(BlinkHeadKnockOut());
+    }
+
+    public IEnumerator BlinkHeadKnockOut()
+    {
+        while (true)
+        {
+            SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headMaxChargeLevel));
+            yield return new WaitForSeconds(bb.knockOutBlinkInterval);
+            SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(0));
+            yield return new WaitForSeconds(bb.knockOutBlinkInterval);
         }
     }
 
@@ -204,28 +257,25 @@ public class WormAIBehaviour : MonoBehaviour
 
         if (bb.headCurrentDamage >= bb.HealthSettingsPhase.headMaxHealth)
         {
-            bb.killerPlayer = player;
-            headState = HeadSubState.DEACTIVATED;
-
-            return headDestroyedState;
-
-            /*phaseExplosion.Play();
-
-            //If we are not reached last phase, keep going
-            if (bb.wormCurrentPhase < bb.wormMaxPhases -1)
-            {
-                StartNewPhase();
-                SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
-                rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
-            }
-            //Else worm destroyed
-            else
-            {
-                 return dyingState;
-            }*/
+            return knockOutState;
         }
 
         return null;
+    }
+
+    public virtual void ImpactedBySpecial(float damage, PlayerController player)
+    {
+        if (headState != HeadSubState.KNOCKED_OUT) return;
+
+        if (currentState != null)
+        {
+            WormAIBaseState newState = currentState.ImpactedBySpecial(damage, player);
+
+            if (newState != null)
+            {
+                ChangeState(newState);
+            }
+        }
     }
 
     public void StartNewPhase()
@@ -234,6 +284,29 @@ public class WormAIBehaviour : MonoBehaviour
         //Debug.Log("Worm phase: " + wormPhase);
         bb.headCurrentDamage = 0;
         bb.headCurrentChargeLevel = 0;
+    }
+
+    public void ResetPhase()
+    {
+        bb.headCurrentDamage = 0;
+        DeactivateHead();
+        DischargeHead();
+    }
+
+
+    public void SpawnEnergyVoxels()
+    {
+        Vector3 pos = transform.position;
+        EnergyVoxelPool pool = rsc.poolMng.bigEnergyVoxelPool;
+        for (int i = 0; i < bb.knockOutEnergyVoxelsSpawned; ++i)
+        {
+            EnergyVoxelController voxel = pool.GetObject();
+            if (voxel != null)
+            {
+                voxel.transform.position = pos;
+                voxel.transform.rotation = Random.rotation;
+            }
+        }
     }
 
     public void Explode()
