@@ -41,7 +41,7 @@ public class HexagonAboveAttackState : HexagonBaseState
 
     public override HexagonBaseState PlayerStay(PlayerController player)
     {
-        player.ReceiveInfection(hex.aboveAttackDamage, hex.transform.position, hex.infectionForces);
+        player.ReceiveInfection(hex.aboveAttackCentralDamage, hex.transform.position, hex.infectionForces);
         return null;
     }
 }

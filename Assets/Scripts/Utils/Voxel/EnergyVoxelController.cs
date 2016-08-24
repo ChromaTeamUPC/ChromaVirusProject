@@ -9,6 +9,7 @@ public class EnergyVoxelController : MonoBehaviour {
         BLINKING,
         ATTRACTED
     }
+    public bool big = false;
     public float duration = 10;
     public float startBlinkingRatio = 0.6f;
 
@@ -81,7 +82,10 @@ public class EnergyVoxelController : MonoBehaviour {
                 }
                 else if (elapsedTime >= duration)
                 {
-                    rsc.poolMng.energyVoxelPool.AddObject(this);
+                    if(big)
+                        rsc.poolMng.bigEnergyVoxelPool.AddObject(this);
+                    else
+                        rsc.poolMng.energyVoxelPool.AddObject(this);
                 }
                 break;
 
@@ -100,7 +104,10 @@ public class EnergyVoxelController : MonoBehaviour {
                     else
                     {
                         target.RechargeEnergy(energyCharge);
-                        rsc.poolMng.energyVoxelPool.AddObject(this);
+                        if (big)
+                            rsc.poolMng.bigEnergyVoxelPool.AddObject(this);
+                        else
+                            rsc.poolMng.energyVoxelPool.AddObject(this);
                     }
                 }
                 else

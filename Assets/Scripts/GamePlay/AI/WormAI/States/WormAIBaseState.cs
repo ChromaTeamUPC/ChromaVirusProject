@@ -29,7 +29,7 @@ public class WormAIBaseState
 
     public virtual WormAIBaseState ImpactedByShot(ChromaColor shotColor, float damage, PlayerController player)
     {
-        return head.ProcessShotImpact(shotColor, damage, player);
+        return null;
     }
 
     public virtual WormAIBaseState ImpactedBySpecial(float damage, PlayerController player)

@@ -41,6 +41,13 @@ public class WormAIWanderingState : WormAIBaseState
         SetInitialState();
     }
 
+    public override void OnStateExit()
+    {
+        base.OnStateExit();
+
+        head.angryEyes.Stop();
+    }
+
     private void SetInitialState()
     {
         angryEyes = false;
@@ -267,4 +274,11 @@ public class WormAIWanderingState : WormAIBaseState
 
         return null;
     }
+
+    public override WormAIBaseState ImpactedByShot(ChromaColor shotColor, float damage, PlayerController player)
+    {
+        if (subState != SubState.FOLLOWING_PATH) return null;
+
+        return head.ProcessShotImpact(shotColor, damage, player);
+    }           
 }

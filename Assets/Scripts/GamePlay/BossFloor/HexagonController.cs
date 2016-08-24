@@ -90,8 +90,10 @@ public class HexagonController : MonoBehaviour
 
     [Header("Damage Settings")]
     public float enterExitDamage = 10f;
-    public float belowAttackDamage = 10f;
-    public float aboveAttackDamage = 10f;
+    public float belowAttackCentralDamage = 10f;
+    public float belowAttackAdjacentDamage = 10f;
+    public float aboveAttackCentralDamage = 10f;
+    public float aboveAttackAdjacentDamage = 10f;
     public float infectedCellDamage = 8f;
 
     [Header("Materials")]
@@ -292,45 +294,28 @@ public class HexagonController : MonoBehaviour
     public void WormBelowAttackWarning(int adjacentCells)
     {
         //choose adjacent cells
-        /*adjacentCellsSetupTop = Random.Range(0f, 1f) < 0.5f;
-
-        //Set adjacent cells state
-        //true = top, bottom left, bottom right, false = bottom, top left, top right
-        if (adjacentCellsSetupTop)
-        {
-            SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.TOP]);
-            SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.BOTTOM_LEFT]);
-            SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.BOTTOM_RIGHT]);
-        }
-        else
-        {
-            SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.BOTTOM]);
-            SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.TOP_LEFT]);
-            SetWormBelowAttackAdjacentWarning(neighbours[(int)Neighbour.TOP_RIGHT]);
-        }*/
-
         int cellNum;
         switch (adjacentCells)
         {
             case 1:
                 cellNum = Random.Range(0, 6);
-                SetWormBelowAttackAdjacentWarning(neighbours[cellNum]);
+                SetWormAttackAdjacentWarning(neighbours[cellNum]);
                 break;
 
             case 2:
                 cellNum = Random.Range(0, 3);
-                SetWormBelowAttackAdjacentWarning(neighbours[cellNum]);
+                SetWormAttackAdjacentWarning(neighbours[cellNum]);
                 cellNum += 3;
-                SetWormBelowAttackAdjacentWarning(neighbours[cellNum]);
+                SetWormAttackAdjacentWarning(neighbours[cellNum]);
                 break;
 
             case 3:
                 cellNum = Random.Range(0, 2);
-                SetWormBelowAttackAdjacentWarning(neighbours[cellNum]);
+                SetWormAttackAdjacentWarning(neighbours[cellNum]);
                 cellNum += 2;
-                SetWormBelowAttackAdjacentWarning(neighbours[cellNum]);
+                SetWormAttackAdjacentWarning(neighbours[cellNum]);
                 cellNum += 2;
-                SetWormBelowAttackAdjacentWarning(neighbours[cellNum]);
+                SetWormAttackAdjacentWarning(neighbours[cellNum]);
                 break;
 
             case 4:
@@ -338,7 +323,7 @@ public class HexagonController : MonoBehaviour
                 for(int i = 0; i < neighbours.Length; ++i)
                 {
                     if(i != cellNum && i != cellNum + 3)
-                        SetWormBelowAttackAdjacentWarning(neighbours[i]);
+                        SetWormAttackAdjacentWarning(neighbours[i]);
                 }
                 break;
 
@@ -347,7 +332,7 @@ public class HexagonController : MonoBehaviour
                 for (int i = 0; i < neighbours.Length; ++i)
                 {
                     if (i != cellNum)
-                        SetWormBelowAttackAdjacentWarning(neighbours[i]);
+                        SetWormAttackAdjacentWarning(neighbours[i]);
                 }
                 break;
 
@@ -361,13 +346,13 @@ public class HexagonController : MonoBehaviour
         ChangeState(warningState);
     }
 
-    private void SetWormBelowAttackAdjacentWarning(HexagonController adjacent)
+    private void SetWormAttackAdjacentWarning(HexagonController adjacent)
     {
         if (adjacent != null)
-            adjacent.WormBelowAttackAdjacentWarning();
+            adjacent.WormAttackAdjacentWarning();
     }
 
-    private void WormBelowAttackAdjacentWarning()
+    private void WormAttackAdjacentWarning()
     {
         if (isBorder) return;
 
@@ -378,19 +363,6 @@ public class HexagonController : MonoBehaviour
     public void WormBelowAttackStart()
     {
         //Set adjacent cells state
-        //true = top, bottom left, bottom right, false = bottom, top left, top right
-        /*if (adjacentCellsSetupTop)
-        {
-            SetWormBelowAttackAdjacentStart(neighbours[(int)Neighbour.TOP]);
-            SetWormBelowAttackAdjacentStart(neighbours[(int)Neighbour.BOTTOM_LEFT]);
-            SetWormBelowAttackAdjacentStart(neighbours[(int)Neighbour.BOTTOM_RIGHT]);
-        }
-        else
-        {
-            SetWormBelowAttackAdjacentStart(neighbours[(int)Neighbour.BOTTOM]);
-            SetWormBelowAttackAdjacentStart(neighbours[(int)Neighbour.TOP_LEFT]);
-            SetWormBelowAttackAdjacentStart(neighbours[(int)Neighbour.TOP_RIGHT]);
-        }*/
         for (int i = 0; i < neighbours.Length; ++i)
         {
             SetWormBelowAttackAdjacentStart(neighbours[i]);
@@ -478,6 +450,9 @@ public class HexagonController : MonoBehaviour
     #region Above Attack
     public void WormAboveAttackWarning()
     {
+        for (int i = 0; i < neighbours.Length; ++i)
+            SetWormAttackAdjacentWarning(neighbours[i]);
+
         mainAttackHexagon = true;
         ChangeState(warningState);
     }
