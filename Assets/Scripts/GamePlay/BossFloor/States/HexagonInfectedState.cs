@@ -14,16 +14,14 @@ public class HexagonInfectedState : HexagonBaseState
     {
         base.OnStateEnter();
 
-        hex.SetPlaneMaterial(hex.planeInfectedMaterial);
+        hex.StartPlaneInfectionAnimation();
     }
 
     public override void OnStateExit()
     {
         base.OnStateExit();
 
-        hex.plane.transform.localScale = Vector3.one;
-        hex.plane.SetActive(false);
-        //hex.SetPlaneMaterial(hex.planeTransparentMat);
+        hex.StopPlaneInfectionAnimation();
     }
 
     public override HexagonBaseState Update()

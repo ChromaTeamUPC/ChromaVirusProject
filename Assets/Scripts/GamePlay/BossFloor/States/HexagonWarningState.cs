@@ -12,10 +12,10 @@ public class HexagonWarningState : HexagonBaseState
         if (hex.mainAttackHexagon)
         {
             hex.plane.transform.localScale = new Vector3(1.1f, 1f, 1.1f);
-            hex.SetPlaneMaterial(hex.planeRedWarningMat);
+            hex.SetPlaneMaterial(hex.planeMainWarningMat);
         }
         else
-            hex.SetPlaneMaterial(hex.planeYellowWarningMat);
+            hex.SetPlaneMaterial(hex.planeSecondaryWarningMat);
 
         hex.planeBlinkController.BlinkTransparentNoStop(hex.warningBlinkInterval, hex.warningBlinkInterval);
     }

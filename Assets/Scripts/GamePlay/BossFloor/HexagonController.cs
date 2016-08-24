@@ -77,6 +77,9 @@ public class HexagonController : MonoBehaviour
     public bool shouldBeWall = false;
 
     [Header("Infection Settings")]
+    public float infectionAnimationInterval = 0.1f;
+    public bool infectionRandomAnimation = true;
+    public bool infectionAnimationRotation = true;
     public float infectionTimeAfterEnterExit = 2f;
     public float infectionTimeAfterContactEnds = 2f;
     public float infectionTimeAfterAttack = 1f;
@@ -98,14 +101,15 @@ public class HexagonController : MonoBehaviour
 
     [Header("Materials")]
     public Material planeTransparentMat;
-    public Material planeInfectedMaterial;
-    public Material planeRedWarningMat;
-    public Material planeYellowWarningMat;
+    public Material planeMainWarningMat;
+    public Material planeSecondaryWarningMat;
+    public Material[] planeInfectedMats;
 
     [Header("Fx's")]
     public GameObject buffPurpleGO;
     public ParticleSystem buffPurple;
     public ParticleSystem continousPurple;
+    public ParticleSystem infectionPurple;
 
     [HideInInspector]
     public GameObject geometryOffset;
@@ -195,15 +199,54 @@ public class HexagonController : MonoBehaviour
 
     public void SetPlaneMaterial(Material mat)
     {
+        StopPlaneInfectionAnimation();
         plane.SetActive(true);
         planeRend.sharedMaterial = mat;
         planeBlinkController.InvalidateMaterials();
     }
 
-    public void SetColumnMaterial(Material mat)
+    public void StartPlaneInfectionAnimation()
     {
-        columnRend.sharedMaterial = mat;
-        columnBlinkController.InvalidateMaterials();
+        StopPlaneInfectionAnimation();
+        infectionPurple.Play();
+        plane.SetActive(true);
+        StartCoroutine(AnimateInfection());
+    }
+
+    public void StopPlaneInfectionAnimation()
+    {
+        StopAllCoroutines();
+        plane.transform.localRotation = Quaternion.identity;
+        plane.transform.localScale = Vector3.one;
+        plane.SetActive(false);
+        infectionPurple.Stop();
+    }
+
+    private IEnumerator AnimateInfection()
+    {
+        int frameNumber = planeInfectedMats.Length;
+
+        while (true)
+        {
+            if (!infectionRandomAnimation)
+                frameNumber = (frameNumber + 1) % planeInfectedMats.Length;
+            else
+                frameNumber = Random.Range(0, planeInfectedMats.Length);
+
+            Material mat = planeInfectedMats[frameNumber];
+
+            planeRend.sharedMaterial = planeInfectedMats[frameNumber];
+
+            if(infectionAnimationRotation)
+            {
+                int rotateIndex = Random.Range(1, 6);
+                int rotationAngle = rotateIndex * 60;
+
+                plane.transform.Rotate(0, rotationAngle, 0);
+            }
+
+            yield return new WaitForSeconds(infectionAnimationInterval);
+        }
     }
 
     private void ChangeStateIfNotNull(HexagonBaseState newState)
