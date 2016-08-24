@@ -20,6 +20,7 @@ public class HexagonController : MonoBehaviour
 
     private HexagonBaseState currentState;
 
+    public HexagonStaticState staticState;
     public HexagonIdleState idleState;
     public HexagonBorderWallState borderWallState;
     public HexagonMovingState movingState;
@@ -32,6 +33,10 @@ public class HexagonController : MonoBehaviour
     public HexagonAboveAttackState aboveAttackState;
     public HexagonAboveAttackAdjacentState aboveAttackAdjacentState;
 
+    [Header("Flags")]
+    public bool isStatic = false;
+    public bool isWormSelectable = true;
+    public bool isBorder = false;
 
     //Movement variables
     [Header("Movement Settings")]
@@ -45,11 +50,12 @@ public class HexagonController : MonoBehaviour
     public float downMinMovement = 1f;
     public float downMaxMovement = 2f;
     public float movementSpeed = 5f;
+
+    [Header("Earthquake Settings")]
     public float earthquakeMinHeight = 1f;
     public float earthquakeMaxHeight = 2f;
     public float earthquakeUpSpeed = 6.5f;
     public float earthquakeDownSpeed = 4;
-    public bool isWormSelectable = true;
 
     [HideInInspector]
     public bool isMoving;
@@ -60,7 +66,6 @@ public class HexagonController : MonoBehaviour
     public float borderMinHeight = 3f;
     public float borderMaxHeight = 5f;
     public float borderSpeed = 10f;
-    public bool isBorder = false;
 
     [Header("Notification Settings")]
     public float enterExitBlinkInterval = 0.1f;
@@ -116,12 +121,11 @@ public class HexagonController : MonoBehaviour
     [HideInInspector]
     public float geometryOriginalY;
 
-    //Infection variables
-
     [Header("Objects")]
     public GameObject column;
     public Renderer columnRend;
     public BlinkController columnBlinkController;
+    private SphereCollider sphereCollider;
 
     public GameObject plane;
     public Renderer planeRend;
@@ -137,6 +141,7 @@ public class HexagonController : MonoBehaviour
         if(hexagonLayer == 0)
             hexagonLayer = 1 << LayerMask.NameToLayer("Hexagon");
 
+        staticState = new HexagonStaticState(this);
         idleState = new HexagonIdleState(this);
         borderWallState = new HexagonBorderWallState(this);
         movingState = new HexagonMovingState(this);
@@ -151,12 +156,20 @@ public class HexagonController : MonoBehaviour
 
         minDistanceToPlayer = minHexagonsToPlayer * DISTANCE_BETWEEN_HEXAGONS;
 
+        sphereCollider = GetComponent<SphereCollider>();
+
         geometryOffset = transform.FindDeepChild("GeometryOffset").gameObject;
         geometryOriginalY = geometryOffset.transform.position.y;
         probesInRange = 0;
 
         CheckNeighbours();
-        currentState = idleState;
+
+        if (isStatic)
+        {
+            currentState = staticState;
+        }
+        else
+            currentState = idleState;
     }
 
     // Use this for initialization
@@ -174,6 +187,10 @@ public class HexagonController : MonoBehaviour
         }
 
         isWormTouchingHexagon = false;
+
+        //Not needed from now on
+        if (isStatic)
+            sphereCollider.enabled = false;
     }
 
     void FixedUpdate()
@@ -249,6 +266,11 @@ public class HexagonController : MonoBehaviour
         }
     }
 
+    public bool CanExitWorm()
+    {
+        return !isStatic && isWormSelectable && !isBorder;
+    }
+
     private void ChangeStateIfNotNull(HexagonBaseState newState)
     {
         if (newState != null)
@@ -257,6 +279,8 @@ public class HexagonController : MonoBehaviour
 
     private void ChangeState(HexagonBaseState newState)
     {
+        if (isStatic) return;
+
         if (currentState != null)
         {
             //Debug.Log("Hexagon Exiting: " + currentState.GetType().Name);
@@ -329,6 +353,8 @@ public class HexagonController : MonoBehaviour
 
     public void WormEnterExit()
     {
+        if (isStatic) return;
+
         ChangeState(enterExitState);
     }
 
@@ -336,6 +362,8 @@ public class HexagonController : MonoBehaviour
     #region Below Attack
     public void WormBelowAttackWarning(int adjacentCells)
     {
+        if (isStatic) return;
+
         //choose adjacent cells
         int cellNum;
         switch (adjacentCells)
@@ -398,6 +426,7 @@ public class HexagonController : MonoBehaviour
     private void WormAttackAdjacentWarning()
     {
         if (isBorder) return;
+        if (isStatic) return;
 
         mainAttackHexagon = false;
         ChangeState(warningState);
@@ -405,6 +434,8 @@ public class HexagonController : MonoBehaviour
 
     public void WormBelowAttackStart()
     {
+        if (isStatic) return;
+
         //Set adjacent cells state
         for (int i = 0; i < neighbours.Length; ++i)
         {
@@ -423,6 +454,7 @@ public class HexagonController : MonoBehaviour
     private void WormBelowAttackAdjacentStart()
     {
         if (isBorder) return;
+        if (isStatic) return;
 
         if (currentState == warningState)
             ChangeState(belowAttackAdjacentState);
@@ -455,6 +487,7 @@ public class HexagonController : MonoBehaviour
     private void RaiseItself()
     {
         if (isBorder) return;
+        if (isStatic) return;
 
         shouldBeWall = true;
         ChangeState(belowAttackWallState);
@@ -493,6 +526,8 @@ public class HexagonController : MonoBehaviour
     #region Above Attack
     public void WormAboveAttackWarning()
     {
+        if (isStatic) return;
+
         for (int i = 0; i < neighbours.Length; ++i)
             SetWormAttackAdjacentWarning(neighbours[i]);
 
@@ -502,8 +537,10 @@ public class HexagonController : MonoBehaviour
 
     public void WormAboveAttackStart()
     {
+        if (isStatic) return;
+
         //Set adjacent cells state
-        for(int i = 0; i < neighbours.Length; ++i)
+        for (int i = 0; i < neighbours.Length; ++i)
         {
             SetWormAboveAttackAdjacentStart(neighbours[i]);
         }
@@ -519,6 +556,8 @@ public class HexagonController : MonoBehaviour
 
     private void WormAboveAttackAdjacentStart(Vector3 attackCenter)
     {
+        if (isStatic) return;
+
         this.attackCenter = attackCenter;
         ChangeState(aboveAttackAdjacentState);
     }

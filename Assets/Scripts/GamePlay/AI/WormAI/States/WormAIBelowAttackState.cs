@@ -4,6 +4,7 @@ using System.Collections;
 public class WormAIBelowAttackState : WormAIBaseState
 {
     private const int destinyHexagonsDistance = 5;
+
     private enum SubState
     {
         WAITING,
@@ -37,7 +38,7 @@ public class WormAIBelowAttackState : WormAIBaseState
         subState = SubState.WAITING;     
     }
 
-    private HexagonController GetHexagonFacingCenter()
+    /*private HexagonController GetHexagonFackingCenter()
     {
         Vector3 offset;
 
@@ -77,7 +78,7 @@ public class WormAIBelowAttackState : WormAIBaseState
         }
 
         return result;      
-    }
+    }*/
 
     public override WormAIBaseState Update()
     {
@@ -97,7 +98,7 @@ public class WormAIBelowAttackState : WormAIBaseState
                             if (!origin.isWormSelectable)
                                 return head.wanderingState;
 
-                            destiny = GetHexagonFacingCenter();
+                            destiny = GetHexagonFacingCenter(origin, destinyHexagonsDistance);
 
                             bb.CalculateParabola(origin.transform.position, destiny.transform.position);
 

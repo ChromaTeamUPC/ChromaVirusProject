@@ -74,21 +74,95 @@ public class WormAIBaseState
         Vector3 position = headTrf.position + offset;
         position.y = 0;
 
-        Collider[] colliders = Physics.OverlapSphere(position, 1f, HexagonController.hexagonLayer);
+        Collider[] colliders = Physics.OverlapSphere(position, HexagonController.DISTANCE_BETWEEN_HEXAGONS, HexagonController.hexagonLayer);
 
         if (colliders.Length == 0) return null;
 
-        HexagonController result = colliders[0].GetComponent<HexagonController>();
-        float distance = (position - colliders[0].transform.position).sqrMagnitude;
+        HexagonController result = null;
+        float targetDistance = Mathf.Pow(hexagonsDistance * HexagonController.DISTANCE_BETWEEN_HEXAGONS, 2);
+        float distanceDelta = targetDistance;
 
-        for (int i = 1; i < colliders.Length; ++i)
+        for (int i = 0; i < colliders.Length; ++i)
         {
-            float newDistance = (colliders[i].transform.position - position).sqrMagnitude;
+            HexagonController candidate = colliders[i].GetComponent<HexagonController>();
 
-            if (newDistance > distance)
+            if(candidate.CanExitWorm())
             {
-                distance = newDistance;
-                result = colliders[i].GetComponent<HexagonController>();
+                if(result == null)
+                {
+                    result = candidate;
+                    float distance = (colliders[i].transform.position - position).sqrMagnitude;
+                    distanceDelta = Mathf.Abs(targetDistance - distance);
+                }
+                else
+                {
+                    float newDistance = (colliders[i].transform.position - position).sqrMagnitude;
+                    float newDistanceDelta = Mathf.Abs(targetDistance - newDistance);
+
+                    if(newDistanceDelta < distanceDelta)
+                    {
+                        result = candidate;
+                        distanceDelta = newDistanceDelta;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    protected HexagonController GetHexagonFacingCenter(HexagonController origin, int hexagonsDistance = 5)
+    {
+        Vector3 offset;
+
+        //Special case if origin hexagon is the center one
+        if (origin.transform.position == bb.sceneCenter.transform.position)
+        {
+            float angle = Random.Range(0f, 365f);
+            offset = Quaternion.Euler(0, angle, 0) * Vector3.forward;
+            offset = offset * HexagonController.DISTANCE_BETWEEN_HEXAGONS * hexagonsDistance;
+        }
+        else
+        {
+            offset = (bb.sceneCenter.transform.position - origin.transform.position);
+            offset.y = 0;
+            offset = offset.normalized * HexagonController.DISTANCE_BETWEEN_HEXAGONS * hexagonsDistance;
+        }
+
+        Vector3 position = origin.transform.position + offset;
+        position.y = 0;
+
+        Collider[] colliders = Physics.OverlapSphere(position, HexagonController.DISTANCE_BETWEEN_HEXAGONS, HexagonController.hexagonLayer);
+
+        if (colliders.Length == 0) return null;
+
+        HexagonController result = null;
+        float targetDistance = Mathf.Pow(hexagonsDistance * HexagonController.DISTANCE_BETWEEN_HEXAGONS, 2);
+        float distanceDelta = targetDistance;
+
+        for (int i = 0; i < colliders.Length; ++i)
+        {
+            HexagonController candidate = colliders[i].GetComponent<HexagonController>();
+
+            if (candidate.CanExitWorm())
+            {
+                if (result == null)
+                {
+                    result = candidate;
+                    float distance = (colliders[i].transform.position - position).sqrMagnitude;
+                    distanceDelta = Mathf.Abs(targetDistance - distance);
+                }
+                else
+                {
+                    float newDistance = (colliders[i].transform.position - position).sqrMagnitude;
+                    float newDistanceDelta = Mathf.Abs(targetDistance - newDistance);
+
+                    if (newDistanceDelta < distanceDelta)
+                    {
+                        result = candidate;
+                        distanceDelta = newDistanceDelta;
+                    }
+                }
             }
         }
 
