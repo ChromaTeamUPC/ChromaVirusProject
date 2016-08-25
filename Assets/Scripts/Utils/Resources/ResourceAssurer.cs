@@ -6,6 +6,7 @@ public class ResourceAssurer : MonoBehaviour {
 
     [Range(1,2)]
     public int numberOfPlayers = 1;
+    public bool vibration = true;
     public bool tutorial = true;
     [Range(-80,0)]
     public int musicVol = 0;
@@ -34,6 +35,7 @@ public class ResourceAssurer : MonoBehaviour {
     {
 	    if(resourcesForced)
         {
+            rsc.rumbleMng.active = vibration;
             rsc.tutorialMng.active = tutorial;
             rsc.audioMng.audioMixer.SetFloat("MusicVolume", musicVol);
             rsc.audioMng.audioMixer.SetFloat("FxVolume", fxVol);
