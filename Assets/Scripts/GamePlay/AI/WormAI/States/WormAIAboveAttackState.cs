@@ -42,7 +42,7 @@ public class WormAIAboveAttackState : WormAIBaseState
 
             if (destiny != null)
             {
-                speed = (headTrf.position - destiny.transform.position).magnitude / bb.AboveAttackSettingsPhase.aboveAttackJumpDuration;
+                speed = (headTrf.position - destiny.transform.position).magnitude / bb.AboveAttackSettingsPhase.jumpDuration;
 
                 bb.CalculateParabola(headTrf.position, destiny.transform.position);
 
@@ -86,9 +86,9 @@ public class WormAIAboveAttackState : WormAIBaseState
         switch (subState)
         {
             case SubState.WARNING_PLAYER:
-                headTrf.rotation = Quaternion.RotateTowards(headTrf.rotation, initialRotation, 90 / bb.AboveAttackSettingsPhase.aboveAttackWarningTime * Time.deltaTime);
+                headTrf.rotation = Quaternion.RotateTowards(headTrf.rotation, initialRotation, 90 / bb.AboveAttackSettingsPhase.warningTime * Time.deltaTime);
 
-                if (elapsedTime >= bb.AboveAttackSettingsPhase.aboveAttackWarningTime)
+                if (elapsedTime >= bb.AboveAttackSettingsPhase.warningTime)
                 {
                     subState = SubState.JUMPING;
                 }
@@ -105,9 +105,9 @@ public class WormAIAboveAttackState : WormAIBaseState
 
                 headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition), headTrf.up);
 
-                if (rotation < bb.AboveAttackSettingsPhase.aboveAttackSelfRotation)
+                if (rotation < bb.AboveAttackSettingsPhase.selfRotation)
                 {
-                    float angle = bb.AboveAttackSettingsPhase.aboveAttackSelfRotation / bb.AboveAttackSettingsPhase.aboveAttackJumpDuration * Time.deltaTime;
+                    float angle = bb.AboveAttackSettingsPhase.selfRotation / bb.AboveAttackSettingsPhase.jumpDuration * Time.deltaTime;
                     headTrf.Rotate(new Vector3(0, 0, angle));
                     rotation += angle;
                 }

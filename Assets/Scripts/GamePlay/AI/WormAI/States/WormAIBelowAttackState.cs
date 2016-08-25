@@ -38,54 +38,12 @@ public class WormAIBelowAttackState : WormAIBaseState
         subState = SubState.WAITING;     
     }
 
-    /*private HexagonController GetHexagonFackingCenter()
-    {
-        Vector3 offset;
-
-        //Special case if origin hexagon is the center one
-        if (origin.transform.position == bb.sceneCenter.transform.position)
-        {
-            float angle = Random.Range(0f, 365f);
-            offset = Quaternion.Euler(0, angle, 0) * Vector3.forward;
-            offset = offset * HexagonController.DISTANCE_BETWEEN_HEXAGONS * destinyHexagonsDistance;
-        }
-        else
-        {
-            offset = (bb.sceneCenter.transform.position - origin.transform.position);
-            offset.y = 0;
-            offset = offset.normalized * HexagonController.DISTANCE_BETWEEN_HEXAGONS * destinyHexagonsDistance;
-        }
-
-        Vector3 position = origin.transform.position + offset;
-        position.y = 0;
-
-        Collider[] colliders = Physics.OverlapSphere(position, 1f, HexagonController.hexagonLayer);
-
-        if (colliders.Length == 0) return null;
-
-        HexagonController result = colliders[0].GetComponent<HexagonController>();
-        float distance = (position - colliders[0].transform.position).sqrMagnitude;
-
-        for (int i = 1; i < colliders.Length; ++i)
-        {
-            float newDistance = (colliders[i].transform.position - position).sqrMagnitude;
-
-            if (newDistance < distance)
-            {
-                distance = newDistance;
-                result = colliders[i].GetComponent<HexagonController>();
-            }
-        }
-
-        return result;      
-    }*/
-
     public override WormAIBaseState Update()
     {
         switch (subState)
         {
             case SubState.WAITING:
-                if (elapsedTime >= bb.BelowAttackSettingsPhase.belowAttackWaitTime)
+                if (elapsedTime >= bb.BelowAttackSettingsPhase.initialWaitTime)
                 {
                     GameObject playerGO = rsc.enemyMng.SelectPlayerRandom();
                     if (playerGO != null)
@@ -113,7 +71,7 @@ public class WormAIBelowAttackState : WormAIBaseState
                     else
                         return head.wanderingState;
 
-                    origin.WormBelowAttackWarning(bb.BelowAttackSettingsPhase.belowAttackAdjacentCells);
+                    origin.WormBelowAttackWarning(bb.BelowAttackSettingsPhase.adjacentDamagingCells);
 
                     elapsedTime = 0f;
                     subState = SubState.WARNING_PLAYER;
@@ -125,7 +83,7 @@ public class WormAIBelowAttackState : WormAIBaseState
 
             case SubState.WARNING_PLAYER:
 
-                if (elapsedTime >= bb.BelowAttackSettingsPhase.belowAttackWarningTime)
+                if (elapsedTime >= bb.BelowAttackSettingsPhase.warningTime)
                 {
                     //Position head below entry point
                     currentX = bb.GetJumpXGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false);
@@ -148,13 +106,13 @@ public class WormAIBelowAttackState : WormAIBaseState
 
             case SubState.JUMPING:
                 //While not again below underground navmesh layer advance
-                currentX += Time.deltaTime * bb.BelowAttackSettingsPhase.belowAttackSpeed;
+                currentX += Time.deltaTime * bb.BelowAttackSettingsPhase.jumpSpeed;
                 lastPosition = headTrf.position;
                 headTrf.position = bb.GetJumpPositionGivenX(currentX);
 
                 headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition), headTrf.up);
 
-                float angle = bb.BelowAttackSettingsPhase.belowAttackRotationSpeed * Time.deltaTime;
+                float angle = bb.BelowAttackSettingsPhase.rotationSpeed * Time.deltaTime;
                 headTrf.Rotate(new Vector3(0, 0, angle));
                 rotation += angle;
 
@@ -178,7 +136,7 @@ public class WormAIBelowAttackState : WormAIBaseState
                 break;
 
             case SubState.EXITING:
-                currentX += Time.deltaTime * bb.BelowAttackSettingsPhase.belowAttackSpeed;
+                currentX += Time.deltaTime * bb.BelowAttackSettingsPhase.jumpSpeed;
                 lastPosition = headTrf.position;
                 headTrf.position = bb.GetJumpPositionGivenX(currentX);
 

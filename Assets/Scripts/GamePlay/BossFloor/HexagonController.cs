@@ -250,8 +250,6 @@ public class HexagonController : MonoBehaviour
             else
                 frameNumber = Random.Range(0, planeInfectedMats.Length);
 
-            Material mat = planeInfectedMats[frameNumber];
-
             planeRend.sharedMaterial = planeInfectedMats[frameNumber];
 
             if(infectionAnimationRotation)

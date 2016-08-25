@@ -90,7 +90,7 @@ public class WormAIHeadDestroyedState : WormAIBaseState
                     {
                         head.StartNewPhase();
                         head.SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
-                        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
+                        //rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
                         subState = SubState.JUMPING;
                     }
                 }

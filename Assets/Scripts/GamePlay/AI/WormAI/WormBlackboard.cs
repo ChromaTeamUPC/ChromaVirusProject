@@ -35,25 +35,39 @@ public class WormBlackboard : MonoBehaviour
     {
         public bool active = true;
         public float chancesOfBelowAttackAfterWandering = 50f;
-        public float belowAttackWaitTime = 2f;
-        public float belowAttackWarningTime = 1f;
-        public int belowAttackAdjacentCells = 3;
-        public float belowAttackSpeed = 10f;
-        public float belowAttackRotationSpeed = 180f;
+        public float initialWaitTime = 2f;
+        public float warningTime = 1f;
+        public int adjacentDamagingCells = 3;
+        public float jumpSpeed = 10f;
+        public float rotationSpeed = 180f;
     }
 
     [Serializable]
     public class AboveAttackSettings
     {
         public bool active = true;
-        public float aboveAttackExposureTimeNeeded = 3f;
-        public float aboveAttackExposureMaxAngle = 135f;
-        public float aboveAttackExposureMinHexagons = 2;
-        public float aboveAttackExposureMaxHexagons = 5;
-        public float aboveAttackCooldownTime = 10f;
-        public float aboveAttackWarningTime = 0.5f;
-        public float aboveAttackJumpDuration = 1f;
-        public float aboveAttackSelfRotation = 180f;
+        public float exposureTimeNeeded = 3f;
+        public float exposureMaxAngle = 135f;
+        public float exposureMinHexagons = 0;
+        public float exposureMaxHexagons = 5;
+        public float attackMinHexagons = 2;
+        public float attackMaxHexagons = 5;
+        public float cooldownTime = 10f;
+        public float warningTime = 0.5f;
+        public float jumpDuration = 1f;
+        public float selfRotation = 180f;
+    }
+
+    [Serializable]
+    public class MeteorAttackSettings
+    {
+        public bool active = true;
+        public float initialWaitTime = 2f;
+        public float enteringSpeed = 5f;
+        public int numberOfProjectiles = 3;
+        public float timeShooting = 1f;
+        public float jumpDuration = 1f;
+        public float rotationSpeed = 360;
     }
 
     #region Settings
@@ -138,6 +152,23 @@ public class WormBlackboard : MonoBehaviour
     public float headDestroyedJumpDuration = 1f;
     public float headDestroyedRotationSpeed = 360f;
 
+    [Header("Jump Settings")]
+    public float jumpOffset = 0f;
+    public float jumpHeightToDistanceRatio = 0.5f;
+    private Vector3 jumpOrigin;
+    private Vector3 jumpDestiny;
+    private Vector3 jumpCenter;
+    private float jumpDistance;
+    private float jumpHalfDistance;
+    private float jumpMaxHeight;
+    private float jumpParabolaAperture;
+    private Vector3 jumpDirectionVector;
+
+    [Header("Contact Settings")]
+    public float contactDamage = 12f;
+    public Vector2 infectionForces = new Vector2(5, 9);
+    public float attackRumbleDuration = 1f;
+
     [Header("Wandering Settings")]
     /*public float wanderingSpeed = 10;
     public float sinLongitude = 3f;
@@ -189,23 +220,6 @@ public class WormBlackboard : MonoBehaviour
     private Vector3 worldExitBezier21;
     private Vector3 worldExitBezier22;
 
-    [Header("Jump Settings")]
-    public float jumpOffset = 0f;
-    public float jumpHeightToDistanceRatio = 0.5f;
-    private Vector3 jumpOrigin;
-    private Vector3 jumpDestiny;
-    private Vector3 jumpCenter;
-    private float jumpDistance;
-    private float jumpHalfDistance;
-    private float jumpMaxHeight;
-    private float jumpParabolaAperture;
-    private Vector3 jumpDirectionVector;
-
-    [Header("Contact Settings")]
-    public float contactDamage = 12f;
-    public Vector2 infectionForces = new Vector2(5, 9);
-    public float attackRumbleDuration = 1f;
-
     [Header("Below Attack Settings")]
     /*public float chancesOfBelowAttackAfterWandering = 50f;
     public float belowAttackWaitTime = 2f;
@@ -233,6 +247,11 @@ public class WormBlackboard : MonoBehaviour
     [HideInInspector]
     public float aboveAttackCurrentCooldownTime;
     public AudioClip aboveAttackWarningSound;
+
+    [Header("Meteor Attack Settings")]
+    [SerializeField]
+    public MeteorAttackSettings[] meteorAttackSettings = new MeteorAttackSettings[4];
+    public MeteorAttackSettings MeteorAttackSettingsPhase { get { return meteorAttackSettings[wormCurrentPhase]; } }
 
     [Header("Misc variables")]
     public GameObject spawnEntry;

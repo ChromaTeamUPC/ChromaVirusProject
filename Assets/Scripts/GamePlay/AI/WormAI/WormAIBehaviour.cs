@@ -111,7 +111,7 @@ public class WormAIBehaviour : MonoBehaviour
         StartNewPhase();
         bb.ConsolidateBodyParts();
         SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
-        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
+        //rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
         ChangeState(spawningState);
     }
 
@@ -120,7 +120,7 @@ public class WormAIBehaviour : MonoBehaviour
     {
         if (currentState != null)
         {
-            if(bb.aboveAttackCurrentCooldownTime < bb.AboveAttackSettingsPhase.aboveAttackCooldownTime)
+            if(bb.aboveAttackCurrentCooldownTime < bb.AboveAttackSettingsPhase.cooldownTime)
             {
                 bb.aboveAttackCurrentCooldownTime += Time.deltaTime;
             }
@@ -284,6 +284,8 @@ public class WormAIBehaviour : MonoBehaviour
         //Debug.Log("Worm phase: " + wormPhase);
         bb.headCurrentDamage = 0;
         bb.headCurrentChargeLevel = 0;
+        WormEventInfo.eventInfo.wormBb = bb;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, WormEventInfo.eventInfo);
     }
 
     public void ResetPhase()
@@ -364,7 +366,7 @@ public class WormAIBehaviour : MonoBehaviour
             currentState.PlayerTouched(player, origin);
     }
 
-    public bool CheckPlayerInSight(bool filterMinDistance, bool savePlayer)
+    public bool CheckPlayerInSight(float minDistance, float maxDistance, bool savePlayer)
     {
         bb.playerInSight = null;
 
@@ -389,12 +391,12 @@ public class WormAIBehaviour : MonoBehaviour
 
             //Check distance
             distanceP1 = wormPlayer.magnitude;
-            if ((!filterMinDistance || distanceP1 >= bb.AboveAttackSettingsPhase.aboveAttackExposureMinHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS)
-                && distanceP1 <= bb.AboveAttackSettingsPhase.aboveAttackExposureMaxHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS)
+            if (distanceP1 >= minDistance * HexagonController.DISTANCE_BETWEEN_HEXAGONS
+                && distanceP1 <= maxDistance * HexagonController.DISTANCE_BETWEEN_HEXAGONS)
             {
                 //Check angle
                 angleP1 = Vector3.Angle(forward, wormPlayer);
-                if (angleP1 <= bb.AboveAttackSettingsPhase.aboveAttackExposureMaxAngle)
+                if (angleP1 <= bb.AboveAttackSettingsPhase.exposureMaxAngle)
                 {
                     if(!savePlayer)
                         return true;
@@ -417,12 +419,12 @@ public class WormAIBehaviour : MonoBehaviour
 
             //Check distance
             distanceP2 = wormPlayer.magnitude;
-            if ((!filterMinDistance || distanceP2 >= bb.AboveAttackSettingsPhase.aboveAttackExposureMinHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS)
-                && distanceP2 <= bb.AboveAttackSettingsPhase.aboveAttackExposureMaxHexagons * HexagonController.DISTANCE_BETWEEN_HEXAGONS)
+            if (distanceP2 >= minDistance
+                && distanceP2 <= maxDistance * HexagonController.DISTANCE_BETWEEN_HEXAGONS)
             {
                 //Check angle
                 angleP2 = Vector3.Angle(forward, wormPlayer);
-                if (angleP2 <= bb.AboveAttackSettingsPhase.aboveAttackExposureMaxAngle)
+                if (angleP2 <= bb.AboveAttackSettingsPhase.exposureMaxAngle)
                 {
                     if (!savePlayer)
                         return true;

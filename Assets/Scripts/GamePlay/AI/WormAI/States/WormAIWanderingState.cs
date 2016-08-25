@@ -145,7 +145,7 @@ public class WormAIWanderingState : WormAIBaseState
 
             case SubState.FOLLOWING_PATH:
 
-                if(head.CheckPlayerInSight(false, false)) 
+                if(head.CheckPlayerInSight(bb.AboveAttackSettingsPhase.exposureMinHexagons, bb.AboveAttackSettingsPhase.exposureMaxHexagons, false)) 
                 {
                     bb.aboveAttackCurrentExposureTime += Time.deltaTime;
 
@@ -164,9 +164,9 @@ public class WormAIWanderingState : WormAIBaseState
                     }
                 }
 
-                if (bb.AboveAttackSettingsPhase.active && bb.aboveAttackCurrentExposureTime >= bb.AboveAttackSettingsPhase.aboveAttackExposureTimeNeeded &&
-                    bb.aboveAttackCurrentCooldownTime >= bb.AboveAttackSettingsPhase.aboveAttackCooldownTime &&
-                    head.CheckPlayerInSight(true, true))
+                if (bb.AboveAttackSettingsPhase.active && bb.aboveAttackCurrentExposureTime >= bb.AboveAttackSettingsPhase.exposureTimeNeeded &&
+                    bb.aboveAttackCurrentCooldownTime >= bb.AboveAttackSettingsPhase.cooldownTime &&
+                    head.CheckPlayerInSight(bb.AboveAttackSettingsPhase.attackMinHexagons, bb.AboveAttackSettingsPhase.attackMaxHexagons, true))
                 {
                     if (bb.playerInSight != null)
                     {

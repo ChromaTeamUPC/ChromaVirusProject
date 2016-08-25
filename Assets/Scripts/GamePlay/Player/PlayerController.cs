@@ -547,8 +547,8 @@ public class PlayerController : MonoBehaviour
                 blackboard.enemiesInRange.Add(enemy);
         }*/
         else if (other.tag == "DeathZone")
-        {           
-            if(rsc.debugMng.godMode)
+        {
+            if (rsc.debugMng.godMode)
             {
                 PlayerEventInfo.eventInfo.player = bb.player;
                 rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerEventInfo.eventInfo);
@@ -570,17 +570,6 @@ public class PlayerController : MonoBehaviour
         {
             bb.isInBorder = false;
         }
-        /*else if (other.tag == "Enemy")
-        {
-            EnemyBaseAIBehaviour enemy = other.GetComponent<EnemyBaseAIBehaviour>();
-
-            //Mosquito has the collider in a children object so we need to search for script in parent
-            if (enemy == null)
-                enemy = other.GetComponentInParent<EnemyBaseAIBehaviour>();
-
-            if (enemy != null)
-                blackboard.enemiesInRange.Remove(enemy);
-        }*/
     }
 
 
