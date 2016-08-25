@@ -31,6 +31,7 @@ public class WormAIBehaviour : MonoBehaviour
     public WormAIWanderingState wanderingState;
     public WormAIBelowAttackState belowAttackState;
     public WormAIAboveAttackState aboveAttackState;
+    public WormAIMeteorAttackState meteorAttackState;
     public WormAIKnockOutState knockOutState;
     public WormAIHeadDestroyedState headDestroyedState;
     public WormAIDyingState dyingState;
@@ -99,6 +100,7 @@ public class WormAIBehaviour : MonoBehaviour
         wanderingState = new WormAIWanderingState(bb);
         belowAttackState = new WormAIBelowAttackState(bb);
         aboveAttackState = new WormAIAboveAttackState(bb);
+        meteorAttackState = new WormAIMeteorAttackState(bb);
         knockOutState = new WormAIKnockOutState(bb);
         headDestroyedState = new WormAIHeadDestroyedState(bb);
         dyingState = new WormAIDyingState(bb);
