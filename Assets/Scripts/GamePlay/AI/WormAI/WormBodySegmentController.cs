@@ -126,7 +126,8 @@ public class WormBodySegmentController : MonoBehaviour
             SetMaterial(rsc.coloredObjectsMng.GetWormBodyWireframeMaterial());
             bodyDestruction.Play();
             state = State.DESTROYED;
-            col.enabled = false;
+            //col.enabled = false;
+            col.isTrigger = true;
         }
         else
         {
