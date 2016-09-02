@@ -69,6 +69,7 @@ public class EnemyManager : MonoBehaviour
     public List<AIAction> defaultYellowSpiderAttack = new List<AIAction>();
 
     //Actions lists
+    private List<AIAction> level01Z01SpiderEntry00 = new List<AIAction>();
     private List<AIAction> level01Z01SpiderEntry01 = new List<AIAction>();
     private List<AIAction> level01Z01SpiderEntry02 = new List<AIAction>();
     private List<AIAction> level01Z01spiderEntry03 = new List<AIAction>();
@@ -77,29 +78,12 @@ public class EnemyManager : MonoBehaviour
     private List<AIAction> level01Z01spiderEntry06 = new List<AIAction>();
     private List<AIAction> level01Z01spiderEntry07 = new List<AIAction>();
 
+    private List<AIAction> level01Z01spiderAttack00 = new List<AIAction>();
     private List<AIAction> level01Z01spiderAttack03 = new List<AIAction>();
     private List<AIAction> level01Z01spiderAttack04 = new List<AIAction>();
     private List<AIAction> level01Z01spiderAttack05 = new List<AIAction>();
     private List<AIAction> level01Z01spiderAttack06 = new List<AIAction>();
     private List<AIAction> level01Z01spiderAttack07 = new List<AIAction>();
-
-    /*
-    private List<AIAction> level01Z02spiderEntry01a = new List<AIAction>();
-    //private List<AIAction> level01Z02spiderEntry01b = new List<AIAction>();
-    private List<AIAction> level01Z02spiderEntry02a = new List<AIAction>();
-    private List<AIAction> level01Z02spiderEntry02b = new List<AIAction>();
-    private List<AIAction> level01Z02spiderEntry03a = new List<AIAction>();
-    private List<AIAction> level01Z02spiderEntry03b = new List<AIAction>();
-    private List<AIAction> level01Z02spiderEntry04a = new List<AIAction>();
-    private List<AIAction> level01Z02spiderEntry04b = new List<AIAction>();
-
-    private List<AIAction> level01Z02spiderAttack02a = new List<AIAction>();
-    private List<AIAction> level01Z02spiderAttack02b = new List<AIAction>();
-    private List<AIAction> level01Z02spiderAttack03a = new List<AIAction>();
-    private List<AIAction> level01Z02spiderAttack03b = new List<AIAction>();
-    private List<AIAction> level01Z02spiderAttack04a = new List<AIAction>();
-    private List<AIAction> level01Z02spiderAttack04b = new List<AIAction>();
-    */
 
     private List<AIAction> level01Z03spiderEntry01a = new List<AIAction>();
     private List<AIAction> level01Z03spiderEntry01b = new List<AIAction>();
@@ -115,7 +99,6 @@ public class EnemyManager : MonoBehaviour
     private List<AIAction> level01Z03spiderAttack03a = new List<AIAction>();
     private List<AIAction> level01Z03spiderAttack03b = new List<AIAction>();
 
-    //private List<AIAction> level01Z02MosquitoPatrol01 = new List<AIAction>();
     private List<AIAction> level01Z02MosquitoPatrol02 = new List<AIAction>();
     private List<AIAction> level01Z02MosquitoPatrol03 = new List<AIAction>();
     private List<AIAction> level01Z02MosquitoPatrol04 = new List<AIAction>();
@@ -714,6 +697,11 @@ public class EnemyManager : MonoBehaviour
         defaultYellowSpiderAttack.Add(new StandingIdleAIAction(spiderIdleDefaultTime));
 
         // LEVEL 01 ZONE 01-------------------------------------------------------------------------------------------------------------------------------
+        
+        level01Z01SpiderEntry00.Add(new MoveAIAction("Z01WP07", 5f, true, 0, AIAction.LIST_FINISHED));
+
+        level01Z01spiderAttack00.Add(new SelectPlayerAIAction());
+        level01Z01spiderAttack00.Add(new MoveAIAction(playerTargetTxt, 5.0f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_AGENT_RELATIVE, 20, 6f, false, 1f));
 
         level01Z01SpiderEntry01.Add(new MoveAIAction("Z01WP01", 10f));
         level01Z01SpiderEntry01.Add(new MoveAIAction("Z01WP02", 10f));
@@ -771,18 +759,6 @@ public class EnemyManager : MonoBehaviour
         MosquitoDefaultAttack01.Add(new StandingIdleAIAction(1f,AIAction.LIST_FINISHED));
 
         // LEVEL 01 ZONE 02-------------------------------------------------------------------------------------------------------------------------------
-
-        // TODELETE no se usa??
-        // borrar los waypoints que no se usen
-        //level01Z02MosquitoPatrol01.Add(new MoveAIAction("Z02SWP01", 7f));
-        //level01Z02MosquitoPatrol01.Add(new MoveAIAction("Z02SWP02", 7f));
-        //level01Z02MosquitoPatrol01.Add(new MoveAIAction("Z02SWP03", 7f));
-        //level01Z02MosquitoPatrol01.Add(new MoveAIAction("Z02SWP04", 7f));
-        //level01Z02MosquitoPatrol01.Add(new MoveAIAction("Z02SWP05", 7f));
-        //level01Z02MosquitoPatrol01.Add(new MoveAIAction("Z02SWP06", 7f));
-        //level01Z02MosquitoPatrol01.Add(new MoveAIAction("Z02SWP07", 7f));
-        //level01Z02MosquitoPatrol01.Add(new MoveAIAction("Z02SWP08", 7f));
-        //level01Z02MosquitoPatrol01.Add(new MoveAIAction("Z02SWP09", 7f));
 
         level01Z02MosquitoPatrol02.Add(new MoveAIAction(playerTargetTxt, 6f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 110, 12));
         level01Z02MosquitoPatrol02.Add(new MoveAIAction(playerTargetTxt, 6f, MoveAIAction.FocusType.CONTINUOUS, MoveAIAction.OffsetType.AROUND_WORLD_RELATIVE, 60, 12));
@@ -919,8 +895,12 @@ public class EnemyManager : MonoBehaviour
         plan0101 = new ZonePlan();
 
         plan0101.enemiesThreshold = 2;
+
+        List<WaveAction> z01wave00 = new List<WaveAction>();    // initial wave with easy enemies
+        z01wave00.Add(new SpawnSpiderWaveAction(true, 0, "Z01SP03", level01Z01SpiderEntry00, level01Z01spiderAttack00, defaultSpiderInfect, 0f, 3, 3f));
+        plan0101.sequentialWaves.Add(z01wave00);
+
         List<WaveAction> z01wave01 = new List<WaveAction>();
-        // z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01SpiderEntry01, defaultSpiderAttack, null, 0f, 2, 1f)); // dummy, for testing
         z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01SpiderEntry01, defaultSpiderAttack, defaultSpiderInfect, 0f, 6, 1f));
         plan0101.sequentialWaves.Add(z01wave01);
         
@@ -971,17 +951,10 @@ public class EnemyManager : MonoBehaviour
         plan0102 = new ZonePlan();
         plan0102.enemiesThreshold = 4; //12;
 
-        //// TODELETE - dummy for test -----------------------------------------------------------------------------------------------------
-        //List<WaveAction> z02wave001 = new List<WaveAction>();
-        //z02wave001.Add(new SpawnMosquitoWaveAction(ChromaColor.RED, "Z02SSP02", level01Z02MosquitoPatrol02, MosquitoDefaultAttack01));
-        //plan0102.sequentialWaves.Add(z02wave001);
-        //// -------------------------------------------------------------------------------------------------------------------------------
-
         List<WaveAction> z02wave001 = new List<WaveAction>();
         z02wave001.Add(new SpawnMosquitoWaveAction(ChromaColor.RED, "Z02SSP02", level01Z02MosquitoPatrol02, MosquitoDefaultAttack01));
         z02wave001.Add(new SpawnMosquitoWaveAction(ChromaColor.RED, "Z02SSP03", level01Z02MosquitoPatrol03, MosquitoDefaultAttack01, 1f));
         z02wave001.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z02SSP04", level01Z02MosquitoPatrol04, MosquitoDefaultAttack01, 1f));
-        //z02wave001.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z02SSP05", level01Z02MosquitoPatrol05, MosquitoDefaultAttack01, 1f));
         plan0102.sequentialWaves.Add(z02wave001);
 
 
@@ -1013,7 +986,6 @@ public class EnemyManager : MonoBehaviour
         z02wave003.Add(new SpawnMosquitoWaveAction(ChromaColor.BLUE, "Z02SSP02", level01Z02MosquitoPatrol09, MosquitoDefaultAttack01));
         z02wave003.Add(new SpawnMosquitoWaveAction(ChromaColor.BLUE, "Z02SSP03", level01Z02MosquitoPatrol09, MosquitoDefaultAttack01, 1f));
         z02wave003.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z02SSP04", level01Z02MosquitoPatrol10, MosquitoDefaultAttack01, 1f));
-        //z02wave003.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z02SSP05", level01Z02MosquitoPatrol10, MosquitoDefaultAttack01, 1f));
         plan0102.sequentialWaves.Add(z02wave003);
 
 
