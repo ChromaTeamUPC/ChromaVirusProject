@@ -214,6 +214,8 @@ public class WormBodySegmentController : MonoBehaviour
                 EnemyDiedEventInfo.eventInfo.killedSameColor = (color == shotColor);
                 rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SECTION_DESTROYED, EnemyDiedEventInfo.eventInfo);
 
+                player.ColorMismatch();
+
                 head.DischargeHead();
             }
         }
@@ -227,8 +229,6 @@ public class WormBodySegmentController : MonoBehaviour
                 SetMaterial(rsc.coloredObjectsMng.GetWormBodyGreyMaterial());
                 bodyDeactivate[(int)color].Play();
                 state = State.DEACTIVATED;
-
-                //Explosion FX?
 
                 EnemyDiedEventInfo.eventInfo.color = color;
                 EnemyDiedEventInfo.eventInfo.infectionValue = 0;
