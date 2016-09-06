@@ -86,12 +86,14 @@ public class MainCameraController : MonoBehaviour {
 
     private void PlayerStartDash(EventInfo eventInfo)
     {
-        motionBlur.enabled = true;
+        if(rsc.gameMng.motionBlur)
+            motionBlur.enabled = true;
     }
 
     private void PlayerEndDash(EventInfo eventInfo)
     {
-         motionBlur.enabled = false;
+        if (rsc.gameMng.motionBlur)
+            motionBlur.enabled = false;
     }
 
     private void PlayerColorMismatch(EventInfo eventInfo)

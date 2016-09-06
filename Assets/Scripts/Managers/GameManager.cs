@@ -5,6 +5,8 @@ using InControl;
 
 public class GameManager : MonoBehaviour {
 
+    public bool motionBlur = true;
+
     public enum GameState
     {
         NOT_STARTED,

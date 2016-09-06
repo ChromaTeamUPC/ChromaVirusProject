@@ -27,9 +27,10 @@ public class OptionsMenuManager : MonoBehaviour
     public Slider musicSlider;
     public Slider fxSlider;
     public Slider vibrationSlider;
+    public Slider motionBlurSlider;
     public Slider tutorialSlider;
 
-    public Image selectedSliderFill;
+    private Image selectedSliderFill;
 
     public FadeSceneScript fadeScript;
 
@@ -75,6 +76,11 @@ public class OptionsMenuManager : MonoBehaviour
         else
             vibrationSlider.value = 0;
 
+        if (rsc.gameMng.motionBlur)
+            motionBlurSlider.value = 1;
+        else
+            motionBlurSlider.value = 0;
+
         if (rsc.tutorialMng.active)
             tutorialSlider.value = 1;
         else
@@ -87,6 +93,11 @@ public class OptionsMenuManager : MonoBehaviour
             rsc.rumbleMng.active = true;
         else
             rsc.rumbleMng.active = false;
+
+        if (motionBlurSlider.value == 1)
+            rsc.gameMng.motionBlur = true;
+        else
+            rsc.gameMng.motionBlur = false;
 
         if (tutorialSlider.value == 1)
             rsc.tutorialMng.active = true;
@@ -191,6 +202,7 @@ public class OptionsMenuManager : MonoBehaviour
         musicSlider.colors = cb;
         fxSlider.colors = cb;
         vibrationSlider.colors = cb;
+        motionBlurSlider.colors = cb;
         tutorialSlider.colors = cb;
 
         if(selectedSliderFill != null)
