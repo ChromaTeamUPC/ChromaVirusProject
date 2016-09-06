@@ -52,5 +52,5 @@ public class GodCameraScript : MonoBehaviour {
         rotationY += Input.GetAxis("Mouse Y") * sens * Time.deltaTime;
         rotationY = Mathf.Clamp(rotationY, minY, maxY);
         transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
-    }
+    }   
 }

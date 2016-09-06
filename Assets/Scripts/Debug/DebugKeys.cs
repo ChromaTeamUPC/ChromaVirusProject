@@ -28,4 +28,6 @@ public class DebugKeys : MonoBehaviour {
     public KeyCode godCameraBackward = KeyCode.DownArrow;
     public KeyCode godCameraLeft = KeyCode.LeftArrow;
     public KeyCode godCameraRight = KeyCode.RightArrow;
+
+    public KeyCode takeScreenshot = KeyCode.Return;
 }

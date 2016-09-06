@@ -22,6 +22,8 @@ public class DebugManager : MonoBehaviour {
     private int frameCount;
     private int fps;
 
+    private int screenshotnum = 0;
+
     void Start()
     {
         frameCount = 0;
@@ -60,6 +62,19 @@ public class DebugManager : MonoBehaviour {
             fps = (int)(frameCount / elapsedTime);
             frameCount = 0;
             elapsedTime -= refreshFPSTime;
+        }
+    }
+
+    void LateUpdate()
+    {
+
+        if (Input.GetKeyDown(keys.takeScreenshot))
+        {
+            //string datetime = System.String.Format("yyyyMMddHHmmss", System.DateTime.Now);
+            string datetime = System.DateTime.Now.ToString("yyyyMMddHHmmss");
+            Debug.Log(datetime);
+            Application.CaptureScreenshot("ChromavirusScreenshot_" + datetime + ".png", 4);
+            //Application.CaptureScreenshot("ChromavirusScreenshot_" + screenshotnum++ + ".png");
         }
     }
 
