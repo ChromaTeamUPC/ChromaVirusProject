@@ -5,11 +5,13 @@ public class WormJunctionController : MonoBehaviour
 {
     private Renderer rend;
     private Material wireframeMat;
+    private SphereCollider collider;
 
 	// Use this for initialization
 	void Awake () 
 	{
         rend = GetComponentInChildren<Renderer>();
+        collider = GetComponentInChildren<SphereCollider>();
     }
 
     void Start()
@@ -19,7 +21,10 @@ public class WormJunctionController : MonoBehaviour
 	
 	public void SetWireframe()
     {
-        if(rend.sharedMaterial != wireframeMat)
+        if (rend.sharedMaterial != wireframeMat)
+        {
             rend.sharedMaterial = wireframeMat;
+            collider.enabled = false;
+        }
     }
 }
