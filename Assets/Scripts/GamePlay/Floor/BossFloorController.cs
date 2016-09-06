@@ -3,6 +3,7 @@ using System.Collections;
 
 public class BossFloorController : MonoBehaviour 
 {
+    public bool colorPrewarnBlink = false;
     public float startFlashingSecondsBeforeChange = 1f;
     public float totalTimeFlashing = 0.9f;
     public float flashDuration = 0.083f;
@@ -24,14 +25,16 @@ public class BossFloorController : MonoBehaviour
         if (rsc.eventMng != null)
         {
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
-            rsc.eventMng.StopListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
+            if (colorPrewarnBlink)
+                rsc.eventMng.StopListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
         }
     }
 
     public void Activate()
     {
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
-        rsc.eventMng.StartListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
+        if (colorPrewarnBlink)
+            rsc.eventMng.StartListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
         currentColor = rsc.colorMng.CurrentColor;
         SetMaterial();
     }
