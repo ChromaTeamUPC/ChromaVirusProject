@@ -61,7 +61,10 @@ public class HexagonController : MonoBehaviour
     [HideInInspector]
     public bool isMoving;
     [HideInInspector]
-    public int probesInRange;
+    public int enemyProbesInRange;
+    [HideInInspector]
+    public int playerProbesInRange;
+    public bool AnyProbeInRange { get { return playerProbesInRange + enemyProbesInRange > 0; } }
 
     [Header("Border Settings")]
     public float borderMinHeight = 3f;
@@ -171,7 +174,8 @@ public class HexagonController : MonoBehaviour
 
         geometryOffset = transform.FindDeepChild("GeometryOffset").gameObject;
         geometryOriginalY = geometryOffset.transform.position.y;
-        probesInRange = 0;
+        enemyProbesInRange = 0;
+        playerProbesInRange = 0;
 
         CheckNeighbours();
 
@@ -321,8 +325,13 @@ public class HexagonController : MonoBehaviour
     {
         if (other.tag == "HexagonProbe")
         {
-            ++probesInRange;
+            ++enemyProbesInRange;
             ChangeStateIfNotNull(currentState.ProbeTouched());           
+        }
+        if (other.tag == "PlayerHexagonProbe")
+        {
+            ++playerProbesInRange;
+            ChangeStateIfNotNull(currentState.ProbeTouched());
         }
         else if (other.tag == "WormHead")
         {
@@ -357,7 +366,11 @@ public class HexagonController : MonoBehaviour
     {
         if (other.tag == "HexagonProbe")
         {
-            --probesInRange;            
+            --enemyProbesInRange;            
+        }
+        if (other.tag == "PlayerHexagonProbe")
+        {
+            --playerProbesInRange;
         }
         else if (other.tag == "WormHead")
         {
@@ -512,8 +525,11 @@ public class HexagonController : MonoBehaviour
         if (isBorder) return;
         if (isStatic) return;
 
-        shouldBeWall = true;
-        ChangeState(belowAttackWallState);
+        if (enemyProbesInRange == 0)
+        {
+            shouldBeWall = true;
+            ChangeState(belowAttackWallState);
+        }
     }
 
     public void LowerWallRing()

@@ -127,7 +127,6 @@ public class WormAIBaseState
 
         HexagonController result = null;
         float targetDistance = Mathf.Pow(hexagonsDistance * HexagonController.DISTANCE_BETWEEN_HEXAGONS, 2);
-        Debug.Log("Searching for nearest hexagon at distance: " + targetDistance);
         float distanceDelta = float.MaxValue;
 
         for (int i = 0; i < colliders.Length; ++i)
@@ -140,12 +139,10 @@ public class WormAIBaseState
                 {
                     result = candidate;
                     distanceDelta = (colliders[i].transform.position - position).sqrMagnitude;
-                    Debug.Log("Hexagon candidate at distance: " + distanceDelta);
                 }
                 else
                 {
                     float newDistance = (colliders[i].transform.position - position).sqrMagnitude;
-                    Debug.Log("Hexagon candidate at distance: " + newDistance);
 
                     if (newDistance < distanceDelta)
                     {

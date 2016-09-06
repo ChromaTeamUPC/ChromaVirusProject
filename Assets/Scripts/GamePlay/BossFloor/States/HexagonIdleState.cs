@@ -26,7 +26,7 @@ public class HexagonIdleState : HexagonBaseState
 
     private bool CanMove()
     {
-        return hex.probesInRange == 0
+        return !hex.AnyProbeInRange
             && rsc.enemyMng.MinDistanceToPlayer(hex.gameObject) > hex.minDistanceToPlayer;
     }
 

@@ -36,7 +36,7 @@ public class HexagonBorderWallState : HexagonBaseState
 
     public override HexagonBaseState Update()
     {
-        if (hex.probesInRange == 0) subState = SubState.GOING_DOWN;
+        if (!hex.AnyProbeInRange) subState = SubState.GOING_DOWN;
 
         switch (subState)
         {
