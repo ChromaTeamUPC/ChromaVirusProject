@@ -5,6 +5,7 @@ using System.Collections;
 public class HexagonInfectedState : HexagonBaseState
 {
     private Vector3 half;
+    private float initialTimer;
     private bool spawnChecked;
 
     public HexagonInfectedState(HexagonController hex) : base(hex)
@@ -16,7 +17,9 @@ public class HexagonInfectedState : HexagonBaseState
     {
         base.OnStateEnter();
 
+        initialTimer = hex.AuxTimer;
         spawnChecked = false;
+
         hex.StartPlaneInfectionAnimation();
     }
 
@@ -31,14 +34,12 @@ public class HexagonInfectedState : HexagonBaseState
     {
         ReturnToPlace();
 
-        if (hex.AuxTimer < hex.AuxHalfTimer)
+        if(hex.AuxTimer < initialTimer)
         {
-            hex.plane.transform.localScale = Vector3.Lerp(Vector3.one, half, (hex.AuxHalfTimer - hex.AuxTimer) / hex.AuxHalfTimer);
             if(!spawnChecked)
             {
                 if(rsc.enemyMng.bb.worm.head.CanSpawnMinion())
                 {
-                    Debug.Log("MINION SPAWNED!");
                     SpiderAIBehaviour enemy = rsc.coloredObjectsMng.GetSpider(ChromaColorInfo.Random);
 
                     if (enemy != null)
@@ -51,6 +52,11 @@ public class HexagonInfectedState : HexagonBaseState
 
                 spawnChecked = true;
             }
+        }
+
+        if (hex.AuxTimer < hex.AuxHalfTimer)
+        {
+            hex.plane.transform.localScale = Vector3.Lerp(Vector3.one, half, (hex.AuxHalfTimer - hex.AuxTimer) / hex.AuxHalfTimer);
         }
 
         if (hex.AuxTimer <= 0f)
