@@ -66,10 +66,38 @@ public class WormAIBaseState
 
     protected HexagonController GetExitHexagon(int hexagonsDistance = 2)
     {
+        //Search in front of worm
         Vector3 offset = headTrf.forward;
         offset.y = 0;
         offset.Normalize();
 
+        HexagonController result = GetHexagon(offset, hexagonsDistance);
+
+        //if no results, search to left or right
+        if(result == null)
+        {
+            bool right = Random.Range(0f, 1f) > 0.5f;
+
+            if(right)
+                offset = Quaternion.Euler(0, 90, 0) * offset;
+            else
+                offset = Quaternion.Euler(0, -90, 0) * offset;
+
+            result = GetHexagon(offset, hexagonsDistance);
+
+            if(result == null)
+            {
+                offset = Quaternion.Euler(0, 180, 0) * offset;
+
+                result = GetHexagon(offset, hexagonsDistance);
+            }
+        }
+
+        return result;
+    }
+
+    private HexagonController GetHexagon(Vector3 offset, int hexagonsDistance)
+    {
         offset *= (HexagonController.DISTANCE_BETWEEN_HEXAGONS * hexagonsDistance);
         Vector3 position = headTrf.position + offset;
         position.y = 0;
@@ -80,29 +108,30 @@ public class WormAIBaseState
 
         HexagonController result = null;
         float targetDistance = Mathf.Pow(hexagonsDistance * HexagonController.DISTANCE_BETWEEN_HEXAGONS, 2);
-        float distanceDelta = targetDistance;
+        Debug.Log("Searching for nearest hexagon at distance: " + targetDistance);
+        float distanceDelta = float.MaxValue;
 
         for (int i = 0; i < colliders.Length; ++i)
         {
             HexagonController candidate = colliders[i].GetComponent<HexagonController>();
 
-            if(candidate.CanExitWorm())
+            if (candidate.CanExitWorm())
             {
-                if(result == null)
+                if (result == null)
                 {
                     result = candidate;
-                    float distance = (colliders[i].transform.position - position).sqrMagnitude;
-                    distanceDelta = Mathf.Abs(targetDistance - distance);
+                    distanceDelta = (colliders[i].transform.position - position).sqrMagnitude;
+                    Debug.Log("Hexagon candidate at distance: " + distanceDelta);
                 }
                 else
                 {
                     float newDistance = (colliders[i].transform.position - position).sqrMagnitude;
-                    float newDistanceDelta = Mathf.Abs(targetDistance - newDistance);
+                    Debug.Log("Hexagon candidate at distance: " + newDistance);
 
-                    if(newDistanceDelta < distanceDelta)
+                    if (newDistance < distanceDelta)
                     {
                         result = candidate;
-                        distanceDelta = newDistanceDelta;
+                        distanceDelta = newDistance;
                     }
                 }
             }
