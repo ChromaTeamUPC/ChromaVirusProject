@@ -5,7 +5,7 @@ public class WormAIWanderingState : WormAIBaseState
 {
     private enum SubState
     {
-        GOING_TO_ENTRY,
+        WAITING,
         ENTERING,
         FOLLOWING_PATH,
         EXITING,
@@ -21,13 +21,13 @@ public class WormAIWanderingState : WormAIBaseState
     private Vector3 currentWPUG;
     private Vector3 nextWPUG;
     private Vector3 lastPosition;
-    private Quaternion lookRotation;
 
-    private int curveNum;
     private float t;
     private float duration = 4;
     private float shouldMove;
     private float actuallyMoved;
+
+    private float elapsedTime;
 
     private bool angryEyes;
 
@@ -53,9 +53,10 @@ public class WormAIWanderingState : WormAIBaseState
         angryEyes = false;
         head.angryEyes.Stop();
 
+        elapsedTime = 0f;
         WPIndex = 0;
         //Set initial substate, nav mesh layer and select a random route
-        subState = SubState.GOING_TO_ENTRY;
+        subState = SubState.WAITING;
 
         WormRoute newRoute;
         do
@@ -67,24 +68,19 @@ public class WormAIWanderingState : WormAIBaseState
         while (route == newRoute);
 
         route = newRoute;
-
-        head.agent.areaMask = WormBlackboard.NAVMESH_UNDERGROUND_LAYER;
-        head.agent.enabled = true;
-        head.agent.speed = bb.WanderingSettingsPhase.undergroundSpeed;
-        head.agent.SetDestination(route.wayPoints[WPIndex].transform.position - bb.navMeshLayersDistance);
     }
 
     public override WormAIBaseState Update()
     {
         switch (subState)
         {
-            case SubState.GOING_TO_ENTRY:
-                if(!head.agent.hasPath || (head.agent.hasPath && head.agent.remainingDistance <= 0.25))
+            case SubState.WAITING:
+                if (elapsedTime >= bb.WanderingSettingsPhase.initialWaitTime)
                 {
                     head.agent.enabled = false;
 
                     currentWP = route.wayPoints[WPIndex].transform.position;
-                    nextWP = route.wayPoints[WPIndex +1].transform.position;
+                    nextWP = route.wayPoints[WPIndex + 1].transform.position;
 
                     currentWPUG = currentWP - bb.navMeshLayersDistance;
                     nextWPUG = nextWP - bb.navMeshLayersDistance;
@@ -107,6 +103,9 @@ public class WormAIWanderingState : WormAIBaseState
                     bb.applySinMovement = true;
                     subState = SubState.ENTERING;
                 }
+                else
+                    elapsedTime += Time.deltaTime;
+
                 break;
 
             case SubState.ENTERING:

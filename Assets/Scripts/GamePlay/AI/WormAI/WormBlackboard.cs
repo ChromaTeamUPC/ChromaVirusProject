@@ -21,13 +21,13 @@ public class WormBlackboard : MonoBehaviour
     [Serializable]
     public class WanderingSettings
     {
+        public float initialWaitTime = 0.25f;
         public int routeMinId = 0;
         public int routeMaxId = 1;
         public float wanderingSpeed = 10;
         public float sinLongitude = 3f;
         public float sinAmplitude = 0.25f;
         public float sinCycleDuration = 30f;
-        public float undergroundSpeed = 10;
     }
 
     [Serializable]

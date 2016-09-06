@@ -51,7 +51,7 @@ public class WormAIBaseState
 
     protected void MoveUndergroundDirection()
     {
-        headTrf.position = headTrf.position + (undergroundDirection * bb.WanderingSettingsPhase.undergroundSpeed * Time.deltaTime);
+        headTrf.position = headTrf.position + (undergroundDirection * bb.WanderingSettingsPhase.wanderingSpeed * Time.deltaTime);
     }
 
     public virtual void PlayerTouched(PlayerController player, Vector3 origin)
