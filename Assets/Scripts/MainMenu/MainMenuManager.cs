@@ -33,12 +33,14 @@ public class MainMenuManager : MonoBehaviour {
     public GameObject help;
     private Image helpImg;
     public Text helpPageNumberTxt;
+    public Text levelTxt;
     public GameObject backArrow;
     public GameObject forwardArrow;
     public GameObject playerSelection;
     private AsyncOperation loadResources;
     private bool loadingResources;
     private AsyncOperation loadLevel;
+
 
     private int tutorialCurrentIndex;
     private int tutorialTotalItems;
@@ -74,6 +76,17 @@ public class MainMenuManager : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            rsc.gameMng.startLevel = GameManager.Level.LEVEL_01;
+            levelTxt.text = "LEVEL 01";
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            rsc.gameMng.startLevel = GameManager.Level.LEVEL_BOSS;
+            levelTxt.text = "LEVEL BOSS";
+        }
+
         switch (currentState)
         {
             case MainMenuState.FADING_IN:

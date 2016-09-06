@@ -7,6 +7,12 @@ public class GameManager : MonoBehaviour {
 
     public bool motionBlur = true;
 
+    public enum Level
+    {
+        LEVEL_01,
+        LEVEL_BOSS
+    }
+
     public enum GameState
     {
         NOT_STARTED,
@@ -16,6 +22,8 @@ public class GameManager : MonoBehaviour {
     }
 
     private GameState state;
+
+    public Level startLevel = Level.LEVEL_01;
 
     public GameState State { get { return state; } }
 
@@ -114,8 +122,19 @@ public class GameManager : MonoBehaviour {
         InitPlayers(numPlayers);
 
         state = GameState.STARTED;
-        //SceneManager.LoadScene("Level01");
-        SceneManager.LoadScene("Intro");
+
+        switch (startLevel)
+        {
+            case Level.LEVEL_01:
+                //SceneManager.LoadScene("Level01");
+                SceneManager.LoadScene("Intro");
+                break;
+            case Level.LEVEL_BOSS:
+                SceneManager.LoadScene("LevelBoss");
+                break;
+            default:
+                break;
+        }
     }
 
     public void InitPlayers(int numPlayers)
