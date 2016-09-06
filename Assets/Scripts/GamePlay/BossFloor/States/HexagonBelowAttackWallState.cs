@@ -59,6 +59,12 @@ public class HexagonBelowAttackWallState : HexagonBaseState
                 {
                     float displacement = Time.deltaTime * hex.wallSpeed;
                     hex.geometryOffset.transform.position -= new Vector3(0f, displacement, 0f);
+
+                    if(hex.geometryOffset.transform.position.y <= hex.geometryOriginalY)
+                    {
+                        hex.geometryOffset.transform.position = new Vector3(hex.geometryOffset.transform.position.x, hex.geometryOriginalY, hex.geometryOffset.transform.position.z);
+                        return hex.idleState;
+                    }
                 }
                 else
                 {
