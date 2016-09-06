@@ -14,12 +14,13 @@ public class TurretAIBehaviour : MonoBehaviour
         public float maxWaitTime = 6f;
     }
 
-    public LevelBossController ctrl;
     public Transform rotationObject;
     public float angularSpeed = 720f;
     public float maxShootAngle = 5f;
     public Transform shotSpawnPoint1;
     public Transform shotSpawnPoint2;
+    public Transform muzzleSpawnPoint1;
+    public Transform muzzleSpawnPoint2;
     private SphereCollider sphereCollider;
 
     private PlayerController player1;
@@ -92,6 +93,9 @@ public class TurretAIBehaviour : MonoBehaviour
                 MosquitoMainAttackControllerBase attack1;
                 MosquitoMainAttackControllerBase attack2;
 
+                MuzzleController muzzle1 = rsc.coloredObjectsMng.GetTurretMuzzle();
+                MuzzleController muzzle2 = rsc.coloredObjectsMng.GetTurretMuzzle();
+
                 switch (currentColor)
                 {
                     case ChromaColor.RED:
@@ -123,11 +127,21 @@ public class TurretAIBehaviour : MonoBehaviour
                 if (attack1 != null)
                 {
                     attack1.Shoot(shotSpawnPoint1, target);
+
+                    muzzle1.transform.position = muzzleSpawnPoint1.position;
+                    muzzle1.transform.rotation = muzzleSpawnPoint1.rotation;
+                    muzzle1.transform.SetParent(muzzleSpawnPoint1);
+                    muzzle1.Play();
                 }
 
                 if (attack2 != null)
                 {
                     attack2.Shoot(shotSpawnPoint2, target);
+
+                    muzzle2.transform.position = muzzleSpawnPoint2.position;
+                    muzzle2.transform.rotation = muzzleSpawnPoint2.rotation;
+                    muzzle2.transform.SetParent(muzzleSpawnPoint2);
+                    muzzle2.Play();
                 }
 
                 attackWaitTime = UnityEngine.Random.Range(AttackSettingsPhase.minWaitTime, AttackSettingsPhase.maxWaitTime);

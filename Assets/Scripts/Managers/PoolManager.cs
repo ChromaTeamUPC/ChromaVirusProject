@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 
 [Serializable] public class PlayerShotPool : MonoBehaviourObjectPool<PlayerShotController> { }
-[Serializable] public class PlayerMuzzlePool : MonoBehaviourObjectPool<MuzzleController> { }
+[Serializable] public class MuzzlePool : MonoBehaviourObjectPool<MuzzleController> { }
 [Serializable] public class VoxelPool : MonoBehaviourObjectPool<VoxelController> { }
 [Serializable] public class EnergyVoxelPool : MonoBehaviourObjectPool<EnergyVoxelController> { }
 [Serializable] public class SpiderPool : MonoBehaviourObjectPool<SpiderAIBehaviour> { }
@@ -24,10 +24,10 @@ public class PoolManager : MonoBehaviour
     public PlayerShotPool player1ShotBluePool = new PlayerShotPool();
     public PlayerShotPool player1ShotYellowPool = new PlayerShotPool();
 
-    public PlayerMuzzlePool player1MuzzleRedPool = new PlayerMuzzlePool();
-    public PlayerMuzzlePool player1MuzzleGreenPool = new PlayerMuzzlePool();
-    public PlayerMuzzlePool player1MuzzleBluePool = new PlayerMuzzlePool();
-    public PlayerMuzzlePool player1MuzzleYellowPool = new PlayerMuzzlePool();
+    public MuzzlePool player1MuzzleRedPool = new MuzzlePool();
+    public MuzzlePool player1MuzzleGreenPool = new MuzzlePool();
+    public MuzzlePool player1MuzzleBluePool = new MuzzlePool();
+    public MuzzlePool player1MuzzleYellowPool = new MuzzlePool();
 
     public VoxelPool voxelPool = new VoxelPool();
     public EnergyVoxelPool energyVoxelPool = new EnergyVoxelPool();
@@ -48,6 +48,11 @@ public class PoolManager : MonoBehaviour
     public MosquitoMainAttackPool mosquitoHomingProjectilePool = new MosquitoMainAttackPool();
 
     public EnemyExplosionPool enemyExplosionPool = new EnemyExplosionPool();
+
+    public MuzzlePool turretMuzzleRedPool = new MuzzlePool();
+    public MuzzlePool turretMuzzleGreenPool = new MuzzlePool();
+    public MuzzlePool turretMuzzleBluePool = new MuzzlePool();
+    public MuzzlePool turretMuzzleYellowPool = new MuzzlePool();
 
     void Start()
     {
@@ -80,6 +85,11 @@ public class PoolManager : MonoBehaviour
         mosquitoHomingProjectilePool.Init(gameObject, poolContainerPrefab);
 
         enemyExplosionPool.Init(gameObject, poolContainerPrefab);
+
+        turretMuzzleRedPool.Init(gameObject, poolContainerPrefab);
+        turretMuzzleGreenPool.Init(gameObject, poolContainerPrefab);
+        turretMuzzleBluePool.Init(gameObject, poolContainerPrefab);
+        turretMuzzleYellowPool.Init(gameObject, poolContainerPrefab);
 
         //Debug.Log("Pool Manager created");
     }

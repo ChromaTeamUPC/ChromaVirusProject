@@ -93,13 +93,16 @@ public class ColoredObjectsManager : MonoBehaviour
     private PlayerShotPool[] player1ShotPools = new PlayerShotPool[4];
     private PlayerShotPool currentPlayer1ShotPool;
 
-    private PlayerMuzzlePool[] player1MuzzlePools = new PlayerMuzzlePool[4];
-    private PlayerMuzzlePool currentPlayer1MuzzlePool;
+    private MuzzlePool[] player1MuzzlePools = new MuzzlePool[4];
+    private MuzzlePool currentPlayer1MuzzlePool;
 
     private SpiderPool spiderPool;
     private MosquitoPool mosquitoPool;
     private MosquitoWeakShotPool[] mosquitoWeakShotPools = new MosquitoWeakShotPool[4];
     private VoxelPool voxelPool;
+
+    private MuzzlePool[] turretMuzzlePools = new MuzzlePool[4];
+    private MuzzlePool currentTurretMuzzlePool;
 
     private ChromaColor currentColor;
 
@@ -124,6 +127,11 @@ public class ColoredObjectsManager : MonoBehaviour
         mosquitoWeakShotPools[1] = rsc.poolMng.mosquitoWeakShotGreenPool;
         mosquitoWeakShotPools[2] = rsc.poolMng.mosquitoWeakShotBluePool;
         mosquitoWeakShotPools[3] = rsc.poolMng.mosquitoWeakShotYellowPool;
+
+        turretMuzzlePools[0] = rsc.poolMng.turretMuzzleRedPool;
+        turretMuzzlePools[1] = rsc.poolMng.turretMuzzleGreenPool;
+        turretMuzzlePools[2] = rsc.poolMng.turretMuzzleBluePool;
+        turretMuzzlePools[3] = rsc.poolMng.turretMuzzleYellowPool;
 
         voxelPool = rsc.poolMng.voxelPool;
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
@@ -154,7 +162,8 @@ public class ColoredObjectsManager : MonoBehaviour
         currentPlayer1MuzzlePool = player1MuzzlePools[colorIndex];
         currentVoxelMat = voxelMats[colorIndex];
         currentSpiderMat = spiderMats[colorIndex];
-        currentMosquitoMat = mosquitoMats[colorIndex];    
+        currentMosquitoMat = mosquitoMats[colorIndex];
+        currentTurretMuzzlePool = turretMuzzlePools[colorIndex];    
     }
 
     public Color GetColor()
@@ -349,6 +358,13 @@ public class ColoredObjectsManager : MonoBehaviour
     public Material GetWormJunctionWireframeMaterial()
     {
         return wormJunctionWireframeMat;
+    }
+
+
+    //Turret methods
+    public MuzzleController GetTurretMuzzle()
+    {
+        return currentTurretMuzzlePool.GetObject();
     }
 
     //Voxel methods
