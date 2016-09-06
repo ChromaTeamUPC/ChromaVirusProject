@@ -42,4 +42,9 @@ public class WormAIDyingState : WormAIBaseState
     {
         //do nothing
     }
+
+    public override bool CanSpawnMinion()
+    {
+        return false;
+    }
 }

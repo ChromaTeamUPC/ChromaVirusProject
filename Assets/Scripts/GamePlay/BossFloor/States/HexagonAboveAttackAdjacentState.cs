@@ -23,6 +23,8 @@ public class HexagonAboveAttackAdjacentState : HexagonBaseState
     {
         base.OnStateEnter();
 
+        hex.navMeshObstacles.SetActive(true);
+
         subState = SubState.UP;
         upMovement = Random.Range(hex.earthquakeMinHeight, hex.earthquakeMaxHeight);
         downMovement = upMovement / 4;
@@ -36,6 +38,8 @@ public class HexagonAboveAttackAdjacentState : HexagonBaseState
 
     public override void OnStateExit()
     {
+        hex.navMeshObstacles.SetActive(false);
+
         hex.buffPurpleGO.SetActive(false);
         hex.geometryOffset.transform.position = new Vector3(hex.geometryOffset.transform.position.x, hex.geometryOriginalY, hex.geometryOffset.transform.position.z);
         base.OnStateExit();

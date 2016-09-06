@@ -37,6 +37,25 @@ public class WormAIBaseState
         return null;
     }
 
+    public virtual bool CanSpawnMinion()
+    {
+        int wormPhases = bb.wormMaxPhases - bb.wormCurrentPhase;
+
+        //if not reached cooldown or too many enemies in screen can not spawn
+        if (rsc.enemyMng.bb.activeEnemies >= bb.SpawningMinionsSettingsPhase.maxMinionsOnScreen + wormPhases ||
+            bb.spawningMinionsCurrentCooldownTime < bb.SpawningMinionsSettingsPhase.cooldownTime)
+            return false;
+
+        //if conditions met, random chance
+        if (Random.Range(0f, 1f) < (float)bb.SpawningMinionsSettingsPhase.chancesOfSpawningMinion / 100)
+        {
+            bb.spawningMinionsCurrentCooldownTime = 0f;
+            return true;
+        }
+        else
+            return false;
+    }
+
     protected void SetUndergroundDirection()
     {
         head.SetVisible(false);

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class HexagonController : MonoBehaviour 
 {
@@ -88,7 +89,7 @@ public class HexagonController : MonoBehaviour
     public bool infectionAnimationRotation = true;
     public float infectionTimeAfterEnterExit = 2f;
     public float infectionTimeAfterContactEnds = 2f;
-    public float infectionTimeAfterAttack = 1f;
+    public float infectionTimeAfterAttack = 1f;    
     public Vector2 infectionForces = new Vector2(10f, 10f);
     private float auxTimer;
     private float auxHalfTimer;
@@ -128,12 +129,21 @@ public class HexagonController : MonoBehaviour
     public BlinkController columnBlinkController;
     private SphereCollider sphereCollider;
 
+    public GameObject navMeshObstacles;
+
     public GameObject plane;
     public Renderer planeRend;
     public BlinkController planeBlinkController;
 
     [HideInInspector]
     public Vector3 attackCenter;
+
+    [HideInInspector]
+    public List<AIAction> entryActions;
+    [HideInInspector]
+    public List<AIAction> attackActions;
+    [HideInInspector]
+    public List<AIAction> infectActions;
 
     private bool adjacentCellsSetupTop; //true = top, bottom left, bottom right, false = bottom, top left, top right
 
@@ -168,14 +178,22 @@ public class HexagonController : MonoBehaviour
         if (isStatic)
         {
             currentState = staticState;
+            navMeshObstacles.SetActive(true);
         }
         else
+        {
             currentState = idleState;
+            navMeshObstacles.SetActive(false);
+        }
     }
 
     // Use this for initialization
     void Start () 
 	{
+        entryActions = rsc.enemyMng.defaultSpiderEntry;
+        attackActions = rsc.enemyMng.defaultSpiderAttack;
+        infectActions = rsc.enemyMng.defaultSpiderInfect;
+
         plane.SetActive(false);
 
         for (int i = 0; i < neighbours.Length; ++i)
@@ -301,7 +319,7 @@ public class HexagonController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "HexagonProbe")
+        if (other.tag == "HexagonProbe")
         {
             ++probesInRange;
             ChangeStateIfNotNull(currentState.ProbeTouched());           

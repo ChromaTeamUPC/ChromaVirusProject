@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class HexagonInfectedState : HexagonBaseState
 {
     private Vector3 half;
+    private bool spawnChecked;
 
     public HexagonInfectedState(HexagonController hex) : base(hex)
     {
-        half = new Vector3(0.5f, 1f, 0.5f);
+        half = new Vector3(0.5f, 1f, 0.5f);      
     }
 
     public override void OnStateEnter()
     {
         base.OnStateEnter();
 
+        spawnChecked = false;
         hex.StartPlaneInfectionAnimation();
     }
 
@@ -31,6 +34,23 @@ public class HexagonInfectedState : HexagonBaseState
         if (hex.AuxTimer < hex.AuxHalfTimer)
         {
             hex.plane.transform.localScale = Vector3.Lerp(Vector3.one, half, (hex.AuxHalfTimer - hex.AuxTimer) / hex.AuxHalfTimer);
+            if(!spawnChecked)
+            {
+                if(rsc.enemyMng.bb.worm.head.CanSpawnMinion())
+                {
+                    Debug.Log("MINION SPAWNED!");
+                    SpiderAIBehaviour enemy = rsc.coloredObjectsMng.GetSpider(ChromaColorInfo.Random);
+
+                    if (enemy != null)
+                    {
+                        enemy.AIInit(SpiderAIBehaviour.SpawnAnimation.FLOOR, hex.entryActions, hex.attackActions, hex.infectActions);
+                        enemy.Spawn(hex.gameObject.transform);
+                        rsc.enemyMng.AddVortexEnemyInfection(SpiderAIBehaviour.infectionValue);
+                    }
+                }
+
+                spawnChecked = true;
+            }
         }
 
         if (hex.AuxTimer <= 0f)

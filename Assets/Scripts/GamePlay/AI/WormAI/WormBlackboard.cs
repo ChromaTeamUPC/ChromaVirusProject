@@ -19,6 +19,14 @@ public class WormBlackboard : MonoBehaviour
     }
 
     [Serializable]
+    public class SpawningMinionsSettings
+    {
+        public int chancesOfSpawningMinion = 33;
+        public int maxMinionsOnScreen = 3;
+        public float cooldownTime = 3f;
+    }
+
+    [Serializable]
     public class WanderingSettings
     {
         public float initialWaitTime = 0.25f;
@@ -168,6 +176,13 @@ public class WormBlackboard : MonoBehaviour
     public float contactDamage = 12f;
     public Vector2 infectionForces = new Vector2(5, 9);
     public float attackRumbleDuration = 1f;
+
+    [Header("Spawning Minions Settings")]
+    [SerializeField]
+    public SpawningMinionsSettings[] spawningMinionsSettings = new SpawningMinionsSettings[4];
+    public SpawningMinionsSettings SpawningMinionsSettingsPhase { get { return spawningMinionsSettings[wormCurrentPhase]; } }
+    [HideInInspector]
+    public float spawningMinionsCurrentCooldownTime;
 
     [Header("Wandering Settings")]
     /*public float wanderingSpeed = 10;
@@ -327,6 +342,7 @@ public class WormBlackboard : MonoBehaviour
         wormCurrentPhase = -1;
         //headCurrentHealth = headMaxHealth;
         headCurrentChargeLevel = 0;
+        spawningMinionsCurrentCooldownTime = 0f;
         aboveAttackCurrentCooldownTime = 0f;
         aboveAttackCurrentExposureTime = 0f;
         sinElapsedTime = 0;

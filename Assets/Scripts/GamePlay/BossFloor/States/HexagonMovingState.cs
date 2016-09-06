@@ -14,6 +14,8 @@ public class HexagonMovingState : HexagonBaseState
     {
         base.OnStateEnter();
 
+        hex.navMeshObstacles.SetActive(true);
+
         hex.isMoving = true;
         currentMovement = 0f;
         up = Random.Range(0f, 1f) >= 0.5f;
@@ -23,6 +25,13 @@ public class HexagonMovingState : HexagonBaseState
             totalMovement = Random.Range(hex.downMinMovement, hex.downMaxMovement);
 
         returning = false;
+    }
+
+    public override void OnStateExit()
+    {
+        base.OnStateExit();
+
+        hex.navMeshObstacles.SetActive(false);
     }
 
     public override HexagonBaseState Update()

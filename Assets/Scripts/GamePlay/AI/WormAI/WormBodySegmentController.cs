@@ -180,15 +180,18 @@ public class WormBodySegmentController : MonoBehaviour
     private IEnumerator RandomizeAndExplode()
     {
         float elapsedTime = 0;
+        ChromaColor randomColor = ChromaColorInfo.Random;
 
         while (elapsedTime < bb.bodyColorsCarrouselMinTime)
         {
-            SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(ChromaColorInfo.Random));
+            randomColor = ChromaColorInfo.Random;
+            SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(randomColor));
 
             yield return new WaitForSeconds(bb.bodyColorsCarrouselChangeInterval);
             elapsedTime += bb.bodyColorsCarrouselChangeInterval;
         }
 
+        bodyDeactivate[(int)randomColor].Play();
         voxelization.SpawnFakeVoxels();
         //Destroy(gameObject);
         gameObject.SetActive(false);

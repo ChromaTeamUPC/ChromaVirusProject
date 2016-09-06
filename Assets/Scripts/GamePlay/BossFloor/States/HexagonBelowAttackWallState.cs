@@ -19,6 +19,8 @@ public class HexagonBelowAttackWallState : HexagonBaseState
     {
         base.OnStateEnter();
 
+        hex.navMeshObstacles.SetActive(true);
+
         subState = SubState.GOING_UP;
         totalHeight = hex.geometryOriginalY + hex.wallHeight;
     }
@@ -26,6 +28,8 @@ public class HexagonBelowAttackWallState : HexagonBaseState
     public override void OnStateExit()
     {
         base.OnStateExit();
+
+        hex.navMeshObstacles.SetActive(false);
 
         hex.geometryOffset.transform.position = new Vector3(hex.geometryOffset.transform.position.x, hex.geometryOriginalY, hex.geometryOffset.transform.position.z);
     }
