@@ -76,6 +76,7 @@ public class HexagonController : MonoBehaviour
     public bool mainAttackHexagon;
 
     [Header("Wall Settings")]
+    public float wallDuration = 1f;
     public float wallHeight = 1f;
     public float wallSpeed = 2f;
     [HideInInspector]
@@ -89,10 +90,10 @@ public class HexagonController : MonoBehaviour
     public float infectionTimeAfterContactEnds = 2f;
     public float infectionTimeAfterAttack = 1f;
     public Vector2 infectionForces = new Vector2(10f, 10f);
-    private float currentInfectionDuration;
-    private float infectionHalfDuration;
-    public float CurrentInfectionDuration { get { return currentInfectionDuration; } set { currentInfectionDuration = value; infectionHalfDuration = currentInfectionDuration / 2; } }
-    public float InfectionHalfDuration { get { return infectionHalfDuration; } }
+    private float auxTimer;
+    private float auxHalfTimer;
+    public float AuxTimer { get { return auxTimer; } }
+    public float AuxHalfTimer { get { return auxHalfTimer; } }
     [HideInInspector]
     public bool isWormTouchingHexagon;
 
@@ -193,10 +194,16 @@ public class HexagonController : MonoBehaviour
             sphereCollider.enabled = false;
     }
 
+    public void SetAuxTimer(float time)
+    {
+        auxTimer = time;
+        auxHalfTimer = auxTimer / 2;
+    }
+
     void FixedUpdate()
     {
-        if(currentInfectionDuration > 0f && !isWormTouchingHexagon)
-            currentInfectionDuration -= Time.fixedDeltaTime;
+        if(auxTimer > 0f && !isWormTouchingHexagon)
+            auxTimer -= Time.fixedDeltaTime;
 
         isWormTouchingHexagon = false;
     }

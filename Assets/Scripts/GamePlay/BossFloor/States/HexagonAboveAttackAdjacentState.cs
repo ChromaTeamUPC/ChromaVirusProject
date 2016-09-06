@@ -75,7 +75,7 @@ public class HexagonAboveAttackAdjacentState : HexagonBaseState
                 currentMovement += displacement;
                 if (currentMovement >= totalMovement)
                 {
-                    hex.CurrentInfectionDuration = hex.infectionTimeAfterAttack;
+                    hex.SetAuxTimer(hex.infectionTimeAfterAttack);
                     return hex.infectedState;
                 }
                 break;

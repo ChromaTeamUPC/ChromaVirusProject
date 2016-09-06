@@ -28,12 +28,12 @@ public class HexagonInfectedState : HexagonBaseState
     {
         ReturnToPlace();
 
-        if (hex.CurrentInfectionDuration < hex.InfectionHalfDuration)
+        if (hex.AuxTimer < hex.AuxHalfTimer)
         {
-            hex.plane.transform.localScale = Vector3.Lerp(Vector3.one, half, (hex.InfectionHalfDuration - hex.CurrentInfectionDuration) / hex.InfectionHalfDuration);
+            hex.plane.transform.localScale = Vector3.Lerp(Vector3.one, half, (hex.AuxHalfTimer - hex.AuxTimer) / hex.AuxHalfTimer);
         }
 
-        if (hex.CurrentInfectionDuration <= 0f)
+        if (hex.AuxTimer <= 0f)
         {
             return hex.idleState;
         }

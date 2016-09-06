@@ -16,6 +16,8 @@ public class HexagonAboveAttackState : HexagonBaseState
 
         if (!hex.continousPurple.isPlaying)
             hex.continousPurple.Play();
+
+        hex.SetAuxTimer(0.5f);
     }
 
     public override void OnStateExit()
@@ -32,13 +34,13 @@ public class HexagonAboveAttackState : HexagonBaseState
     {
         ReturnToPlace();
 
-        return null;
-    }
+        if (hex.AuxTimer <= 0f)
+        {
+            hex.SetAuxTimer(hex.infectionTimeAfterAttack);
+            return hex.infectedState;
+        }
 
-    public override HexagonBaseState WormTailExited()
-    {
-        hex.CurrentInfectionDuration = hex.infectionTimeAfterAttack;
-        return hex.infectedState;
+        return null;
     }
 
     public override HexagonBaseState PlayerStay(PlayerController player)
