@@ -48,4 +48,10 @@ public class HexagonEnterExitState : HexagonBaseState
         player.ReceiveInfection(hex.enterExitDamage, hex.transform.position, hex.infectionForces);
         return null;
     }
+
+    public override HexagonBaseState EnemyStay(EnemyBaseAIBehaviour enemy)
+    {
+        enemy.ImpactedByHexagon();
+        return null;
+    }
 }

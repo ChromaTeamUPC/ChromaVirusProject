@@ -44,8 +44,8 @@ public class HexagonInfectedState : HexagonBaseState
 
                     if (enemy != null)
                     {
-                        enemy.AIInit(SpiderAIBehaviour.SpawnAnimation.FLOOR, hex.entryActions, hex.attackActions, hex.infectActions);
-                        enemy.Spawn(hex.gameObject.transform);
+                        enemy.AIInit(SpiderAIBehaviour.SpawnAnimation.FLOOR_FAST, hex.entryActions, hex.attackActions, hex.infectActions);
+                        enemy.Spawn(hex.spawnPoint.transform);
                         rsc.enemyMng.AddVortexEnemyInfection(SpiderAIBehaviour.infectionValue);
                     }
                 }

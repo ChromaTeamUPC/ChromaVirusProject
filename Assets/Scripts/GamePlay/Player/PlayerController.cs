@@ -129,7 +129,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private GameObject bossIndicator;
 
-
     private Renderer shieldRend;
     private CharacterController ctrl;
     private ColoredObjectsManager coloredObjMng;

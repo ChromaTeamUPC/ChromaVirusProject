@@ -67,4 +67,10 @@ public class HexagonBelowAttackState : HexagonBaseState
         player.ReceiveInfection(hex.belowAttackCentralDamage, hex.transform.position, hex.infectionForces);
         return null;
     }
+
+    public override HexagonBaseState EnemyStay(EnemyBaseAIBehaviour enemy)
+    {
+        enemy.ImpactedByHexagon();
+        return null;
+    }
 }

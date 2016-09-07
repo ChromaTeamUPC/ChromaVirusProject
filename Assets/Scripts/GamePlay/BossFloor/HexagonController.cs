@@ -127,6 +127,8 @@ public class HexagonController : MonoBehaviour
     public GameObject geometryOffset;
     [HideInInspector]
     public float geometryOriginalY;
+    [HideInInspector]
+    public GameObject spawnPoint;
 
     [Header("Objects")]
     public GameObject column;
@@ -176,6 +178,7 @@ public class HexagonController : MonoBehaviour
 
         geometryOffset = transform.FindDeepChild("GeometryOffset").gameObject;
         geometryOriginalY = geometryOffset.transform.position.y;
+        spawnPoint = transform.FindDeepChild("SpawnPoint").gameObject;
         wormProbesInRange = 0;
         //enemyProbesInRange = 0;
         enemiesInRange.Clear();
@@ -375,6 +378,11 @@ public class HexagonController : MonoBehaviour
         {
             PlayerController player = other.GetComponent<PlayerController>();
             ChangeStateIfNotNull(currentState.PlayerStay(player));
+        }
+        else if (other.tag == "EnemyHexagonBodyProbe")
+        {
+            EnemyBaseAIBehaviour enemy = other.GetComponentInParent<EnemyBaseAIBehaviour>();
+            ChangeStateIfNotNull(currentState.EnemyStay(enemy));
         }
         else if (other.tag == "WormHead" || other.tag == "WormBody" || other.tag == "WormTail")
         {

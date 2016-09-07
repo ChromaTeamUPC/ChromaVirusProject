@@ -15,8 +15,6 @@ public class SpiderDyingAIState : SpiderAIBaseState
         spiderBlackboard.agent.Stop();
         spiderBlackboard.agent.enabled = false;
 
-        spiderBlackboard.spider.spiderProbe.enabled = false;
-
         color = spiderBlackboard.spider.color;
 
         blackboard.entity.DisableShields();
@@ -70,5 +68,10 @@ public class SpiderDyingAIState : SpiderAIBaseState
     public override void ColorChanged(ChromaColor newColor)
     {
         //Do nothing
+    }
+
+    public override AIBaseState ImpactedByHexagon()
+    {
+        return null;
     }
 }

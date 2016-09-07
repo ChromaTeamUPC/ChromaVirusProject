@@ -116,12 +116,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     {
         if (currentState != null)
         {
-            AIBaseState newState = currentState.Update();
-
-            if (newState != null)
-            {
-                ChangeState(newState);
-            }
+            ChangeStateIfNotNull(currentState.Update());
         }
     }
 
@@ -143,6 +138,12 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
 
     }
 
+    private void ChangeStateIfNotNull(AIBaseState newState)
+    {
+        if (newState != null)
+            ChangeState(newState);
+    }
+
     protected void ChangeState(AIBaseState newState)
     {
         if (currentState != null)
@@ -162,12 +163,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     {
         if (currentState != null)
         {
-            AIBaseState newState = currentState.ImpactedByShot(shotColor, damage, direction, player);
-
-            if (newState != null)
-            {
-                ChangeState(newState);
-            }
+            ChangeStateIfNotNull(currentState.ImpactedByShot(shotColor, damage, direction, player));           
         }
     }
 
@@ -176,17 +172,11 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         return null;
     }
 
-
     public virtual void ImpactedBySpecial(float damage, Vector3 direction, PlayerController player)
     {
         if (currentState != null)
         {
-            AIBaseState newState = currentState.ImpactedBySpecial(damage, direction, player);
-
-            if (newState != null)
-            {
-                ChangeState(newState);
-            }
+            ChangeStateIfNotNull(currentState.ImpactedBySpecial(damage, direction, player));
         }
     }
 
@@ -199,16 +189,24 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     {
         if (currentState != null)
         {
-            AIBaseState newState = currentState.ImpactedByBarrel(barrelColor, damage, direction, player);
-
-            if (newState != null)
-            {
-                ChangeState(newState);
-            }
+            ChangeStateIfNotNull(currentState.ImpactedByBarrel(barrelColor, damage, direction, player));
         }
     }
 
     public virtual AIBaseState ProcessBarrelImpact(ChromaColor barrelColor, float damage, Vector3 direction, PlayerController player)
+    {
+        return null;
+    }
+
+    public void ImpactedByHexagon()
+    {
+        if(currentState != null)
+        {
+            ChangeStateIfNotNull(currentState.ImpactedByHexagon());
+        }
+    }
+
+    public virtual AIBaseState ProcessHexagonImpact()
     {
         return null;
     }

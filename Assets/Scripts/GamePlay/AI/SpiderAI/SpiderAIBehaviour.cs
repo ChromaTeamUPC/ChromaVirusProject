@@ -10,7 +10,8 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     {
         FLOOR,
         SKY,
-        VORTEX
+        VORTEX,
+        FLOOR_FAST
     }
 
     private SpiderBlackboard spiderBlackboard;
@@ -20,8 +21,6 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     public float playerDetectionDistance = 5f; 
     public float checkAttackEverySeconds = 1f;
     public float checkDeviceEverySeconds = 3f;
-
-    public BoxCollider spiderProbe;  
 
 	// Use this for initialization
 	protected override void Awake ()
@@ -172,6 +171,14 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         }
 
         return null;
+    }
+
+    public override AIBaseState ProcessHexagonImpact()
+    {
+        spiderBlackboard.lastShotDirection = Vector3.zero;
+        spiderBlackboard.lastShotSameColor = true;
+        spiderBlackboard.lastShotPlayer = null;
+        return spiderBlackboard.dyingState;
     }
 
     public bool CheckPlayersDistance()

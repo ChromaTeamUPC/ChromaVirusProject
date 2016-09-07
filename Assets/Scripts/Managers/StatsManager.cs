@@ -93,35 +93,38 @@ public class StatsManager : MonoBehaviour
     {
         EnemyDiedEventInfo info = (EnemyDiedEventInfo)eventInfo;
 
-        PlayerStats stats;
-
-        switch (info.killerPlayer.Id)
+        if (info.killerPlayer != null)
         {
-            case 1:
-                stats = p1Stats;
-                break;
+            PlayerStats stats;
 
-            case 2:
-                stats = p2Stats;
-                break;
+            switch (info.killerPlayer.Id)
+            {
+                case 1:
+                    stats = p1Stats;
+                    break;
 
-            default:
-                stats = p1Stats;
-                break;
-        }
+                case 2:
+                    stats = p2Stats;
+                    break;
 
-        if(info.killedSameColor)
-        {
-            stats.enemiesKilledOk++;
-            stats.currentCombo++;
+                default:
+                    stats = p1Stats;
+                    break;
+            }
 
-            if (stats.currentCombo > stats.maxCombo)
-                stats.maxCombo = stats.currentCombo;
-        }
-        else
-        {
-            stats.enemiesKilledWrong++;
-            stats.currentCombo = 0;
+            if (info.killedSameColor)
+            {
+                stats.enemiesKilledOk++;
+                stats.currentCombo++;
+
+                if (stats.currentCombo > stats.maxCombo)
+                    stats.maxCombo = stats.currentCombo;
+            }
+            else
+            {
+                stats.enemiesKilledWrong++;
+                stats.currentCombo = 0;
+            }
         }
     }
 

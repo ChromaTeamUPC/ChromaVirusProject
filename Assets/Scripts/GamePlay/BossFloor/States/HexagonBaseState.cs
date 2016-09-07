@@ -24,6 +24,7 @@ public class HexagonBaseState
     public virtual HexagonBaseState PlayerEntered(PlayerController player) { return null; }
     public virtual HexagonBaseState PlayerStay(PlayerController player) { return null; }
     public virtual HexagonBaseState PlayerExited(PlayerController player) { return null; }
+    public virtual HexagonBaseState EnemyStay(EnemyBaseAIBehaviour enemy) { return null; }
 
     protected bool ReturnToPlace()
     {

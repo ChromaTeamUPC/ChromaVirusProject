@@ -41,5 +41,10 @@ public class AIBaseState
     {
         return blackboard.entity.ProcessBarrelImpact(barrelColor, damage, direction, player);
     }
+
+    virtual public AIBaseState ImpactedByHexagon()
+    {
+        return blackboard.entity.ProcessHexagonImpact();
+    }
 }
 
