@@ -138,6 +138,8 @@ public class WormAIBelowAttackState : WormAIBaseState
                 if (headTrf.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {
                     bb.isHeadOverground = false;
+                    bb.tailReachedMilestone = false;
+                    bb.FlagCurrentWaypointAsMilestone();
                     head.SetVisible(false);
 
                     subState = SubState.EXITING;
@@ -151,8 +153,9 @@ public class WormAIBelowAttackState : WormAIBaseState
 
                 headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition));
 
-                if (bb.isTailUnderground)
+                if (bb.tailReachedMilestone)
                 {
+                    //Debug.Break();
                     Vector3 pos = headTrf.position;
                     pos.y = -WormBlackboard.NAVMESH_LAYER_HEIGHT;
                     headTrf.position = pos;

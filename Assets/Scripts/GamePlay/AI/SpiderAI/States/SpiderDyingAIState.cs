@@ -15,6 +15,8 @@ public class SpiderDyingAIState : SpiderAIBaseState
         spiderBlackboard.agent.Stop();
         spiderBlackboard.agent.enabled = false;
 
+        spiderBlackboard.spider.spiderProbe.enabled = false;
+
         color = spiderBlackboard.spider.color;
 
         blackboard.entity.DisableShields();

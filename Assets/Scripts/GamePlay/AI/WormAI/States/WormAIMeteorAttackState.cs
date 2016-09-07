@@ -148,8 +148,7 @@ public class WormAIMeteorAttackState : WormAIBaseState
 
                 if (headTrf.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {
-                    bb.isHeadOverground = false;
-                    head.SetVisible(false);
+                    SetHeadUnderground();
 
                     subState = SubState.EXITING;
                 }
@@ -162,7 +161,7 @@ public class WormAIMeteorAttackState : WormAIBaseState
 
                 headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition));
 
-                if (bb.isTailUnderground)
+                if (bb.tailReachedMilestone)
                 {
                     Vector3 pos = headTrf.position;
                     pos.y = -WormBlackboard.NAVMESH_LAYER_HEIGHT;

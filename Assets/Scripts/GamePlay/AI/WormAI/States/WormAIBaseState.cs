@@ -56,6 +56,14 @@ public class WormAIBaseState
             return false;
     }
 
+    protected void SetHeadUnderground()
+    {
+        bb.isHeadOverground = false;
+        bb.tailReachedMilestone = false;
+        bb.FlagCurrentWaypointAsMilestone();
+        head.SetVisible(false);
+    }
+
     protected void SetUndergroundDirection()
     {
         head.SetVisible(false);

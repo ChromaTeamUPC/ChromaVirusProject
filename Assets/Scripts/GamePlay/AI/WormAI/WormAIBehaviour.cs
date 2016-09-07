@@ -362,6 +362,14 @@ public class WormAIBehaviour : MonoBehaviour
             elapsedTime += bb.bodyColorsCarrouselChangeInterval;
         }
 
+        EnemyExplosionController explosion = rsc.poolMng.enemyExplosionPool.GetObject();
+
+        if (explosion != null)
+        {
+            explosion.transform.position = transform.position;
+            explosion.PlayAll();
+        }
+
         voxelization.SpawnFakeVoxels();
         headModel.SetActive(false);
 

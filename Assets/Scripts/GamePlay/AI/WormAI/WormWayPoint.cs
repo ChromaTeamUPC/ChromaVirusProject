@@ -10,10 +10,12 @@ public class WormWayPoint
         rotation = rot;
         visible = vis;
         next = nex;
+        milestone = false;
     }
 
     public Vector3 position;
     public Quaternion rotation;
     public bool visible;
     public WormWayPoint next;
+    public bool milestone;
 }

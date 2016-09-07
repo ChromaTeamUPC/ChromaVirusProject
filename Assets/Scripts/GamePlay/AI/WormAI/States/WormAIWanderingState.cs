@@ -248,10 +248,9 @@ public class WormAIWanderingState : WormAIBaseState
                 else
                 {
                     SetUndergroundDirection();
-
+                    SetHeadUnderground();
                     head.animator.SetBool("MouthOpen", false);
 
-                    bb.isHeadOverground = false;
                     subState = SubState.WAITING_FOR_TAIL;
                 }
 
@@ -259,7 +258,7 @@ public class WormAIWanderingState : WormAIBaseState
 
             case SubState.WAITING_FOR_TAIL:
                 //move head until tail is undeground
-                if(!bb.isTailUnderground)
+                if(!bb.tailReachedMilestone)
                 {
                     MoveUndergroundDirection();
                 }

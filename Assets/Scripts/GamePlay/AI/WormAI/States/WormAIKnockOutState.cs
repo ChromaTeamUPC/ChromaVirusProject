@@ -123,9 +123,7 @@ public class WormAIKnockOutState : WormAIBaseState
 
                 if (headTrf.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {
-                    bb.isHeadOverground = false;
-                    head.SetVisible(false);
-
+                    SetHeadUnderground();
                     head.animator.SetBool("MouthOpen", false);
 
                     subState = SubState.EXITING;
@@ -139,7 +137,7 @@ public class WormAIKnockOutState : WormAIBaseState
 
                 headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition));
 
-                if (bb.isTailUnderground)
+                if (bb.tailReachedMilestone)
                 {
                     Vector3 pos = headTrf.position;
                     pos.y = -WormBlackboard.NAVMESH_LAYER_HEIGHT;

@@ -17,12 +17,6 @@ public class WormTailController : MonoBehaviour
         rend = GetComponentInChildren<Renderer>();
     }
 
-    void Update()
-    {
-        if(bb!= null)
-            bb.isTailUnderground = (trf.position.y < 0 - tailHeight);
-    }
-
     public void SetBlackboard(WormBlackboard bb)
     {
         this.bb = bb;
@@ -30,6 +24,14 @@ public class WormTailController : MonoBehaviour
 
     public void Explode()
     {
+        EnemyExplosionController explosion = rsc.poolMng.enemyExplosionPool.GetObject();
+
+        if (explosion != null)
+        {
+            explosion.transform.position = transform.position;
+            explosion.PlayAll();
+        }
+
         voxelization.SpawnVoxels();
         //Destroy(gameObject);
         gameObject.SetActive(false);

@@ -193,6 +193,15 @@ public class WormBodySegmentController : MonoBehaviour
 
         bodyDeactivate[(int)randomColor].Play();
         voxelization.SpawnFakeVoxels();
+
+        EnemyExplosionController explosion = rsc.poolMng.enemyExplosionPool.GetObject();
+
+        if (explosion != null)
+        {
+            explosion.transform.position = transform.position;
+            explosion.PlayAll();
+        }
+
         //Destroy(gameObject);
         gameObject.SetActive(false);
     }

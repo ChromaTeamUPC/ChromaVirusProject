@@ -206,8 +206,8 @@ public class WormBlackboard : MonoBehaviour
     public bool applySinMovement;
     [HideInInspector]
     public bool isHeadOverground;
-    [HideInInspector]
-    public bool isTailUnderground;
+
+    public bool tailReachedMilestone;
 
     //Local bezier points
     private Vector3 localEnterBezier11;
@@ -346,6 +346,7 @@ public class WormBlackboard : MonoBehaviour
         aboveAttackCurrentCooldownTime = 0f;
         aboveAttackCurrentExposureTime = 0f;
         sinElapsedTime = 0;
+        tailReachedMilestone = false;
         applySinMovement = false;
     }
 
@@ -634,6 +635,11 @@ public class WormBlackboard : MonoBehaviour
         }
     }
 
+    public void FlagCurrentWaypointAsMilestone()
+    {
+        headWayPoint.milestone = true;
+    }
+
     public void UpdateBodyMovement()
     {
         sinDistanceFactor = 360 / WanderingSettingsPhase.sinLongitude;
@@ -793,6 +799,20 @@ public class WormBlackboard : MonoBehaviour
                 tailTrf.position = current.position + direction;
                 tailTrf.rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
                 tailController.SetVisible(current.visible || next.visible);
+
+                //search for milestones
+                WormWayPoint aux = next;
+                while(aux != null)
+                {
+                    if(aux.milestone)
+                    {
+                        aux.milestone = false;
+                        tailReachedMilestone = true;
+                        break;
+                    }
+                    aux = aux.next;
+                }
+                aux = null;
 
                 //release the oldest waypoints
                 next.next = null; //Remove reference, let garbage collector do its job

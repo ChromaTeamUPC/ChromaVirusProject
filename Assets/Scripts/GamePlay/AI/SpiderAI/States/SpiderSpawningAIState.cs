@@ -14,6 +14,8 @@ public class SpiderSpawningAIState : SpiderAIBaseState {
         spiderBlackboard.canReceiveDamage = false;
         spiderBlackboard.spawnAnimationEnded = false;
 
+        spiderBlackboard.spider.spiderProbe.enabled = true;
+
         spiderBlackboard.animator.Rebind(); //Restart state machine
         spiderBlackboard.animator.SetInteger("spawnAnimation", (int)spiderBlackboard.spawnAnimation);
 

@@ -60,11 +60,13 @@ public class HexagonController : MonoBehaviour
 
     [HideInInspector]
     public bool isMoving;
-    [HideInInspector]
-    public int enemyProbesInRange;
-    [HideInInspector]
-    public int playerProbesInRange;
-    public bool AnyProbeInRange { get { return playerProbesInRange + enemyProbesInRange > 0; } }
+    private int wormProbesInRange;
+    //private int enemyProbesInRange;
+    private List<GameObject> enemiesInRange = new List<GameObject>();
+    private int playerProbesInRange;
+
+    public bool EnemiesInRange { get { return enemiesInRange.Count > 0; } }
+    public bool AnyProbeInRange { get { return playerProbesInRange + enemiesInRange.Count + wormProbesInRange > 0; } }
 
     [Header("Border Settings")]
     public float borderMinHeight = 3f;
@@ -174,7 +176,9 @@ public class HexagonController : MonoBehaviour
 
         geometryOffset = transform.FindDeepChild("GeometryOffset").gameObject;
         geometryOriginalY = geometryOffset.transform.position.y;
-        enemyProbesInRange = 0;
+        wormProbesInRange = 0;
+        //enemyProbesInRange = 0;
+        enemiesInRange.Clear();
         playerProbesInRange = 0;
 
         CheckNeighbours();
@@ -228,6 +232,8 @@ public class HexagonController : MonoBehaviour
             auxTimer -= Time.fixedDeltaTime;
 
         isWormTouchingHexagon = false;
+
+        CheckEnemiesInRange();
     }
 	
 	// Update is called once per frame
@@ -321,14 +327,29 @@ public class HexagonController : MonoBehaviour
         }
     }
 
+    private void CheckEnemiesInRange()
+    {
+        for(int i = enemiesInRange.Count-1; i >= 0; --i)
+        {
+            if (!enemiesInRange[i].activeInHierarchy)
+                enemiesInRange.RemoveAt(i);
+        }
+    }
+
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "HexagonProbe")
+        if (other.tag == "WormHexagonProbe")
         {
-            ++enemyProbesInRange;
+            ++wormProbesInRange;
             ChangeStateIfNotNull(currentState.ProbeTouched());           
         }
-        if (other.tag == "PlayerHexagonProbe")
+        else if (other.tag == "EnemyHexagonProbe")
+        {
+            //++enemyProbesInRange;
+            enemiesInRange.Add(other.gameObject);
+            ChangeStateIfNotNull(currentState.ProbeTouched());
+        }
+        else if (other.tag == "PlayerHexagonProbe")
         {
             ++playerProbesInRange;
             ChangeStateIfNotNull(currentState.ProbeTouched());
@@ -364,11 +385,16 @@ public class HexagonController : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (other.tag == "HexagonProbe")
+        if (other.tag == "WormHexagonProbe")
         {
-            --enemyProbesInRange;            
+            --wormProbesInRange;            
         }
-        if (other.tag == "PlayerHexagonProbe")
+        else if (other.tag == "EnemyHexagonProbe")
+        {
+            //--enemyProbesInRange;
+            enemiesInRange.Remove(other.gameObject);
+        }
+        else if (other.tag == "PlayerHexagonProbe")
         {
             --playerProbesInRange;
         }
@@ -525,7 +551,7 @@ public class HexagonController : MonoBehaviour
         if (isBorder) return;
         if (isStatic) return;
 
-        if (enemyProbesInRange == 0)
+        if (!EnemiesInRange)
         {
             shouldBeWall = true;
             ChangeState(belowAttackWallState);
