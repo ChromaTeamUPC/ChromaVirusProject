@@ -35,7 +35,8 @@ public class WormAIKnockOutState : WormAIBaseState
 
         head.SpawnEnergyVoxels();
         head.HeadKnockOut();
-        //TODO: knockout animation play?
+
+        head.animator.SetBool("Stunned", true);
 
         subState = SubState.KNOCKED_OUT;
     }
@@ -43,7 +44,8 @@ public class WormAIKnockOutState : WormAIBaseState
     public override void OnStateExit()
     {
         base.OnStateExit();
-        //knockout animation stop
+
+        head.animator.SetBool("Stunned", false);
 
         head.DeactivateHead();
     }
@@ -74,6 +76,10 @@ public class WormAIKnockOutState : WormAIBaseState
                     initialRotation = Quaternion.LookRotation(nextPosition - startPosition, headTrf.up);
 
                     subState = SubState.MOVING_HEAD;
+
+                    head.animator.SetBool("Stunned", false);
+                    head.animator.SetBool("MouthOpen", true);
+
                     elapsedTime = 0f;
                 }
                 else
@@ -119,6 +125,8 @@ public class WormAIKnockOutState : WormAIBaseState
                 {
                     bb.isHeadOverground = false;
                     head.SetVisible(false);
+
+                    head.animator.SetBool("MouthOpen", false);
 
                     subState = SubState.EXITING;
                 }

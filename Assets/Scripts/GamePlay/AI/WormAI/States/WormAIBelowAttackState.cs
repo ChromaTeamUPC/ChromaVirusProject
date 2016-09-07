@@ -38,6 +38,13 @@ public class WormAIBelowAttackState : WormAIBaseState
         subState = SubState.WAITING;     
     }
 
+    public override void OnStateExit()
+    {
+        base.OnStateExit();
+
+        head.animator.SetBool("Bite", false);
+    }
+
     public override WormAIBaseState Update()
     {
         switch (subState)
@@ -55,6 +62,8 @@ public class WormAIBelowAttackState : WormAIBaseState
                         {
                             if (!origin.isWormSelectable)
                                 return head.wanderingState;
+
+                            head.animator.SetBool("Bite", true);
 
                             destiny = GetHexagonFacingCenter(origin, destinyHexagonsDistance);
 

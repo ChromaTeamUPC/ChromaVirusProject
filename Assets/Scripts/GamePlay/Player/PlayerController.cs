@@ -496,6 +496,14 @@ public class PlayerController : MonoBehaviour
     {
         voxelization.CalculateVoxelsGrid();
         voxelization.SpawnVoxels();
+
+        EnemyExplosionController explosion = rsc.poolMng.enemyExplosionPool.GetObject();
+
+        if (explosion != null)
+        {
+            explosion.transform.position = transform.position;
+            explosion.PlayAll();
+        }
     }
 
     public void TakeDamage(float damage)

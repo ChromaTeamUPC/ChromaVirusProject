@@ -30,6 +30,8 @@ public class WormAISpawningState : WormAIBaseState
     {
         base.OnStateEnter();
 
+        head.animator.SetBool("Bite", true);
+
         origin = bb.spawnEntry.GetComponent<HexagonController>();
         destiny = bb.spawnExit.GetComponent<HexagonController>();
 
@@ -44,6 +46,13 @@ public class WormAISpawningState : WormAIBaseState
 
         WormEventInfo.eventInfo.wormBb = bb;
         rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SPAWNED, WormEventInfo.eventInfo);
+    }
+
+    public override void OnStateExit()
+    {
+        base.OnStateExit();
+
+        head.animator.SetBool("MouthOpen", false);
     }
 
     public override WormAIBaseState Update()
@@ -75,7 +84,8 @@ public class WormAISpawningState : WormAIBaseState
                 {
                     if(!highestPointReached)
                     {
-                        //head.StartNewPhase();
+                        head.animator.SetBool("Bite", false);
+                        head.animator.SetBool("MouthOpen", true);
                         highestPointReached = true;
                     }
 

@@ -32,6 +32,13 @@ public class EnemyExplosionController : MonoBehaviour
         StartCoroutine(WaitAndReturnToPool());
     }
 
+    public void PlayAll()
+    {
+        for(int i = 0; i < colorExplosion.Length; ++i)
+            colorExplosion[i].SetActive(true);
+        StartCoroutine(WaitAndReturnToPool());
+    }
+
     private IEnumerator WaitAndReturnToPool()
     {
         yield return new WaitForSeconds(3.5f);
@@ -41,7 +48,10 @@ public class EnemyExplosionController : MonoBehaviour
 
 	private void ReturnToPool()
     {
-        colorExplosion[(int)color].SetActive(false);
+        for (int i = 0; i < colorExplosion.Length; ++i)
+            colorExplosion[i].SetActive(false);
+
+        //colorExplosion[(int)color].SetActive(false);
 
         rsc.poolMng.enemyExplosionPool.AddObject(this);
     }

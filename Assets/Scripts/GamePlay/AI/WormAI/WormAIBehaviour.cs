@@ -43,7 +43,6 @@ public class WormAIBehaviour : MonoBehaviour
 
     [HideInInspector]
     public NavMeshAgent agent;
-    [HideInInspector]
     public Animator animator;
     [HideInInspector]
     public AudioSource audioSource;
@@ -80,7 +79,6 @@ public class WormAIBehaviour : MonoBehaviour
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         blinkController = GetComponent<BlinkController>();
         rend = GetComponentInChildren<Renderer>();

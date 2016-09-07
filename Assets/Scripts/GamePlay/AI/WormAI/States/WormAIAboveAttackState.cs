@@ -42,6 +42,8 @@ public class WormAIAboveAttackState : WormAIBaseState
 
             if (destiny != null)
             {
+                head.animator.SetBool("Bite", true);
+
                 speed = (headTrf.position - destiny.transform.position).magnitude / bb.AboveAttackSettingsPhase.jumpDuration;
 
                 bb.CalculateParabola(headTrf.position, destiny.transform.position);
@@ -74,6 +76,8 @@ public class WormAIAboveAttackState : WormAIBaseState
     public override void OnStateExit()
     {
         base.OnStateExit();
+
+        head.animator.SetBool("Bite", false);
 
         bb.aboveAttackCurrentCooldownTime = 0f;
         bb.aboveAttackCurrentExposureTime = 0f;

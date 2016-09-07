@@ -99,6 +99,8 @@ public class WormAIWanderingState : WormAIBaseState
                     HexagonController hexagon = route.wayPoints[WPIndex].GetComponent<HexagonController>();
                     hexagon.WormEnterExit();
 
+                    head.animator.SetBool("MouthOpen", true);
+
                     bb.isHeadOverground = true;
                     bb.applySinMovement = true;
                     subState = SubState.ENTERING;
@@ -137,6 +139,8 @@ public class WormAIWanderingState : WormAIBaseState
                     head.agent.speed = bb.WanderingSettingsPhase.wanderingSpeed;
                     head.agent.SetDestination(currentWP);
 
+                    head.animator.SetBool("MouthOpen", false);
+
                     subState = SubState.FOLLOWING_PATH;
                 }
 
@@ -170,7 +174,8 @@ public class WormAIWanderingState : WormAIBaseState
                     if (bb.playerInSight != null)
                     {
                         HexagonController destiny = bb.playerInSight.GetNearestHexagon();
-                        if (destiny.isWormSelectable)
+
+                        if (destiny != null && destiny.isWormSelectable)
                         {
                             if (angryEyes)
                             {
@@ -209,6 +214,8 @@ public class WormAIWanderingState : WormAIBaseState
                             head.angryEyes.Stop();
                         }
 
+                        head.animator.SetBool("MouthOpen", true);
+
                         subState = SubState.EXITING;
                     }
                     else
@@ -241,6 +248,8 @@ public class WormAIWanderingState : WormAIBaseState
                 else
                 {
                     SetUndergroundDirection();
+
+                    head.animator.SetBool("MouthOpen", false);
 
                     bb.isHeadOverground = false;
                     subState = SubState.WAITING_FOR_TAIL;

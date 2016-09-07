@@ -34,7 +34,7 @@ public class WormAIHeadDestroyedState : WormAIBaseState
         elapsedTime = 0f;
 
         head.phaseExplosion.Play();
-        //TODO: animation?
+        head.animator.SetBool("Hit", true);
 
         EnemyDiedEventInfo.eventInfo.infectionValue = 100 / bb.wormMaxPhases;
         EnemyDiedEventInfo.eventInfo.killerPlayer = bb.killerPlayer;
@@ -67,8 +67,13 @@ public class WormAIHeadDestroyedState : WormAIBaseState
                     Vector3 nextPosition = bb.GetJumpPositionGivenX(fakeNextX);
                     initialRotation = Quaternion.LookRotation(nextPosition - startPosition, headTrf.up);
 
+                    head.animator.SetBool("Hit", false);
+
                     bb.ConsolidateBodyParts();
                     subState = SubState.WAITING_BODY;
+
+                    head.animator.SetBool("MouthOpen", true);
+
                     elapsedTime = 0f;
                 }
                 else
@@ -90,7 +95,8 @@ public class WormAIHeadDestroyedState : WormAIBaseState
                     {
                         head.StartNewPhase();
                         head.SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
-                        //rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
+                        //rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);                     
+
                         subState = SubState.JUMPING;
                     }
                 }
@@ -126,6 +132,8 @@ public class WormAIHeadDestroyedState : WormAIBaseState
                 {
                     bb.isHeadOverground = false;
                     head.SetVisible(false);
+
+                    head.animator.SetBool("MouthOpen", false);
 
                     subState = SubState.EXITING;
                 }
