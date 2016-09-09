@@ -125,6 +125,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
                 spiderBlackboard.lastShotDirection = direction;
                 spiderBlackboard.lastShotSameColor = (shotColor == color);
                 spiderBlackboard.lastShotPlayer = player;
+                spiderBlackboard.forceChain = false;
                 return spiderBlackboard.dyingState;
             }
         }
@@ -143,6 +144,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
                 spiderBlackboard.lastShotDirection = direction;
                 spiderBlackboard.lastShotSameColor = true;
                 spiderBlackboard.lastShotPlayer = player;
+                spiderBlackboard.forceChain = true;
                 return spiderBlackboard.dyingState;
             }
         }
@@ -166,6 +168,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
                 spiderBlackboard.lastShotDirection = direction;
                 spiderBlackboard.lastShotSameColor = (barrelColor == color);
                 spiderBlackboard.lastShotPlayer = player;
+                spiderBlackboard.forceChain = false;
                 return spiderBlackboard.dyingState;
             }
         }

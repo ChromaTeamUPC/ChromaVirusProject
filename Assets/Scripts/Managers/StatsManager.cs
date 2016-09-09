@@ -44,14 +44,14 @@ public class PlayerStats
         }
     }
 
-    public void EnemyKilledOk(ChromaColor color)
+    public void EnemyKilledOk(ChromaColor color, bool forceChain)
     {
         ++enemiesKilledOk;
 
         //If it was a chain ongoing
         if(chain > 0)
         {
-            if(color == lastKillColor)
+            if(color == lastKillColor || forceChain)
             {
                 ++chain;
             }
@@ -190,7 +190,7 @@ public class StatsManager : MonoBehaviour
 
             if (info.killedSameColor)
             {
-                stats.EnemyKilledOk(info.color);
+                stats.EnemyKilledOk(info.color, info.forceChain);
             }
             else
             {
