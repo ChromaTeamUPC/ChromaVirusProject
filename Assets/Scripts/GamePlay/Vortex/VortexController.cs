@@ -17,6 +17,7 @@ public class VortexController : MonoBehaviour
     public ParticleSystem particleSys;
 
     private bool active;
+    private bool zoneWavesFinished;
     private int currentHealth;
 
     private float spawnDelay;
@@ -50,6 +51,8 @@ public class VortexController : MonoBehaviour
 
     public void Activate()
     {
+        zoneWavesFinished = false;
+        rsc.eventMng.StartListening(EventManager.EventType.ZONE_WAVES_FINISHED, ZoneWavesFinished);
         active = true;
         particleSys.Play();
         currentHealth = maxHealth;
@@ -60,10 +63,16 @@ public class VortexController : MonoBehaviour
 
     public void Deactivate()
     {
+        rsc.eventMng.StopListening(EventManager.EventType.ZONE_WAVES_FINISHED, ZoneWavesFinished);
         active = false;
         particleSys.Stop();
         anim.SetTrigger("Destroyed");
         rsc.eventMng.TriggerEvent(EventManager.EventType.VORTEX_DESTROYED, EventInfo.emptyInfo);
+    }
+
+    private void ZoneWavesFinished(EventInfo eventInfo)
+    {
+        zoneWavesFinished = true;
     }
 
     public void ImpactedByShot(ChromaColor shotColor, int damage)
@@ -84,7 +93,7 @@ public class VortexController : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-	    if(active)
+	    if(active && !zoneWavesFinished)
         {
             elapsedTime += Time.deltaTime;
             if (elapsedTime > spawnDelay && rsc.enemyMng.bb.activeEnemies < maxEnemiesInScene)

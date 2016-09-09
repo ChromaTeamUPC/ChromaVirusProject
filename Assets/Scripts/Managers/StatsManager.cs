@@ -6,7 +6,7 @@ public class PlayerStats
     ChromaColor lastKillColor;
     public uint chain;
     private float chainMaxTime;
-    public float chainRemainingTime;
+    public float comboRemainingTime;
 
     public uint currentCombo;
     public uint maxCombo;
@@ -25,21 +25,22 @@ public class PlayerStats
         enemiesKilledWrong = 0;
 
         chain = 0;
-        chainRemainingTime = 0f;
+        comboRemainingTime = 0f;
         currentCombo = 0;
         maxCombo = 0;
     }
 
-    public void UpdateChainTime()
+    public void UpdateComboTime()
     {
-        if (chainRemainingTime > 0)
+        if (comboRemainingTime > 0)
         {
-            chainRemainingTime -= Time.deltaTime;
+            comboRemainingTime -= Time.deltaTime;
 
-            if(chainRemainingTime <= 0)
+            if(comboRemainingTime <= 0)
             {
-                chainRemainingTime = 0;
+                comboRemainingTime = 0;
                 chain = 0;
+                currentCombo = 0;
             }
         }
     }
@@ -68,7 +69,7 @@ public class PlayerStats
             lastKillColor = color;
         }
 
-        chainRemainingTime = chainMaxTime;
+        comboRemainingTime = chainMaxTime;
 
         currentCombo += chain;
         if (currentCombo > maxCombo)
@@ -85,7 +86,7 @@ public class PlayerStats
     {
         currentCombo = 0;
         chain = 0;
-        chainRemainingTime = 0;
+        comboRemainingTime = 0;
     }
 }
 
@@ -97,6 +98,7 @@ public class StatsManager : MonoBehaviour
     public PlayerStats p2Stats;
 
     public float chainMaxTime = 5f;
+    private bool updateComboTime = false;
 
     void Awake()
     {
@@ -105,11 +107,13 @@ public class StatsManager : MonoBehaviour
     }
 
 	// Use this for initialization
-	void Start () 
+	void Start ()
 	{
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
+        rsc.eventMng.StartListening(EventManager.EventType.ZONE_REACHED, ZoneStarted);
+        rsc.eventMng.StartListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZoneFinished);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameFinished);
         rsc.eventMng.StartListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
         rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_DESTROYED, EnemyDied); //Same management as enemydied
@@ -124,6 +128,8 @@ public class StatsManager : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
             rsc.eventMng.StopListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
             rsc.eventMng.StopListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
+            rsc.eventMng.StopListening(EventManager.EventType.ZONE_REACHED, ZoneStarted);
+            rsc.eventMng.StopListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZoneFinished);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameFinished);
             rsc.eventMng.StopListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
             rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_DESTROYED, EnemyDied);
@@ -134,14 +140,16 @@ public class StatsManager : MonoBehaviour
 
     void Update()
     {
-        p1Stats.UpdateChainTime();
-        p2Stats.UpdateChainTime();
+        if (updateComboTime)
+        {
+            p1Stats.UpdateComboTime();
+            p2Stats.UpdateComboTime();
+        }
     }
 
 	
 	private void GameReset(EventInfo eventInfo)
-    {
-        
+    {     
         p1Stats.Reset();
         p2Stats.Reset();
 
@@ -158,6 +166,16 @@ public class StatsManager : MonoBehaviour
     private void LevelCleared(EventInfo eventInfo)
     {
         totalTime = Time.time - startTime;
+    }
+
+    private void ZoneStarted(EventInfo eventInfo)
+    {
+        updateComboTime = true;
+    }
+
+    private void ZoneFinished(EventInfo eventInfo)
+    {
+        updateComboTime = false;
     }
 
     private void GameFinished(EventInfo eventInfo)

@@ -83,6 +83,7 @@ public class PlayerSpecialState : PlayerBaseState {
 
     private IEnumerator SpecialExplosion()
     {
+        Debug.Log(bb.enemiesInRange.Count);
         //Add enemies to sorted list
         foreach(EnemyBaseAIBehaviour enemy in bb.enemiesInRange)
         {
@@ -137,7 +138,9 @@ public class PlayerSpecialState : PlayerBaseState {
 
             yield return null;
             elapsedTime += Time.deltaTime;
-        }      
+        }
+
+        enemies.Clear();     
 
        // DamageEnemies();
     }

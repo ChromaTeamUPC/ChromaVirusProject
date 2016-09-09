@@ -180,6 +180,7 @@ public class EventManager : MonoBehaviour {
         WORM_ATTACK,
 
         ZONE_REACHED,
+        ZONE_WAVES_FINISHED,
         ZONE_PLAN_FINISHED,
 
         COLOR_WILL_CHANGE,

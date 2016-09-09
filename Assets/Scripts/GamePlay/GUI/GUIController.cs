@@ -242,7 +242,7 @@ public class GUIController : MonoBehaviour
                 player1ChainTxt.text = "+" + player1Stats.chain;
 
                 player1ChainTime.gameObject.SetActive(true);
-                player1ChainTime.value = player1Stats.chainRemainingTime;
+                player1ChainTime.value = player1Stats.comboRemainingTime;
             }
             else
             {

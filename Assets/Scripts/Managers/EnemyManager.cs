@@ -353,7 +353,7 @@ public class EnemyManager : MonoBehaviour
 
         if (sequentialWavesIndex < currentPlan.sequentialWaves.Count)
         {
-            StartCoroutine(CastWave(currentPlan.sequentialWaves[sequentialWavesIndex]));
+            StartCoroutine(CastSequentialWave(sequentialWavesIndex));
         }
     }
 
@@ -369,9 +369,9 @@ public class EnemyManager : MonoBehaviour
 
     private IEnumerator CastWave(List<WaveAction> actions)
     {
-        ++executingWaves;
+        ++executingWaves;       
 
-        foreach(WaveAction action in actions)
+        foreach (WaveAction action in actions)
         {
             if(action.InitialDelay > 0)
             {
@@ -383,6 +383,31 @@ public class EnemyManager : MonoBehaviour
         }
 
         --executingWaves;
+    }
+
+    private IEnumerator CastSequentialWave(int index)
+    {
+        ++executingWaves;
+
+        List<WaveAction> actions = currentPlan.sequentialWaves[index];
+
+        foreach (WaveAction action in actions)
+        {
+            if (action.InitialDelay > 0)
+            {
+                yield return new WaitForSeconds(action.InitialDelay);
+            }
+            action.Execute();
+            while (action.Executing)
+                yield return null;
+        }
+
+        --executingWaves;
+
+        //If it was the last one send event
+        if (index == currentPlan.sequentialWaves.Count - 1)
+            rsc.eventMng.TriggerEvent(EventManager.EventType.ZONE_WAVES_FINISHED, EventInfo.emptyInfo);
+
     }
 
     private bool PlanEnded()
@@ -417,7 +442,7 @@ public class EnemyManager : MonoBehaviour
                     ++sequentialWavesIndex;
                     if(sequentialWavesIndex < currentPlan.sequentialWaves.Count)
                     {
-                        StartCoroutine(CastWave(currentPlan.sequentialWaves[sequentialWavesIndex]));
+                        StartCoroutine(CastSequentialWave(sequentialWavesIndex));
                     }
                 }
             }

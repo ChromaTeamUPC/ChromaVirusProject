@@ -22,8 +22,6 @@ public class DebugManager : MonoBehaviour {
     private int frameCount;
     private int fps;
 
-    private int screenshotnum = 0;
-
     void Start()
     {
         frameCount = 0;
