@@ -3,6 +3,7 @@ using System.Collections;
 using System;
 
 [Serializable] public class PlayerShotPool : MonoBehaviourObjectPool<PlayerShotController> { }
+[Serializable] public class PlayerSpecialAttackPool : MonoBehaviourObjectPool<SpecialAttackController> { }
 [Serializable] public class MuzzlePool : MonoBehaviourObjectPool<MuzzleController> { }
 [Serializable] public class VoxelPool : MonoBehaviourObjectPool<VoxelController> { }
 [Serializable] public class EnergyVoxelPool : MonoBehaviourObjectPool<EnergyVoxelController> { }
@@ -28,6 +29,8 @@ public class PoolManager : MonoBehaviour
     public MuzzlePool player1MuzzleGreenPool = new MuzzlePool();
     public MuzzlePool player1MuzzleBluePool = new MuzzlePool();
     public MuzzlePool player1MuzzleYellowPool = new MuzzlePool();
+
+    public PlayerSpecialAttackPool player1SpecialAttackPool = new PlayerSpecialAttackPool();
 
     public VoxelPool voxelPool = new VoxelPool();
     public EnergyVoxelPool energyVoxelPool = new EnergyVoxelPool();
@@ -65,6 +68,8 @@ public class PoolManager : MonoBehaviour
         player1MuzzleGreenPool.Init(gameObject, poolContainerPrefab);
         player1MuzzleBluePool.Init(gameObject, poolContainerPrefab);
         player1MuzzleYellowPool.Init(gameObject, poolContainerPrefab);
+
+        player1SpecialAttackPool.Init(gameObject, poolContainerPrefab);
 
         voxelPool.Init(gameObject, poolContainerPrefab);
         energyVoxelPool.Init(gameObject, poolContainerPrefab);

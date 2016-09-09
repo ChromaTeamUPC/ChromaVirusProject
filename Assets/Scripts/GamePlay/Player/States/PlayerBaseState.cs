@@ -5,6 +5,9 @@ public class PlayerBaseState
 {   
     protected PlayerBlackboard bb;
 
+    private const float FALLING_GRACE_TIME = 0.2f;
+    private float continousFallingTime;
+
     //Shoot variables
     private float nextFire;
     private const float maxSideOffset = 0.4f;
@@ -155,6 +158,22 @@ public class PlayerBaseState
         */
 
         return null;
+    }
+
+    protected bool ShouldFall()
+    {
+        if (bb.isGrounded)
+        {
+            continousFallingTime = 0f;
+        }
+        else
+        {
+            continousFallingTime += Time.deltaTime;
+            if (continousFallingTime >= FALLING_GRACE_TIME)
+                return true;
+        }
+
+        return false;
     }
 
     protected void CapacitorCharge()

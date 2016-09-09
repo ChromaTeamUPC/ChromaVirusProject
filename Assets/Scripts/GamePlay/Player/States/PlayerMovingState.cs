@@ -25,7 +25,7 @@ public class PlayerMovingState : PlayerBaseState
         can he move?
         */
 
-        if (!bb.isGrounded)
+        if (ShouldFall())
         {
             return bb.fallingState;
         }

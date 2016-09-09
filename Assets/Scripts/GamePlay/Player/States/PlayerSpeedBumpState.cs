@@ -56,7 +56,7 @@ public class PlayerSpeedBumpState : PlayerBaseState
                 bb.currentSpeed = Mathf.Lerp(bb.player.walkSpeed, bb.player.fastMovingSpeed, 1-((elapsedTime - speedReductionOn) / (bb.player.fastMovingMaxSeconds - speedReductionOn)));
             }
 
-            if (!bb.isGrounded)
+            if (ShouldFall())
             {
                 return bb.fallingState;
             }
