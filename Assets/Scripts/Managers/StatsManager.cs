@@ -3,22 +3,89 @@ using System.Collections;
 
 public class PlayerStats
 {
+    ChromaColor lastKillColor;
+    public uint chain;
+    private float chainMaxTime;
+    public float chainRemainingTime;
+
     public uint currentCombo;
     public uint maxCombo;
     public uint enemiesKilledOk;
     public uint enemiesKilledWrong;
 
-    public PlayerStats()
+    public PlayerStats(float chainMax)
     {
+        chainMaxTime = chainMax;
         Reset();
     }
 
     public void Reset()
     {
-        currentCombo = 0;
-        maxCombo = 0;
         enemiesKilledOk = 0;
         enemiesKilledWrong = 0;
+
+        chain = 0;
+        chainRemainingTime = 0f;
+        currentCombo = 0;
+        maxCombo = 0;
+    }
+
+    public void UpdateChainTime()
+    {
+        if (chainRemainingTime > 0)
+        {
+            chainRemainingTime -= Time.deltaTime;
+
+            if(chainRemainingTime <= 0)
+            {
+                chainRemainingTime = 0;
+                chain = 0;
+            }
+        }
+    }
+
+    public void EnemyKilledOk(ChromaColor color)
+    {
+        ++enemiesKilledOk;
+
+        //If it was a chain ongoing
+        if(chain > 0)
+        {
+            if(color == lastKillColor)
+            {
+                ++chain;
+            }
+            else
+            {
+                chain = 1;
+                lastKillColor = color;
+            }
+        }
+        //Start chain
+        else
+        {
+            ++chain;
+            lastKillColor = color;
+        }
+
+        chainRemainingTime = chainMaxTime;
+
+        currentCombo += chain;
+        if (currentCombo > maxCombo)
+            maxCombo = currentCombo;
+    }
+
+    public void EnemyKilledWrong()
+    {
+        ++enemiesKilledWrong;
+        BreakCombo();
+    }
+
+    public void BreakCombo()
+    {
+        currentCombo = 0;
+        chain = 0;
+        chainRemainingTime = 0;
     }
 }
 
@@ -29,10 +96,12 @@ public class StatsManager : MonoBehaviour
     public PlayerStats p1Stats;
     public PlayerStats p2Stats;
 
+    public float chainMaxTime = 5f;
+
     void Awake()
     {
-        p1Stats = new PlayerStats();
-        p2Stats = new PlayerStats();
+        p1Stats = new PlayerStats(chainMaxTime);
+        p2Stats = new PlayerStats(chainMaxTime);
     }
 
 	// Use this for initialization
@@ -62,6 +131,13 @@ public class StatsManager : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
         }
     }
+
+    void Update()
+    {
+        p1Stats.UpdateChainTime();
+        p2Stats.UpdateChainTime();
+    }
+
 	
 	private void GameReset(EventInfo eventInfo)
     {
@@ -114,16 +190,11 @@ public class StatsManager : MonoBehaviour
 
             if (info.killedSameColor)
             {
-                stats.enemiesKilledOk++;
-                stats.currentCombo++;
-
-                if (stats.currentCombo > stats.maxCombo)
-                    stats.maxCombo = stats.currentCombo;
+                stats.EnemyKilledOk(info.color);
             }
             else
             {
-                stats.enemiesKilledWrong++;
-                stats.currentCombo = 0;
+                stats.EnemyKilledWrong();
             }
         }
     }
@@ -149,6 +220,6 @@ public class StatsManager : MonoBehaviour
                 break;
         }
 
-        stats.currentCombo = 0;
+        stats.BreakCombo();
     }
 }

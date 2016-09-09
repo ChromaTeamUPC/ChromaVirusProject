@@ -81,7 +81,6 @@ public class PlayerSpecialState : PlayerBaseState {
         return null;
     }
 
-    //TODO: FPS drop when lots of enemies exploding at once
     private IEnumerator SpecialExplosion()
     {
         //Add enemies to sorted list

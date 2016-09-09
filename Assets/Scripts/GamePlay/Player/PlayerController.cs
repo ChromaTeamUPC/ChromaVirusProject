@@ -91,9 +91,6 @@ public class PlayerController : MonoBehaviour
     private ParticleSystem lifeChargehargePS;
     [SerializeField]
     private ParticleSystem energyChargehargePS;
-    /*[SerializeField]
-    private ParticleSystem specialPS;
-    private AudioSource specialSoundFX;*/
     [SerializeField]
     private ParticleSystem noShootPS;
     private GameObject noShootPSGO;
@@ -160,7 +157,6 @@ public class PlayerController : MonoBehaviour
 
         trail = GetComponentInChildren<TrailRenderer>();
 
-        //specialSoundFX = specialPS.GetComponent<AudioSource>();
         noShootPSGO = noShootPS.gameObject;
 
         if (brightnessCicleDuration > 0)
@@ -706,8 +702,6 @@ public class PlayerController : MonoBehaviour
         {
             special.transform.position = transform.position;
         }
-        //specialPS.Play();
-        //specialSoundFX.Play();
     }
 
     public void StartNoShoot()

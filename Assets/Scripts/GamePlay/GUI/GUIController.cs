@@ -37,6 +37,9 @@ public class GUIController : MonoBehaviour
     public GameObject player1ColorsButton;
     public Text player1ComboTxt;
     private PlayerStats player1Stats;
+    public Text player1ChainTxt;
+    public Slider player1ChainTime;
+
     private bool player1ColorMismatch;
 
     [Header("Player 2 Items")]
@@ -232,6 +235,20 @@ public class GUIController : MonoBehaviour
 
             //Combo
             player1ComboTxt.text = "x" + player1Stats.currentCombo;
+
+            if(player1Stats.chain > 0)
+            {
+                player1ChainTxt.enabled = true;
+                player1ChainTxt.text = "+" + player1Stats.chain;
+
+                player1ChainTime.gameObject.SetActive(true);
+                player1ChainTime.value = player1Stats.chainRemainingTime;
+            }
+            else
+            {
+                player1ChainTxt.enabled = false;
+                player1ChainTime.gameObject.SetActive(false);
+            }
         }
 
 
