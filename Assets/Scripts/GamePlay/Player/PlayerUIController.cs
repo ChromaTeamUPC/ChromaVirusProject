@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class PlayerHealthBarController : MonoBehaviour 
+public class PlayerUIController : MonoBehaviour 
 {
     public PlayerController playerController;
 
@@ -25,14 +25,26 @@ public class PlayerHealthBarController : MonoBehaviour
     public Image playerHealthFill;
     private float referenceHealthFactor;
 
+    public Slider playerEnergy;
+    public Image playerEnergyPowerTxt;
+    private float referenceEnergyFactor;
+    public float energyBarInitialValue = 7.5f;
+    public float energyBarFinalValue = 93.2f;
+    public float energyBarTextBlinkInterval = 0.5f;
+    private float energyTextElapsedTime;
+    private float energyMaxValue;
+
     // Use this for initialization
     void Start () 
 	{
-        referenceHealthFactor = playerHealth.maxValue / playerController.maxHealth;
+        energyMaxValue = energyBarFinalValue - energyBarInitialValue; //We must transform player energy (normally 0 to 100) to this top value (0 to energyMaxValue)
 
-        currentBrightness = 1f;
+        referenceHealthFactor = playerHealth.maxValue / playerController.maxHealth;
+        referenceEnergyFactor = energyMaxValue / playerController.maxEnergy;
+
         currentHealthColor = Color.white;
 
+        currentBrightness = 1f;
         if (brightnessCicleDuration > 0)
             brightnessSpeed = 1 / brightnessCicleDuration;
         else
@@ -46,6 +58,7 @@ public class PlayerHealthBarController : MonoBehaviour
         {
             currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 2) + 1; //Values between 0.5 and 1.5
 
+            //Health
             float pHealthValue = playerController.Health * referenceHealthFactor;
             playerHealth.value = pHealthValue;
 
@@ -67,6 +80,25 @@ public class PlayerHealthBarController : MonoBehaviour
             }
 
             playerHealthFill.color = currentHealthColor;
+
+            //Energy
+            float pEnergyValue = energyBarInitialValue + (playerController.Energy * referenceEnergyFactor);
+            playerEnergy.value = pEnergyValue;
+
+            if (playerController.Energy == playerController.maxEnergy)
+            {
+                energyTextElapsedTime += Time.deltaTime;
+                if (energyTextElapsedTime >= energyBarTextBlinkInterval)
+                {
+                    energyTextElapsedTime -= energyBarTextBlinkInterval;
+                    playerEnergyPowerTxt.enabled = !playerEnergyPowerTxt.enabled;
+                }
+            }
+            else
+            {
+                playerEnergyPowerTxt.enabled = false;
+                energyTextElapsedTime = 0f;
+            }
 
             //Always oriented the same
             Vector3 lookAt = playerController.bb.GetScreenRelativeDirection(Vector3.up);

@@ -60,13 +60,6 @@ public class PlayerController : MonoBehaviour
     public float energyIncreaseWhenBlockedCorrectColor = 1f;
     public float specialAttackNecessaryEnergy = 50f;
 
-    public float brightnessCicleDuration;
-    private float currentBrightness;
-    private float brightnessSpeed;
-    private Color originalBrightnessColor;
-    private float H, S;
-
-
     [Header("Fire Settings")]   
     public float fireRate = 0.25f;
     public float speedRatioReductionWhileFiring = 0.6f;
@@ -157,17 +150,7 @@ public class PlayerController : MonoBehaviour
 
         trail = GetComponentInChildren<TrailRenderer>();
 
-        noShootPSGO = noShootPS.gameObject;
-
-        if (brightnessCicleDuration > 0)
-            brightnessSpeed = 1 / brightnessCicleDuration;
-        else
-            brightnessSpeed = 1;
-
-        originalBrightnessColor = bodyBaseMaterial.GetColor("_EmissionColor");
-        float V;
-        Color.RGBToHSV(originalBrightnessColor, out H, out S, out V);
-        originalBrightnessColor = Color.HSVToRGB(H, S, standardBodyBrightness);
+        noShootPSGO = noShootPS.gameObject;   
 
         init = true;
         //Debug.Log("Player " + playerId + " created.");
@@ -370,16 +353,6 @@ public class PlayerController : MonoBehaviour
 
         if (bb.active && bb.alive)
         {
-            //Glow if max energy
-            if (bb.currentEnergy == maxEnergy)
-            {
-                currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 6.666f) + 0.45f; //Values between 0.3 and 0.6
-                Color newColor = Color.HSVToRGB(H, S, currentBrightness);
-                bodyBaseMaterial.SetColor("_EmissionColor", newColor);
-            }
-            else
-                bodyBaseMaterial.SetColor("_EmissionColor", originalBrightnessColor);
-
             //Reset flags
             if (!bb.shootPressed)
                 rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_SHOOT);

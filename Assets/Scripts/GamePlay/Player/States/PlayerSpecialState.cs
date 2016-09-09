@@ -90,7 +90,6 @@ public class PlayerSpecialState : PlayerBaseState {
             float distance = Vector3.Distance(enemy.transform.position, currentPos);
             enemies.Add(distance, enemy);
         }
-        bb.specialAttackDetector.SetActive(false);
 
         yield return new WaitForSeconds(0.1f);
 
@@ -140,6 +139,7 @@ public class PlayerSpecialState : PlayerBaseState {
             elapsedTime += Time.deltaTime;
         }
 
+        bb.specialAttackDetector.SetActive(false);
         enemies.Clear();     
 
        // DamageEnemies();
