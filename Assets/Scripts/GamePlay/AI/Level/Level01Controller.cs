@@ -13,6 +13,7 @@ public class ZoneActivableObjects
     public Transform playerSpawnPoint;
 
     [Header("To handle on zone reach")]
+    public ElevatorController[] deactivableElevators;
     public BridgeController[] deactivableBridges;
     public VortexController[] activableSpawners;
     public CapacitorController[] activableCapacitors;
@@ -25,6 +26,11 @@ public class ZoneActivableObjects
 
     public void ZoneReached()
     {
+        for (int i = 0; i < deactivableElevators.Length; i++)
+        {
+            deactivableElevators[i].Deactivate();
+        }
+
         for (int i = 0; i < deactivableBridges.Length; i++)
         {
             deactivableBridges[i].Deactivate();
@@ -148,6 +154,18 @@ public class Level01Controller : MonoBehaviour
     {
         rsc.camerasMng.ChangeCamera(0);
         elevatorAnimator.SetFloat("AnimationSpeed", 1f);
+
+        if (rsc.gameInfo.player1Controller.Active)
+        {
+            rsc.gameInfo.player1Controller.GoToIdle();
+        }
+        if (rsc.gameInfo.numberOfPlayers == 2 && rsc.gameInfo.player2Controller.Active)
+        {
+            rsc.gameInfo.player2Controller.GoToIdle();
+        }
+
+        rsc.colorMng.Activate();
+        floor.Activate();
     }
 
     private void ZoneReached(EventInfo eventInfo)
@@ -161,7 +179,7 @@ public class Level01Controller : MonoBehaviour
         //Special actions on first zone
         if(currentZoneId == 101)
         {
-            if (rsc.gameInfo.player1Controller.Active)
+            /*if (rsc.gameInfo.player1Controller.Active)
             {
                 rsc.gameInfo.player1Controller.GoToIdle();
             }
@@ -170,7 +188,7 @@ public class Level01Controller : MonoBehaviour
                 rsc.gameInfo.player2Controller.GoToIdle();
             }
             rsc.colorMng.Activate();
-            floor.Activate();
+            floor.Activate();*/
             rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_STARTED, EventInfo.emptyInfo);
         }
 

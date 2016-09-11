@@ -35,8 +35,10 @@ public class GUIController : MonoBehaviour
     public GameObject player1BlueButton;
     public GameObject player1YellowButton;
     public GameObject player1ColorsButton;
-    public Text player1ComboTxt;
+
     private PlayerStats player1Stats;
+    public GameObject player1ComboArea;
+    public Text player1ComboTxt;
     public Text player1ChainTxt;
     public Slider player1ChainTime;
 
@@ -106,9 +108,9 @@ public class GUIController : MonoBehaviour
     private float referenceEnergyFactor;
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
-        if(rsc.gameInfo.numberOfPlayers == 2)
+        if (rsc.gameInfo.numberOfPlayers == 2)
         {
             player2Zone.SetActive(true);
         }
@@ -183,9 +185,9 @@ public class GUIController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.HIDE_TUTORIAL, HideTutorial);
         }
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
         currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 2) + 1; //Values between 0.5 and 1.5
 
@@ -234,20 +236,28 @@ public class GUIController : MonoBehaviour
             player1ButtonHints.transform.position = rsc.camerasMng.currentCamera.WorldToScreenPoint(player1Controller.hintPoint.position);
 
             //Combo
-            player1ComboTxt.text = "x" + player1Stats.currentCombo;
-
-            if(player1Stats.chain > 0)
+            if (player1Stats.currentCombo == 0)
             {
-                player1ChainTxt.enabled = true;
-                player1ChainTxt.text = "+" + player1Stats.chain;
-
-                player1ChainTime.gameObject.SetActive(true);
-                player1ChainTime.value = player1Stats.comboRemainingTime;
+                player1ComboArea.SetActive(false);
             }
             else
             {
-                player1ChainTxt.enabled = false;
-                player1ChainTime.gameObject.SetActive(false);
+                player1ComboArea.SetActive(true);
+                player1ComboTxt.text = "x" + player1Stats.currentCombo;
+
+                if (player1Stats.chain > 0)
+                {
+                    player1ChainTxt.enabled = true;
+                    player1ChainTxt.text = "+" + player1Stats.chain;
+
+                    player1ChainTime.gameObject.SetActive(true);
+                    player1ChainTime.value = player1Stats.comboRemainingTime;
+                }
+                else
+                {
+                    player1ChainTxt.enabled = false;
+                    player1ChainTime.gameObject.SetActive(false);
+                }
             }
         }
 
@@ -587,7 +597,7 @@ public class GUIController : MonoBehaviour
 
         Sprite sprite = rsc.tutorialMng.GetImageIfNotShown(type);
 
-        if(sprite != null)
+        if (sprite != null)
         {
             helpImg.sprite = sprite;
             helpGO.SetActive(true);
@@ -597,7 +607,7 @@ public class GUIController : MonoBehaviour
 
     private void HideTutorial(EventInfo eventInfo)
     {
-        if(helpGO.activeSelf)
+        if (helpGO.activeSelf)
         {
             helpGO.SetActive(false);
             rsc.eventMng.TriggerEvent(EventManager.EventType.TUTORIAL_CLOSED, EventInfo.emptyInfo);

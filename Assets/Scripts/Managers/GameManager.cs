@@ -66,8 +66,10 @@ public class GameManager : MonoBehaviour {
                     Resume();
                 break;
             case GameState.SHOWING_TUTORIAL:
-                if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action2))
+                if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action1))
                     CloseTutorial();
+                else if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action4))
+                    CloseTutorial(true);
                 break;
             default:
                 break;
@@ -101,13 +103,15 @@ public class GameManager : MonoBehaviour {
         //rsc.audioMng.PauseMainMusic();
     }
 
-    public void CloseTutorial()
+    public void CloseTutorial(bool disableTutorial = false)
     {
         if (state != GameState.SHOWING_TUTORIAL) return;
 
         state = GameState.STARTED;
         Time.timeScale = 1f;
         //rsc.audioMng.ResumeMainMusic();
+        if (disableTutorial)
+            rsc.tutorialMng.active = false;
         rsc.eventMng.TriggerEvent(EventManager.EventType.HIDE_TUTORIAL, EventInfo.emptyInfo);
     }
 

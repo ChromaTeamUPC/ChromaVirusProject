@@ -31,7 +31,7 @@ public class MainMenuManager : MonoBehaviour {
     public Button p2Btn;
 
     public GameObject help;
-    private Image helpImg;
+    public Image helpImg;
     public Text helpPageNumberTxt;
     public Text levelTxt;
     public GameObject backArrow;
@@ -64,7 +64,6 @@ public class MainMenuManager : MonoBehaviour {
     void Start()
     {      
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
-        helpImg = help.GetComponent<Image>();
         tutorialCurrentIndex = 0;
         tutorialTotalItems = rsc.tutorialMng.GetTotalImages();
         DisableMainButtons();      

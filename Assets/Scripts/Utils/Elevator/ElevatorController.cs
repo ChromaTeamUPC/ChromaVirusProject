@@ -1,21 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ElevatorController : MonoBehaviour {
+public class ElevatorController : MonoBehaviour 
+{
+    public GameObject colliders;
 
-    void OnTriggerEnter(Collider other)
+    void Start()
     {
-        if (other.tag == "Player1" || other.tag == "Player2")
-        {
-            other.transform.SetParent(transform);
-        }
+        colliders.SetActive(true);
     }
 
-    void OnTriggerExit(Collider other)
+    public void Deactivate()
     {
-        if (other.tag == "Player1" || other.tag == "Player2")
-        {
-            other.transform.SetParent(null);
-        }
+        colliders.SetActive(false);
     }
 }
