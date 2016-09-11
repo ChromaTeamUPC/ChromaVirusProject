@@ -72,7 +72,7 @@ public class VortexController : MonoBehaviour
 
     private void ZoneWavesFinished(EventInfo eventInfo)
     {
-        zoneWavesFinished = true;
+        //zoneWavesFinished = true;
     }
 
     public void ImpactedByShot(ChromaColor shotColor, int damage)
