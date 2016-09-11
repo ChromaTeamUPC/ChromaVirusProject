@@ -66,7 +66,7 @@ public class EnemyDiedEventInfo : EventInfo
     public int infectionValue;
     public PlayerController killerPlayer;
     public bool killedSameColor;
-    public bool forceChain;
+    public bool specialKill;
 }
 
 public class WormEventInfo : EventInfo

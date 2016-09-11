@@ -6,6 +6,7 @@ public class PlayerStats
     ChromaColor lastKillColor;
     public uint chain;
     private float chainMaxTime;
+    private uint specialComboIncrement;
     public float comboRemainingTime;
 
     public uint currentCombo;
@@ -13,9 +14,10 @@ public class PlayerStats
     public uint enemiesKilledOk;
     public uint enemiesKilledWrong;
 
-    public PlayerStats(float chainMax)
+    public PlayerStats(float chainMax, uint specialComboInc)
     {
         chainMaxTime = chainMax;
+        specialComboIncrement = specialComboInc;
         Reset();
     }
 
@@ -45,35 +47,53 @@ public class PlayerStats
         }
     }
 
-    public void EnemyKilledOk(ChromaColor color, bool forceChain)
+    public void EnemyKilledOk(ChromaColor color, bool specialKill)
     {
         ++enemiesKilledOk;
 
-        //If it was a chain ongoing
-        if(chain > 0)
+        uint total;
+
+        if(specialKill)
         {
-            if(color == lastKillColor || forceChain)
+            total = specialComboIncrement;
+
+            //To force start a chain
+            if (chain == 0)
             {
                 ++chain;
-            }
-            else
-            {
-                chain = 1;
                 lastKillColor = color;
             }
         }
-        //Start chain
         else
         {
-            ++chain;
-            lastKillColor = color;
+            //If it was a chain ongoing
+            if (chain > 0)
+            {
+                if (color == lastKillColor)
+                {
+                    ++chain;
+                }
+                else
+                {
+                    chain = 1;
+                    lastKillColor = color;
+                }
+            }
+            //Start chain
+            else
+            {
+                ++chain;
+                lastKillColor = color;
+            }
+
+            total = chain;
         }
 
-        comboRemainingTime = chainMaxTime;
-
-        currentCombo += chain;
+        currentCombo += total;
         if (currentCombo > maxCombo)
             maxCombo = currentCombo;
+
+        comboRemainingTime = chainMaxTime;
     }
 
     public void EnemyKilledWrong()
@@ -98,12 +118,13 @@ public class StatsManager : MonoBehaviour
     public PlayerStats p2Stats;
 
     public float chainMaxTime = 5f;
+    public uint specialKillsComboIncrement = 3;
     private bool updateComboTime = false;
 
     void Awake()
     {
-        p1Stats = new PlayerStats(chainMaxTime);
-        p2Stats = new PlayerStats(chainMaxTime);
+        p1Stats = new PlayerStats(chainMaxTime, specialKillsComboIncrement);
+        p2Stats = new PlayerStats(chainMaxTime, specialKillsComboIncrement);
     }
 
 	// Use this for initialization
@@ -208,7 +229,7 @@ public class StatsManager : MonoBehaviour
 
             if (info.killedSameColor)
             {
-                stats.EnemyKilledOk(info.color, info.forceChain);
+                stats.EnemyKilledOk(info.color, info.specialKill);
             }
             else
             {

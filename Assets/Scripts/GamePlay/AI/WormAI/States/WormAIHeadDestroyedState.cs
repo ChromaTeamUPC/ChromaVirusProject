@@ -39,7 +39,7 @@ public class WormAIHeadDestroyedState : WormAIBaseState
         EnemyDiedEventInfo.eventInfo.infectionValue = 100 / bb.wormMaxPhases;
         EnemyDiedEventInfo.eventInfo.killerPlayer = bb.killerPlayer;
         EnemyDiedEventInfo.eventInfo.killedSameColor = true;
-        EnemyDiedEventInfo.eventInfo.forceChain = true;
+        EnemyDiedEventInfo.eventInfo.specialKill = true;
         rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_DESTROYED, EnemyDiedEventInfo.eventInfo);
 
         subState = SubState.WAITING_HEAD;

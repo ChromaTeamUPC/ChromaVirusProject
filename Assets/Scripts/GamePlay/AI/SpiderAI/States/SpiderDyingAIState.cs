@@ -23,7 +23,7 @@ public class SpiderDyingAIState : SpiderAIBaseState
         EnemyDiedEventInfo.eventInfo.infectionValue = SpiderAIBehaviour.infectionValue;
         EnemyDiedEventInfo.eventInfo.killerPlayer = spiderBlackboard.lastShotPlayer;
         EnemyDiedEventInfo.eventInfo.killedSameColor = spiderBlackboard.lastShotSameColor;
-        EnemyDiedEventInfo.eventInfo.forceChain = spiderBlackboard.forceChain;
+        EnemyDiedEventInfo.eventInfo.specialKill = spiderBlackboard.specialKill;
         rsc.eventMng.TriggerEvent(EventManager.EventType.ENEMY_DIED, EnemyDiedEventInfo.eventInfo);
 
         if (spiderBlackboard.lastShotSameColor)

@@ -23,7 +23,7 @@ public class MosquitoDyingAIState : MosquitoAIBaseState
         EnemyDiedEventInfo.eventInfo.infectionValue = MosquitoAIBehaviour.infectionValue;
         EnemyDiedEventInfo.eventInfo.killerPlayer = mosquitoBlackboard.lastShotPlayer;
         EnemyDiedEventInfo.eventInfo.killedSameColor = mosquitoBlackboard.lastShotSameColor;
-        EnemyDiedEventInfo.eventInfo.forceChain = mosquitoBlackboard.forceChain;
+        EnemyDiedEventInfo.eventInfo.specialKill = mosquitoBlackboard.specialKill;
         rsc.eventMng.TriggerEvent(EventManager.EventType.ENEMY_DIED, EnemyDiedEventInfo.eventInfo);
 
         if (mosquitoBlackboard.lastShotSameColor)

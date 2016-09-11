@@ -31,7 +31,7 @@ public class EnemyBaseBlackboard
     public Vector3 lastShotDirection;
     public bool lastShotSameColor;
     public PlayerController lastShotPlayer;
-    public bool forceChain;
+    public bool specialKill;
 
     public EnemyGroupInfo groupInfo;
 

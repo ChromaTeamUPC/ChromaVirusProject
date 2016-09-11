@@ -165,7 +165,7 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
                 mosquitoBlackboard.lastShotDirection = direction;
                 mosquitoBlackboard.lastShotSameColor = (shotColor == color);
                 mosquitoBlackboard.lastShotPlayer = player;
-                mosquitoBlackboard.forceChain = false;
+                mosquitoBlackboard.specialKill = false;
 
                 return mosquitoBlackboard.dyingState;
             }
@@ -185,7 +185,7 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
                 mosquitoBlackboard.lastShotDirection = direction;
                 mosquitoBlackboard.lastShotSameColor = true;
                 mosquitoBlackboard.lastShotPlayer = player;
-                mosquitoBlackboard.forceChain = true;
+                mosquitoBlackboard.specialKill = true;
                 return mosquitoBlackboard.dyingState;
             }
         }
@@ -209,7 +209,7 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
                 mosquitoBlackboard.lastShotDirection = direction;
                 mosquitoBlackboard.lastShotSameColor = (barrelColor == color);
                 mosquitoBlackboard.lastShotPlayer = player;
-                mosquitoBlackboard.forceChain = false;
+                mosquitoBlackboard.specialKill = true;
                 return mosquitoBlackboard.dyingState;
             }
         }
