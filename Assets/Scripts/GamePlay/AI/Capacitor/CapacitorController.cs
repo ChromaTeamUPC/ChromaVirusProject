@@ -123,7 +123,7 @@ public class CapacitorController : MonoBehaviour {
                     modelCollider.SetActive(false);
                     explosionBlast[(int)currentColor].SetActive(true);
                     state = State.EXPLODING;
-                    rsc.rumbleMng.Rumble(0, 1f, 0.25f, 1f);
+                    rsc.rumbleMng.Rumble(0, 0.5f, 0.5f, 0.5f);
                     //Debug.Log("Moving to Exploding state");
                     StartCoroutine(Exploding());
                 }

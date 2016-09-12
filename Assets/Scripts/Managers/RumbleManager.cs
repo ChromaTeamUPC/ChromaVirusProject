@@ -9,6 +9,7 @@ public enum RumbleType
     TEST,
     PLAYER_SHOOT,
     PLAYER_DASH,
+    PLAYER_USB,
     PLAYER_DYING
 }
 

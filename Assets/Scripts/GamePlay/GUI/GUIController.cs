@@ -504,33 +504,40 @@ public class GUIController : MonoBehaviour
     {
         ButtonHintEventInfo info = (ButtonHintEventInfo)eventInfo;
 
+        bool rumble = false;
+
         switch (info.buttonType)
         {
             case ButtonHintEventInfo.ButtonType.A:
+                rumble = true;
                 if (info.playerId == 1)
                     player1GreenButton.SetActive(info.show);
                 else
                     player2GreenButton.SetActive(info.show);
                 break;
             case ButtonHintEventInfo.ButtonType.B:
+                rumble = true;
                 if (info.playerId == 1)
                     player1RedButton.SetActive(info.show);
                 else
                     player2RedButton.SetActive(info.show);
                 break;
             case ButtonHintEventInfo.ButtonType.X:
+                rumble = true;
                 if (info.playerId == 1)
                     player1BlueButton.SetActive(info.show);
                 else
                     player2BlueButton.SetActive(info.show);
                 break;
             case ButtonHintEventInfo.ButtonType.Y:
+                rumble = true;
                 if (info.playerId == 1)
                     player1YellowButton.SetActive(info.show);
                 else
                     player2YellowButton.SetActive(info.show);
                 break;
             case ButtonHintEventInfo.ButtonType.COLOR_BUTTONS:
+                rumble = true;
                 if (info.playerId == 1)
                     player1ColorsButton.SetActive(info.show);
                 else
@@ -547,6 +554,9 @@ public class GUIController : MonoBehaviour
             default:
                 break;
         }
+
+        if (rumble && info.show)
+            rsc.rumbleMng.Rumble(info.playerId, 0.25f, 0f, 1f);
     }
 
     private void ColorPrewarn(EventInfo eventInfo)

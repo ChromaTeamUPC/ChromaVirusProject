@@ -30,6 +30,7 @@ public class WormAIWanderingState : WormAIBaseState
     private float elapsedTime;
 
     private bool angryEyes;
+    private bool exitRumble;
 
     public WormAIWanderingState(WormBlackboard bb) : base(bb)
     { }
@@ -51,6 +52,7 @@ public class WormAIWanderingState : WormAIBaseState
     private void SetInitialState()
     {
         angryEyes = false;
+        exitRumble = false;
         head.angryEyes.Stop();
 
         elapsedTime = 0f;
@@ -99,6 +101,7 @@ public class WormAIWanderingState : WormAIBaseState
                     HexagonController hexagon = route.wayPoints[WPIndex].GetComponent<HexagonController>();
                     hexagon.WormEnterExit();
 
+                    rsc.rumbleMng.Rumble(0, 1f, 0.5f, 0.5f);
                     head.animator.SetBool("MouthOpen", true);
 
                     bb.isHeadOverground = true;
@@ -213,7 +216,7 @@ public class WormAIWanderingState : WormAIBaseState
                             angryEyes = false;
                             head.angryEyes.Stop();
                         }
-
+                      
                         head.animator.SetBool("MouthOpen", true);
 
                         subState = SubState.EXITING;
@@ -234,6 +237,12 @@ public class WormAIWanderingState : WormAIBaseState
                     actuallyMoved = 0;
                     lastPosition = headTrf.position;
                     Vector3 newPos = Vector3.zero;
+
+                    if(t >= 1.6f && !exitRumble)
+                    {
+                        exitRumble = true;
+                        rsc.rumbleMng.Rumble(0, 1f, 0.5f, 0.5f);
+                    }
 
                     while (actuallyMoved < shouldMove && t <= 2)
                     {

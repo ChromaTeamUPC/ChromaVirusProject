@@ -66,6 +66,7 @@ public class VortexController : MonoBehaviour
         rsc.eventMng.StopListening(EventManager.EventType.ZONE_WAVES_FINISHED, ZoneWavesFinished);
         active = false;
         particleSys.Stop();
+        rsc.rumbleMng.Rumble(0, 0.5f, 0f, 0.75f);
         anim.SetTrigger("Destroyed");
         rsc.eventMng.TriggerEvent(EventManager.EventType.VORTEX_DESTROYED, EventInfo.emptyInfo);
     }

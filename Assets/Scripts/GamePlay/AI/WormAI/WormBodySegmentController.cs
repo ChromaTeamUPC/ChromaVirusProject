@@ -220,6 +220,8 @@ public class WormBodySegmentController : MonoBehaviour
             {
                 state = State.DEACTIVATED; //not really deactivated but flagged to allow notify properly when colors reset
 
+                rsc.rumbleMng.Rumble(0, 0.25f, 0f, 0.5f);
+
                 EnemyDiedEventInfo.eventInfo.color = color;
                 EnemyDiedEventInfo.eventInfo.infectionValue = 0;
                 EnemyDiedEventInfo.eventInfo.killerPlayer = player;
@@ -242,6 +244,8 @@ public class WormBodySegmentController : MonoBehaviour
                 SetMaterial(rsc.coloredObjectsMng.GetWormBodyGreyMaterial());
                 bodyDeactivate[(int)color].Play();
                 state = State.DEACTIVATED;
+
+                rsc.rumbleMng.Rumble(0, 0.25f, 0f, 0.5f);
 
                 EnemyDiedEventInfo.eventInfo.color = color;
                 EnemyDiedEventInfo.eventInfo.infectionValue = 0;

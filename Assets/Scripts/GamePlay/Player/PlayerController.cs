@@ -638,6 +638,7 @@ public class PlayerController : MonoBehaviour
     {
         ChangeState(bb.invisibleState);
         rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_SHOOT);
+        rsc.rumbleMng.AddContinousRumble(RumbleType.PLAYER_USB, Id, 0.2f, 0f);
         DeactivateShield();
         trail.enabled = false;
         ui.SetActive(false);
@@ -650,6 +651,7 @@ public class PlayerController : MonoBehaviour
         electricPS.Stop();
         trail.enabled = true;
         ui.SetActive(true);
+        rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_USB);
         ChangeState(bb.idleState);
     }
 
