@@ -46,7 +46,7 @@ public class OptionsMenuManager : MonoBehaviour
         changeTime = 0f;
         currentState = CreditsState.FADING_IN;
         fadeScript.StartFadingToClear();
-        rsc.audioMng.FadeInCreditsMusic(1.5f);
+        rsc.audioMng.FadeInMusic(AudioManager.MusicType.CREDITS, 1.5f);
 
         LoadValues();
 
@@ -172,7 +172,7 @@ public class OptionsMenuManager : MonoBehaviour
             {
                 fadeScript.StartFadingToColor(Color.black, 2f);
                 currentState = CreditsState.FADING_OUT;
-                rsc.audioMng.FadeOutCreditsMusic(2f);
+                rsc.audioMng.FadeOutMusic(2f);
             }
         }
     }

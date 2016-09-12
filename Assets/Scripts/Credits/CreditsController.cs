@@ -31,7 +31,7 @@ public class CreditsController : MonoBehaviour {
         buttonPressed = false;
         currentState = CreditsState.FADING_IN;
         fadeScript.StartFadingToClear();
-        rsc.audioMng.FadeInCreditsMusic(1.5f);
+        rsc.audioMng.FadeInMusic(AudioManager.MusicType.CREDITS, 1.5f);
 	}
 	
 	// Update is called once per frame
@@ -74,7 +74,7 @@ public class CreditsController : MonoBehaviour {
                 if (waitingTime > finalDelay)
                 {
                     fadeScript.StartFadingToColor(Color.black, 4f);
-                    rsc.audioMng.FadeOutCreditsMusic(4f);
+                    rsc.audioMng.FadeOutMusic(4f);
                     currentState = CreditsState.FADING_OUT;
                 }
                 break;
@@ -99,7 +99,7 @@ public class CreditsController : MonoBehaviour {
             {
                 fadeScript.StartFadingToColor(Color.black, 2f);
                 currentState = CreditsState.FADING_OUT;
-                rsc.audioMng.FadeOutCreditsMusic(2f);
+                rsc.audioMng.FadeOutMusic(2f);
             }
         }
     }

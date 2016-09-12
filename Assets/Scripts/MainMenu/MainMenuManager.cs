@@ -69,7 +69,7 @@ public class MainMenuManager : MonoBehaviour {
         DisableMainButtons();      
         currentState = MainMenuState.FADING_IN;
         fadeScript.StartFadingToClear(Color.black, 1f);
-        rsc.audioMng.FadeInMainMenuMusic();
+        rsc.audioMng.FadeInMusic(AudioManager.MusicType.MAIN_MENU);
     }
 
     // Update is called once per frame
@@ -169,7 +169,7 @@ public class MainMenuManager : MonoBehaviour {
     private void FadeOut()
     {
         fadeScript.StartFadingToColor(2f);
-        rsc.audioMng.FadeOutMainMenuMusic(1.5f);
+        rsc.audioMng.FadeOutMusic(1.5f);
     }
 
     private void EnableMainButtons()

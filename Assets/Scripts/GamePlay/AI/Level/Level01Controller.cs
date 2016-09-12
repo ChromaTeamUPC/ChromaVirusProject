@@ -127,7 +127,7 @@ public class Level01Controller : MonoBehaviour
 
 
         fadeScript.StartFadingToClear();
-        rsc.audioMng.FadeInMainMusic();
+        rsc.audioMng.FadeInMusic(AudioManager.MusicType.LEVEL_01);
 
         zoneDictionary = new Dictionary<int, ZoneActivableObjects>();
         for (int i = 0; i < zoneActivableObjects.Length; ++i)
@@ -179,15 +179,15 @@ public class Level01Controller : MonoBehaviour
         //Special actions on first zone
         if(currentZoneId == 101)
         {
-            /*if (rsc.gameInfo.player1Controller.Active)
+            if (rsc.gameInfo.player1Controller.Active)
             {
-                rsc.gameInfo.player1Controller.GoToIdle();
+                rsc.gameInfo.player1Controller.forceMovementEnabled = true;
             }
             if (rsc.gameInfo.numberOfPlayers == 2 && rsc.gameInfo.player2Controller.Active)
             {
-                rsc.gameInfo.player2Controller.GoToIdle();
+                rsc.gameInfo.player2Controller.forceMovementEnabled = true;
             }
-            rsc.colorMng.Activate();
+            /*rsc.colorMng.Activate();
             floor.Activate();*/
             rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_STARTED, EventInfo.emptyInfo);
         }

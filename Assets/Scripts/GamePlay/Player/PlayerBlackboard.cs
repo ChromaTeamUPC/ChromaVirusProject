@@ -235,6 +235,7 @@ public class PlayerBlackboard
         yellowPressed = false;
         colorButtonsPressed = false;
 
+        animator.SetBool("KeyPressed", false);
         animator.SetBool("Walking", false);
         animator.SetBool("Aiming", false);
         animator.SetBool("Shooting", false);

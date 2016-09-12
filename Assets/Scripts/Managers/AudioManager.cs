@@ -4,9 +4,19 @@ using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour {
 
-    public AudioMixer audioMixer;
+    public enum MusicType
+    {
+        MAIN_MENU,
+        INTRO,
+        CREDITS,
+        LEVEL_01,
+        LEVEL_BOSS
+    }
 
-    public float defaultFadeSeconds;
+    public AudioMixer audioMixer;
+    private AudioSource currentMusic = null;
+
+    public float defaultFadeSeconds = 2f;
 
     public float musicMaxVolume = 1f;
 
@@ -17,11 +27,9 @@ public class AudioManager : MonoBehaviour {
     [SerializeField]
     private AudioSource creditsMusic;
     [SerializeField]
-    private AudioSource gamePlayMusicTrak1;
+    private AudioSource level01Music;
     [SerializeField]
-    private AudioSource gamePlayMusicTrak2;
-    [SerializeField]
-    private AudioSource gamePlayMusicTrak3;
+    private AudioSource levelBossMusic;
 
     [SerializeField]
     private BeatSynchronizer beatSynchronizer;
@@ -29,8 +37,136 @@ public class AudioManager : MonoBehaviour {
     private BeatCounter beatCounter;
 
 
+    #region MUSIC_CONTROL
+    public void FadeInMusic(MusicType type)
+    {
+        FadeInMusic(type, defaultFadeSeconds);
+    }
 
-    #region COMMON_MUSICS
+    public void FadeInMusic(MusicType type, float fadeSeconds)
+    {
+        StopAllCoroutines();
+        EnsureAllMusicsStopped();
+        currentMusic = GetAudioSource(type);
+        StartCoroutine(FadeMusic(fadeSeconds, true));
+    }
+
+    public void FadeOutMusic()
+    {
+        FadeOutMusic(defaultFadeSeconds);
+    }
+
+    public void FadeOutMusic(float fadeSeconds)
+    {
+        StopAllCoroutines();
+        StartCoroutine(FadeMusic(fadeSeconds, false));
+    }
+
+    public void PauseMusic()
+    {
+        if(currentMusic !=  null)
+            currentMusic.Pause();
+    }
+
+    public void ResumeMusic()
+    {
+        if (currentMusic != null)
+            currentMusic.UnPause();
+    }
+
+    public void StopMusic()
+    {
+        if (currentMusic != null)
+            currentMusic.Stop();
+    }
+
+    private void EnsureAllMusicsStopped()
+    {
+        mainMenuMusic.Stop();
+        introMusic.Stop();
+        creditsMusic.Stop();
+        level01Music.Stop();
+        levelBossMusic.Stop();
+    }
+
+    private AudioSource GetAudioSource(MusicType type)
+    {
+        switch (type)
+        {
+            case MusicType.MAIN_MENU:
+                return mainMenuMusic;
+
+            case MusicType.INTRO:
+                return introMusic;
+
+            case MusicType.CREDITS:
+                return creditsMusic;
+
+            case MusicType.LEVEL_01:
+                return level01Music;
+
+            case MusicType.LEVEL_BOSS:
+                return levelBossMusic;
+
+            default:
+                return level01Music;
+        }
+    }
+
+    IEnumerator FadeMusic(float fadeSeconds, bool fadeIn, float maxVolume = 1f)
+    {      
+        float fadeSpeed;
+        float fadeTime = 0f;
+
+        if (fadeIn)
+        {
+            float actualMaxVolume = Mathf.Min(maxVolume, musicMaxVolume);
+
+            if (!currentMusic.isPlaying)
+            {
+                currentMusic.Play();
+
+                if (fadeSeconds > 0)
+                {
+                    fadeSpeed = 1 / fadeSeconds;
+                    currentMusic.volume = 0;
+
+                    while (currentMusic.volume < actualMaxVolume - 0.025f)
+                    {
+                        fadeTime += Time.deltaTime;
+                        currentMusic.volume = Mathf.Lerp(0, actualMaxVolume, fadeSpeed * fadeTime);
+                        yield return null;
+                    }
+                }
+
+                currentMusic.volume = actualMaxVolume;
+            }
+        }
+        else
+        {
+            if (currentMusic.isPlaying)
+            {
+                if (fadeSeconds > 0)
+                {
+                    fadeSpeed = 1 / fadeSeconds;
+
+                    float originalVolume = currentMusic.volume;
+                    while (currentMusic.volume > 0.025f)
+                    {
+                        fadeTime += Time.deltaTime;
+                        currentMusic.volume = originalVolume - Mathf.Lerp(0, originalVolume, fadeSpeed * fadeTime);
+                        yield return null;
+                    }
+                }
+                currentMusic.volume = 0;
+                currentMusic.Stop();
+            }
+        }
+    }
+    #endregion
+
+
+    /*#region COMMON_MUSICS
     //Main menu music
     public void FadeInMainMenuMusic()
     {
@@ -108,7 +244,7 @@ public class AudioManager : MonoBehaviour {
 
     IEnumerator FadeMusic(AudioSource fadingMusic, float fadeSeconds, bool fadeIn, float maxVolume = 1f)
     {
-        AudioSource music = fadingMusic;
+        currentMusic = fadingMusic;
         float fadeSpeed;
         float fadeTime = 0f;       
 
@@ -116,44 +252,44 @@ public class AudioManager : MonoBehaviour {
         {
             float actualMaxVolume = Mathf.Min(maxVolume, musicMaxVolume);
 
-            if (!music.isPlaying)
+            if (!currentMusic.isPlaying)
             {
-                music.Play();
+                currentMusic.Play();
 
                 if (fadeSeconds > 0)
                 {
                     fadeSpeed = 1 / fadeSeconds;
-                    music.volume = 0;
+                    currentMusic.volume = 0;
 
-                    while (music.volume < actualMaxVolume - 0.025f) 
+                    while (currentMusic.volume < actualMaxVolume - 0.025f) 
                     {
                         fadeTime += Time.deltaTime;
-                        music.volume = Mathf.Lerp(0, actualMaxVolume, fadeSpeed * fadeTime);
+                        currentMusic.volume = Mathf.Lerp(0, actualMaxVolume, fadeSpeed * fadeTime);
                         yield return null;
                     }
                 }
 
-                music.volume = actualMaxVolume;
+                currentMusic.volume = actualMaxVolume;
             }
         }
         else
         {
-            if (music.isPlaying)
+            if (currentMusic.isPlaying)
             {
                 if (fadeSeconds > 0)
                 {
                     fadeSpeed = 1 / fadeSeconds;
 
-                    float originalVolume = music.volume;
-                    while (music.volume > 0.025f)
+                    float originalVolume = currentMusic.volume;
+                    while (currentMusic.volume > 0.025f)
                     {
                         fadeTime += Time.deltaTime;
-                        music.volume = originalVolume - Mathf.Lerp(0, originalVolume, fadeSpeed * fadeTime);
+                        currentMusic.volume = originalVolume - Mathf.Lerp(0, originalVolume, fadeSpeed * fadeTime);
                         yield return null;
                     }
                 }
-                music.volume = 0;
-                music.Stop();
+                currentMusic.volume = 0;
+                currentMusic.Stop();
             }
         }
     }
@@ -185,23 +321,17 @@ public class AudioManager : MonoBehaviour {
 
     public void PauseMainMusic()
     {
-        gamePlayMusicTrak1.Pause();
-        //gamePlayMusicTrak2.Pause();
-        //gamePlayMusicTrak3.Pause();
+        level01Music.Pause();
     }
 
     public void ResumeMainMusic()
     {
-        gamePlayMusicTrak1.UnPause();
-        //gamePlayMusicTrak2.UnPause();
-        //gamePlayMusicTrak3.UnPause();
+        level01Music.UnPause();
     }
 
     public void StopMainMusic()
     {
-        gamePlayMusicTrak1.Stop();
-        //gamePlayMusicTrak2.Stop();
-        //gamePlayMusicTrak3.Stop();
+        level01Music.Stop();
     }
 
     IEnumerator FadeMainMusic(float fadeSeconds, bool fadeIn)
@@ -211,66 +341,53 @@ public class AudioManager : MonoBehaviour {
 
         if (fadeIn)
         {
-            if (!gamePlayMusicTrak1.isPlaying)
+            if (!level01Music.isPlaying)
             {
                 beatCounter.enabled = true;
                 beatSynchronizer.PlayMusic(); //Main track, with beat synchronizer
-                //gamePlayMusicTrak2.Play();
-                //gamePlayMusicTrak3.Play();
-
-                //gamePlayMusicTrak2.volume = 0;
-                //gamePlayMusicTrak3.volume = 0;
 
                 if (fadeSeconds > 0)
                 {
                     fadeSpeed = 1 / fadeSeconds;
-                    gamePlayMusicTrak1.volume = 0;
+                    level01Music.volume = 0;
 
-                    while (gamePlayMusicTrak1.volume < musicMaxVolume - 0.025f)
+                    while (level01Music.volume < musicMaxVolume - 0.025f)
                     {
                         fadeTime += Time.deltaTime;
-                        gamePlayMusicTrak1.volume = Mathf.Lerp(0, musicMaxVolume, fadeSpeed * fadeTime);
+                        level01Music.volume = Mathf.Lerp(0, musicMaxVolume, fadeSpeed * fadeTime);
                         yield return null;
                     }
                 }
 
-                gamePlayMusicTrak1.volume = musicMaxVolume;
+                level01Music.volume = musicMaxVolume;
             }
         }
         else
         {
-            if (gamePlayMusicTrak1.isPlaying)
+            if (level01Music.isPlaying)
             {
                 if (fadeSeconds > 0)
                 {
                     fadeSpeed = 1 / fadeSeconds;
 
-                    float originalVolumeT1 = gamePlayMusicTrak1.volume;
-                    //float originalVolumeT2 = gamePlayMusicTrak2.volume;
-                    //float originalVolumeT3 = gamePlayMusicTrak3.volume;
+                    float originalVolumeT1 = level01Music.volume;
 
-                    while (gamePlayMusicTrak1.volume > 0.025f)
+                    while (level01Music.volume > 0.025f)
                     {
                         fadeTime += Time.deltaTime;
                         float lerpValue = Mathf.Lerp(0, originalVolumeT1, fadeSpeed * fadeTime);
-                        gamePlayMusicTrak1.volume = originalVolumeT1 - lerpValue;
+                        level01Music.volume = originalVolumeT1 - lerpValue;
 
-                        //gamePlayMusicTrak2.volume = originalVolumeT2 - lerpValue;
-                        //gamePlayMusicTrak3.volume = originalVolumeT3 - lerpValue;
                         yield return null;
                     }
                 }
-                gamePlayMusicTrak1.volume = 0;
-                //gamePlayMusicTrak2.volume = 0;
-                //gamePlayMusicTrak3.volume = 0;
+                level01Music.volume = 0;
 
-                gamePlayMusicTrak1.Stop();
-                //gamePlayMusicTrak2.Stop();
-                //gamePlayMusicTrak3.Stop();
+                level01Music.Stop();
 
                 beatCounter.enabled = false;
             }
         }
     }
-    #endregion
+    #endregion*/
 }

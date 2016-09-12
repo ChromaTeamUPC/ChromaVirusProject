@@ -50,7 +50,10 @@ public class PlayerSpecialState : PlayerBaseState {
 
                 Turn();
 
-                Move();
+                if (!bb.movePressed)
+                    bb.horizontalDirection = Vector3.zero;
+                else
+                    Move();
 
                 if (bb.animationTrigger)
                 {

@@ -38,6 +38,11 @@ public class PlayerController : MonoBehaviour
     public float cooldownTime = 1f;
     public float gravityRatioWhenPushed = 2f;
 
+    [HideInInspector]
+    public bool forceMovementEnabled = false;
+    private float forceMovementForward = 1f;
+    private float forceMovementRatio = 0.0005f;
+
     [Header("Fast Moving & Dash Settings")]
     public float fastMovingSpeed = 20f;
     public float fastMovingMaxSeconds = 0.75f;
@@ -242,6 +247,16 @@ public class PlayerController : MonoBehaviour
         fadeBeam.SetColors(color, alpha);
     }
 
+    public void ForcePositionUpdate()
+    {
+        if (forceMovementEnabled && !bb.movePressed)
+        {
+            ctrl.Move(Vector3.forward * forceMovementForward * forceMovementRatio);
+            forceMovementForward *= -1;
+        }
+        //ctrl.attachedRigidbody.WakeUp();
+    }
+
     public Vector3 PositionPrediction(float secondsPrediction = 1f)
     {
         //This case will be true only when dashing or speedwalking
@@ -328,6 +343,7 @@ public class PlayerController : MonoBehaviour
 
     public void Spawn(bool invulnerabilityTime = false)
     {
+        forceMovementEnabled = false;
         bb.animator.Rebind();
         bb.ResetLifeVariables();
 

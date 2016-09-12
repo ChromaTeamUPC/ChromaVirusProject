@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour {
 
         state = GameState.PAUSED;
         Time.timeScale = 0.000000000001f;
-        rsc.audioMng.PauseMainMusic();
+        rsc.audioMng.PauseMusic();
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_PAUSED, EventInfo.emptyInfo);
     }
 
@@ -92,7 +92,7 @@ public class GameManager : MonoBehaviour {
 
         state = GameState.STARTED;
         Time.timeScale = 1f;
-        rsc.audioMng.ResumeMainMusic();
+        rsc.audioMng.ResumeMusic();
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESUMED, EventInfo.emptyInfo);
     }
 
@@ -226,7 +226,7 @@ public class GameManager : MonoBehaviour {
     private void GoToMainMenuInmediate()
     {
         Time.timeScale = 1f;
-        rsc.audioMng.StopMainMusic();
+        rsc.audioMng.StopMusic();
 
         rsc.gameInfo.player1Controller.Active = false;
         rsc.gameInfo.player2Controller.Active = false;
@@ -238,7 +238,7 @@ public class GameManager : MonoBehaviour {
 
     private IEnumerator GoToMainMenu()
     {
-        rsc.audioMng.FadeOutMainMusic(2.5f);
+        rsc.audioMng.FadeOutMusic(2.5f);
 
         yield return new WaitForSeconds(3.0f);
 
@@ -252,7 +252,7 @@ public class GameManager : MonoBehaviour {
 
     private IEnumerator GoToCredits()
     {
-        rsc.audioMng.FadeOutMainMusic(2.5f);
+        rsc.audioMng.FadeOutMusic(2.5f);
 
         yield return new WaitForSeconds(3.0f);
 
@@ -266,7 +266,7 @@ public class GameManager : MonoBehaviour {
 
     private IEnumerator GoToNextLevel(string nextLevel)
     {
-        rsc.audioMng.FadeOutMainMusic(2.5f);
+        rsc.audioMng.FadeOutMusic(2.5f);
 
         yield return new WaitForSeconds(3.0f);
 

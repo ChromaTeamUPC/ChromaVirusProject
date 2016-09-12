@@ -112,6 +112,7 @@ public class HexagonController : MonoBehaviour
     public float infectedCellDamage = 8f;
 
     [Header("Materials")]
+    public Material floorStaticMat;
     public Material planeTransparentMat;
     public Material planeMainWarningMat;
     public Material planeSecondaryWarningMat;
@@ -190,6 +191,7 @@ public class HexagonController : MonoBehaviour
         {
             currentState = staticState;
             navMeshObstacles.SetActive(true);
+            columnRend.sharedMaterial = floorStaticMat;
         }
         else
         {

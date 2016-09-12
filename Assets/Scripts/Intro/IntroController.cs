@@ -33,7 +33,7 @@ public class IntroController : MonoBehaviour
 	void Start () 
 	{
         fadeScript.StartFadingToClear(1f);
-        rsc.audioMng.FadeInIntroMusic(1f, 0.2f);
+        rsc.audioMng.FadeInMusic(AudioManager.MusicType.INTRO, 1f);
         state = IntroState.FadingIn;
 
         async = SceneManager.LoadSceneAsync("Level01");
@@ -65,7 +65,7 @@ public class IntroController : MonoBehaviour
                 {
                     skipHint.SetActive(false);
                     fadeScript.StartFadingToColor(1f);
-                    rsc.audioMng.FadeOutIntroMusic(1f);
+                    rsc.audioMng.FadeOutMusic(1f);
                     state = IntroState.FadingOut;
                 }
 

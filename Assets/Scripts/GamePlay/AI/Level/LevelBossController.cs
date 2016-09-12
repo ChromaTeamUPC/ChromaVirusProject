@@ -63,7 +63,7 @@ public class LevelBossController : MonoBehaviour
         rsc.camerasMng.SetEntryCameraLevelAnimation(-1);
 
         fadeScript.StartFadingToClear();
-        rsc.audioMng.FadeInMainMusic();
+        rsc.audioMng.FadeInMusic(AudioManager.MusicType.LEVEL_BOSS);
 
         StartCoroutine(InitWorm());
     }

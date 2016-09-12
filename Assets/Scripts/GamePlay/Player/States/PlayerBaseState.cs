@@ -141,6 +141,11 @@ public class PlayerBaseState
             bb.colorButtonsPressed = true;
             bb.KeyPressed = true;
         }
+
+        if (bb.KeyPressed)
+        {
+            bb.animator.SetBool("KeyPressed", true);
+        }
     }
 
     public virtual PlayerBaseState Update()
