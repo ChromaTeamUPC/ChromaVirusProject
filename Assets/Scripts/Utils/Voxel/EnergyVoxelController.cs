@@ -18,6 +18,8 @@ public class EnergyVoxelController : MonoBehaviour {
 
     public float energyCharge = 0.5f;
 
+    public ParticleSystem lifeTimeParticles;
+
     private  State state;
 
     private float elapsedTime;
@@ -40,11 +42,14 @@ public class EnergyVoxelController : MonoBehaviour {
         state = State.ENTRY;
         blinkingTime = duration * startBlinkingRatio;
         rigid.isKinematic = false;
+
+        StartCoroutine(StartLifeTimeParticles());
     }
 
     void OnDisable()
     {
         blinkController.StopPreviousBlinkings();
+        lifeTimeParticles.Stop();
     }
 	
 	// Update is called once per frame
@@ -121,6 +126,14 @@ public class EnergyVoxelController : MonoBehaviour {
                 break;
         }
     }
+
+    private IEnumerator StartLifeTimeParticles()
+    {
+        yield return new WaitForSeconds(Random.value);
+
+        lifeTimeParticles.Play();
+    }
+
 
     private bool CheckTarget()
     {

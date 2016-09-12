@@ -29,7 +29,7 @@ public class PlayerSpecialState : PlayerBaseState {
             bb.player.SpendEnergy(bb.player.specialAttackNecessaryEnergy);
         bb.player.StartSpecialEnergyCharging();
         state = State.MOVING;
-        //elapsedTime = 0f;       
+        //elapsedTime = 0f;  
     }
 
     public override void OnStateExit()
@@ -86,7 +86,6 @@ public class PlayerSpecialState : PlayerBaseState {
 
     private IEnumerator SpecialExplosion()
     {
-        Debug.Log(bb.enemiesInRange.Count);
         //Add enemies to sorted list
         foreach(EnemyBaseAIBehaviour enemy in bb.enemiesInRange)
         {
