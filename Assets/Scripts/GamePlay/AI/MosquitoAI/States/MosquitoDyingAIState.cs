@@ -30,15 +30,21 @@ public class MosquitoDyingAIState : MosquitoAIBaseState
 
         if (mosquitoBlackboard.lastShotSameColor)
         {
-            /*mosquitoBlackboard.entity.mainCollider.enabled = false;
+            mosquitoBlackboard.entity.mainCollider.enabled = false;
             mosquitoBlackboard.entity.dyingCollider.SetActive(true);
             mosquitoBlackboard.canReceiveDamage = false;
             mosquitoBlackboard.dieAnimationEnded = false;
             mosquitoBlackboard.animator.SetTrigger("die");
 
-            movement = mosquitoBlackboard.lastShotDirection * mosquitoBlackboard.entity.shotForceModifier;*/
+            movement = mosquitoBlackboard.lastShotDirection * mosquitoBlackboard.entity.shotForceModifier;
 
-            mosquitoBlackboard.mosquito.SpawnVoxelsAndReturnToPool();
+            EnemyExplosionController explosion = rsc.poolMng.enemyExplosionPool.GetObject();
+
+            if (explosion != null)
+            {
+                explosion.transform.position = blackboard.entityGO.transform.position;
+                explosion.Play(color);
+            }
         }
         else
             mosquitoBlackboard.mosquito.SpawnVoxelsAndReturnToPool(false);
@@ -52,12 +58,12 @@ public class MosquitoDyingAIState : MosquitoAIBaseState
 
     public override AIBaseState Update()
     {
-        /*mosquitoBlackboard.mosquito.transform.position += movement * Time.deltaTime;
+        mosquitoBlackboard.mosquito.transform.position += movement * Time.deltaTime;
 
         if (mosquitoBlackboard.dieAnimationEnded)
         {
             mosquitoBlackboard.mosquito.SpawnVoxelsAndReturnToPool();
-        }*/
+        }
 
         return null;
     }
@@ -65,5 +71,10 @@ public class MosquitoDyingAIState : MosquitoAIBaseState
     public override void ColorChanged(ChromaColor newColor)
     {
         //Do nothing
+    }
+
+    public override AIBaseState ImpactedByHexagon()
+    {
+        return null;
     }
 }
