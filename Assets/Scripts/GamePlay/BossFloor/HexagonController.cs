@@ -143,6 +143,8 @@ public class HexagonController : MonoBehaviour
     public Renderer planeRend;
     public BlinkController planeBlinkController;
 
+    public TurretAIBehaviour turret;
+
     [HideInInspector]
     public Vector3 attackCenter;
 
@@ -187,8 +189,14 @@ public class HexagonController : MonoBehaviour
 
         CheckNeighbours();
 
+        turret = null;
+
         if (isStatic)
         {
+            Transform turretTrf = transform.FindDeepChild("Turret");
+            if (turretTrf != null)
+                turret = turretTrf.GetComponent<TurretAIBehaviour>();
+
             currentState = staticState;
             navMeshObstacles.SetActive(true);
             columnRend.sharedMaterial = floorStaticMat;
@@ -338,6 +346,18 @@ public class HexagonController : MonoBehaviour
         {
             if (!enemiesInRange[i].activeInHierarchy)
                 enemiesInRange.RemoveAt(i);
+        }
+    }
+
+    public void ImpactedByShot()
+    {
+        if(isStatic && turret != null)
+        {
+            if(turret.CanTakeDamage())
+            {
+                columnBlinkController.BlinkWhiteOnce();
+                turret.TakeDamage();
+            }
         }
     }
 

@@ -123,6 +123,12 @@ public class PlayerShotController : MonoBehaviour {
             if (worm != null)
                 worm.ImpactedByShot(color, damage, player);
         }
+        else if (collision.collider.tag == "Hexagon")
+        {
+            HexagonController hexagon = collision.collider.GetComponentInParent<HexagonController>();
+            if (hexagon != null)
+                hexagon.ImpactedByShot();
+        }
 
         shotCollider.enabled = false;
         //We let the impactParticle do its job

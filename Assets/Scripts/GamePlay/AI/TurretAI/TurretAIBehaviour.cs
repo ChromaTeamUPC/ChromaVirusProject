@@ -5,10 +5,19 @@ using System;
 
 public class TurretAIBehaviour : MonoBehaviour 
 {
+    private enum State
+    {
+        ENABLED,
+        KNOCKED_OUT
+    }
+
     [Serializable]
     public class AttackSettings
     {
         public bool active = true;
+        public float maxHealth = 500;
+        public float damagePerShot = 10;
+        public float knockOutTime = 10f;
         public float detectionRadius = 25;
         public float minWaitTime = 2f;
         public float maxWaitTime = 6f;
@@ -21,7 +30,12 @@ public class TurretAIBehaviour : MonoBehaviour
     public Transform shotSpawnPoint2;
     public Transform muzzleSpawnPoint1;
     public Transform muzzleSpawnPoint2;
+    public float knockedOutMaxXoffset = 1.32f;
+    public float knockedOutMaxZoffset = 1.32f;
+    private float knockedOutYOffset;
+    public ParticleSystem knockedOutFx;
     private SphereCollider sphereCollider;
+    private BlinkController blinkController;
 
     private PlayerController player1;
     private PlayerController player2;
@@ -33,9 +47,11 @@ public class TurretAIBehaviour : MonoBehaviour
     public AttackSettings[] attackSettings = new AttackSettings[4];
     public AttackSettings AttackSettingsPhase { get { return attackSettings[currentPhase]; } }
 
+    private State state;
     private float attackWaitTime;
     private float elapsedTime;
     private ChromaColor currentColor;
+    private float currentHealth;
 
     // Use this for initialization
     void Awake () 
@@ -43,12 +59,16 @@ public class TurretAIBehaviour : MonoBehaviour
         player1 = null;
         player2 = null;
         sphereCollider = GetComponent<SphereCollider>();
+        blinkController = GetComponent<BlinkController>();
+        knockedOutYOffset = knockedOutFx.transform.localPosition.y;
         currentColor = ChromaColor.RED;
 	}
 
     void Start()
     {
         currentPhase = 0;
+        currentHealth = AttackSettingsPhase.maxHealth;
+        state = State.ENABLED;
         sphereCollider.radius = AttackSettingsPhase.detectionRadius;
         attackWaitTime = UnityEngine.Random.Range(AttackSettingsPhase.minWaitTime, AttackSettingsPhase.maxWaitTime);
         elapsedTime = 0f;
@@ -70,85 +90,133 @@ public class TurretAIBehaviour : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-        if (elapsedTime < attackWaitTime)
-            elapsedTime += Time.deltaTime;
-
-        PlayerController target = GetNearestPlayer();
-        if(target != null)
+        switch (state)
         {
-            Vector3 lookingVector;
+            case State.ENABLED:
+                if (elapsedTime < attackWaitTime)
+                    elapsedTime += Time.deltaTime;
 
-            lookingVector = target.transform.position - transform.position;
-            lookingVector.y = 0f;
-
-            Quaternion newRotation = Quaternion.LookRotation(lookingVector);
-            newRotation = Quaternion.RotateTowards(rotationObject.rotation, newRotation, angularSpeed * Time.deltaTime);
-            rotationObject.rotation = newRotation;
-
-            float angle = Vector3.Angle(lookingVector, rotationObject.forward);
-
-            if(angle <= maxShootAngle && elapsedTime >= attackWaitTime)
-            {
-                //Shoot
-                MosquitoMainAttackControllerBase attack1;
-                MosquitoMainAttackControllerBase attack2;
-
-                MuzzleController muzzle1 = rsc.coloredObjectsMng.GetTurretMuzzle();
-                MuzzleController muzzle2 = rsc.coloredObjectsMng.GetTurretMuzzle();
-
-                switch (currentColor)
+                PlayerController target = GetNearestPlayer();
+                if (target != null)
                 {
-                    case ChromaColor.RED:
-                        attack1 = rsc.poolMng.mosquitoHomingProjectilePool.GetObject();
-                        attack2 = rsc.poolMng.mosquitoHomingProjectilePool.GetObject();
-                        break;
+                    Vector3 lookingVector;
 
-                    case ChromaColor.GREEN:
-                        attack1 = rsc.poolMng.mosquitoFanProjectilePool.GetObject();
-                        attack2 = rsc.poolMng.mosquitoFanProjectilePool.GetObject();
-                        break;
+                    lookingVector = target.transform.position - transform.position;
+                    lookingVector.y = 0f;
 
-                    case ChromaColor.BLUE:
-                        attack1 = rsc.poolMng.mosquitoMultipleProjectilePool.GetObject();
-                        attack2 = rsc.poolMng.mosquitoMultipleProjectilePool.GetObject();
-                        break;
+                    Quaternion newRotation = Quaternion.LookRotation(lookingVector);
+                    newRotation = Quaternion.RotateTowards(rotationObject.rotation, newRotation, angularSpeed * Time.deltaTime);
+                    rotationObject.rotation = newRotation;
 
-                    case ChromaColor.YELLOW:
-                        attack1 = rsc.poolMng.mosquitoSingleProjectilePool.GetObject();
-                        attack2 = rsc.poolMng.mosquitoSingleProjectilePool.GetObject();
-                        break;
+                    float angle = Vector3.Angle(lookingVector, rotationObject.forward);
 
-                    default:
-                        attack1 = null;
-                        attack2 = null;
-                        break;
+                    if (angle <= maxShootAngle && elapsedTime >= attackWaitTime)
+                    {
+                        //Shoot
+                        MosquitoMainAttackControllerBase attack1;
+                        MosquitoMainAttackControllerBase attack2;
+
+                        MuzzleController muzzle1 = rsc.coloredObjectsMng.GetTurretMuzzle();
+                        MuzzleController muzzle2 = rsc.coloredObjectsMng.GetTurretMuzzle();
+
+                        switch (currentColor)
+                        {
+                            case ChromaColor.RED:
+                                attack1 = rsc.poolMng.mosquitoHomingProjectilePool.GetObject();
+                                attack2 = rsc.poolMng.mosquitoHomingProjectilePool.GetObject();
+                                break;
+
+                            case ChromaColor.GREEN:
+                                attack1 = rsc.poolMng.mosquitoFanProjectilePool.GetObject();
+                                attack2 = rsc.poolMng.mosquitoFanProjectilePool.GetObject();
+                                break;
+
+                            case ChromaColor.BLUE:
+                                attack1 = rsc.poolMng.mosquitoMultipleProjectilePool.GetObject();
+                                attack2 = rsc.poolMng.mosquitoMultipleProjectilePool.GetObject();
+                                break;
+
+                            case ChromaColor.YELLOW:
+                                attack1 = rsc.poolMng.mosquitoSingleProjectilePool.GetObject();
+                                attack2 = rsc.poolMng.mosquitoSingleProjectilePool.GetObject();
+                                break;
+
+                            default:
+                                attack1 = null;
+                                attack2 = null;
+                                break;
+                        }
+
+                        if (attack1 != null)
+                        {
+                            attack1.Shoot(shotSpawnPoint1, target);
+
+                            muzzle1.transform.position = muzzleSpawnPoint1.position;
+                            muzzle1.transform.rotation = muzzleSpawnPoint1.rotation;
+                            muzzle1.transform.SetParent(muzzleSpawnPoint1);
+                            muzzle1.Play();
+                        }
+
+                        if (attack2 != null)
+                        {
+                            attack2.Shoot(shotSpawnPoint2, target);
+
+                            muzzle2.transform.position = muzzleSpawnPoint2.position;
+                            muzzle2.transform.rotation = muzzleSpawnPoint2.rotation;
+                            muzzle2.transform.SetParent(muzzleSpawnPoint2);
+                            muzzle2.Play();
+                        }
+
+                        attackWaitTime = UnityEngine.Random.Range(AttackSettingsPhase.minWaitTime, AttackSettingsPhase.maxWaitTime);
+                        elapsedTime = 0f;
+                    }
                 }
+                break;
 
-                if (attack1 != null)
+            case State.KNOCKED_OUT:
+                if (elapsedTime < AttackSettingsPhase.knockOutTime)
                 {
-                    attack1.Shoot(shotSpawnPoint1, target);
-
-                    muzzle1.transform.position = muzzleSpawnPoint1.position;
-                    muzzle1.transform.rotation = muzzleSpawnPoint1.rotation;
-                    muzzle1.transform.SetParent(muzzleSpawnPoint1);
-                    muzzle1.Play();
+                    elapsedTime += Time.deltaTime;
+                    float newX = UnityEngine.Random.Range(knockedOutMaxXoffset * -1, knockedOutMaxXoffset);
+                    float newZ = UnityEngine.Random.Range(knockedOutMaxZoffset * -1, knockedOutMaxZoffset);
+                    Vector3 newPos = new Vector3(newX, knockedOutYOffset, newZ);
+                    knockedOutFx.transform.localPosition = newPos;
                 }
-
-                if (attack2 != null)
+                else
                 {
-                    attack2.Shoot(shotSpawnPoint2, target);
-
-                    muzzle2.transform.position = muzzleSpawnPoint2.position;
-                    muzzle2.transform.rotation = muzzleSpawnPoint2.rotation;
-                    muzzle2.transform.SetParent(muzzleSpawnPoint2);
-                    muzzle2.Play();
+                    elapsedTime = 0;
+                    currentHealth = AttackSettingsPhase.maxHealth;
+                    attackWaitTime = UnityEngine.Random.Range(AttackSettingsPhase.minWaitTime, AttackSettingsPhase.maxWaitTime);
+                    state = State.ENABLED;
+                    //TODO: Stop anim and fx
+                    knockedOutFx.Stop();
+                    Debug.Log("Turret recovered");
                 }
-
-                attackWaitTime = UnityEngine.Random.Range(AttackSettingsPhase.minWaitTime, AttackSettingsPhase.maxWaitTime);
-                elapsedTime = 0f;
-            }
-        }
+                break;
+        }       
 	}
+
+    public bool CanTakeDamage()
+    {
+        return state == State.ENABLED;
+    }
+
+    public void TakeDamage()
+    {
+        if (state == State.KNOCKED_OUT) return;
+
+        currentHealth -= AttackSettingsPhase.damagePerShot;
+        blinkController.BlinkWhiteOnce();
+
+        if(currentHealth <= 0)
+        {
+            //TODO: start anim and fx
+            knockedOutFx.Play();
+            elapsedTime = 0f;
+            state = State.KNOCKED_OUT;
+            Debug.Log("AAAAAGH turret knocked out");
+        }
+    }
 
     private void ColorChanged(EventInfo eventInfo)
     {
