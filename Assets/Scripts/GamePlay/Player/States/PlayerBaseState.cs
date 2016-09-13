@@ -202,7 +202,10 @@ public class PlayerBaseState
             return;
 
         if (bb.greenPressed)
+        {
+            rsc.rumbleMng.AddContinousRumble(RumbleType.PLAYER_DISINFECT, bb.player.Id, 0.2f, 0f);
             bb.device.Disinfect();
+        }
     }
 
     private void LookAt(Vector3 destination)
@@ -381,8 +384,7 @@ public class PlayerBaseState
         }
         else
         {
-            /*if (triggerDamageAnim)
-                return bb.receivingDamageState;*/
+            rsc.rumbleMng.Rumble(bb.player.Id, 0.5f, 0.5f, 0f);
             return nextStateIfDamaged;
         }
     }

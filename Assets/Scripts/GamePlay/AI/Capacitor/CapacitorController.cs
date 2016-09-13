@@ -21,6 +21,7 @@ public class CapacitorController : MonoBehaviour {
 
     public float maxCharge = 100;
     public int chargePerShot = 10;
+    public bool manualInstantCharge = false;
     public float manualChargePerSecond = 100;
     public float timeToExplode = 5f;
     public int damage = 50;
@@ -206,39 +207,57 @@ public class CapacitorController : MonoBehaviour {
         {
             case State.NOT_STARTED:
                 state = State.IDLE;
-                currentCharge += manualChargePerSecond * Time.deltaTime;
                 currentColor = color;
-                SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.EMPTY, currentColor));
-                //Debug.Log("Received first shot.");
-                //Debug.Log("Current Color = " + ChromaColorInfo.GetColorName(currentColor) + ". Current charge = " + currentCharge);
-                //Debug.Log("Moving to Idle state");
                 activatingPlayer = player;
-                break;
 
-            case State.IDLE:
-                if (currentColor == color)
+                if (manualInstantCharge)
                 {
-                    if (currentCharge < maxCharge)
-                    {
-                        float previousCharge = currentCharge;
-
-                        currentCharge += manualChargePerSecond * Time.deltaTime;
-                        if (currentCharge > maxCharge)
-                            currentCharge = maxCharge;
-
-                        if (previousCharge < maxCharge && currentCharge == maxCharge)
-                            SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.FULL, currentColor));
-                        else if (previousCharge < charge66 && currentCharge >= charge66)
-                            SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.TWO_THIRDS, currentColor));
-                        else if (previousCharge < charge33 && currentCharge >= charge33)
-                            SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.ONE_THIRD, currentColor));
-                    }
+                    currentCharge = maxCharge;
+                    SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.FULL, currentColor));
                 }
                 else
                 {
-                    currentCharge = 0;
-                    currentColor = color;
+                    currentCharge += manualChargePerSecond * Time.deltaTime;
                     SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.EMPTY, currentColor));
+                }
+                //Debug.Log("Received first shot.");
+                //Debug.Log("Current Color = " + ChromaColorInfo.GetColorName(currentColor) + ". Current charge = " + currentCharge);
+                //Debug.Log("Moving to Idle state");
+                break;
+
+            case State.IDLE:
+                if (manualInstantCharge)
+                {
+                    currentColor = color;
+                    currentCharge = maxCharge;
+                    SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.FULL, currentColor));
+                }
+                else
+                {
+                    if (currentColor == color)
+                    {
+                        if (currentCharge < maxCharge)
+                        {
+                            float previousCharge = currentCharge;
+
+                            currentCharge += manualChargePerSecond * Time.deltaTime;
+                            if (currentCharge > maxCharge)
+                                currentCharge = maxCharge;
+
+                            if (previousCharge < maxCharge && currentCharge == maxCharge)
+                                SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.FULL, currentColor));
+                            else if (previousCharge < charge66 && currentCharge >= charge66)
+                                SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.TWO_THIRDS, currentColor));
+                            else if (previousCharge < charge33 && currentCharge >= charge33)
+                                SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.ONE_THIRD, currentColor));
+                        }
+                    }
+                    else
+                    {
+                        currentCharge = 0;
+                        currentColor = color;
+                        SetMaterial(colorObjMng.GetCapacitorMaterial(CapacitorLevel.EMPTY, currentColor));
+                    }
                 }
                 activatingPlayer = player;
                 //Debug.Log("Current Color = " + ChromaColorInfo.GetColorName(currentColor) + ". Current charge = " + currentCharge);

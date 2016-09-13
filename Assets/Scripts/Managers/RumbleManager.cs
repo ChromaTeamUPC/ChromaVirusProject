@@ -10,6 +10,7 @@ public enum RumbleType
     PLAYER_SHOOT,
     PLAYER_DASH,
     PLAYER_USB,
+    PLAYER_DISINFECT,
     PLAYER_DYING
 }
 
@@ -160,6 +161,8 @@ public class RumbleManager : MonoBehaviour
                 else
                 {
                     temporalRumbleList.RemoveAt(i);
+                    Debug.Log("Removed Rumble");
+                    InputManager.Devices[0].Vibrate(0, 0);
                 }
             }
 
@@ -189,6 +192,7 @@ public class RumbleManager : MonoBehaviour
 
             //GamePad.SetVibration(PlayerIndex.One, p1Strong, p1Weak);
             //GamePad.SetVibration(PlayerIndex.Two, p2Strong, p2Weak);
+            Debug.Log("Weak: " + p1Weak + " // Strong: " + p1Strong);
 
             if (InputManager.Devices.Count >= 1) InputManager.Devices[0].Vibrate(p1Strong, p1Weak);
             if (InputManager.Devices.Count >= 2) InputManager.Devices[1].Vibrate(p2Strong, p2Weak);

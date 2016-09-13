@@ -372,6 +372,8 @@ public class PlayerController : MonoBehaviour
             //Reset flags
             if (!bb.shootPressed)
                 rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_SHOOT);
+            rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_DISINFECT);
+
             bb.ResetFlagVariables();
 
             if(bb.contactFlag && currentState != null)
