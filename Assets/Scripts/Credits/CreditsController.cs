@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using InControl;
 
-public class CreditsController : MonoBehaviour {
+public class CreditsController : MonoBehaviour
+{
+
     private enum CreditsState
     {
         FADING_IN,
@@ -91,7 +94,7 @@ public class CreditsController : MonoBehaviour {
         }
 
 
-        if (!buttonPressed && InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action2)) 
+        if (enableB && !buttonPressed && InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action2)) 
         {
             buttonPressed = true;
 
@@ -102,5 +105,82 @@ public class CreditsController : MonoBehaviour {
                 rsc.audioMng.FadeOutMusic(2f);
             }
         }
+
+        CheckKC();
     }
+
+    #region KC
+    private InputControlType[] kc =
+    {
+        InputControlType.DPadUp,
+        InputControlType.DPadUp,
+        InputControlType.DPadDown,
+        InputControlType.DPadDown,
+        InputControlType.DPadLeft,
+        InputControlType.DPadRight,
+        InputControlType.DPadLeft,
+        InputControlType.DPadRight,
+        InputControlType.Action2,
+        InputControlType.Action1
+    };
+
+    public Image ctImg;
+    private int kcIndex = 0;
+    private float kcMaxTime = 2f;
+    private float kcTime = 0f;
+    private bool enableB = true;
+
+    private void CheckKC()
+    {
+        if (currentState == CreditsState.FADING_OUT) return;
+
+        if (kcIndex == kc.Length) return;
+
+        if(kcTime > 0)
+        {
+            kcTime -= Time.deltaTime;
+            if(kcTime <= 0)
+            {
+                kcIndex = 0;
+                kcTime = 0;
+            }
+        }
+        
+        if (InputManager.GetAnyControllerButtonWasPressed(kc[kcIndex]))
+        {
+            if (kcIndex == kc.Length - 1)
+            {
+                kcIndex++;
+                kcTime = 0;
+                ctImg.enabled = true;
+            }
+            else
+            {
+                kcIndex++;
+                kcTime = kcMaxTime;
+            }
+        }
+        else
+        {
+            if (InputManager.GetAnyControllerAnyButtonWasPressed())
+            {
+                if (InputManager.GetAnyControllerButtonWasPressed(kc[0]))
+                {
+                    kcIndex = 1;
+                    kcTime = kcMaxTime;
+                }
+                else
+                {
+                    kcIndex = 0;
+                    kcTime = 0;
+                }
+            }
+        }
+
+        if (kcIndex == 8)
+            enableB = false;
+        else
+            enableB = true;
+    }
+    #endregion
 }

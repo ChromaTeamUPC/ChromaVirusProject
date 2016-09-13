@@ -251,8 +251,43 @@ namespace InControl
 			}
 		}
 
+        public bool AnyButtonPressed
+        {
+            get
+            {
+                int controlCount = Controls.GetLength(0);
+                for (int i = 0; i < controlCount; i++)
+                {
+                    var control = Controls[i];
+                    if (control != null && control.IsPressed)
+                    {
+                        return true;
+                    }
+                }
 
-		public InputControl AnyButton
+                return false;
+            }
+        }
+
+        public bool AnyButtonWasPressed
+        {
+            get
+            {
+                int controlCount = Controls.GetLength(0);
+                for (int i = 0; i < controlCount; i++)
+                {
+                    var control = Controls[i];
+                    if (control != null && control.WasPressed)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        public InputControl AnyButton
 		{
 			get
 			{

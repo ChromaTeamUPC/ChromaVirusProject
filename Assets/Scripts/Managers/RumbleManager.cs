@@ -19,6 +19,8 @@ public class RumbleManager : MonoBehaviour
     [HideInInspector]
     public bool active;
 
+    private bool tutorialPaused;
+
     private class RumbleInfo
     {
         public int player = 0;
@@ -97,6 +99,8 @@ public class RumbleManager : MonoBehaviour
     void Start()
     {
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
+        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
+        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_CLOSED, TutorialClosed);
     }
 
     void OnDestroy()
@@ -104,12 +108,15 @@ public class RumbleManager : MonoBehaviour
         if (rsc.eventMng != null)
         {
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
+            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
+            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_CLOSED, TutorialClosed);
         }
         //Debug.Log("Rumble Manager destroyed");
     }
 
     private void GameReset(EventInfo eventInfo)
     {
+        tutorialPaused = false;
         temporalRumbleList.Clear();
         continousRumbleList.Clear();
 
@@ -117,6 +124,16 @@ public class RumbleManager : MonoBehaviour
         //GamePad.SetVibration(PlayerIndex.Two, 0f, 0f);
         if (InputManager.Devices.Count >= 1) InputManager.Devices[0].Vibrate(0f, 0f);
         if (InputManager.Devices.Count >= 2) InputManager.Devices[1].Vibrate(0f, 0f);
+    }
+
+    private void TutorialOpened(EventInfo eventInfo)
+    {
+        tutorialPaused = true;
+    }
+
+    private void TutorialClosed(EventInfo eventInfo)
+    {
+        tutorialPaused = false;
     }
 
     // Update is called once per frame
@@ -129,13 +146,44 @@ public class RumbleManager : MonoBehaviour
             float p2Weak = 0f;
             float p2Strong = 0f;
 
-
-            for (int i = temporalRumbleList.Count - 1; i >= 0; --i)
+            if (!tutorialPaused)
             {
-                TemporalRumbleInfo rumble = temporalRumbleList[i];
-                rumble.Update();
+                for (int i = temporalRumbleList.Count - 1; i >= 0; --i)
+                {
+                    TemporalRumbleInfo rumble = temporalRumbleList[i];
+                    rumble.Update();
 
-                if(rumble.duration > 0)
+                    if (rumble.duration > 0)
+                    {
+                        switch (rumble.player)
+                        {
+                            case 0:
+                                p1Weak = rumble.GetMaxWeakValue(p1Weak);
+                                p1Strong = rumble.GetMaxStrongValue(p1Strong);
+
+                                p2Weak = rumble.GetMaxWeakValue(p2Weak);
+                                p2Strong = rumble.GetMaxStrongValue(p2Strong);
+                                break;
+
+                            case 1:
+                                p1Weak = rumble.GetMaxWeakValue(p1Weak);
+                                p1Strong = rumble.GetMaxStrongValue(p1Strong);
+                                break;
+
+                            case 2:
+                                p2Weak = rumble.GetMaxWeakValue(p2Weak);
+                                p2Strong = rumble.GetMaxStrongValue(p2Strong);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        temporalRumbleList.RemoveAt(i);
+                    }
+                }
+
+
+                foreach (ContinousRumbleInfo rumble in continousRumbleList.Values)
                 {
                     switch (rumble.player)
                     {
@@ -156,35 +204,7 @@ public class RumbleManager : MonoBehaviour
                             p2Weak = rumble.GetMaxWeakValue(p2Weak);
                             p2Strong = rumble.GetMaxStrongValue(p2Strong);
                             break;
-                    }                   
-                }
-                else
-                {
-                    temporalRumbleList.RemoveAt(i);
-                }
-            }
-
-            foreach(ContinousRumbleInfo rumble in continousRumbleList.Values)
-            {
-                switch (rumble.player)
-                {
-                    case 0:
-                        p1Weak = rumble.GetMaxWeakValue(p1Weak);
-                        p1Strong = rumble.GetMaxStrongValue(p1Strong);
-
-                        p2Weak = rumble.GetMaxWeakValue(p2Weak);
-                        p2Strong = rumble.GetMaxStrongValue(p2Strong);
-                        break;
-
-                    case 1:
-                        p1Weak = rumble.GetMaxWeakValue(p1Weak);
-                        p1Strong = rumble.GetMaxStrongValue(p1Strong);
-                        break;
-
-                    case 2:
-                        p2Weak = rumble.GetMaxWeakValue(p2Weak);
-                        p2Strong = rumble.GetMaxStrongValue(p2Strong);
-                        break;
+                    }
                 }
             }
 

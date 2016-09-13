@@ -140,7 +140,7 @@ public class DeviceController : MonoBehaviour
     {
         if (!active) return;
 
-        infectionNumberTxt.text = ((int)currentInfection) + "%";
+        infectionNumberTxt.text = (Mathf.CeilToInt(currentInfection)) + "%";
         currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 2) + 1; //Values between 0.5 and 1.5
 
         switch (infectionLevel)

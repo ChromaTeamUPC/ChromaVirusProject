@@ -432,6 +432,36 @@ namespace InControl
 			}
 		}
 
+        public static bool GetAnyControllerAnyButtonPressed()
+        {
+            bool result = false;
+
+            for (int i = 0; i < devices.Count; ++i)
+            {
+                result |= devices[i].AnyButtonPressed;
+
+                if (result)
+                    break;
+            }
+
+            return result;
+        }
+
+        public static bool GetAnyControllerAnyButtonWasPressed()
+        {
+            bool result = false;
+
+            for (int i = 0; i < devices.Count; ++i)
+            {
+                result |= devices[i].AnyButtonWasPressed;
+
+                if (result)
+                    break;
+            }
+
+            return result;
+        }
+
         public static bool GetAnyControllerButtonPressed(InputControlType control)
         {
             bool result = false;
