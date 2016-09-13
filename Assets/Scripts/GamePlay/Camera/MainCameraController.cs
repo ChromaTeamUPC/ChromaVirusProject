@@ -33,6 +33,8 @@ public class MainCameraController : MonoBehaviour {
     private float shakeDuration;
     private float currentShakeMaximum;
 
+    private bool pauseEffects;
+
     void Awake()
     {
         motionBlur = GetComponent<MotionBlur>();
@@ -70,6 +72,10 @@ public class MainCameraController : MonoBehaviour {
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerColorMismatch);
         rsc.eventMng.StartListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
         rsc.eventMng.StartListening(EventManager.EventType.WORM_ATTACK, WormAttack);
+        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
+        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_CLOSED, TutorialClosed);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_PAUSED, GamePaused);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESUMED, GameResumed);
     }
 
     void OnDestroy()
@@ -81,6 +87,10 @@ public class MainCameraController : MonoBehaviour {
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerColorMismatch);
             rsc.eventMng.StopListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
             rsc.eventMng.StopListening(EventManager.EventType.WORM_ATTACK, WormAttack);
+            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
+            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_CLOSED, TutorialClosed);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_PAUSED, GamePaused);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESUMED, GameResumed);
         }
     }
 
@@ -115,6 +125,26 @@ public class MainCameraController : MonoBehaviour {
 
         shakeDuration = info.wormBb.attackRumbleDuration;
         rsc.rumbleMng.Rumble(0, shakeDuration);
+    }
+
+    private void TutorialOpened(EventInfo eventInfo)
+    {
+        pauseEffects = true;
+    }
+
+    private void TutorialClosed(EventInfo eventInfo)
+    {
+        pauseEffects = false;
+    }
+
+    private void GamePaused(EventInfo eventInfo)
+    {
+        pauseEffects = true;
+    }
+
+    private void GameResumed(EventInfo eventInfo)
+    {
+        pauseEffects = false;
     }
 
     private void DeviceInfectionChanged(EventInfo eventInfo)
@@ -239,25 +269,28 @@ public class MainCameraController : MonoBehaviour {
 	// Update is called once per frame
 	void LateUpdate () 
     {
-        smoothedPosition = Vector3.Lerp(smoothedPosition, GetCamTargetPosition(), smoothing * Time.deltaTime);
-
-        if(shakeDuration > 0)
+        if (!pauseEffects)
         {
-            transform.position = smoothedPosition + Random.insideUnitSphere * (currentShakeMaximum > 0 ? currentShakeMaximum : defaultShakeMaximum);
+            smoothedPosition = Vector3.Lerp(smoothedPosition, GetCamTargetPosition(), smoothing * Time.deltaTime);
 
-            shakeDuration -= Time.deltaTime;
-
-            if (shakeDuration <= 0)
+            if (shakeDuration > 0)
             {
-                shakeDuration = 0f;
-                currentShakeMaximum = 0f;
+                transform.position = smoothedPosition + Random.insideUnitSphere * (currentShakeMaximum > 0 ? currentShakeMaximum : defaultShakeMaximum);
+
+                shakeDuration -= Time.deltaTime;
+
+                if (shakeDuration <= 0)
+                {
+                    shakeDuration = 0f;
+                    currentShakeMaximum = 0f;
+                }
             }
-        }
-        else
-        {
-            transform.position = smoothedPosition;
-        }
-        //transform.position = smoothedPosition;       	
+            else
+            {
+                transform.position = smoothedPosition;
+            }
+            //transform.position = smoothedPosition; 
+        }      	
 	}
 
     public Vector3 GetPosition(Vector3 originalPosition, Vector3 displacement)

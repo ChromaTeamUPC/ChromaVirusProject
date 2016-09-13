@@ -19,7 +19,7 @@ public class RumbleManager : MonoBehaviour
     [HideInInspector]
     public bool active;
 
-    private bool tutorialPaused;
+    private bool pauseRumble;
 
     private class RumbleInfo
     {
@@ -101,6 +101,8 @@ public class RumbleManager : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
         rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
         rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_CLOSED, TutorialClosed);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_PAUSED, GamePaused);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESUMED, GameResumed);
     }
 
     void OnDestroy()
@@ -110,13 +112,15 @@ public class RumbleManager : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
             rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
             rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_CLOSED, TutorialClosed);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_PAUSED, GamePaused);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESUMED, GameResumed);
         }
         //Debug.Log("Rumble Manager destroyed");
     }
 
     private void GameReset(EventInfo eventInfo)
     {
-        tutorialPaused = false;
+        pauseRumble = false;
         temporalRumbleList.Clear();
         continousRumbleList.Clear();
 
@@ -128,12 +132,22 @@ public class RumbleManager : MonoBehaviour
 
     private void TutorialOpened(EventInfo eventInfo)
     {
-        tutorialPaused = true;
+        pauseRumble = true;
     }
 
     private void TutorialClosed(EventInfo eventInfo)
     {
-        tutorialPaused = false;
+        pauseRumble = false;
+    }
+
+    private void GamePaused(EventInfo eventInfo)
+    {
+        pauseRumble = true;
+    }
+
+    private void GameResumed(EventInfo eventInfo)
+    {
+        pauseRumble = false;
     }
 
     // Update is called once per frame
@@ -146,7 +160,7 @@ public class RumbleManager : MonoBehaviour
             float p2Weak = 0f;
             float p2Strong = 0f;
 
-            if (!tutorialPaused)
+            if (!pauseRumble)
             {
                 for (int i = temporalRumbleList.Count - 1; i >= 0; --i)
                 {
