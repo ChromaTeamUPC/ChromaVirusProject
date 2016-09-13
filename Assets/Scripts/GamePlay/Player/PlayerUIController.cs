@@ -6,6 +6,7 @@ public class PlayerUIController : MonoBehaviour
 {
     public PlayerController playerController;
 
+    [Header("Health settings")]
     public Color healthEmptyColor;
     public float healthThreshold1 = 0.2f;
     public Color healthThreshold1Color;
@@ -25,6 +26,7 @@ public class PlayerUIController : MonoBehaviour
     public Image playerHealthFill;
     private float referenceHealthFactor;
 
+    [Header("Energy Setttings")]
     public Slider playerEnergy;
     public Image playerEnergyPowerTxt;
     private float referenceEnergyFactor;
@@ -33,6 +35,17 @@ public class PlayerUIController : MonoBehaviour
     public float energyBarTextBlinkInterval = 0.5f;
     private float energyTextElapsedTime;
     private float energyMaxValue;
+
+    [Header("Color Settings")]
+    public GameObject nextColorSliderGO;
+    public Slider nextColorSlider;
+    private Color currentColor;
+    public Image nextColorBackground;
+    public Image nextColorForeground;
+    private float nextColorElapsedTime;
+    private float nextColorPrewarnTime;
+    public float colorBarInitialValue = 7.5f;
+    public float colorBarFinalValue = 93.2f;
 
     // Use this for initialization
     void Start () 
@@ -49,10 +62,28 @@ public class PlayerUIController : MonoBehaviour
             brightnessSpeed = 1 / brightnessCicleDuration;
         else
             brightnessSpeed = 1;
+
+        rsc.eventMng.StartListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
+        rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, LevelCleared);
     }
-	
-	// Update is called once per frame
-	void Update () 
+
+    void OnDestroy()
+    {
+        if (rsc.eventMng != null)
+        {
+            rsc.eventMng.StopListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
+            rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, LevelCleared);
+        }
+    }
+
+    // Update is called once per frame
+    void Update () 
 	{
         if (playerController.bb.active && playerController.bb.alive)
         {
@@ -100,11 +131,57 @@ public class PlayerUIController : MonoBehaviour
                 energyTextElapsedTime = 0f;
             }
 
+            //Next color
+            if (nextColorElapsedTime < nextColorPrewarnTime)
+            {
+                float factor = nextColorElapsedTime / nextColorPrewarnTime;
+
+                nextColorSlider.value = Mathf.Lerp(colorBarInitialValue, colorBarFinalValue, factor);
+
+                nextColorBackground.color = Color.Lerp(currentColor, Color.black, factor * 2);
+
+                nextColorElapsedTime += Time.deltaTime;
+            }
+
             //Always oriented the same
             Vector3 lookAt = playerController.bb.GetScreenRelativeDirection(Vector3.up);
             lookAt.y = 0;
             lookAt = gameObject.transform.position + lookAt;
             gameObject.transform.LookAt(lookAt, Vector3.up);
         }
+    }
+
+    private void LevelStarted(EventInfo eventInfo)
+    {
+        nextColorSliderGO.SetActive(true);
+    }
+
+    private void LevelCleared(EventInfo eventInfo)
+    {
+        nextColorSliderGO.SetActive(false);
+    }
+
+    private void ColorPrewarn(EventInfo eventInfo)
+    {
+        ColorPrewarnEventInfo info = (ColorPrewarnEventInfo)eventInfo;
+
+        nextColorPrewarnTime = info.prewarnSeconds;
+        nextColorElapsedTime = 0f;
+
+        //nextColorBackground.color = nextColorForeground.color;
+        nextColorForeground.color = rsc.coloredObjectsMng.GetColor(info.newColor);
+
+        if (info.prewarnSeconds > 0)
+            nextColorSlider.value = 1f;
+        else
+            nextColorSlider.value = 0f;
+    }
+
+    private void ColorChanged(EventInfo eventInfo)
+    {
+        ColorEventInfo info = (ColorEventInfo)eventInfo;
+        currentColor = rsc.coloredObjectsMng.GetColor(info.newColor);
+        nextColorBackground.color = currentColor;
+        nextColorSlider.value = 0f;
     }
 }
