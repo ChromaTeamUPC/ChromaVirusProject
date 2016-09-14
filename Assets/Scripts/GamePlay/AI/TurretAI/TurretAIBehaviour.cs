@@ -36,6 +36,7 @@ public class TurretAIBehaviour : MonoBehaviour
     public ParticleSystem knockedOutFx;
     private SphereCollider sphereCollider;
     private BlinkController blinkController;
+    public Animator anim;
 
     private PlayerController player1;
     private PlayerController player2;
@@ -167,6 +168,8 @@ public class TurretAIBehaviour : MonoBehaviour
                             muzzle2.Play();
                         }
 
+                        anim.SetTrigger("Fire");
+
                         attackWaitTime = UnityEngine.Random.Range(AttackSettingsPhase.minWaitTime, AttackSettingsPhase.maxWaitTime);
                         elapsedTime = 0f;
                     }
@@ -188,7 +191,7 @@ public class TurretAIBehaviour : MonoBehaviour
                     currentHealth = AttackSettingsPhase.maxHealth;
                     attackWaitTime = UnityEngine.Random.Range(AttackSettingsPhase.minWaitTime, AttackSettingsPhase.maxWaitTime);
                     state = State.ENABLED;
-                    //TODO: Stop anim and fx
+                    anim.SetBool("Broken", false);
                     knockedOutFx.Stop();
                     Debug.Log("Turret recovered");
                 }
@@ -210,7 +213,8 @@ public class TurretAIBehaviour : MonoBehaviour
 
         if(currentHealth <= 0)
         {
-            //TODO: start anim and fx
+            anim.SetInteger("BrokenAnim", UnityEngine.Random.Range(0, 2));
+            anim.SetBool("Broken", true);
             knockedOutFx.Play();
             elapsedTime = 0f;
             state = State.KNOCKED_OUT;
