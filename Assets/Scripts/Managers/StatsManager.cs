@@ -3,9 +3,10 @@ using System.Collections;
 
 public class PlayerStats
 {
+    private int playerId;
     ChromaColor lastKillColor;
     public uint chain;
-    private float chainMaxTime;
+    public float chainMaxTime;
     private uint specialComboIncrement;
     public float comboRemainingTime;
 
@@ -14,8 +15,9 @@ public class PlayerStats
     public uint enemiesKilledOk;
     public uint enemiesKilledWrong;
 
-    public PlayerStats(float chainMax, uint specialComboInc)
+    public PlayerStats(int id, float chainMax, uint specialComboInc)
     {
+        playerId = id;
         chainMaxTime = chainMax;
         specialComboIncrement = specialComboInc;
         Reset();
@@ -43,6 +45,8 @@ public class PlayerStats
                 comboRemainingTime = 0;
                 chain = 0;
                 currentCombo = 0;
+                ComboEventInfo.eventInfo.playerId = playerId;
+                rsc.eventMng.TriggerEvent(EventManager.EventType.COMBO_BREAK, ComboEventInfo.eventInfo);
             }
         }
     }
@@ -94,6 +98,11 @@ public class PlayerStats
             maxCombo = currentCombo;
 
         comboRemainingTime = chainMaxTime;
+
+        ComboEventInfo.eventInfo.playerId = playerId;
+        ComboEventInfo.eventInfo.comboColor = lastKillColor;
+        ComboEventInfo.eventInfo.comboAdd = total;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.COMBO_ADD, ComboEventInfo.eventInfo);
     }
 
     public void EnemyKilledWrong()
@@ -107,6 +116,9 @@ public class PlayerStats
         currentCombo = 0;
         chain = 0;
         comboRemainingTime = 0;
+
+        ComboEventInfo.eventInfo.playerId = playerId;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.COMBO_BREAK, ComboEventInfo.eventInfo);
     }
 }
 
@@ -123,8 +135,8 @@ public class StatsManager : MonoBehaviour
 
     void Awake()
     {
-        p1Stats = new PlayerStats(chainMaxTime, specialKillsComboIncrement);
-        p2Stats = new PlayerStats(chainMaxTime, specialKillsComboIncrement);
+        p1Stats = new PlayerStats(1, chainMaxTime, specialKillsComboIncrement);
+        p2Stats = new PlayerStats(2, chainMaxTime, specialKillsComboIncrement);
     }
 
 	// Use this for initialization

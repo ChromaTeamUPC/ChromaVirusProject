@@ -1,34 +1,27 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GUIController : MonoBehaviour
 {
     [Header("Both players config")]
-    public Color healthEmptyColor;
-    public float healthThreshold1 = 0.2f;
-    public Color healthThreshold1Color;
-    public float healthThreshold2 = 0.3f;
-    public Color healthThreshold2Color;
-    public float healthThreshold3 = 0.4f;
-    public Color healthThreshold3Color;
-    public float startGradientThreshold = 0.5f;
-
-    public float brightnessCicleDuration = 0.5f;
-    public float startBrightnessThreshold = 0.3f;
-    private Color currentP1HealthColor;
-    private Color currentP2HealthColor;
-    private float currentBrightness;
-    private float brightnessSpeed;
+    public float chainDelay = 0.1f;
+    public float chainAddBGDuration = 0.1f;
+    public float chainBreakBGDuration = 0.1f;
 
     [Header("Player 1 Items")]
     public GameObject player1Zone;
-    public Slider player1Health;
-    public Image player1HealthFill;
-    public Slider player1Energy;
-    public GameObject player1ExtraLife1;
-    public GameObject player1ExtraLife2;
-    public GameObject player1ColorMismatchTxt;
+    public Text player1Lives;
+
+    private PlayerStats player1Stats;
+    public Text player1CurrentCombo;
+    public Slider player1ChainSlider;
+    public Image player1ChainColorImg;
+    public GameObject player1ChainWhiteFill;
+    public GameObject player1ChainPurpleFill;
+    public RectTransform player1ComboIncrementSpawnPoint;
+
     public GameObject player1ButtonHints;
     public GameObject player1RedButton;
     public GameObject player1GreenButton;
@@ -36,31 +29,24 @@ public class GUIController : MonoBehaviour
     public GameObject player1YellowButton;
     public GameObject player1ColorsButton;
 
-    private PlayerStats player1Stats;
-    public GameObject player1ComboArea;
-    public Text player1ComboTxt;
-    public Text player1ChainTxt;
-    public Slider player1ChainTime;
-
-    private bool player1ColorMismatch;
-
     [Header("Player 2 Items")]
     public GameObject player2Zone;
-    public Slider player2Health;
-    public Image player2HealthFill;
-    public Slider player2Energy;
-    public GameObject player2ExtraLife1;
-    public GameObject player2ExtraLife2;
-    public GameObject player2ColorMismatchTxt;
+    public Text player2Lives;
+
+    private PlayerStats player2Stats;
+    public Text player2CurrentCombo;
+    public Slider player2ChainSlider;
+    public Image player2ChainColorImg;
+    public GameObject player2ChainWhiteFill;
+    public GameObject player2ChainPurpleFill;
+    public RectTransform player2ComboIncrementSpawnPoint;
+
     public GameObject player2ButtonHints;
     public GameObject player2RedButton;
     public GameObject player2GreenButton;
     public GameObject player2BlueButton;
     public GameObject player2YellowButton;
     public GameObject player2ColorsButton;
-    public Text player2ComboTxt;
-    private PlayerStats player2Stats;
-    private bool player2ColorMismatch;
 
     [Header("Central Panel")]
     public GameObject infectionAndNextColorZone;
@@ -98,14 +84,14 @@ public class GUIController : MonoBehaviour
 
     public GameObject skipHint;
 
-
-    //private GameObject player1;
-    //private GameObject player2;
     private PlayerController player1Controller;
     private PlayerController player2Controller;
 
     private float referenceHealthFactor;
     private float referenceEnergyFactor;
+
+    private Queue<ChainIncrementController> chainsP1 = new Queue<ChainIncrementController>();
+    private Queue<ChainIncrementController> chainsP2 = new Queue<ChainIncrementController>();
 
     // Use this for initialization
     void Start()
@@ -122,31 +108,16 @@ public class GUIController : MonoBehaviour
         player1Controller = rsc.gameInfo.player1Controller;
         player2Controller = rsc.gameInfo.player2Controller;
 
-        referenceHealthFactor = player1Health.maxValue / player1Controller.maxHealth;
-        referenceEnergyFactor = player1Energy.maxValue / player1Controller.maxEnergy;
-
-        player1ColorMismatch = false;
-        player2ColorMismatch = false;
-
         player1Stats = rsc.statsMng.p1Stats;
+        player1ChainSlider.maxValue = player1Stats.chainMaxTime;
         player2Stats = rsc.statsMng.p2Stats;
+        player2ChainSlider.maxValue = player2Stats.chainMaxTime;
 
         DisableHintButtons(0);
 
         nextColorElapsedTime = 0f;
         nextColorPrewarnTime = 0f;
 
-        currentBrightness = 1f;
-        currentP1HealthColor = Color.white;
-        currentP2HealthColor = Color.white;
-
-        if (brightnessCicleDuration > 0)
-            brightnessSpeed = 1 / brightnessCicleDuration;
-        else
-            brightnessSpeed = 1;
-
-        rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_START, PlayerColorMismatchStart);
-        rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_END, PlayerColorMismatchEnd);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DYING, PlayerDying);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDying);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_PAUSED, GamePaused);
@@ -154,21 +125,25 @@ public class GUIController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameOver);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameFinished);
         rsc.eventMng.StartListening(EventManager.EventType.BUTTON_HINT, ButtonHint);
-        rsc.eventMng.StartListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
-        rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
         rsc.eventMng.StartListening(EventManager.EventType.START_CUT_SCENE, StartCutScene);
         rsc.eventMng.StartListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
         rsc.eventMng.StartListening(EventManager.EventType.SHOW_TUTORIAL, ShowTutorial);
         rsc.eventMng.StartListening(EventManager.EventType.HIDE_TUTORIAL, HideTutorial);
+        rsc.eventMng.StartListening(EventManager.EventType.COMBO_ADD, ComboAdd);
+        rsc.eventMng.StartListening(EventManager.EventType.COMBO_BREAK, ComboBreak);
+
+        rsc.eventMng.StartListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
+        rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+
+        StartCoroutine(ShowChainIncrementsP1());
+        StartCoroutine(ShowChainIncrementsP2());
     }
 
     void OnDestroy()
     {
         if (rsc.eventMng != null)
         {
-            rsc.eventMng.StopListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_START, PlayerColorMismatchStart);
-            rsc.eventMng.StopListening(EventManager.EventType.PLAYER_COLOR_MISMATCH_END, PlayerColorMismatchEnd);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DYING, PlayerDying);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDying);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_PAUSED, GamePaused);
@@ -176,149 +151,53 @@ public class GUIController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameOver);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameFinished);
             rsc.eventMng.StopListening(EventManager.EventType.BUTTON_HINT, ButtonHint);
-            rsc.eventMng.StopListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
-            rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
             rsc.eventMng.StopListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
             rsc.eventMng.StopListening(EventManager.EventType.START_CUT_SCENE, StartCutScene);
             rsc.eventMng.StopListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
             rsc.eventMng.StopListening(EventManager.EventType.SHOW_TUTORIAL, ShowTutorial);
             rsc.eventMng.StopListening(EventManager.EventType.HIDE_TUTORIAL, HideTutorial);
+            rsc.eventMng.StopListening(EventManager.EventType.COMBO_ADD, ComboAdd);
+            rsc.eventMng.StopListening(EventManager.EventType.COMBO_BREAK, ComboBreak);
+
+            rsc.eventMng.StopListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
+            rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 2) + 1; //Values between 0.5 and 1.5
-
         //Player 1 update
         if (player1Controller.Active)
         {
-            //Health bar
-            float p1HealthValue = player1Controller.Health * referenceHealthFactor;
-            player1Health.value = p1HealthValue;
-
-            if (p1HealthValue > startGradientThreshold)
-                currentP1HealthColor = Color.white;
-            else if (p1HealthValue >= healthThreshold3)
-                currentP1HealthColor = Color.Lerp(healthThreshold3Color, Color.white, (p1HealthValue - healthThreshold3) / (startGradientThreshold - healthThreshold3));
-            else if (p1HealthValue >= healthThreshold2)
-                currentP1HealthColor = Color.Lerp(healthThreshold2Color, healthThreshold3Color, (p1HealthValue - healthThreshold2) / (healthThreshold3 - healthThreshold2));
-            else if (p1HealthValue >= healthThreshold1)
-                currentP1HealthColor = Color.Lerp(healthThreshold1Color, healthThreshold2Color, (p1HealthValue - healthThreshold1) / (healthThreshold2 - healthThreshold1));
-            else
-                currentP1HealthColor = Color.Lerp(healthEmptyColor, healthThreshold1Color, p1HealthValue / healthThreshold1);
-
-            if (p1HealthValue < startBrightnessThreshold)
-            {
-                currentP1HealthColor *= currentBrightness;
-                currentP1HealthColor.a = 1f;
-            }
-
-            player1HealthFill.color = currentP1HealthColor;
-
-
-            //Energy bar
-            player1Energy.value = player1Controller.Energy * referenceEnergyFactor;
-
             //Lives
-            if (player1Controller.Lives > 1)
-                player1ExtraLife1.SetActive(true);
-            else
-                player1ExtraLife1.SetActive(false);
-
-            if (player1Controller.Lives > 2)
-                player1ExtraLife2.SetActive(true);
-            else
-                player1ExtraLife2.SetActive(false);
-
-            //Hints
-            player1ButtonHints.transform.position = rsc.camerasMng.currentCamera.WorldToScreenPoint(player1Controller.hintPoint.position);
+            player1Lives.text = "x" + player1Controller.Lives;
 
             //Combo
-            if (player1Stats.currentCombo == 0)
-            {
-                player1ComboArea.SetActive(false);
-            }
-            else
-            {
-                player1ComboArea.SetActive(true);
-                player1ComboTxt.text = "x" + player1Stats.currentCombo;
+            player1CurrentCombo.text = player1Stats.currentCombo.ToString();
+            player1ChainSlider.value = player1Stats.comboRemainingTime;
 
-                if (player1Stats.chain > 0)
-                {
-                    player1ChainTxt.enabled = true;
-                    player1ChainTxt.text = "+" + player1Stats.chain;
-
-                    player1ChainTime.gameObject.SetActive(true);
-                    player1ChainTime.value = player1Stats.comboRemainingTime;
-                }
-                else
-                {
-                    player1ChainTxt.enabled = false;
-                    player1ChainTime.gameObject.SetActive(false);
-                }
-            }
+            //Hints
+            player1ButtonHints.transform.position = rsc.camerasMng.currentCamera.WorldToScreenPoint(player1Controller.hintPoint.position);            
         }
 
 
         //Player 2 update
         if (player2Controller.Active)
         {
-            //Health bar
-            player2Health.value = player2Controller.Health * referenceHealthFactor;
-
-            float p2HealthValue = player2Controller.Health * referenceHealthFactor;
-            player2Health.value = p2HealthValue;
-
-            if (p2HealthValue > startGradientThreshold)
-                currentP2HealthColor = Color.white;
-            else if (p2HealthValue >= healthThreshold3)
-                currentP2HealthColor = Color.Lerp(healthThreshold3Color, Color.white, (p2HealthValue - healthThreshold3) / (startGradientThreshold - healthThreshold3));
-            else if (p2HealthValue >= healthThreshold2)
-                currentP2HealthColor = Color.Lerp(healthThreshold2Color, healthThreshold3Color, (p2HealthValue - healthThreshold2) / (healthThreshold3 - healthThreshold2));
-            else if (p2HealthValue >= healthThreshold1)
-                currentP2HealthColor = Color.Lerp(healthThreshold1Color, healthThreshold2Color, (p2HealthValue - healthThreshold1) / (healthThreshold2 - healthThreshold1));
-            else
-                currentP2HealthColor = Color.Lerp(healthEmptyColor, healthThreshold1Color, p2HealthValue / healthThreshold1);
-
-            if (p2HealthValue < startBrightnessThreshold)
-            {
-                currentP2HealthColor *= currentBrightness;
-                currentP2HealthColor.a = 1f;
-            }
-
-            player2HealthFill.color = currentP2HealthColor;
-
-            //Energy bar
-            player2Energy.value = player2Controller.Energy * referenceEnergyFactor;
-
             //Lives
-            if (player2Controller.Lives > 1)
-                player2ExtraLife1.SetActive(true);
-            else
-                player2ExtraLife1.SetActive(false);
-
-            if (player2Controller.Lives > 2)
-                player2ExtraLife2.SetActive(true);
-            else
-                player2ExtraLife2.SetActive(false);
-
-            //Hints
-            player2ButtonHints.transform.position = rsc.camerasMng.currentCamera.WorldToScreenPoint(player2Controller.hintPoint.position);
+            player2Lives.text = "x" + player2Controller.Lives;
 
             //Combo
-            player2ComboTxt.text = "x" + player2Stats.currentCombo;
+            player2CurrentCombo.text = player2Stats.currentCombo.ToString();
+            player2ChainSlider.value = player2Stats.comboRemainingTime;
+
+            //Hints
+            player2ButtonHints.transform.position = rsc.camerasMng.currentCamera.WorldToScreenPoint(player2Controller.hintPoint.position);            
         }
 
         int secondFraction = (int)(Time.time * 10) % 10;
         bool shouldShowTxt = (secondFraction > 0 && secondFraction < 5);
-
-        if (player1ColorMismatch)
-            player1ColorMismatchTxt.SetActive(shouldShowTxt);
-
-        if (player2ColorMismatch)
-            player2ColorMismatchTxt.SetActive(shouldShowTxt);
 
         if (rsc.debugMng.godMode)
             godModeTxt.enabled = shouldShowTxt;
@@ -401,38 +280,6 @@ public class GUIController : MonoBehaviour
         }
     }
 
-    private void PlayerColorMismatchStart(EventInfo eventInfo)
-    {
-        PlayerEventInfo info = (PlayerEventInfo)eventInfo;
-
-        if (info.player.Id == 1)
-        {
-            player1ColorMismatch = true;
-            player1ColorMismatchTxt.SetActive(true);
-        }
-        else
-        {
-            player2ColorMismatch = true;
-            player2ColorMismatchTxt.SetActive(true);
-        }
-    }
-
-    private void PlayerColorMismatchEnd(EventInfo eventInfo)
-    {
-        PlayerEventInfo info = (PlayerEventInfo)eventInfo;
-
-        if (info.player.Id == 1)
-        {
-            player1ColorMismatch = false;
-            player1ColorMismatchTxt.SetActive(false);
-        }
-        else
-        {
-            player2ColorMismatch = false;
-            player2ColorMismatchTxt.SetActive(false);
-        }
-    }
-
     private void GamePaused(EventInfo eventInfo)
     {
         infoArea.SetActive(false);
@@ -487,17 +334,6 @@ public class GUIController : MonoBehaviour
         PlayerEventInfo info = (PlayerEventInfo)eventInfo;
 
         DisableHintButtons(info.player.Id);
-
-        if (info.player.Id == 1)
-        {
-            player1ColorMismatch = false;
-            player1ColorMismatchTxt.SetActive(false);
-        }
-        else
-        {
-            player2ColorMismatch = false;
-            player2ColorMismatchTxt.SetActive(false);
-        }
     }
 
     private void ButtonHint(EventInfo eventInfo)
@@ -557,6 +393,116 @@ public class GUIController : MonoBehaviour
 
         if (rumble && info.show)
             rsc.rumbleMng.Rumble(info.playerId, 0.25f, 0f, 1f);
+    }
+
+    private void ComboAdd(EventInfo eventInfo)
+    {
+        ComboEventInfo info = (ComboEventInfo)eventInfo;
+
+        if (info.playerId == 1)
+        {
+            player1ChainColorImg.color = rsc.coloredObjectsMng.GetColor(info.comboColor);
+            StopCoroutine(ShowP1ChainAdd());
+            StartCoroutine(ShowP1ChainAdd());
+
+            ChainIncrementController inc = rsc.poolMng.comboIncrementPool.GetObject();
+            if(inc != null)
+            {
+                inc.transform.SetParent(player1ComboIncrementSpawnPoint);
+                inc.transform.position = player1ComboIncrementSpawnPoint.position;
+                inc.Set(info.comboAdd);
+                chainsP1.Enqueue(inc);
+            }
+        }
+        else
+        {
+            player2ChainColorImg.color = rsc.coloredObjectsMng.GetColor(info.comboColor);
+            StopCoroutine(ShowP2ChainAdd());
+            StartCoroutine(ShowP2ChainAdd());
+
+            ChainIncrementController inc = rsc.poolMng.comboIncrementPool.GetObject();
+            if (inc != null)
+            {
+                inc.transform.SetParent(player2ComboIncrementSpawnPoint);
+                inc.transform.position = player2ComboIncrementSpawnPoint.position;
+                inc.Set(info.comboAdd);
+                chainsP2.Enqueue(inc);
+            }
+        }
+    }
+
+    private IEnumerator ShowChainIncrementsP1()
+    {
+        while (true)
+        {
+            if (chainsP1.Count == 0)
+                yield return null;
+            else
+            {
+                ChainIncrementController chain = chainsP1.Dequeue();
+                chain.Show();
+                yield return new WaitForSeconds(chainDelay);
+            }
+        }
+    }
+
+    private IEnumerator ShowChainIncrementsP2()
+    {
+        while (true)
+        {
+            if (chainsP2.Count == 0)
+                yield return null;
+            else
+            {
+                ChainIncrementController chain = chainsP2.Dequeue();
+                chain.Show();
+                yield return new WaitForSeconds(chainDelay);
+            }
+        }
+    }
+
+    private IEnumerator ShowP1ChainAdd()
+    {
+        player1ChainWhiteFill.SetActive(true);
+        yield return new WaitForSeconds(chainAddBGDuration);
+        player1ChainWhiteFill.SetActive(false);
+    }
+
+    private IEnumerator ShowP2ChainAdd()
+    {
+        player2ChainWhiteFill.SetActive(true);
+        yield return new WaitForSeconds(chainAddBGDuration);
+        player2ChainWhiteFill.SetActive(false);
+    }
+
+    private void ComboBreak(EventInfo eventInfo)
+    {
+        ComboEventInfo info = (ComboEventInfo)eventInfo;
+
+        if (info.playerId == 1)
+        {           
+            StopCoroutine(ShowP1ChainBreak());
+            StartCoroutine(ShowP1ChainBreak());
+        }
+        else
+        {
+            StopCoroutine(ShowP2ChainBreak());
+            StartCoroutine(ShowP2ChainBreak());
+        }
+    }
+
+    private IEnumerator ShowP1ChainBreak()
+    {
+        player1ChainPurpleFill.SetActive(true);
+        yield return new WaitForSeconds(chainBreakBGDuration);
+        player1ChainPurpleFill.SetActive(false);
+    }
+
+    private IEnumerator ShowP2ChainBreak()
+    {
+        player2ChainPurpleFill.SetActive(true);
+        yield return new WaitForSeconds(chainBreakBGDuration);
+        player2ChainPurpleFill.SetActive(false);
     }
 
     private void ColorPrewarn(EventInfo eventInfo)

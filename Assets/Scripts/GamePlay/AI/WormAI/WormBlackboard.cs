@@ -666,10 +666,16 @@ public class WormBlackboard : MonoBehaviour
             float distanceBetween = (current.position - next.position).magnitude;   //Distance between current current and next waypoints
 
             float effectiveDistance;
+            float totalOffset = 0f;
             if (applySinMovement)
-                effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
+            {
+                totalOffset = (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
+                effectiveDistance = totalDistance + totalOffset;
+            }
             else
+            {
                 effectiveDistance = totalDistance;
+            }
 
             //move each body segment through the virtual line
             for (int i = 0; i < bodySegmentsTrf.Length; ++i)
@@ -694,14 +700,20 @@ public class WormBlackboard : MonoBehaviour
 
                 junctionsTrf[i].position = current.position + direction;
                 junctionsTrf[i].rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
+                //junctionsTrf[i].Translate(0f, -totalOffset, 0f, Space.Self);
                 junctionsTrf[i].gameObject.SetActive(current.visible || next.visible);
 
                 //---- Body ----
                 totalDistance += segmentToJunctionDistance;
                 if (applySinMovement)
-                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
+                {
+                    totalOffset = (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
+                    effectiveDistance = totalDistance + totalOffset;
+                }
                 else
+                {
                     effectiveDistance = totalDistance;
+                }
 
                 //advance through waypoints until we find the proper distance
                 while (consolidatedDistance + distanceBetween < effectiveDistance)
@@ -722,6 +734,7 @@ public class WormBlackboard : MonoBehaviour
 
                 bodySegmentsTrf[i].position = current.position + direction;
                 bodySegmentsTrf[i].rotation = Quaternion.Slerp(current.rotation, next.rotation, remainingDistance / distanceBetween);
+                //bodySegmentsTrf[i].Translate(0f, -totalOffset, 0f, Space.Self);
                 bodySegmentControllers[i].SetVisible(current.visible || next.visible);
 
                 //if it was the final body part and there is no tail, release the oldest waypoints
@@ -735,9 +748,14 @@ public class WormBlackboard : MonoBehaviour
                 {
                     totalDistance += segmentToJunctionDistance;
                     if (applySinMovement)
-                        effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
+                    {
+                        totalOffset = (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
+                        effectiveDistance = totalDistance + totalOffset;
+                    }
                     else
+                    {
                         effectiveDistance = totalDistance;
+                    }
                 }
             }
 
@@ -747,9 +765,14 @@ public class WormBlackboard : MonoBehaviour
                 //---- Junction ----
                 totalDistance += segmentToJunctionDistance;
                 if (applySinMovement)
-                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
+                {
+                    totalOffset = (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
+                    effectiveDistance = totalDistance + totalOffset;
+                }
                 else
+                {
                     effectiveDistance = totalDistance;
+                }
 
                 //advance through waypoints until we find the proper distance
                 while (consolidatedDistance + distanceBetween < effectiveDistance)
@@ -775,9 +798,14 @@ public class WormBlackboard : MonoBehaviour
                 //---- Tail ----
                 totalDistance += tailToJunctionDistance;
                 if (applySinMovement)
-                    effectiveDistance = totalDistance + (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
+                {
+                    totalOffset = (Mathf.Sin((totalDistance * sinDistanceFactor) + sinTimeOffset) * WanderingSettingsPhase.sinAmplitude);
+                    effectiveDistance = totalDistance + totalOffset;
+                }
                 else
+                {
                     effectiveDistance = totalDistance;
+                }
 
                 //advance through waypoints until we find the proper distance
                 while (consolidatedDistance + distanceBetween < effectiveDistance)

@@ -109,6 +109,15 @@ public class CutSceneEventInfo : EventInfo
     public bool skippeable;
 }
 
+public class ComboEventInfo: EventInfo
+{
+    public static ComboEventInfo eventInfo = new ComboEventInfo();
+
+    public int playerId;
+    public ChromaColor comboColor;
+    public uint comboAdd;
+}
+
 public class ButtonHintEventInfo : EventInfo
 {
     public enum ButtonType
@@ -185,6 +194,9 @@ public class EventManager : MonoBehaviour {
 
         COLOR_WILL_CHANGE,
         COLOR_CHANGED,
+
+        COMBO_ADD,
+        COMBO_BREAK,
 
         SHOW_TUTORIAL,
         HIDE_TUTORIAL,

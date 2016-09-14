@@ -278,7 +278,7 @@ public class PlayerController : MonoBehaviour
     {
         lifeChargehargePS.Play();
 
-        if (extraLife && bb.currentLives < maxLives)
+        if (extraLife /*&& bb.currentLives < maxLives*/)
             bb.currentLives++;
 
         if (heal)
