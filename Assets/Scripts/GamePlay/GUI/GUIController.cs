@@ -69,6 +69,7 @@ public class GUIController : MonoBehaviour
 
     [Header("Other Items")]
     public GameObject infoArea;
+    public GameObject playersArea;
     public GameObject pauseGroup;
     public GameObject optionsGroup;
     public GameObject confirmationGroup;
@@ -538,16 +539,18 @@ public class GUIController : MonoBehaviour
     {
         CutSceneEventInfo info = (CutSceneEventInfo)eventInfo;
 
+        playersArea.SetActive(false);
         skipHint.SetActive(info.skippeable);
     }
 
     private void CameraEnded(EventInfo eventInfo)
     {
+        playersArea.SetActive(true);
         skipHint.SetActive(false);
     }
 
     private void ShowTutorial(EventInfo eventInfo)
-    {
+    {    
         TutorialEventInfo info = (TutorialEventInfo)eventInfo;
         TutorialManager.Type type = info.type;
 
@@ -557,6 +560,7 @@ public class GUIController : MonoBehaviour
         {
             helpImg.sprite = sprite;
             helpGO.SetActive(true);
+            infoArea.SetActive(false);
             rsc.eventMng.TriggerEvent(EventManager.EventType.TUTORIAL_OPENED, EventInfo.emptyInfo);
         }
     }
@@ -566,6 +570,7 @@ public class GUIController : MonoBehaviour
         if (helpGO.activeSelf)
         {
             helpGO.SetActive(false);
+            infoArea.SetActive(true);
             rsc.eventMng.TriggerEvent(EventManager.EventType.TUTORIAL_CLOSED, EventInfo.emptyInfo);
         }
     }
