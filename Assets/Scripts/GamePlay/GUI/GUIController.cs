@@ -21,6 +21,7 @@ public class GUIController : MonoBehaviour
     public GameObject player1ChainWhiteFill;
     public GameObject player1ChainPurpleFill;
     public RectTransform player1ComboIncrementSpawnPoint;
+    public Text player1ChainTxt;
 
     public GameObject player1ButtonHints;
     public GameObject player1RedButton;
@@ -40,6 +41,7 @@ public class GUIController : MonoBehaviour
     public GameObject player2ChainWhiteFill;
     public GameObject player2ChainPurpleFill;
     public RectTransform player2ComboIncrementSpawnPoint;
+    public Text player2ChainTxt;
 
     public GameObject player2ButtonHints;
     public GameObject player2RedButton;
@@ -172,7 +174,7 @@ public class GUIController : MonoBehaviour
         if (player1Controller.Active)
         {
             //Lives
-            player1Lives.text = "x" + player1Controller.Lives;
+            player1Lives.text = player1Controller.Lives.ToString();
 
             //Combo
             player1CurrentCombo.text = player1Stats.currentCombo.ToString();
@@ -187,7 +189,7 @@ public class GUIController : MonoBehaviour
         if (player2Controller.Active)
         {
             //Lives
-            player2Lives.text = "x" + player2Controller.Lives;
+            player2Lives.text = player2Controller.Lives.ToString();
 
             //Combo
             player2CurrentCombo.text = player2Stats.currentCombo.ToString();
@@ -494,16 +496,20 @@ public class GUIController : MonoBehaviour
 
     private IEnumerator ShowP1ChainBreak()
     {
+        player1ChainTxt.color = Color.black;
         player1ChainPurpleFill.SetActive(true);
         yield return new WaitForSeconds(chainBreakBGDuration);
         player1ChainPurpleFill.SetActive(false);
+        player1ChainTxt.color = Color.white;
     }
 
     private IEnumerator ShowP2ChainBreak()
     {
+        player1ChainTxt.color = Color.black;
         player2ChainPurpleFill.SetActive(true);
         yield return new WaitForSeconds(chainBreakBGDuration);
         player2ChainPurpleFill.SetActive(false);
+        player1ChainTxt.color = Color.white;
     }
 
     private void ColorPrewarn(EventInfo eventInfo)

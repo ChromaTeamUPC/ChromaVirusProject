@@ -192,12 +192,14 @@ public class StatsManager : MonoBehaviour
 
     private void LevelStarted(EventInfo eventInfo)
     {
+        updateComboTime = true;
         startTime = Time.time;
         totalTime = 0f;
     }
 
     private void LevelCleared(EventInfo eventInfo)
     {
+        updateComboTime = false;
         totalTime = Time.time - startTime;
     }
 
