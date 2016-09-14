@@ -18,7 +18,7 @@ public class SpiderEntryAIState : SpiderAIActionsBaseState {
 
         If none of above keep same state
         */
-        if (spiderBlackboard.barrelController != null && spiderBlackboard.barrelController.currentColor == spiderBlackboard.spider.color)
+        if (spiderBlackboard.capacitorController != null && spiderBlackboard.capacitorController.currentColor == spiderBlackboard.spider.color)
             return spiderBlackboard.attractedToBarrelState;
 
         if (spiderBlackboard.spider.CheckPlayersDistance())

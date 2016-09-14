@@ -27,10 +27,10 @@ public class MosquitoAttractedToBarrelAIState : MosquitoAIBaseState
 
         //direction = new Vector3(0, 0, 1);
         //direction = Quaternion.Euler(0, angle, 0) * direction;
-        direction = (mosquitoBlackboard.agent.transform.position - mosquitoBlackboard.barrelController.transform.position).normalized;
+        direction = (mosquitoBlackboard.agent.transform.position - mosquitoBlackboard.capacitorController.transform.position).normalized;
         direction *= distance;
 
-        mosquitoBlackboard.agent.destination = mosquitoBlackboard.barrelController.transform.position + direction;
+        mosquitoBlackboard.agent.destination = mosquitoBlackboard.capacitorController.transform.position + direction;
         mosquitoBlackboard.agent.Resume();
         mosquitoBlackboard.animator.SetBool("moving", true);
         subState = AttractedToBarrelSubState.GOING;
@@ -55,7 +55,7 @@ public class MosquitoAttractedToBarrelAIState : MosquitoAIBaseState
             Wait idle
         */
 
-        if (mosquitoBlackboard.barrelController == null)
+        if (mosquitoBlackboard.capacitorController == null)
             return mosquitoBlackboard.attackingPlayerState;
 
         switch (subState)
@@ -78,7 +78,7 @@ public class MosquitoAttractedToBarrelAIState : MosquitoAIBaseState
                 }
                 else
                 {
-                    direction = mosquitoBlackboard.barrelController.transform.position - mosquitoBlackboard.agent.transform.position;
+                    direction = mosquitoBlackboard.capacitorController.transform.position - mosquitoBlackboard.agent.transform.position;
                     Quaternion newRotation = Quaternion.LookRotation(direction);
                     newRotation = Quaternion.RotateTowards(mosquitoBlackboard.agent.transform.rotation, newRotation, angularSpeed * Time.deltaTime);
                     mosquitoBlackboard.entityGO.transform.rotation = newRotation;

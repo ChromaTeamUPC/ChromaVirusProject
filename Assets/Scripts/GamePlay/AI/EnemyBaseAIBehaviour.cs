@@ -215,7 +215,9 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     {
         if (other.tag == "BarrelAttractor")
         {
-            blackboard.barrelController = other.GetComponent<CapacitorAttractor>().controller;
+            CapacitorController capacitorController = other.GetComponent<CapacitorAttractor>().controller;
+            if(blackboard.capacitorController == null && capacitorController.currentColor == blackboard.entity.color)
+                blackboard.capacitorController = other.GetComponent<CapacitorAttractor>().controller;
         }
     }
 
@@ -223,7 +225,9 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     {
         if (other.tag == "BarrelAttractor")
         {
-            blackboard.barrelController = null;
+            CapacitorController capacitorController = other.GetComponent<CapacitorAttractor>().controller;
+            if(capacitorController == blackboard.capacitorController)
+                blackboard.capacitorController = null;
         }
     }
 

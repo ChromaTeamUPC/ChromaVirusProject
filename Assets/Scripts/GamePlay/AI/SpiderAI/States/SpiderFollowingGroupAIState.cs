@@ -25,7 +25,7 @@ public class SpiderFollowingGroupAIState : SpiderAIActionsBaseState
         3-Any other case:
             Loop action list
         */
-        if (spiderBlackboard.barrelController != null && spiderBlackboard.barrelController.currentColor == spiderBlackboard.spider.color)
+        if (spiderBlackboard.capacitorController != null && spiderBlackboard.capacitorController.currentColor == spiderBlackboard.spider.color)
             return spiderBlackboard.attractedToBarrelState;
 
         if(spiderBlackboard.groupInfo.leader == null || !spiderBlackboard.groupInfo.leader.gameObject.activeSelf)

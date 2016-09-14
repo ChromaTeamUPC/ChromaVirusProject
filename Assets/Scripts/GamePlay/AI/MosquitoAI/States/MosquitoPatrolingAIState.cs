@@ -41,7 +41,7 @@ public class MosquitoPatrolingAIState : MosquitoAIActionsBaseState
                 Else           
                     Keep patroling
         */
-        if (blackboard.barrelController != null && blackboard.barrelController.currentColor == blackboard.entity.color)
+        if (blackboard.capacitorController != null && blackboard.capacitorController.currentColor == blackboard.entity.color)
             return mosquitoBlackboard.attractedToBarrelState;
 
         elapsedTime += Time.deltaTime;

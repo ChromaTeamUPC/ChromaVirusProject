@@ -26,10 +26,10 @@ public class SpiderAttractedToBarrelAIState : SpiderAIBaseState
 
         //direction = new Vector3(0, 0, 1);
         //direction = Quaternion.Euler(0, angle, 0) * direction;
-        direction = (spiderBlackboard.agent.transform.position - spiderBlackboard.barrelController.transform.position).normalized;
+        direction = (spiderBlackboard.agent.transform.position - spiderBlackboard.capacitorController.transform.position).normalized;
         direction *= distance;
 
-        spiderBlackboard.agent.destination = spiderBlackboard.barrelController.transform.position + direction;
+        spiderBlackboard.agent.destination = spiderBlackboard.capacitorController.transform.position + direction;
         spiderBlackboard.agent.Resume();
         spiderBlackboard.animator.SetBool("moving", true);
         subState = AttractedToBarrelSubState.GOING;
@@ -49,7 +49,7 @@ public class SpiderAttractedToBarrelAIState : SpiderAIBaseState
             Wait idle
         */
 
-        if (spiderBlackboard.barrelController == null)
+        if (spiderBlackboard.capacitorController == null)
             return spiderBlackboard.attackingPlayerState;
 
         switch (subState)
@@ -72,7 +72,7 @@ public class SpiderAttractedToBarrelAIState : SpiderAIBaseState
                 }
                 else
                 { 
-                    direction = spiderBlackboard.barrelController.transform.position - spiderBlackboard.agent.transform.position;
+                    direction = spiderBlackboard.capacitorController.transform.position - spiderBlackboard.agent.transform.position;
                     Quaternion newRotation = Quaternion.LookRotation(direction);
                     newRotation = Quaternion.RotateTowards(spiderBlackboard.agent.transform.rotation, newRotation, angularSpeed * Time.deltaTime);
                     spiderBlackboard.entityGO.transform.rotation = newRotation;

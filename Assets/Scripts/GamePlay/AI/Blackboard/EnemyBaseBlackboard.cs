@@ -25,7 +25,7 @@ public class EnemyBaseBlackboard
     public PlayerController playerController;
     public bool lookAtPlayer;
 
-    public CapacitorController barrelController;
+    public CapacitorController capacitorController;
     public DeviceController deviceController;
 
     public Vector3 lastShotDirection;
@@ -61,7 +61,7 @@ public class EnemyBaseBlackboard
         SetPlayer(null);
         lookAtPlayer = true;
 
-        barrelController = null;
+        capacitorController = null;
         deviceController = null;
 
         lastShotDirection = Vector3.zero;

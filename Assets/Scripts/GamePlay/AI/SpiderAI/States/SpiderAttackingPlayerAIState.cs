@@ -21,7 +21,7 @@ public class SpiderAttackingPlayerAIState : SpiderAIActionsBaseState
 
     public override AIBaseState Update()
     {
-        if (spiderBlackboard.barrelController != null && spiderBlackboard.barrelController.currentColor == spiderBlackboard.spider.color)
+        if (spiderBlackboard.capacitorController != null && spiderBlackboard.capacitorController.currentColor == spiderBlackboard.spider.color)
             return spiderBlackboard.attractedToBarrelState;
 
         spiderBlackboard.checkInfectingChipDelay += Time.deltaTime;
