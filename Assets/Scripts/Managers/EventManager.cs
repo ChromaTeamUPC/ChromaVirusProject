@@ -140,6 +140,19 @@ public class ButtonHintEventInfo : EventInfo
     public ButtonType buttonType;
 }
 
+public class MeteorAttackEventInfo: EventInfo
+{
+    public static MeteorAttackEventInfo eventInfo = new MeteorAttackEventInfo();
+
+    public int meteorInitialBurst = 20;
+    public float meteorRainDuration = 5f;
+    public float meteorInterval = 0.2f;
+    public int meteorsPerInterval = 5;
+
+    public int meteorWaitTime = 0;
+    public float meteorWarningTime = 2f;
+}
+
 
 public class EventManager : MonoBehaviour {
 
@@ -187,6 +200,10 @@ public class EventManager : MonoBehaviour {
         WORM_SECTION_DESTROYED,
 
         WORM_ATTACK,
+
+        METEOR_RAIN_START,
+        METEOR_RAIN_STARTED,
+        METEOR_RAIN_ENDED,
 
         ZONE_REACHED,
         ZONE_WAVES_FINISHED,

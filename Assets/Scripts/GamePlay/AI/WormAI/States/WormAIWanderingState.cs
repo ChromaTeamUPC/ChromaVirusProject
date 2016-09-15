@@ -170,6 +170,12 @@ public class WormAIWanderingState : WormAIBaseState
                     }
                 }
 
+                //TODO: remove when tested
+                if (Input.GetKeyDown(KeyCode.M))
+                {
+                    return head.meteorAttackState;
+                }
+
                 if (bb.AboveAttackSettingsPhase.active && bb.aboveAttackCurrentExposureTime >= bb.AboveAttackSettingsPhase.exposureTimeNeeded &&
                     bb.aboveAttackCurrentCooldownTime >= bb.AboveAttackSettingsPhase.cooldownTime &&
                     head.CheckPlayerInSight(bb.AboveAttackSettingsPhase.attackMinHexagons, bb.AboveAttackSettingsPhase.attackMaxHexagons, true))
@@ -189,6 +195,7 @@ public class WormAIWanderingState : WormAIBaseState
                         }
                     }                   
                 }
+          
 
                 if (!head.agent.hasPath || (head.agent.hasPath && head.agent.remainingDistance <= 0.25))
                 {

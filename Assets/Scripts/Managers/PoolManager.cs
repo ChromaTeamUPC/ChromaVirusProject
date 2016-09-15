@@ -13,6 +13,7 @@ using System;
 [Serializable] public class MosquitoWeakShotPool : MonoBehaviourObjectPool<MosquitoWeakShotController> { }
 [Serializable] public class MosquitoMainAttackPool : MonoBehaviourObjectPool<MosquitoMainAttackControllerBase> { }
 [Serializable] public class EnemyExplosionPool : MonoBehaviourObjectPool<EnemyExplosionController> { }
+[Serializable] public class MeteorPool : MonoBehaviourObjectPool<MeteorController> { }
 [Serializable] public class ComboIncrementPool : MonoBehaviourObjectPool<ChainIncrementController> { }
 
 
@@ -58,6 +59,8 @@ public class PoolManager : MonoBehaviour
     public MuzzlePool turretMuzzleBluePool = new MuzzlePool();
     public MuzzlePool turretMuzzleYellowPool = new MuzzlePool();
 
+    public MeteorPool meteorPool = new MeteorPool();
+
     public ComboIncrementPool comboIncrementPool = new ComboIncrementPool();
 
     void Start()
@@ -98,6 +101,8 @@ public class PoolManager : MonoBehaviour
         turretMuzzleGreenPool.Init(gameObject, poolContainerPrefab);
         turretMuzzleBluePool.Init(gameObject, poolContainerPrefab);
         turretMuzzleYellowPool.Init(gameObject, poolContainerPrefab);
+
+        meteorPool.Init(gameObject, poolContainerPrefab);
 
         comboIncrementPool.Init(gameObject, poolContainerPrefab);
         //Debug.Log("Pool Manager created");

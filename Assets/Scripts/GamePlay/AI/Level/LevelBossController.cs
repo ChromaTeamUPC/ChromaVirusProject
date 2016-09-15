@@ -30,7 +30,7 @@ public class LevelBossController : MonoBehaviour
         //Stop color manager
         rsc.colorMng.Deactivate();
 
-        rsc.camerasMng.ChangeCamera(1);
+        rsc.camerasMng.ChangeCamera(1);    
 
         //Ensure all resources are in place (ie, enemies back to pool)
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);

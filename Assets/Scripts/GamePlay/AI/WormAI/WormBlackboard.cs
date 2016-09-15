@@ -69,13 +69,25 @@ public class WormBlackboard : MonoBehaviour
     [Serializable]
     public class MeteorAttackSettings
     {
+        [Header("Trigger Settings")]
         public bool active = true;
-        public float initialWaitTime = 2f;
-        public float enteringSpeed = 5f;
-        public int numberOfProjectiles = 3;
+
+        [Header("Worm Settings")]
+        public int numberOfThrownMeteors = 3;
+        public float speedOfThrownMeteors = 30f;
         public float timeShooting = 1f;
         public float jumpDuration = 1f;
         public float rotationSpeed = 360;
+
+        [Header("Meteor Rain Settings")]
+        public int meteorInitialBurst = 20;
+        public float meteorRainDuration = 5f;
+        public float meteorInterval = 0.2f;
+        public int meteorsPerInterval = 5;
+
+        [Header("Meteor Item Settings")]
+        public int meteorWaitTime = 0;
+        public float meteorWarningTime = 2f;
     }
 
     #region Settings

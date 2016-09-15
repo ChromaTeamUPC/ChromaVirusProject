@@ -33,6 +33,7 @@ public class HexagonController : MonoBehaviour
     public HexagonBelowAttackWallState belowAttackWallState;
     public HexagonAboveAttackState aboveAttackState;
     public HexagonAboveAttackAdjacentState aboveAttackAdjacentState;
+    public HexagonMeteorAttackState meteorAttackState;
 
     [Header("Flags")]
     public bool isStatic = false;
@@ -103,12 +104,23 @@ public class HexagonController : MonoBehaviour
     [HideInInspector]
     public bool isWormTouchingHexagon;
 
+    [Header("Meteor Settings")]
+    public Transform meteorInitialPosition;
+    [HideInInspector]
+    public float meteorWaitTime;
+    [HideInInspector]
+    public float meteorWarningTime; 
+    public float meteorImpactDuration = 3f;
+    public float meteorImpactMaxShakeHeight = 1f;
+    public float meteorImpactShakeInterval = 0.05f;
+
     [Header("Damage Settings")]
     public float enterExitDamage = 10f;
     public float belowAttackCentralDamage = 10f;
     public float belowAttackAdjacentDamage = 10f;
     public float aboveAttackCentralDamage = 10f;
     public float aboveAttackAdjacentDamage = 10f;
+    public float meteorAttackDamage = 10f;
     public float infectedCellDamage = 8f;
 
     [Header("Materials")]
@@ -133,6 +145,7 @@ public class HexagonController : MonoBehaviour
 
     [Header("Objects")]
     public GameObject column;
+    public GameObject columnColliders;
     public Renderer columnRend;
     public BlinkController columnBlinkController;
     private SphereCollider sphereCollider;
@@ -148,6 +161,9 @@ public class HexagonController : MonoBehaviour
     [HideInInspector]
     public Vector3 attackCenter;
 
+    
+
+    //Infection spawn
     [HideInInspector]
     public List<AIAction> entryActions;
     [HideInInspector]
@@ -174,6 +190,7 @@ public class HexagonController : MonoBehaviour
         belowAttackWallState = new HexagonBelowAttackWallState(this);
         aboveAttackState = new HexagonAboveAttackState(this);
         aboveAttackAdjacentState = new HexagonAboveAttackAdjacentState(this);
+        meteorAttackState = new HexagonMeteorAttackState(this);
 
         minDistanceToPlayer = minHexagonsToPlayer * DISTANCE_BETWEEN_HEXAGONS;
 
@@ -196,6 +213,9 @@ public class HexagonController : MonoBehaviour
             Transform turretTrf = transform.FindDeepChild("Turret");
             if (turretTrf != null)
                 turret = turretTrf.GetComponent<TurretAIBehaviour>();
+            else
+                columnColliders.transform.localPosition = new Vector3(0f, 10f, 0f);
+
 
             currentState = staticState;
             navMeshObstacles.SetActive(true);
@@ -315,7 +335,7 @@ public class HexagonController : MonoBehaviour
     public bool CanExitWorm()
     {
         return !isStatic && isWormSelectable && !isBorder;
-    }
+    }   
 
     private void ChangeStateIfNotNull(HexagonBaseState newState)
     {
@@ -658,6 +678,29 @@ public class HexagonController : MonoBehaviour
     }
     #endregion
 
+    #region Meteor Attack
+    public bool CanFallMeteor()
+    {
+        return !isStatic && !isBorder && currentState != meteorAttackState;
+    }
+
+    public bool IsFallingMeteor()
+    {
+        return currentState == meteorAttackState;
+    }
+
+    public void FallMeteor(float waitTime, float warningTime)
+    {
+        if (!CanFallMeteor()) return;
+
+        meteorWaitTime = waitTime;
+        meteorWarningTime = warningTime;
+
+        ChangeState(meteorAttackState);
+    }
+    #endregion
+
+
     #region Neighbour Control
     //Neighbour control
     private void CheckNeighbours()
@@ -725,5 +768,5 @@ public class HexagonController : MonoBehaviour
     {
         neighbours[(int)position] = neighbour;
     }
-    #endregion
+    #endregion   
 }
