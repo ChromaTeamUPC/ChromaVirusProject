@@ -67,6 +67,7 @@ public class EnemyDiedEventInfo : EventInfo
     public PlayerController killerPlayer;
     public bool killedSameColor;
     public bool specialKill;
+    public int phase; //Only relevant to boss
 }
 
 public class WormEventInfo : EventInfo

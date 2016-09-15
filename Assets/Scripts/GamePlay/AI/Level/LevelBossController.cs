@@ -57,13 +57,14 @@ public class LevelBossController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameFinished);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameFinished);
 
         rsc.camerasMng.SetEntryCameraLevelAnimation(-1);
 
         fadeScript.StartFadingToClear();
-        rsc.audioMng.FadeInMusic(AudioManager.MusicType.LEVEL_BOSS);
+        rsc.audioMng.FadeInMusic(AudioManager.MusicType.LEVEL_BOSS_01);
 
         StartCoroutine(InitWorm());
     }
@@ -75,6 +76,7 @@ public class LevelBossController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameFinished);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameFinished);
         }
@@ -149,6 +151,29 @@ public class LevelBossController : MonoBehaviour
         player.transform.position = playerSpawnPoint[Random.Range(0, playerSpawnPoint.Length)].position;
 
         player.transform.SetParent(null);
+    }
+
+    private void WormHeadDestroyed(EventInfo eventInfo)
+    {
+        EnemyDiedEventInfo info = (EnemyDiedEventInfo)eventInfo;
+
+        switch (info.phase)
+        {
+            case 0:
+                rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_02, 1f);
+                break;
+
+            case 1:
+                rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_03, 1f);
+                break;
+
+            case 2:
+                rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_04, 1f);
+                break;
+
+            default:
+                break;
+        }
     }
 
     private void GameFinished(EventInfo eventInfo)
