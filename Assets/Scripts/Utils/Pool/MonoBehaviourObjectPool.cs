@@ -53,6 +53,8 @@ public class MonoBehaviourObjectPool<T> where T : MonoBehaviour
 
     private void RecallObjects(EventInfo eventInfo)
     {
+        pool.Clear();
+
         foreach (T obj in auxList)
         {
             //if (obj.gameObject.activeSelf)
@@ -60,6 +62,8 @@ public class MonoBehaviourObjectPool<T> where T : MonoBehaviour
                 AddObject(obj);
             }
         }
+
+        //Debug.Log(objectsParent.name + " pool count: " + pool.Count);
     }
 
     public T GetObject()

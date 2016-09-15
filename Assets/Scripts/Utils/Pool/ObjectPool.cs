@@ -54,15 +54,19 @@ public class ObjectPool {
 
     private void RecallObjects(EventInfo eventInfo)
     {
+        pool.Clear();
+
         foreach(GameObject obj in auxList)
         {
-            if(obj.activeSelf)
+            //if(obj.activeSelf)
             {
                 AddObject(obj);
             }
         }
+
+        //Debug.Log(objectsParent.name + " pool count: " + pool.Count);
     }
-    
+
     public GameObject GetObject()
     {
         if (pool.Count > 0)
