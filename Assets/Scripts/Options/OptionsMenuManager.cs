@@ -29,6 +29,7 @@ public class OptionsMenuManager : MonoBehaviour
     public Slider vibrationSlider;
     public Slider motionBlurSlider;
     public Slider tutorialSlider;
+    public Slider colorBarSlider;
 
     private Image selectedSliderFill;
 
@@ -71,7 +72,12 @@ public class OptionsMenuManager : MonoBehaviour
         rsc.audioMng.audioMixer.GetFloat("FxVolume", out originalFxVolume);
         fxSlider.value = originalFxVolume;
 
-        if (rsc.rumbleMng.active)
+        vibrationSlider.value = (rsc.rumbleMng.active? 1 : 0);
+        motionBlurSlider.value = (rsc.gameMng.motionBlur ? 1 : 0);
+        tutorialSlider.value = (rsc.tutorialMng.active ? 1 : 0);
+        colorBarSlider.value = (rsc.gameMng.colorBar ? 1 : 0);
+
+        /*if (rsc.rumbleMng.active)
             vibrationSlider.value = 1;
         else
             vibrationSlider.value = 0;
@@ -85,11 +91,21 @@ public class OptionsMenuManager : MonoBehaviour
             tutorialSlider.value = 1;
         else
             tutorialSlider.value = 0;
+
+        if (rsc.gameMng.colorBar)
+            colorBarSlider.value = 1;
+        else
+            colorBarSlider.value = 0;*/
     }
 
     private void SaveValues()
     {
-        if (vibrationSlider.value == 1)
+        rsc.rumbleMng.active = (vibrationSlider.value == 1 ? true : false);
+        rsc.gameMng.motionBlur = (motionBlurSlider.value == 1 ? true : false);
+        rsc.tutorialMng.active = (tutorialSlider.value == 1 ? true : false);
+        rsc.gameMng.colorBar = (colorBarSlider.value == 1 ? true : false);
+
+        /*if (vibrationSlider.value == 1)
             rsc.rumbleMng.active = true;
         else
             rsc.rumbleMng.active = false;
@@ -103,6 +119,11 @@ public class OptionsMenuManager : MonoBehaviour
             rsc.tutorialMng.active = true;
         else
             rsc.tutorialMng.active = false;
+
+        if (colorBarSlider.value == 1)
+            rsc.gameMng.colorBar = true;
+        else
+            rsc.gameMng.colorBar = false;*/
     }
 
 
@@ -204,6 +225,7 @@ public class OptionsMenuManager : MonoBehaviour
         vibrationSlider.colors = cb;
         motionBlurSlider.colors = cb;
         tutorialSlider.colors = cb;
+        colorBarSlider.colors = cb;
 
         if(selectedSliderFill != null)
             selectedSliderFill.color = currentColor;

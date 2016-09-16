@@ -153,7 +153,20 @@ public class PlayerUIController : MonoBehaviour
 
     private void LevelStarted(EventInfo eventInfo)
     {
-        nextColorSliderGO.SetActive(true);
+        nextColorSliderGO.SetActive(rsc.gameMng.colorBar);
+        if(rsc.gameMng.colorBar)
+        {
+            //Set initial values
+            currentColor = rsc.coloredObjectsMng.GetColor(rsc.colorMng.CurrentColor);
+            nextColorPrewarnTime = rsc.colorMng.prewarningSeconds;
+            nextColorElapsedTime = rsc.colorMng.ElapsedTime;
+
+            float factor = nextColorElapsedTime / nextColorPrewarnTime;
+
+            nextColorSlider.value = Mathf.Lerp(colorBarInitialValue, colorBarFinalValue, factor);
+            nextColorBackground.color = Color.Lerp(currentColor, Color.black, factor * 2);
+            nextColorForeground.color = rsc.coloredObjectsMng.GetColor(rsc.colorMng.NextColor);
+        }
     }
 
     private void LevelCleared(EventInfo eventInfo)

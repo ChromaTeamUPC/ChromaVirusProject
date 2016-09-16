@@ -6,6 +6,7 @@ using InControl;
 public class GameManager : MonoBehaviour {
 
     public bool motionBlur = true;
+    public bool colorBar = false;
 
     public enum Level
     {

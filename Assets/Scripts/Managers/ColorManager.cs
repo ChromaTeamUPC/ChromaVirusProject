@@ -66,6 +66,8 @@ public class ColorManager : MonoBehaviour
     private bool active;
 
     public ChromaColor CurrentColor { get { return currentColor; } }
+    public ChromaColor NextColor { get { return newColor; } }
+    public float ElapsedTime { get { return elapsedTime; } }
 
     void Awake()
     {

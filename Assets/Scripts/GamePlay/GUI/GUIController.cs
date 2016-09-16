@@ -539,6 +539,17 @@ public class GUIController : MonoBehaviour
     private void LevelStarted(EventInfo eventInfo)
     {
         infectionAndNextColorZone.SetActive(true);
+
+        //Set initial values
+        currentColor = rsc.coloredObjectsMng.GetColor(rsc.colorMng.CurrentColor);
+        nextColorPrewarnTime = rsc.colorMng.prewarningSeconds;
+        nextColorElapsedTime = rsc.colorMng.ElapsedTime;
+
+        float factor = nextColorElapsedTime / nextColorPrewarnTime;
+
+        nextColorSlider.value = Mathf.Lerp(0f, 1f, factor);
+        nextColorBackground.color = Color.Lerp(currentColor, Color.black, factor * 2);
+        nextColorForeground.color = rsc.coloredObjectsMng.GetColor(rsc.colorMng.NextColor);
     }
 
     private void StartCutScene(EventInfo eventInfo)
