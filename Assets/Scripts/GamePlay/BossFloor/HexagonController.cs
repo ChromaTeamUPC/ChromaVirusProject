@@ -90,6 +90,7 @@ public class HexagonController : MonoBehaviour
     public bool shouldBeWall = false;
 
     [Header("Infection Settings")]
+    public float headDistanceToBeInfected = 3f;
     public float infectionAnimationInterval = 0.1f;
     public bool infectionRandomAnimation = true;
     public bool infectionAnimationRotation = true;
@@ -401,7 +402,7 @@ public class HexagonController : MonoBehaviour
         }
         else if (other.tag == "WormHead")
         {
-            ChangeStateIfNotNull(currentState.WormHeadEntered());
+            //ChangeStateIfNotNull(currentState.WormHeadEntered());
         }
         else if (other.tag == "WormTail")
         {
@@ -429,6 +430,8 @@ public class HexagonController : MonoBehaviour
         else if (other.tag == "WormHead" || other.tag == "WormBody" || other.tag == "WormTail")
         {
             isWormTouchingHexagon = true;
+            if(other.tag == "WormHead")
+                ChangeStateIfNotNull(currentState.WormHeadStay(other.transform));
         }
 
     }

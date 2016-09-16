@@ -54,10 +54,15 @@ public class HexagonIdleState : HexagonBaseState
         return null;
     }
 
-    public override HexagonBaseState WormHeadEntered()
+    public override HexagonBaseState WormHeadStay(Transform headTrf)
     {
-        hex.SetAuxTimer(hex.infectionTimeAfterContactEnds);
-        return hex.infectedState;
+        if(Vector3.Distance(hex.transform.position, headTrf.position) <= hex.headDistanceToBeInfected)
+        {
+            hex.SetAuxTimer(hex.infectionTimeAfterContactEnds);
+            return hex.infectedState;
+        }
+
+        return null;
     }
 
     public override HexagonBaseState ProbeTouched()

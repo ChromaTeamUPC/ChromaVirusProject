@@ -18,6 +18,7 @@ public class HexagonBaseState
     public virtual HexagonBaseState ProbeTouched() { return null; }
 
     public virtual HexagonBaseState WormHeadEntered() { return null; }
+    public virtual HexagonBaseState WormHeadStay(Transform headTrf) { return null; }
     public virtual HexagonBaseState WormHeadExited() { return null; }
     public virtual HexagonBaseState WormTailEntered() { return null; }
     public virtual HexagonBaseState WormTailExited() { return null; }
