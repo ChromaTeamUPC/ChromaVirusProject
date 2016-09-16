@@ -531,10 +531,6 @@ public class PlayerController : MonoBehaviour
             bb.hexagons.Add(hex);
             //Debug.Log("Hexagon added: " + bb.hexagons.Count);
         }
-        else if (other.tag == "Border")
-        {
-            bb.isInBorder = true;
-        }
         /*else if (other.tag == "Enemy")
         {
             EnemyBaseAIBehaviour enemy = other.GetComponent<EnemyBaseAIBehaviour>();
@@ -565,10 +561,6 @@ public class PlayerController : MonoBehaviour
             HexagonController hex = other.GetComponent<HexagonController>();
             bb.hexagons.Remove(hex);
             //Debug.Log("Hexagon removed: " + bb.hexagons.Count);
-        }
-        else if (other.tag == "Border")
-        {
-            bb.isInBorder = false;
         }
     }
 

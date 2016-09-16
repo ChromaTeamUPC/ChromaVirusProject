@@ -28,10 +28,6 @@ public class PlayerIdleState : PlayerBaseState {
         {
             return bb.fallingState;
         }
-        else if(bb.isInBorder)
-        {
-            return bb.swingingState;
-        }
         else if (CanDoSpecial())
         {
             return bb.specialState;

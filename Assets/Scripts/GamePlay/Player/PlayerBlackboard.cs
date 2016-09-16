@@ -26,7 +26,6 @@ public class PlayerBlackboard
     public PlayerDashingState dashingState;
     public PlayerSpeedBumpState speedBumpState;
     public PlayerSpecialState specialState;
-    public PlayerSwingingState swingingState;
     public PlayerReceivingDamageState receivingDamageState;
     public PlayerPushedState pushedState;
     public PlayerFallingState fallingState;
@@ -69,7 +68,6 @@ public class PlayerBlackboard
     public bool animationTrigger;
     public bool animationEnded;
     public bool isGrounded;
-    public bool isInBorder;
 
     //Health variables
     public int currentLives;
@@ -130,7 +128,6 @@ public class PlayerBlackboard
         dashingState = new PlayerDashingState();
         speedBumpState = new PlayerSpeedBumpState();
         specialState = new PlayerSpecialState();
-        swingingState = new PlayerSwingingState();
         receivingDamageState = new PlayerReceivingDamageState();
         pushedState = new PlayerPushedState();
         fallingState = new PlayerFallingState();
@@ -145,7 +142,6 @@ public class PlayerBlackboard
         dashingState.Init(this);
         speedBumpState.Init(this);
         specialState.Init(this);
-        swingingState.Init(this);
         receivingDamageState.Init(this);
         pushedState.Init(this);
         fallingState.Init(this);
@@ -193,7 +189,6 @@ public class PlayerBlackboard
     {
         animationEnded = false;
         isGrounded = true;
-        isInBorder = false;
 
         currentHealth = player.maxHealth;
         currentEnergy = 0;
