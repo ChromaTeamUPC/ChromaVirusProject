@@ -292,6 +292,11 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    public bool AreEnemies()
+    {
+        return bb.activeEnemies > 0 || bb.activeTurrets > 0;
+    }
+
     private void DeviceActivated(EventInfo eventInfo)
     {
         DeviceEventInfo info = (DeviceEventInfo)eventInfo;

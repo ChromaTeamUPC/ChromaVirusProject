@@ -173,7 +173,7 @@ public class StatsManager : MonoBehaviour
 
     void Update()
     {
-        if (updateComboTime)
+        if (updateComboTime && rsc.enemyMng.AreEnemies())
         {
             p1Stats.UpdateComboTime();
             p2Stats.UpdateComboTime();
