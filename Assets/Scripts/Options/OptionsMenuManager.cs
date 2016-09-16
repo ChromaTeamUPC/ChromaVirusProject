@@ -14,6 +14,9 @@ public class OptionsMenuManager : MonoBehaviour
     }
     private CreditsState currentState;
 
+    public float fadeInTime = 0.25f;
+    public float fadeOutTime = 0.25f;
+
     public Color[] colors;
 
     public float changeEverySeconds = 3f;
@@ -33,6 +36,7 @@ public class OptionsMenuManager : MonoBehaviour
 
     private Image selectedSliderFill;
 
+    private AsyncOperation loadingScene; 
     public FadeSceneScript fadeScript;
 
     private float originalMusicVolume;
@@ -46,8 +50,8 @@ public class OptionsMenuManager : MonoBehaviour
         buttonPressed = false;
         changeTime = 0f;
         currentState = CreditsState.FADING_IN;
-        fadeScript.StartFadingToClear();
-        rsc.audioMng.FadeInMusic(AudioManager.MusicType.CREDITS, 1.5f);
+        fadeScript.StartFadingToClear(fadeInTime);
+        rsc.audioMng.FadeInMusic(AudioManager.MusicType.CREDITS, fadeInTime);
 
         LoadValues();
 
@@ -76,26 +80,6 @@ public class OptionsMenuManager : MonoBehaviour
         motionBlurSlider.value = (rsc.gameMng.motionBlur ? 1 : 0);
         tutorialSlider.value = (rsc.tutorialMng.active ? 1 : 0);
         colorBarSlider.value = (rsc.gameMng.colorBar ? 1 : 0);
-
-        /*if (rsc.rumbleMng.active)
-            vibrationSlider.value = 1;
-        else
-            vibrationSlider.value = 0;
-
-        if (rsc.gameMng.motionBlur)
-            motionBlurSlider.value = 1;
-        else
-            motionBlurSlider.value = 0;
-
-        if (rsc.tutorialMng.active)
-            tutorialSlider.value = 1;
-        else
-            tutorialSlider.value = 0;
-
-        if (rsc.gameMng.colorBar)
-            colorBarSlider.value = 1;
-        else
-            colorBarSlider.value = 0;*/
     }
 
     private void SaveValues()
@@ -104,26 +88,6 @@ public class OptionsMenuManager : MonoBehaviour
         rsc.gameMng.motionBlur = (motionBlurSlider.value == 1 ? true : false);
         rsc.tutorialMng.active = (tutorialSlider.value == 1 ? true : false);
         rsc.gameMng.colorBar = (colorBarSlider.value == 1 ? true : false);
-
-        /*if (vibrationSlider.value == 1)
-            rsc.rumbleMng.active = true;
-        else
-            rsc.rumbleMng.active = false;
-
-        if (motionBlurSlider.value == 1)
-            rsc.gameMng.motionBlur = true;
-        else
-            rsc.gameMng.motionBlur = false;
-
-        if (tutorialSlider.value == 1)
-            rsc.tutorialMng.active = true;
-        else
-            rsc.tutorialMng.active = false;
-
-        if (colorBarSlider.value == 1)
-            rsc.gameMng.colorBar = true;
-        else
-            rsc.gameMng.colorBar = false;*/
     }
 
 
@@ -172,7 +136,8 @@ public class OptionsMenuManager : MonoBehaviour
             case CreditsState.FADING_OUT:
                 if (!fadeScript.FadingToColor)
                 {
-                    SceneManager.LoadScene("MainMenu");
+                    loadingScene.allowSceneActivation = true;
+                    //SceneManager.LoadScene("MainMenu");
                 }
                 break;
         }
@@ -191,9 +156,12 @@ public class OptionsMenuManager : MonoBehaviour
 
             if (currentState != CreditsState.FADING_OUT)
             {
-                fadeScript.StartFadingToColor(Color.black, 2f);
+                loadingScene = SceneManager.LoadSceneAsync("MainMenu");
+                loadingScene.allowSceneActivation = false;
+
+                fadeScript.StartFadingToColor(fadeOutTime);
                 currentState = CreditsState.FADING_OUT;
-                rsc.audioMng.FadeOutMusic(2f);
+                rsc.audioMng.FadeOutMusic(fadeOutTime);
             }
         }
     }

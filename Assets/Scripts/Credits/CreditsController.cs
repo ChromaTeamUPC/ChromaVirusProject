@@ -17,6 +17,11 @@ public class CreditsController : MonoBehaviour
     }
     private CreditsState currentState;
 
+    public float fadeInTime = 0.25f;
+    public float forcedFadeOutTime = 0.25f;
+    public float endOfCreditsFadeOutTime = 4f;
+
+    private AsyncOperation loadingScene;
     public FadeSceneScript fadeScript;
 
     public Transform credits;
@@ -33,8 +38,8 @@ public class CreditsController : MonoBehaviour
     {
         buttonPressed = false;
         currentState = CreditsState.FADING_IN;
-        fadeScript.StartFadingToClear();
-        rsc.audioMng.FadeInMusic(AudioManager.MusicType.CREDITS, 1.5f);
+        fadeScript.StartFadingToClear(fadeInTime);
+        rsc.audioMng.FadeInMusic(AudioManager.MusicType.CREDITS, fadeInTime);
 	}
 	
 	// Update is called once per frame
@@ -76,8 +81,11 @@ public class CreditsController : MonoBehaviour
                 waitingTime += Time.deltaTime;
                 if (waitingTime > finalDelay)
                 {
-                    fadeScript.StartFadingToColor(Color.black, 4f);
-                    rsc.audioMng.FadeOutMusic(4f);
+                    loadingScene = SceneManager.LoadSceneAsync("MainMenu");
+                    loadingScene.allowSceneActivation = false;
+
+                    fadeScript.StartFadingToColor(endOfCreditsFadeOutTime);
+                    rsc.audioMng.FadeOutMusic(endOfCreditsFadeOutTime);
                     currentState = CreditsState.FADING_OUT;
                 }
                 break;
@@ -88,7 +96,8 @@ public class CreditsController : MonoBehaviour
 
                 if (!fadeScript.FadingToColor)
                 {
-                    SceneManager.LoadScene("MainMenu");
+                    loadingScene.allowSceneActivation = true;
+                    //SceneManager.LoadScene("MainMenu");
                 }
                 break;
         }
@@ -100,9 +109,12 @@ public class CreditsController : MonoBehaviour
 
             if (currentState != CreditsState.FADING_OUT)
             {
-                fadeScript.StartFadingToColor(Color.black, 2f);
+                loadingScene = SceneManager.LoadSceneAsync("MainMenu");
+                loadingScene.allowSceneActivation = false;
+
+                fadeScript.StartFadingToColor(forcedFadeOutTime);
                 currentState = CreditsState.FADING_OUT;
-                rsc.audioMng.FadeOutMusic(2f);
+                rsc.audioMng.FadeOutMusic(forcedFadeOutTime);
             }
         }
 

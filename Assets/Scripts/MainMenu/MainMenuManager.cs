@@ -19,6 +19,11 @@ public class MainMenuManager : MonoBehaviour {
     }
     private MainMenuState currentState;
 
+    public float fadeInTime = 0.25f;
+    public float fadeOutToPlayTime = 2f;
+    public float fadeOutToOptionsTime = 0.25f;
+    public float fadeOutToCreditsTime = 0.25f;
+
     public FadeSceneScript fadeScript;
 
     public Button playBtn;
@@ -33,14 +38,15 @@ public class MainMenuManager : MonoBehaviour {
     public GameObject help;
     public Image helpImg;
     public Text helpPageNumberTxt;
-    public Text levelTxt;
+    public Text level01Txt;
+    public Text levelBossTxt;
+    public Color unselectedLevelColor;
     public GameObject backArrow;
     public GameObject forwardArrow;
     public GameObject playerSelection;
     private AsyncOperation loadResources;
     private bool loadingResources;
     private AsyncOperation loadLevel;
-
 
     private int tutorialCurrentIndex;
     private int tutorialTotalItems;
@@ -68,22 +74,47 @@ public class MainMenuManager : MonoBehaviour {
         tutorialTotalItems = rsc.tutorialMng.GetTotalImages();
         DisableMainButtons();      
         currentState = MainMenuState.FADING_IN;
-        fadeScript.StartFadingToClear(Color.black, 1f);
-        rsc.audioMng.FadeInMusic(AudioManager.MusicType.MAIN_MENU);
+        fadeScript.StartFadingToClear(fadeInTime);
+        rsc.audioMng.FadeInMusic(AudioManager.MusicType.MAIN_MENU, fadeInTime);
+
+        switch (rsc.gameMng.startLevel)
+        {
+            case GameManager.Level.LEVEL_01:
+                level01Txt.color = Color.white;
+                levelBossTxt.color = unselectedLevelColor;
+                break;
+
+            case GameManager.Level.LEVEL_BOSS:
+                level01Txt.color = unselectedLevelColor;
+                levelBossTxt.color = Color.white;
+                break;
+            default:
+                break;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if ((InputManager.Devices.Count >= 1 && InputManager.Devices[0].Action4.WasPressed)
+                    || (InputManager.Devices.Count >= 2 && InputManager.Devices[1].Action4.WasPressed))
         {
-            rsc.gameMng.startLevel = GameManager.Level.LEVEL_01;
-            levelTxt.text = "LEVEL 01";
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            rsc.gameMng.startLevel = GameManager.Level.LEVEL_BOSS;
-            levelTxt.text = "LEVEL BOSS";
+            switch (rsc.gameMng.startLevel)
+            {
+                case GameManager.Level.LEVEL_01:
+                    rsc.gameMng.startLevel = GameManager.Level.LEVEL_BOSS;
+                    level01Txt.color = unselectedLevelColor;
+                    levelBossTxt.color = Color.white;                   
+                    break;
+
+                case GameManager.Level.LEVEL_BOSS:
+                    rsc.gameMng.startLevel = GameManager.Level.LEVEL_01;
+                    level01Txt.color = Color.white;
+                    levelBossTxt.color = unselectedLevelColor;
+                    break;
+                default:
+                    break;
+            }
         }
 
         switch (currentState)
@@ -141,14 +172,16 @@ public class MainMenuManager : MonoBehaviour {
             case MainMenuState.FADING_TO_CREDITS:
                 if (!fadeScript.FadingToColor)
                 {
-                    SceneManager.LoadScene("Credits");
+                    loadLevel.allowSceneActivation = true;
+                    //SceneManager.LoadScene("Credits");
                 }
                 break;
 
             case MainMenuState.FADING_TO_OPTIONS:
                 if (!fadeScript.FadingToColor)
                 {
-                    SceneManager.LoadScene("Options");
+                    loadLevel.allowSceneActivation = true;
+                    //SceneManager.LoadScene("Options");
                 }
                 break;
         }
@@ -166,10 +199,10 @@ public class MainMenuManager : MonoBehaviour {
         }
     }
 
-    private void FadeOut()
+    private void FadeOut(float fadeCurtainTime = 2f, float fadeMusicTime = 1.5f)
     {
-        fadeScript.StartFadingToColor(2f);
-        rsc.audioMng.FadeOutMusic(1.5f);
+        fadeScript.StartFadingToColor(fadeCurtainTime);
+        rsc.audioMng.FadeOutMusic(fadeMusicTime);
     }
 
     private void EnableMainButtons()
@@ -231,7 +264,7 @@ public class MainMenuManager : MonoBehaviour {
             {
                 playersNumber = 1;
                 currentState = MainMenuState.FADING_TO_GAME;
-                FadeOut();
+                FadeOut(fadeOutToPlayTime, fadeOutToPlayTime);
             }          
         }
     }
@@ -241,7 +274,7 @@ public class MainMenuManager : MonoBehaviour {
         playersNumber = 1;
         DisablePlayerSelectionButtons();
         currentState = MainMenuState.FADING_TO_GAME;
-        FadeOut();
+        FadeOut(fadeOutToPlayTime, fadeOutToPlayTime);
     }
 
     public void OnClick2Players()
@@ -249,7 +282,7 @@ public class MainMenuManager : MonoBehaviour {
         playersNumber = 2;
         DisablePlayerSelectionButtons();
         currentState = MainMenuState.FADING_TO_GAME;
-        FadeOut();
+        FadeOut(fadeOutToPlayTime, fadeOutToPlayTime);
     }
 
     public void OnClickHelp()
@@ -266,14 +299,18 @@ public class MainMenuManager : MonoBehaviour {
     {
         DisableMainButtons();
         currentState = MainMenuState.FADING_TO_CREDITS;
-        FadeOut();
+        loadLevel = SceneManager.LoadSceneAsync("Credits");
+        loadLevel.allowSceneActivation = false;
+        FadeOut(fadeOutToCreditsTime, fadeOutToCreditsTime);
     }
 
     public void OnClickOptions()
     {
         DisableMainButtons();
         currentState = MainMenuState.FADING_TO_OPTIONS;
-        FadeOut();
+        loadLevel = SceneManager.LoadSceneAsync("Options");
+        loadLevel.allowSceneActivation = false;
+        FadeOut(fadeOutToOptionsTime, fadeOutToOptionsTime);
     }
 
     public void OnClickExit()
