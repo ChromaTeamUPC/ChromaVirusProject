@@ -24,8 +24,8 @@ public class HexagonMeteorAttackState : HexagonBaseState
         base.OnStateEnter();
 
         hex.planeBlinkController.StopPreviousBlinkings();
-        hex.plane.transform.localScale = new Vector3(0.1f, 1f, 0.1f);
         hex.SetPlaneMaterial(hex.planeSecondaryWarningMat);
+        hex.plane.transform.localScale = new Vector3(0.1f, 1f, 0.1f);
         //hex.planeBlinkController.BlinkTransparentNoStop(hex.warningBlinkInterval, hex.warningBlinkInterval);
 
         subState = SubState.WAITING;
@@ -89,7 +89,6 @@ public class HexagonMeteorAttackState : HexagonBaseState
 
                     float newScale = Mathf.Lerp(0.1f, 1f, t);
                     hex.plane.transform.localScale = new Vector3(newScale, 1f, newScale);
-
                     meteor.transform.position = Vector3.Lerp(hex.meteorInitialPosition.position, hex.transform.position, t);
 
                     elapsedTime += Time.deltaTime;

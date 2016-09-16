@@ -93,7 +93,7 @@ public class BossFloorController : MonoBehaviour
         //TODO: remove when tested
         if (Input.GetKeyDown(KeyCode.N))
         {
-            hex.FallMeteor(0f, 3f);
+            hex.FallMeteor(0f, 2f);
         }        
 
         if(hexagonsToCheck.Count > 0)
