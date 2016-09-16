@@ -9,12 +9,15 @@ public class LifeChipController : MonoBehaviour
     private Animator anim;
     public ParticleSystem fx;
     private SphereCollider sphereCollider;
+    private PlayerController player;
+    private float attractionSpeed = 6;
 
     void Awake()
     {
         sphereCollider = GetComponent<SphereCollider>();
         anim = GetComponent<Animator>();
         animationEnded = false;
+        player = null;
     }
 
     void OnTriggerEnter(Collider other)
@@ -23,7 +26,7 @@ public class LifeChipController : MonoBehaviour
         {
             sphereCollider.enabled = false;
 
-            PlayerController player = other.GetComponent<PlayerController>();
+            player = other.GetComponent<PlayerController>();
             player.RechargeLife(extraLife, heal);
 
             anim.SetTrigger("Fade");
@@ -33,6 +36,11 @@ public class LifeChipController : MonoBehaviour
 
     void Update()
     {
+        if(player != null)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, player.transform.position, Time.deltaTime * attractionSpeed);
+        }
+
         if(animationEnded && fx.isStopped)
         {
             Destroy(gameObject);

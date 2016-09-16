@@ -7,7 +7,8 @@ public class EnergyVoxelController : MonoBehaviour {
         ENTRY,
         IDLE,
         BLINKING,
-        ATTRACTED
+        ATTRACTED,
+        WAIT_PICK_UP_FX
     }
     public bool big = false;
     public float duration = 10;
@@ -19,6 +20,7 @@ public class EnergyVoxelController : MonoBehaviour {
     public float energyCharge = 0.5f;
 
     public ParticleSystem lifeTimeParticles;
+    public ParticleSystem pickUpParticles;
 
     private  State state;
 
@@ -50,6 +52,7 @@ public class EnergyVoxelController : MonoBehaviour {
     {
         blinkController.StopPreviousBlinkings();
         lifeTimeParticles.Stop();
+        pickUpParticles.Stop();
     }
 	
 	// Update is called once per frame
@@ -109,10 +112,10 @@ public class EnergyVoxelController : MonoBehaviour {
                     else
                     {
                         target.RechargeEnergy(energyCharge);
-                        if (big)
-                            rsc.poolMng.bigEnergyVoxelPool.AddObject(this);
-                        else
-                            rsc.poolMng.energyVoxelPool.AddObject(this);
+                        elapsedTime = 0f;
+                        lifeTimeParticles.Stop();
+                        pickUpParticles.Play();
+                        state = State.WAIT_PICK_UP_FX;
                     }
                 }
                 else
@@ -122,6 +125,21 @@ public class EnergyVoxelController : MonoBehaviour {
                     state = State.IDLE;
                 }
                 break;
+
+            case State.WAIT_PICK_UP_FX:
+                if(elapsedTime >= pickUpParticles.duration)
+                {
+                    if (big)
+                        rsc.poolMng.bigEnergyVoxelPool.AddObject(this);
+                    else
+                        rsc.poolMng.energyVoxelPool.AddObject(this);
+                }
+                else
+                {
+                    elapsedTime += Time.deltaTime;
+                }
+                break;
+
             default:
                 break;
         }

@@ -88,6 +88,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private ParticleSystem lifeChargehargePS;
     [SerializeField]
+    private ParticleSystem energyFullPS;
+    [SerializeField]
     private ParticleSystem energyChargehargePS;
     [SerializeField]
     private ParticleSystem noShootPS;
@@ -287,7 +289,7 @@ public class PlayerController : MonoBehaviour
 
     public void RechargeEnergy(float energy)
     {
-        if (bb.currentEnergy == bb.player.maxEnergy) return;
+        if (bb.currentEnergy == maxEnergy) return;
 
         if(!bb.specialAttackTutorialTriggered)
         {
@@ -297,8 +299,10 @@ public class PlayerController : MonoBehaviour
         }
 
         bb.currentEnergy += energy;
-        if (bb.currentEnergy > bb.player.maxEnergy)
-            bb.currentEnergy = bb.player.maxEnergy;
+        if (bb.currentEnergy >= maxEnergy)
+            bb.currentEnergy = maxEnergy;
+
+        CheckEnergyFullPS();
     }
 
     public void SpendEnergy(float energy)
@@ -306,6 +310,8 @@ public class PlayerController : MonoBehaviour
         if (bb.currentEnergy == 0) return;
 
         bb.currentEnergy -= energy;
+        CheckEnergyFullPS();
+
         if (bb.currentEnergy < 0)
             bb.currentEnergy = 0;
     }
@@ -644,12 +650,14 @@ public class PlayerController : MonoBehaviour
         DeactivateShield();
         trail.enabled = false;
         ui.SetActive(false);
+        energyFullPS.Stop();
         lifeChargehargePS.Stop();
         electricPS.Play();
     }
 
     public void ExitedUSB()
     {
+        CheckEnergyFullPS();
         electricPS.Stop();
         trail.enabled = true;
         ui.SetActive(true);
@@ -675,6 +683,14 @@ public class PlayerController : MonoBehaviour
     public void DisableUI()
     {
         ui.SetActive(false);
+    }
+
+    public void CheckEnergyFullPS()
+    {
+        if (bb.currentEnergy == maxEnergy)
+            energyFullPS.Play();
+        else
+            energyFullPS.Stop();
     }
 
     public void StartSpecialEnergyCharging()

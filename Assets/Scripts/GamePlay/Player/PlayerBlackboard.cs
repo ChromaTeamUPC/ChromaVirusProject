@@ -197,6 +197,7 @@ public class PlayerBlackboard
 
         currentHealth = player.maxHealth;
         currentEnergy = 0;
+        player.CheckEnergyFullPS();
         isInvulnerable = false;
         contactFlag = false;
 

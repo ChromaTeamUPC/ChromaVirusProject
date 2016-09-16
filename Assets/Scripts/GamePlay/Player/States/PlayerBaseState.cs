@@ -94,7 +94,7 @@ public class PlayerBaseState
         //if (Input.GetButtonDown(blackboard.dash))
         if (bb.controller.LeftTrigger.WasPressed)
         {
-            bb.speedBumpPressed = true;
+            //bb.speedBumpPressed = true;
             bb.KeyPressed = true;
         }
 
