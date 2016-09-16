@@ -23,6 +23,11 @@ public class HexagonMeteorAttackState : HexagonBaseState
     {
         base.OnStateEnter();
 
+        hex.planeBlinkController.StopPreviousBlinkings();
+        hex.plane.transform.localScale = new Vector3(0.1f, 1f, 0.1f);
+        hex.SetPlaneMaterial(hex.planeSecondaryWarningMat);
+        //hex.planeBlinkController.BlinkTransparentNoStop(hex.warningBlinkInterval, hex.warningBlinkInterval);
+
         subState = SubState.WAITING;
         elapsedTime = 0f;
     }
@@ -48,11 +53,7 @@ public class HexagonMeteorAttackState : HexagonBaseState
                     meteor = rsc.poolMng.meteorPool.GetObject();
                     meteor.transform.position = hex.meteorInitialPosition.position;
                     meteor.transform.rotation = Random.rotation;
-
-                    hex.plane.transform.localScale = new Vector3(0.1f, 1f, 0.1f);
-                    hex.SetPlaneMaterial(hex.planeSecondaryWarningMat);
-                    hex.planeBlinkController.BlinkTransparentNoStop(hex.warningBlinkInterval, hex.warningBlinkInterval);
-
+                   
                     elapsedTime = 0f;
                     subState = SubState.WARNING;
                 }
@@ -65,9 +66,7 @@ public class HexagonMeteorAttackState : HexagonBaseState
             case SubState.WARNING:
                 if(elapsedTime >= hex.meteorWarningTime)
                 {
-                    hex.planeBlinkController.StopPreviousBlinkings();
                     hex.plane.transform.localScale = Vector3.one;
-
                     hex.StartPlaneInfectionAnimation();
 
                     hex.columnBlinkController.InvalidateMaterials();
@@ -105,16 +104,19 @@ public class HexagonMeteorAttackState : HexagonBaseState
                 }
                 else
                 {
-                    if(shakeTime >= hex.meteorImpactShakeInterval)
+                    if (hex.meteorImpactMaxShakeHeight > 0)
                     {
-                        shakeTime -= hex.meteorImpactShakeInterval;
-                        float randHeight = Random.Range(0, hex.meteorImpactMaxShakeHeight) * lastHeightDir;
-                        lastHeightDir *= -1;
-                        hex.geometryOffset.transform.position = new Vector3(hex.geometryOffset.transform.position.x, hex.geometryOriginalY + randHeight, hex.geometryOffset.transform.position.z);
-                    }
-                    else
-                    {
-                        shakeTime += Time.deltaTime;
+                        if (shakeTime >= hex.meteorImpactShakeInterval)
+                        {
+                            shakeTime -= hex.meteorImpactShakeInterval;
+                            float randHeight = Random.Range(0, hex.meteorImpactMaxShakeHeight) * lastHeightDir;
+                            lastHeightDir *= -1;
+                            hex.geometryOffset.transform.position = new Vector3(hex.geometryOffset.transform.position.x, hex.geometryOriginalY + randHeight, hex.geometryOffset.transform.position.z);
+                        }
+                        else
+                        {
+                            shakeTime += Time.deltaTime;
+                        }
                     }
 
                     elapsedTime += Time.deltaTime;

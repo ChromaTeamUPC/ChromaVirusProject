@@ -91,7 +91,7 @@ public class BossFloorController : MonoBehaviour
     void Update()
     {
         //TODO: remove when tested
-        if (Input.GetKeyDown(KeyCode.M))
+        if (Input.GetKeyDown(KeyCode.N))
         {
             hex.FallMeteor(0f, 3f);
         }        
