@@ -305,5 +305,15 @@ public class WormBodySegmentController : MonoBehaviour
             PlayerController player = other.GetComponent<PlayerController>();
             head.PlayerTouched(player, transform.position);
         }
+        else if (other.tag == "EnemyHexagonBodyProbe")
+        {
+            EnemyBaseAIBehaviour enemy = other.GetComponent<EnemyBaseAIBehaviour>();
+
+            if (enemy == null)
+                enemy = other.GetComponentInParent<EnemyBaseAIBehaviour>();
+
+            if (enemy != null)
+                enemy.ImpactedByHexagon();
+        }
     }
 }

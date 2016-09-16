@@ -49,5 +49,15 @@ public class WormTailController : MonoBehaviour
             PlayerController player = other.GetComponent<PlayerController>();
             bb.head.PlayerTouched(player, transform.position);
         }
+        else if (other.tag == "EnemyHexagonBodyProbe")
+        {
+            EnemyBaseAIBehaviour enemy = other.GetComponent<EnemyBaseAIBehaviour>();
+
+            if (enemy == null)
+                enemy = other.GetComponentInParent<EnemyBaseAIBehaviour>();
+
+            if (enemy != null)
+                enemy.ImpactedByHexagon();
+        }
     }
 }
