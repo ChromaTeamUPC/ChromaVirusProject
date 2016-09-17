@@ -3,7 +3,7 @@ using System.Collections;
 
 public class RotateParticles : MonoBehaviour {
 
-    //public float mprSpeed = 1.75f;
+    public bool active = true;
     public bool rotateX = false;
     public float dpsSpeedX = 90f;
     public bool rotateY = false;
@@ -15,10 +15,10 @@ public class RotateParticles : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
-        //transform.Rotate(0, mprSpeed * Time.deltaTime, 0, Space.World);
-        transform.Rotate( (rotateX ? dpsSpeedX : 0) * Time.deltaTime,
-                          (rotateY ? dpsSpeedY : 0) * Time.deltaTime,
-                          (rotateZ ? dpsSpeedZ : 0) * Time.deltaTime, 
-                          (globalSpace ? Space.World : Space.Self));
+        if (active)
+            transform.Rotate( (rotateX ? dpsSpeedX : 0) * Time.deltaTime,
+                              (rotateY ? dpsSpeedY : 0) * Time.deltaTime,
+                              (rotateZ ? dpsSpeedZ : 0) * Time.deltaTime, 
+                              (globalSpace ? Space.World : Space.Self));
     }
 }

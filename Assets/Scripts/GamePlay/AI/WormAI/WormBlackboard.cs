@@ -150,9 +150,6 @@ public class WormBlackboard : MonoBehaviour
     private WormWayPoint headWayPoint;
 
     [Header("Health Settings")]
-    /*public float headMaxHealth = 100f;
-    public float bodyMaxHealth = 50;
-    public float bodyWrongColorDamageModifier = 0.5f;*/
     [SerializeField]
     public HealthSettings[] healthSettings = new HealthSettings[4];
     public HealthSettings HealthSettingsPhase { get { return healthSettings[wormCurrentPhase]; } }
@@ -200,15 +197,9 @@ public class WormBlackboard : MonoBehaviour
     public float spawningMinionsCurrentCooldownTime;
 
     [Header("Wandering Settings")]
-    /*public float wanderingSpeed = 10;
-    public float sinLongitude = 3f;
-    public float sinAmplitude = 0.25f;
-    public float sinCycleDuration = 30f;
-    public float undergroundSpeed = 10;*/
     [SerializeField]
     public WanderingSettings[] wanderingSettings = new WanderingSettings[4];
     public WanderingSettings WanderingSettingsPhase { get { return wanderingSettings[wormCurrentPhase]; } }
-    public GameObject bezierCurvesPrefab;
     [HideInInspector]
     public float sinDistanceFactor;
     [HideInInspector]
@@ -221,7 +212,7 @@ public class WormBlackboard : MonoBehaviour
     public bool applySinMovement;
     [HideInInspector]
     public bool isHeadOverground;
-
+    [HideInInspector]
     public bool tailReachedMilestone;
 
     //Local bezier points
@@ -251,24 +242,11 @@ public class WormBlackboard : MonoBehaviour
     private Vector3 worldExitBezier22;
 
     [Header("Below Attack Settings")]
-    /*public float chancesOfBelowAttackAfterWandering = 50f;
-    public float belowAttackWaitTime = 2f;
-    public float belowAttackWarningTime = 1f;
-    public float belowAttackSpeed = 10f;
-    public float belowAttackRotationSpeed = 180f;*/
     [SerializeField]
     public BelowAttackSettings[] belowAttackSettings = new BelowAttackSettings[4];
     public BelowAttackSettings BelowAttackSettingsPhase { get { return belowAttackSettings[wormCurrentPhase]; } }
 
     [Header("Above Attack Settings")]
-    /*public float aboveAttackExposureTimeNeeded = 3f;
-    public float aboveAttackExposureMaxAngle = 135f;
-    public float aboveAttackExposureMinHexagons = 2;
-    public float aboveAttackExposureMaxHexagons = 5;
-    public float aboveAttackCooldownTime = 10f;
-    public float aboveAttackWarningTime = 0.5f;
-    public float aboveAttackJumpDuration = 1f;
-    public float aboveAttackSelfRotation = 180f;*/
     [SerializeField]
     public AboveAttackSettings[] aboveAttackSettings = new AboveAttackSettings[4];
     public AboveAttackSettings AboveAttackSettingsPhase { get { return aboveAttackSettings[wormCurrentPhase]; } } 
@@ -286,6 +264,7 @@ public class WormBlackboard : MonoBehaviour
     [Header("Misc variables")]
     public GameObject spawnEntry;
     public GameObject spawnExit;
+    public GameObject bezierCurvesPrefab;
 
     [HideInInspector]
     public PlayerController killerPlayer;

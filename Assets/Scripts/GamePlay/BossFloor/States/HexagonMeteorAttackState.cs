@@ -52,7 +52,6 @@ public class HexagonMeteorAttackState : HexagonBaseState
                 {
                     meteor = rsc.poolMng.meteorPool.GetObject();
                     meteor.transform.position = hex.meteorInitialPosition.position;
-                    meteor.transform.rotation = Random.rotation;
                    
                     elapsedTime = 0f;
                     subState = SubState.WARNING;

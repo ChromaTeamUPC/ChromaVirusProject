@@ -236,6 +236,7 @@ public class TurretAIBehaviour : MonoBehaviour
             anim.SetBool("Broken", true);
             knockedOutFx.Play();
             elapsedTime = 0f;
+            rsc.rumbleMng.Rumble(0, 0.35f, 0f, 0.75f);
             state = State.KNOCKED_OUT;
         }
     }

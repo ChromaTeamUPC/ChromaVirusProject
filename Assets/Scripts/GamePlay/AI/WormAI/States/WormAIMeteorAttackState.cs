@@ -77,8 +77,7 @@ public class WormAIMeteorAttackState : WormAIBaseState
                     if(elapsedTime <= 0)
                     {
                         MeteorController meteor = rsc.poolMng.meteorPool.GetObject();
-                        meteor.transform.position = headTrf.position;
-                        meteor.transform.rotation = Random.rotation;
+                        meteor.transform.position = headTrf.position;                        
                         meteor.GoUp(bb.MeteorAttackSettingsPhase.speedOfThrownMeteors);
 
                         ++totalShots;
