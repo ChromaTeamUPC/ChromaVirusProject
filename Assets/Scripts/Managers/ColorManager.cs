@@ -295,6 +295,31 @@ public class ColorManager : MonoBehaviour
         }
     }
 
+    public ChromaColor GetRandomActiveColor()
+    {
+        //Returns a random color including only colors with items
+        int totalColors = TotalColorsWithItems();
+
+        switch (totalColors)
+        {
+            case 0:
+                return ChromaColorInfo.Random;
+
+            case 1:
+                return GetFirstColorWithItems();
+
+            default:
+                ChromaColor result;
+                do
+                {
+                    result = ChromaColorInfo.Random;
+                }
+                while (colorCount[(int)result] <= 0);
+
+                return result;
+        }
+    }
+
     private ChromaColor GetFirstColorWithItems()
     {
         for (int i = 0; i < colorCount.Length; ++i)
