@@ -51,7 +51,8 @@ public class OptionsMenuManager : MonoBehaviour
         changeTime = 0f;
         currentState = CreditsState.FADING_IN;
         fadeScript.StartFadingToClear(fadeInTime);
-        rsc.audioMng.FadeInMusic(AudioManager.MusicType.CREDITS, fadeInTime);
+        if(!rsc.audioMng.IsMusicPlaying())
+            rsc.audioMng.FadeInMusic(AudioManager.MusicType.CREDITS, fadeInTime);
 
         LoadValues();
 
@@ -161,7 +162,7 @@ public class OptionsMenuManager : MonoBehaviour
 
                 fadeScript.StartFadingToColor(fadeOutTime);
                 currentState = CreditsState.FADING_OUT;
-                rsc.audioMng.FadeOutMusic(fadeOutTime);
+                //rsc.audioMng.FadeOutMusic(fadeOutTime);
             }
         }
     }

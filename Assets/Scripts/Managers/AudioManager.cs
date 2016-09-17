@@ -77,6 +77,17 @@ public class AudioManager : MonoBehaviour {
         StartCoroutine(CrossFade(newMusic, fadeSeconds));
     }
 
+    public bool IsCurrentMusic(MusicType type)
+    {
+        AudioSource checkMusic = GetAudioSource(type);
+        return checkMusic == currentMusic;
+    }
+
+    public bool IsMusicPlaying()
+    {
+        return currentMusic != null && currentMusic.isPlaying;
+    }
+
     public void PauseMusic()
     {
         if(currentMusic !=  null)

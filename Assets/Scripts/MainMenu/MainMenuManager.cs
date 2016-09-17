@@ -75,7 +75,8 @@ public class MainMenuManager : MonoBehaviour {
         DisableMainButtons();      
         currentState = MainMenuState.FADING_IN;
         fadeScript.StartFadingToClear(fadeInTime);
-        rsc.audioMng.FadeInMusic(AudioManager.MusicType.MAIN_MENU, fadeInTime);
+        if(!rsc.audioMng.IsMusicPlaying() || !rsc.audioMng.IsCurrentMusic(AudioManager.MusicType.MAIN_MENU))
+            rsc.audioMng.FadeInMusic(AudioManager.MusicType.MAIN_MENU, fadeInTime);
 
         switch (rsc.gameMng.startLevel)
         {
@@ -202,7 +203,8 @@ public class MainMenuManager : MonoBehaviour {
     private void FadeOut(float fadeCurtainTime = 2f, float fadeMusicTime = 1.5f)
     {
         fadeScript.StartFadingToColor(fadeCurtainTime);
-        rsc.audioMng.FadeOutMusic(fadeMusicTime);
+        if(fadeMusicTime != -1f)
+            rsc.audioMng.FadeOutMusic(fadeMusicTime);
     }
 
     private void EnableMainButtons()
@@ -310,7 +312,7 @@ public class MainMenuManager : MonoBehaviour {
         currentState = MainMenuState.FADING_TO_OPTIONS;
         loadLevel = SceneManager.LoadSceneAsync("Options");
         loadLevel.allowSceneActivation = false;
-        FadeOut(fadeOutToOptionsTime, fadeOutToOptionsTime);
+        FadeOut(fadeOutToOptionsTime, -1f);
     }
 
     public void OnClickExit()
