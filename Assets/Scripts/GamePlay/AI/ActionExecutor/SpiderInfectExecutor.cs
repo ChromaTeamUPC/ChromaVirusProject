@@ -3,12 +3,12 @@ using System.Collections;
 
 public class SpiderInfectExecutor : BaseExecutor
 {
-    //private SpiderBlackboard spiderBlackBoard; //disabled to avoid warnings. reenable if needed
+    private SpiderBlackboard spiderBlackBoard; //disabled to avoid warnings. reenable if needed
 
     public override void Init(EnemyBaseBlackboard bb)
     {
         base.Init(bb);
-        //spiderBlackBoard = (SpiderBlackboard)bb;
+        spiderBlackBoard = (SpiderBlackboard)bb;
     }
 
     public override void SetAction(AIAction act)
@@ -32,6 +32,16 @@ public class SpiderInfectExecutor : BaseExecutor
         else if (blackBoard.attackAnimationTrigger)
         {
             blackBoard.attackAnimationTrigger = false;
+
+            SpiderBolt bolt = rsc.poolMng.spiderBoltPool.GetObject();
+            if (bolt != null)
+            {
+                bolt.transform.position = spiderBlackBoard.boltSpawnPoint.position;
+                bolt.color = spiderBlackBoard.spider.color;
+                bolt.damage = spiderBlackBoard.spider.biteDamage;
+                bolt.origin = spiderBlackBoard.spider.transform.position;
+                bolt.Spawn(false);
+            }
 
             blackBoard.deviceController.Infect();
         }

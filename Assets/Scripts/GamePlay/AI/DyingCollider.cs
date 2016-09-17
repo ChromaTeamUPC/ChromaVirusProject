@@ -12,7 +12,7 @@ public class DyingCollider : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Stage" || other.tag == "Hexagon")
+        if (other.tag == "Stage" || other.tag == "Hexagon" || other.tag == "Device")
         {
             agent.CollitionOnDie();
         }

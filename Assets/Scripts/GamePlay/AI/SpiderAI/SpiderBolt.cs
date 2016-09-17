@@ -9,16 +9,19 @@ public class SpiderBolt : MonoBehaviour
 
     public ChromaColor color;
 
+    private AudioSource soundFX;
     private SphereCollider boltCollider;
     private float currentDuration;
 
     void Awake()
     {
+        soundFX = GetComponent<AudioSource>();
         boltCollider = GetComponent<SphereCollider>();
     }
 
-    public void Spawn()
+    public void Spawn(bool playSoundFX = true)
     {
+        soundFX.playOnAwake = playSoundFX;
         boltCollider.enabled = true;
         currentDuration = 0f;
     }
