@@ -34,6 +34,8 @@ public class TurretAIBehaviour : MonoBehaviour
     public float knockedOutMaxXoffset = 1.32f;
     public float knockedOutMaxZoffset = 1.32f;
     private float knockedOutYOffset;
+    public float knockOutFXChangeTime = 0.2f;
+    private float knockOutElapsedTime;
     public ParticleSystem knockedOutFx;
     private SphereCollider sphereCollider;
     private BlinkController blinkController;
@@ -184,10 +186,19 @@ public class TurretAIBehaviour : MonoBehaviour
                 if (elapsedTime < AttackSettingsPhase.knockOutTime)
                 {
                     elapsedTime += Time.deltaTime;
-                    float newX = UnityEngine.Random.Range(knockedOutMaxXoffset * -1, knockedOutMaxXoffset);
-                    float newZ = UnityEngine.Random.Range(knockedOutMaxZoffset * -1, knockedOutMaxZoffset);
-                    Vector3 newPos = new Vector3(newX, knockedOutYOffset, newZ);
-                    knockedOutFx.transform.localPosition = newPos;
+
+                    if (knockOutElapsedTime >= knockOutFXChangeTime)
+                    {
+                        knockOutElapsedTime -= knockOutFXChangeTime;
+                        float newX = UnityEngine.Random.Range(knockedOutMaxXoffset * -1, knockedOutMaxXoffset);
+                        float newZ = UnityEngine.Random.Range(knockedOutMaxZoffset * -1, knockedOutMaxZoffset);
+                        Vector3 newPos = new Vector3(newX, knockedOutYOffset, newZ);
+                        knockedOutFx.transform.localPosition = newPos;
+                    }
+                    else
+                    {
+                        knockOutElapsedTime += Time.deltaTime;
+                    }
                 }
                 else
                 {
