@@ -197,7 +197,6 @@ public class TurretAIBehaviour : MonoBehaviour
                     state = State.ENABLED;
                     anim.SetBool("Broken", false);
                     knockedOutFx.Stop();
-                    Debug.Log("Turret recovered");
                 }
                 break;
         }       
@@ -227,7 +226,6 @@ public class TurretAIBehaviour : MonoBehaviour
             knockedOutFx.Play();
             elapsedTime = 0f;
             state = State.KNOCKED_OUT;
-            Debug.Log("AAAAAGH turret knocked out");
         }
     }
 

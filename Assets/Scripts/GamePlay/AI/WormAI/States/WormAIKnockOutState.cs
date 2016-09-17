@@ -112,7 +112,8 @@ public class WormAIKnockOutState : WormAIBaseState
                 if (!destinyInRange)
                 {
                     float distanceToDestiny = (headTrf.position - destiny.transform.position).magnitude;
-                    if (distanceToDestiny <= destinyInRangeDistance)
+                    if (distanceToDestiny <= destinyInRangeDistance ||
+                        headTrf.position.y < destiny.transform.position.y) //Safety check. When jump is too fast distance can never be less than range distance
                     {
                         destinyInRange = true;
                         WormEventInfo.eventInfo.wormBb = bb;

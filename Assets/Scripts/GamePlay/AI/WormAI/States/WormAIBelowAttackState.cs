@@ -128,7 +128,9 @@ public class WormAIBelowAttackState : WormAIBaseState
                 if (!destinyInRange)
                 {
                     float distanceToDestiny = (headTrf.position - destiny.transform.position).magnitude;
-                    if(distanceToDestiny <= destinyInRangeDistance)
+                    if (distanceToDestiny <= destinyInRangeDistance ||
+                        (headTrf.position.y < destiny.transform.position.y &&
+                        currentX >= 0)) //Safety check. When jump is too fast distance can never be less than range distance
                     {
                         destinyInRange = true;
                         destiny.WormEnterExit();

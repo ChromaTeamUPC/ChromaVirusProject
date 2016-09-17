@@ -495,6 +495,16 @@ public class WormBlackboard : MonoBehaviour
 
     }
 
+    public float GetJumpDistance()
+    {
+        return jumpDistance;
+    }
+
+    public float GetJumpHalfDistance()
+    {
+        return jumpHalfDistance;
+    }
+
     public float GetJumpYGivenX(float x)
     {
         /* a*x^2 + c = y
