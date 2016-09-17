@@ -143,14 +143,14 @@ public class StatsManager : MonoBehaviour
 	void Start ()
 	{
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_LOADED, LevelLoaded);
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
         rsc.eventMng.StartListening(EventManager.EventType.ZONE_REACHED, ZoneStarted);
         rsc.eventMng.StartListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZoneFinished);
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameFinished);
         rsc.eventMng.StartListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
-        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_DESTROYED, EnemyDied); //Same management as enemydied
-        rsc.eventMng.StartListening(EventManager.EventType.WORM_SECTION_DESTROYED, EnemyDied); //Same management as enemydied
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed); 
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_SECTION_DESTROYED, EnemyDied);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
     }
 
@@ -159,13 +159,13 @@ public class StatsManager : MonoBehaviour
         if (rsc.eventMng != null)
         {
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_LOADED, LevelLoaded);
             rsc.eventMng.StopListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
             rsc.eventMng.StopListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
             rsc.eventMng.StopListening(EventManager.EventType.ZONE_REACHED, ZoneStarted);
             rsc.eventMng.StopListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZoneFinished);
-            rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameFinished);
             rsc.eventMng.StopListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
-            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_DESTROYED, EnemyDied);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
             rsc.eventMng.StopListening(EventManager.EventType.WORM_SECTION_DESTROYED, EnemyDied);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
         }
@@ -186,6 +186,17 @@ public class StatsManager : MonoBehaviour
         p1Stats.Reset();
         p2Stats.Reset();
 
+        updateComboTime = false;
+        startTime = 0f;
+        totalTime = 0f;
+    }
+
+    private void LevelLoaded(EventInfo eventInfo)
+    {
+        p1Stats.Reset();
+        p2Stats.Reset();
+
+        updateComboTime = false;
         startTime = 0f;
         totalTime = 0f;
     }
@@ -194,13 +205,14 @@ public class StatsManager : MonoBehaviour
     {
         updateComboTime = true;
         startTime = Time.time;
-        totalTime = 0f;
     }
 
     private void LevelCleared(EventInfo eventInfo)
     {
         updateComboTime = false;
         totalTime = Time.time - startTime;
+
+        //ComputeScore();
     }
 
     private void ZoneStarted(EventInfo eventInfo)
@@ -211,11 +223,6 @@ public class StatsManager : MonoBehaviour
     private void ZoneFinished(EventInfo eventInfo)
     {
         updateComboTime = false;
-    }
-
-    private void GameFinished(EventInfo eventInfo)
-    {
-        //ComputeScore();
     }
 
     private void EnemyDied(EventInfo eventInfo)
@@ -249,6 +256,33 @@ public class StatsManager : MonoBehaviour
             {
                 stats.EnemyKilledWrong();
             }
+        }
+    }
+
+    private void WormHeadDestroyed(EventInfo eventInfo)
+    {
+        WormEventInfo info = (WormEventInfo)eventInfo;
+
+        if (info.wormBb.killerPlayer != null)
+        {
+            PlayerStats stats;
+
+            switch (info.wormBb.killerPlayer.Id)
+            {
+                case 1:
+                    stats = p1Stats;
+                    break;
+
+                case 2:
+                    stats = p2Stats;
+                    break;
+
+                default:
+                    stats = p1Stats;
+                    break;
+            }
+
+            stats.EnemyKilledOk(ChromaColorInfo.Random, true);
         }
     }
 

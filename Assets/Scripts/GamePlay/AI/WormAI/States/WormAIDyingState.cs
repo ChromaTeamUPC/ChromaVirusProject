@@ -26,9 +26,8 @@ public class WormAIDyingState : WormAIBaseState
     {
         base.OnStateEnter();
 
-        EnemyDiedEventInfo.eventInfo.infectionValue = 0;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_DIED, EnemyDiedEventInfo.eventInfo);
-
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_DYING, EventInfo.emptyInfo);
+        rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_CLEARED, EventInfo.emptyInfo);
         bb.Explode();
     }
 

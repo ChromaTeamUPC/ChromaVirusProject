@@ -7,66 +7,67 @@ using InControl;
 public class PlayerBlackboard
 {
     //Components, gameObjects and scripts
-    public PlayerController player;
-    public BlinkController blinkController;
-    public Animator animator;
-    public GameObject shield;
-    public GameObject laserAim;
-    public InputDevice controller;
+    public PlayerController player; //Never reset
+    public BlinkController blinkController; //Never reset
+    public Animator animator; //Never reset
+    public GameObject shield; //Never reset
+    public GameObject laserAim; //Never reset
+    public InputDevice controller; //Never reset
 
-    public int playerRayCastMask;
-    public int playerPhysicsLayer;
-    public int enemyPhysicsPlayer;
+    public int playerRayCastMask; //Never reset
+    public int playerPhysicsLayer; //Never reset
+    public int enemyPhysicsPlayer; //Never reset
 
     //Player states
-    public PlayerSpawningState spawningState;
-    public PlayerIdleState idleState;
-    public PlayerLongIdleState longIdleState;
-    public PlayerMovingState movingState;
-    public PlayerDashingState dashingState;
-    public PlayerSpeedBumpState speedBumpState;
-    public PlayerSpecialState specialState;
-    public PlayerReceivingDamageState receivingDamageState;
-    public PlayerPushedState pushedState;
-    public PlayerFallingState fallingState;
-    public PlayerDyingState dyingState;
-    public PlayerBlockedState blockedState;
-    public PlayerInvisibleState invisibleState;
+    public PlayerSpawningState spawningState; //Never reset
+    public PlayerIdleState idleState; //Never reset
+    public PlayerLongIdleState longIdleState; //Never reset
+    public PlayerMovingState movingState; //Never reset
+    public PlayerDashingState dashingState; //Never reset
+    public PlayerSpeedBumpState speedBumpState; //Never reset
+    public PlayerSpecialState specialState; //Never reset
+    public PlayerReceivingDamageState receivingDamageState; //Never reset
+    public PlayerPushedState pushedState; //Never reset
+    public PlayerFallingState fallingState; //Never reset
+    public PlayerDyingState dyingState; //Never reset
+    public PlayerBlockedState blockedState; //Never reset
+    public PlayerInvisibleState invisibleState; //Never reset
+    public PlayerLevelClearedState levelClearedState; //Never reset
 
     //Controller mapped attributes
-    public string moveHorizontal;
-    public string moveVertical;
-    public string aimHorizontal;
-    public string aimVertical;
-    public string fire;
-    public string dash;
-    public string special;
-    public string greenButton;
-    public string redButton;
-    public string blueButton;
-    public string yellowButton;
+    public string moveHorizontal; //Never reset
+    public string moveVertical; //Never reset
+    public string aimHorizontal; //Never reset
+    public string aimVertical; //Never reset
+    public string fire; //Never reset
+    public string dash; //Never reset
+    public string special; //Never reset
+    public string greenButton; //Never reset
+    public string redButton; //Never reset
+    public string blueButton; //Never reset
+    public string yellowButton; //Never reset
 
     //Input variables
-    private bool keyPressed;
-    public Vector3 moveVector;
-    public bool movePressed;
-    public Vector3 aimVector;
-    public bool aimPressed;
-    public bool shootPressed;
-    public bool dashPressed;
-    public bool speedBumpPressed;
-    public bool specialPressed;
-    public bool greenPressed;
-    public bool redPressed;
-    public bool bluePressed;
-    public bool yellowPressed;
-    public bool colorButtonsPressed;
+    private bool keyPressed; //Reset per frame
+    public Vector3 moveVector; //Reset per frame
+    public bool movePressed; //Reset per frame
+    public Vector3 aimVector; //Reset per frame
+    public bool aimPressed; //Reset per frame
+    public bool shootPressed; //Reset per frame
+    public bool dashPressed; //Reset per frame
+    public bool speedBumpPressed; //Reset per frame
+    public bool specialPressed; //Reset per frame
+    public bool greenPressed; //Reset per frame
+    public bool redPressed; //Reset per frame
+    public bool bluePressed; //Reset per frame
+    public bool yellowPressed; //Reset per frame
+    public bool colorButtonsPressed; //Reset per frame
 
     //State control variables
-    public bool active;     //Player is participating in current game (not necesarily alive)
-    public bool alive;      //Player is alive at the moment
-    public bool animationTrigger;
-    public bool animationEnded;
+    public bool active;     //Player is participating in current game (not necesarily alive) //Reset per game
+    public bool alive;      //Player is alive at the moment //Reset per game
+    public bool animationTrigger; //Reset per needed state
+    public bool animationEnded; //Reset per needed state
     public bool isGrounded;
 
     //Health variables
@@ -104,6 +105,7 @@ public class PlayerBlackboard
     public List<HexagonController> hexagons;
     public Vector3 infectionOrigin;
     public Vector2 infectionForces;
+    public Vector3 destinationPoint;
 
     public void Init(PlayerController pl)
     {
@@ -134,6 +136,7 @@ public class PlayerBlackboard
         dyingState = new PlayerDyingState();
         blockedState = new PlayerBlockedState();
         invisibleState = new PlayerInvisibleState();
+        levelClearedState = new PlayerLevelClearedState();
 
         spawningState.Init(this);
         idleState.Init(this);
@@ -148,6 +151,7 @@ public class PlayerBlackboard
         dyingState.Init(this);
         blockedState.Init(this);
         invisibleState.Init(this);
+        levelClearedState.Init(this);
 
         string playerStr = "";
         switch (player.Id)
@@ -181,7 +185,8 @@ public class PlayerBlackboard
         active = false;
         alive = false;
         currentLives = player.maxLives;
-        specialAttackTutorialTriggered = false;      
+        specialAttackTutorialTriggered = false;
+        hexagons.Clear();     
     }
 
     //This variables have to be reset every spawn
@@ -207,12 +212,17 @@ public class PlayerBlackboard
         canShoot = true;
         firstShot = true;
 
-        worm = null;
         enemiesInRange.Clear();
+        shotsInRange.Clear();
+        worm = null;
         specialAttackDetector.SetActive(false);
 
         capacitor = null;
         device = null;
+        hexagons.Clear();
+        infectionOrigin = Vector3.zero;
+        infectionForces = Vector2.zero;
+        destinationPoint = Vector3.zero;
     }
 
     //This variables have to be reset every update

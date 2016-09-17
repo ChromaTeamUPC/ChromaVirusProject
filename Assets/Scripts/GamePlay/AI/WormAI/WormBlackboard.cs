@@ -91,6 +91,9 @@ public class WormBlackboard : MonoBehaviour
     }
 
     #region Settings
+    [Header("Debug Settings")]
+    public bool attacksEnabled = true;
+
     [Header("Scene Related Settings")]
     [HideInInspector]
     public Vector3 navMeshLayersDistance;

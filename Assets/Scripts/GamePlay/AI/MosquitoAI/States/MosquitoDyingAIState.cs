@@ -73,7 +73,7 @@ public class MosquitoDyingAIState : MosquitoAIBaseState
         //Do nothing
     }
 
-    public override AIBaseState ImpactedByHexagon()
+    public override AIBaseState InstantKill()
     {
         return null;
     }

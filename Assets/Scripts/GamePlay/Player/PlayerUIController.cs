@@ -65,9 +65,11 @@ public class PlayerUIController : MonoBehaviour
 
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_LOADED, GameReset);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_UNLOADED, GameReset);
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, LevelCleared);
     }
 
     void OnDestroy()
@@ -76,9 +78,11 @@ public class PlayerUIController : MonoBehaviour
         {
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_LOADED, GameReset);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_UNLOADED, GameReset);
             rsc.eventMng.StopListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
             rsc.eventMng.StopListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
-            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, LevelCleared);
         }
     }
 
@@ -151,10 +155,25 @@ public class PlayerUIController : MonoBehaviour
         }
     }
 
+    private void GameReset(EventInfo eventInfo)
+    {
+        DisableColorBar();
+    }
+
     private void LevelStarted(EventInfo eventInfo)
     {
+        EnableColorBar();
+    }
+
+    private void LevelCleared(EventInfo eventInfo)
+    {
+        DisableColorBar();
+    }
+
+    private void EnableColorBar()
+    {
         nextColorSliderGO.SetActive(rsc.gameMng.colorBar);
-        if(rsc.gameMng.colorBar)
+        if (rsc.gameMng.colorBar)
         {
             //Set initial values
             currentColor = rsc.coloredObjectsMng.GetColor(rsc.colorMng.CurrentColor);
@@ -169,7 +188,7 @@ public class PlayerUIController : MonoBehaviour
         }
     }
 
-    private void LevelCleared(EventInfo eventInfo)
+    private void DisableColorBar()
     {
         nextColorSliderGO.SetActive(false);
     }

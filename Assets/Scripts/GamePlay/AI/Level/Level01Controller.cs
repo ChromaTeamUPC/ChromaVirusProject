@@ -93,16 +93,15 @@ public class Level01Controller : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
-        rsc.camerasMng.ChangeCamera(1);
-
         //Ensure all resources are in place (ie, enemies back to pool)
-        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
+        rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_LOADED, EventInfo.emptyInfo);
 
-        //rsc.colorMng.Activate();
+        rsc.camerasMng.ChangeCamera(1);
 
         if (rsc.gameInfo.player1Controller.Active)
         {
             rsc.gameInfo.player1.transform.position = player1StartPoint.position;
+            rsc.gameInfo.player1.transform.rotation = player1StartPoint.rotation;
             rsc.gameInfo.player1.transform.SetParent(null);
             if (!rsc.gameInfo.player1.activeSelf)
                 rsc.gameInfo.player1.SetActive(true);
@@ -111,6 +110,7 @@ public class Level01Controller : MonoBehaviour
         if (rsc.gameInfo.numberOfPlayers == 2 && rsc.gameInfo.player2Controller.Active)
         {
             rsc.gameInfo.player2.transform.position = player2StartPoint.position;
+            rsc.gameInfo.player2.transform.rotation = player2StartPoint.rotation;
             rsc.gameInfo.player2.transform.SetParent(null);
             if (!rsc.gameInfo.player2.activeSelf)
                 rsc.gameInfo.player2.SetActive(true);
@@ -122,8 +122,7 @@ public class Level01Controller : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanFinished);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameFinished);
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameFinished);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameOver);
 
 
         fadeScript.StartFadingToClear();
@@ -145,8 +144,7 @@ public class Level01Controller : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanFinished);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
-            rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameFinished);
-            rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameFinished);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameOver);
         }
     }
 
@@ -253,7 +251,7 @@ public class Level01Controller : MonoBehaviour
         player.transform.SetParent(null);
     }
 
-    private void GameFinished(EventInfo eventInfo)
+    private void GameOver(EventInfo eventInfo)
     {
         StartCoroutine(FadeOut());
     }

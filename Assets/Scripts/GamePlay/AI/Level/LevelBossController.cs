@@ -19,27 +19,18 @@ public class LevelBossController : MonoBehaviour
     [SerializeField]
     private FadeSceneScript fadeScript;
 
-    void Awake()
-    {
-        //sceneCenterHexagon = sceneCenter.GetComponent<HexagonController>();
-    }
-
     // Use this for initialization
     void Start () 
 	{
-        //Stop color manager
-        rsc.colorMng.Deactivate();
+        //Ensure all resources are in place (ie, enemies back to pool)
+        rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_LOADED, EventInfo.emptyInfo);
 
         rsc.camerasMng.ChangeCamera(1);    
-
-        //Ensure all resources are in place (ie, enemies back to pool)
-        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
-
-        //rsc.colorMng.Activate();
 
         if (rsc.gameInfo.player1Controller.Active)
         {
             rsc.gameInfo.player1.transform.position = player1StartPoint.position;
+            rsc.gameInfo.player1.transform.rotation = player1StartPoint.rotation;
             rsc.gameInfo.player1.transform.SetParent(null);
             if (!rsc.gameInfo.player1.activeSelf)
                 rsc.gameInfo.player1.SetActive(true);
@@ -48,6 +39,7 @@ public class LevelBossController : MonoBehaviour
         if (rsc.gameInfo.numberOfPlayers == 2 && rsc.gameInfo.player2Controller.Active)
         {
             rsc.gameInfo.player2.transform.position = player2StartPoint.position;
+            rsc.gameInfo.player2.transform.rotation = player2StartPoint.rotation;
             rsc.gameInfo.player2.transform.SetParent(null);
             if (!rsc.gameInfo.player2.activeSelf)
                 rsc.gameInfo.player2.SetActive(true);
@@ -58,7 +50,9 @@ public class LevelBossController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
         rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameFinished);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_DYING, WormDying);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_DIED, WormDied);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameOver);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameFinished);
 
         rsc.camerasMng.SetEntryCameraLevelAnimation(-1);
@@ -77,7 +71,9 @@ public class LevelBossController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
             rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
-            rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameFinished);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_DYING, WormDying);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_DIED, WormDied);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameOver);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameFinished);
         }
     }
@@ -155,9 +151,9 @@ public class LevelBossController : MonoBehaviour
 
     private void WormHeadDestroyed(EventInfo eventInfo)
     {
-        EnemyDiedEventInfo info = (EnemyDiedEventInfo)eventInfo;
+        WormEventInfo info = (WormEventInfo)eventInfo;
 
-        switch (info.phase)
+        switch (info.wormBb.wormCurrentPhase)
         {
             case 0:
                 rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_02, 1f);
@@ -174,6 +170,38 @@ public class LevelBossController : MonoBehaviour
             default:
                 break;
         }
+    }
+
+
+    private void WormDying(EventInfo eventInfo)
+    {
+        if (rsc.gameInfo.player1Controller.Active && rsc.gameInfo.player1Controller.Alive)
+        {
+            rsc.gameInfo.player1Controller.SetInvulnerable();
+        }
+        if (rsc.gameInfo.numberOfPlayers == 2 && rsc.gameInfo.player2Controller.Alive && rsc.gameInfo.player2Controller.Active)
+        {
+            rsc.gameInfo.player2Controller.SetInvulnerable();
+        }
+
+        rsc.eventMng.TriggerEvent(EventManager.EventType.KILL_ENEMIES, EventInfo.emptyInfo);
+    }
+
+    private void WormDied(EventInfo eventInfo)
+    { 
+        if (rsc.gameInfo.player1Controller.Active && rsc.gameInfo.player1Controller.Alive)
+        {
+            rsc.gameInfo.player1Controller.LevelCleared();
+        }
+        if (rsc.gameInfo.numberOfPlayers == 2 && rsc.gameInfo.player2Controller.Alive && rsc.gameInfo.player2Controller.Active)
+        {
+            rsc.gameInfo.player2Controller.LevelCleared();
+        }
+    }
+
+    private void GameOver(EventInfo eventInfo)
+    {
+        StartCoroutine(FadeOut());
     }
 
     private void GameFinished(EventInfo eventInfo)

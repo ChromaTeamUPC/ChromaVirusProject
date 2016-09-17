@@ -80,8 +80,6 @@ public class WormEventInfo : EventInfo
 public class LevelEventInfo : EventInfo
 {
     public static LevelEventInfo eventInfo = new LevelEventInfo();
-
-    public int levelId;
 }
 
 public class CameraEventInfo : EventInfo
@@ -165,8 +163,10 @@ public class EventManager : MonoBehaviour {
         GAME_FINISHED,
         GAME_OVER,
 
+        LEVEL_LOADED,
         LEVEL_STARTED,
         LEVEL_CLEARED,
+        LEVEL_UNLOADED,
 
         PLAYER_SPAWNING,
         PLAYER_SPAWNED,
@@ -181,6 +181,8 @@ public class EventManager : MonoBehaviour {
         PLAYER_COLOR_MISMATCH_END,
         PLAYER_OUT_OF_ZONE,
 
+        KILL_ENEMIES,
+
         ENEMY_SPAWNED,
         ENEMY_DIED,
 
@@ -191,6 +193,7 @@ public class EventManager : MonoBehaviour {
         VORTEX_DESTROYED,
 
         WORM_SPAWNED,
+        WORM_DYING,
         WORM_DIED,
 
         WORM_HEAD_ACTIVATED,
@@ -215,6 +218,11 @@ public class EventManager : MonoBehaviour {
 
         COMBO_ADD,
         COMBO_BREAK,
+
+        SHOW_STATS,
+        HIDE_STATS,
+        STATS_OPENED,
+        STATS_CLOSED,
 
         SHOW_TUTORIAL,
         HIDE_TUTORIAL,

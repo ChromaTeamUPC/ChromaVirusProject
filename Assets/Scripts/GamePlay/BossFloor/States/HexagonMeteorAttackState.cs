@@ -140,7 +140,7 @@ public class HexagonMeteorAttackState : HexagonBaseState
     public override HexagonBaseState EnemyStay(EnemyBaseAIBehaviour enemy)
     {
         if (subState == SubState.EXPLODING)
-            enemy.ImpactedByHexagon();
+            enemy.InstantKill();
         return null;
     }
 }

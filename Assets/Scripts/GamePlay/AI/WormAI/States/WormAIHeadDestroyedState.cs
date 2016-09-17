@@ -36,12 +36,8 @@ public class WormAIHeadDestroyedState : WormAIBaseState
         head.phaseExplosion.Play();
         head.animator.SetBool("Hit", true);
 
-        EnemyDiedEventInfo.eventInfo.infectionValue = 100 / bb.wormMaxPhases;
-        EnemyDiedEventInfo.eventInfo.killerPlayer = bb.killerPlayer;
-        EnemyDiedEventInfo.eventInfo.killedSameColor = true;
-        EnemyDiedEventInfo.eventInfo.specialKill = true;
-        EnemyDiedEventInfo.eventInfo.phase = bb.wormCurrentPhase;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_DESTROYED, EnemyDiedEventInfo.eventInfo);
+        WormEventInfo.eventInfo.wormBb = bb;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_DESTROYED, WormEventInfo.eventInfo);
 
         subState = SubState.WAITING_HEAD;
     }

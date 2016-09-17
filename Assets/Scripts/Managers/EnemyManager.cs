@@ -168,7 +168,9 @@ public class EnemyManager : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
 
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameOver); 
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, ResetValues);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_LOADED, ResetValues);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_UNLOADED, ResetValues);
     }
 
     void OnDestroy()
@@ -194,13 +196,15 @@ public class EnemyManager : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
 
             rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameOver);
-            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, ResetValues);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_LOADED, ResetValues);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_UNLOADED, ResetValues);
         }
 
         //Debug.Log("Color Manager destroyed");
     }
 
-    private void GameReset(EventInfo eventInfo)
+    private void ResetValues(EventInfo eventInfo)
     {
         currentPlan = null;
         currentPlanId = -1;
@@ -279,8 +283,8 @@ public class EnemyManager : MonoBehaviour
     {
         --bb.activeEnemies;
 
-        EnemyDiedEventInfo info = (EnemyDiedEventInfo)eventInfo;
-        bb.zoneCurrentInfectionLevel -= info.infectionValue;
+        WormEventInfo info = (WormEventInfo)eventInfo;
+        bb.zoneCurrentInfectionLevel -= (int)100 / info.wormBb.wormMaxPhases;
     }
 
     public void AddVortexEnemyInfection(int infectionValue)
@@ -930,7 +934,7 @@ public class EnemyManager : MonoBehaviour
         z01wave00.Add(new SpawnSpiderWaveAction(true, 0, "Z01SP03", level01Z01SpiderEntry00, level01Z01spiderAttack00, defaultSpiderInfect, 0f, 3, 3f));
         plan0101.sequentialWaves.Add(z01wave00);
 
-        List<WaveAction> z01wave01 = new List<WaveAction>();
+        /*List<WaveAction> z01wave01 = new List<WaveAction>();
         z01wave01.Add(new SpawnSpiderWaveAction(true, +1, "Z01SP01", level01Z01SpiderEntry01, defaultSpiderAttack, defaultSpiderInfect, 0f, 6, 1f));
         plan0101.sequentialWaves.Add(z01wave01);
         
@@ -974,7 +978,7 @@ public class EnemyManager : MonoBehaviour
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", level01Z01spiderEntry07, defaultGreenSpiderAttack, defaultSpiderInfect, 0.7f, 2, 0.7f));
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP01", level01Z01spiderEntry07, defaultRedSpiderAttack, defaultSpiderInfect, 0.7f, 2, 0.7f));
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP01", level01Z01spiderEntry07, defaultYellowSpiderAttack, defaultSpiderInfect, 0.7f, 2, 0.7f));
-        plan0101.sequentialWaves.Add(z01wave07);
+        plan0101.sequentialWaves.Add(z01wave07);*/
         
 
         ////plan0102---------------------------------------------------------------------------------------------------------------
@@ -988,7 +992,7 @@ public class EnemyManager : MonoBehaviour
         plan0102.sequentialWaves.Add(z02wave001);
 
 
-        List<WaveAction> z02wave01 = new List<WaveAction>();
+        /*List<WaveAction> z02wave01 = new List<WaveAction>();
         z02wave01.Add(new SpawnSpiderGroupWaveAction("Z02SP01", level01Z02leader1, defaultSpiderAttack, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.THREE_BACK,
             new int[] { ChromaColorInfo.CURRENT_COLOR_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET, ChromaColorInfo.CURRENT_COLOR_PLUS2_OFFSET }));
 
@@ -1029,7 +1033,7 @@ public class EnemyManager : MonoBehaviour
         z02wave04.Add(new SpawnSpiderGroupWaveAction("Z02SP01", level01Z02leader1, defaultSpiderAttack, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.THREE_FRONT,
             new int[] { (int)ChromaColor.YELLOW, (int)ChromaColor.RED, (int)ChromaColor.GREEN, (int)ChromaColor.BLUE }));
 
-        plan0102.sequentialWaves.Add(z02wave04);
+        plan0102.sequentialWaves.Add(z02wave04);*/
 
         //plan0103---------------------------------------------------------------------------------------------------------------
 
@@ -1043,7 +1047,7 @@ public class EnemyManager : MonoBehaviour
         z03wave02.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z03SP04", level01Z03spiderEntry02a, level01Z03spiderAttack02a, defaultSpiderInfect, 1f, 2, 0.7f));
         plan0103.sequentialWaves.Add(z03wave02);
 
-        List<WaveAction> z03wave002 = new List<WaveAction>();
+        /*List<WaveAction> z03wave002 = new List<WaveAction>();
         z03wave002.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z03SSP01", level01Z03MosquitoPatrol01, MosquitoDefaultAttack01));
         z03wave002.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z03SSP01", level01Z03MosquitoPatrol01, MosquitoDefaultAttack01, 2f));
         z03wave002.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z03SSP01", level01Z03MosquitoPatrol01, MosquitoDefaultAttack01, 2f));
@@ -1093,7 +1097,7 @@ public class EnemyManager : MonoBehaviour
         List<WaveAction> z03wave07 = new List<WaveAction>();
         z03wave07.Add(new SpawnSpiderGroupWaveAction("Z03SP01", level01Z03leader2, defaultSpiderAttack3, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.QUAD,
             new int[] { (int)ChromaColor.YELLOW, (int)ChromaColor.RED, (int)ChromaColor.RED, (int)ChromaColor.BLUE, (int)ChromaColor.BLUE }));
-        plan0103.sequentialWaves.Add(z03wave07);
+        plan0103.sequentialWaves.Add(z03wave07);*/
 
     }
 

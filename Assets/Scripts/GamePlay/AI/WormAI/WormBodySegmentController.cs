@@ -313,7 +313,7 @@ public class WormBodySegmentController : MonoBehaviour
                 enemy = other.GetComponentInParent<EnemyBaseAIBehaviour>();
 
             if (enemy != null)
-                enemy.ImpactedByHexagon();
+                enemy.InstantKill();
         }
     }
 }

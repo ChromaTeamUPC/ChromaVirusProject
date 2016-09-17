@@ -52,12 +52,13 @@ public class GlobalAIBlackboard
         timeSinceLastDeviceAttack = 0f;
         infectingDeviceSpiders = 0;
 
+        timeRemainingToNextPlayerAttack = 0f;
+
         attackingPlayerEnemies = 0;
         attackingPlayerSpiders = 0;
         attackingPlayerMosquitoes = 0;
         activeMosquitoMainShots = 0;
         activeMosquitoWeakShots = 0;
-        timeRemainingToNextPlayerAttack = 0f;
 
         timeRemainingToNextDeviceInfect = enemyMng.timeBetweenDeviceInfects;
 

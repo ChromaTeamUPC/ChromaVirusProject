@@ -45,19 +45,23 @@ public class VoxelizationManager : MonoBehaviour
         voxelPool = rsc.poolMng.voxelPool;
         voxelColliderPool = rsc.poolMng.voxelColliderPool;
 
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, CancelPendingSpawns);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_LOADED, CancelPendingSpawns);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_UNLOADED, CancelPendingSpawns);
     }
 
     void OnDestroy()
     {
         if(rsc.eventMng != null)
         {
-            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, CancelPendingSpawns);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_LOADED, CancelPendingSpawns);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_UNLOADED, CancelPendingSpawns);
         }
     }
 
 
-    private void GameReset(EventInfo eventInfo)
+    private void CancelPendingSpawns(EventInfo eventInfo)
     {
         pendingSpawns.Clear();
     }

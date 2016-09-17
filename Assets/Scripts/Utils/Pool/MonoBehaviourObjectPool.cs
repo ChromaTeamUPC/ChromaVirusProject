@@ -22,6 +22,8 @@ public class MonoBehaviourObjectPool<T> where T : MonoBehaviour
         if (rsc.eventMng != null)
         {
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, RecallObjects);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_LOADED, RecallObjects);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_UNLOADED, RecallObjects);
         }
         //Debug.Log("MonoBehaviour Object Pool destroyed");
     }
@@ -48,6 +50,8 @@ public class MonoBehaviourObjectPool<T> where T : MonoBehaviour
             auxList.Add(comp);
         }
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, RecallObjects);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_LOADED, RecallObjects);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_UNLOADED, RecallObjects);
         //Debug.Log("MonoBehaviour Object Pool initialized");
     }
 

@@ -217,6 +217,14 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
         return null;
     }
 
+    public override AIBaseState ProcessInstantKill()
+    {
+        mosquitoBlackboard.lastShotDirection = Vector3.zero;
+        mosquitoBlackboard.lastShotSameColor = true;
+        mosquitoBlackboard.lastShotPlayer = null;
+        return mosquitoBlackboard.dyingState;
+    }
+
     public void SpawnVoxelsAndReturnToPool(bool spawnEnergyVoxels = true)
     {
         if (spawnEnergyVoxels)

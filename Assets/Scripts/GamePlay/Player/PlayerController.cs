@@ -96,6 +96,8 @@ public class PlayerController : MonoBehaviour
     private GameObject noShootPSGO;
     [SerializeField]
     private ParticleSystem attackBlockedPS;
+    [SerializeField]
+    private ParticleSystem beamUpPS;
 
 
     [SerializeField]
@@ -170,6 +172,8 @@ public class PlayerController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameStopped);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameStopped);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_LOADED, GameReset);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_UNLOADED, GameReset);
         bb.currentColor = rsc.colorMng.CurrentColor;
         SetMaterial();
     }
@@ -182,6 +186,8 @@ public class PlayerController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameStopped);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameStopped);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_LOADED, GameReset);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_UNLOADED, GameReset);
         }
         //Debug.Log("Player " + playerId + " destroyed.");
     }
@@ -194,7 +200,7 @@ public class PlayerController : MonoBehaviour
 
     private void GameStopped(EventInfo eventInfo)
     {
-        ChangeState(bb.blockedState);
+        ChangeState(bb.invisibleState);
         //blackboard.horizontalDirection = Vector3.zero;
         //currentState = null;
     }
@@ -321,6 +327,7 @@ public class PlayerController : MonoBehaviour
         bodyRend.enabled = true;
         shieldRend.enabled = true;
         ui.SetActive(true);
+        CheckEnergyFullPS();
     }
 
     public void MakeInvisible()
@@ -328,6 +335,7 @@ public class PlayerController : MonoBehaviour
         bodyRend.enabled = false;
         shieldRend.enabled = false;
         ui.SetActive(false);
+        energyFullPS.Stop();
     }
 
     public void AnimationEnded()
@@ -362,6 +370,22 @@ public class PlayerController : MonoBehaviour
             currentState.StartInvulnerabilityTime();
 
         //Debug.Log("Player Spawn");
+    }
+
+    public void LevelCleared()
+    {
+        LevelCleared(Vector3.zero);
+    }
+
+    public void LevelCleared(Vector3 destination)
+    {
+        bb.destinationPoint = destination;
+        ChangeState(bb.levelClearedState);
+    }
+
+    public void SetInvulnerable()
+    {
+        currentState.SetInvulnerable();
     }
 
     void Update()
@@ -720,5 +744,15 @@ public class PlayerController : MonoBehaviour
     public void PlayAttackBlocked()
     {
         attackBlockedPS.Play();
+    }
+
+    public void PlayBeamUp()
+    {
+        beamUpPS.Play();
+    }
+
+    public bool IsBeamUpPlaying()
+    {
+        return beamUpPS.isPlaying;
     }
 }

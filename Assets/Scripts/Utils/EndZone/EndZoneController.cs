@@ -3,7 +3,9 @@ using System.Collections;
 
 public class EndZoneController : MonoBehaviour {
 
-    public int levelId;
+    public Transform player1EndPoint;
+    public Transform player2EndPoint;
+
     private bool triggered;
 
     void OnEnable()
@@ -15,10 +17,27 @@ public class EndZoneController : MonoBehaviour {
     {
         if (other.tag == "Player1" || other.tag == "Player2")
         {
+            PlayerController player = other.GetComponent<PlayerController>();
+            Vector3 destination = transform.position;
+
+            if (rsc.gameInfo.numberOfPlayers == 2)
+            {
+                switch (player.Id)
+                {
+                    case 1:
+                        destination = player1EndPoint.position;
+                        break;
+
+                    case 2:
+                        destination = player2EndPoint.position;
+                        break;
+                }
+            }
+            player.LevelCleared(destination);
+
             if (!triggered)
             {
-                LevelEventInfo.eventInfo.levelId = levelId;
-                rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_CLEARED, LevelEventInfo.eventInfo);
+                rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_CLEARED, EventInfo.emptyInfo);
                 triggered = true;
             }
         }

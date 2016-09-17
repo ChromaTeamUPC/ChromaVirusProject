@@ -17,9 +17,9 @@ public class PlayerInvisibleState : PlayerBaseState {
         bb.player.MakeVisible();
     }
 
-    public override void RetrieveInput() { }
-
     //In this state the player can not move nor take damage
+    public override void RetrieveInput() { }
+  
     public override PlayerBaseState TakeDamage(float damage, PlayerBaseState nextStateIfDamaged = null, bool whiteBlink = true)
     {
         return null;

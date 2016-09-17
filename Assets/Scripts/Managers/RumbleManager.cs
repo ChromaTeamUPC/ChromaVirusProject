@@ -98,7 +98,9 @@ public class RumbleManager : MonoBehaviour
 
     void Start()
     {
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, ClearAllRumbles);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_LOADED, ClearAllRumbles);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_UNLOADED, ClearAllRumbles);
         rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
         rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_CLOSED, TutorialClosed);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_PAUSED, GamePaused);
@@ -109,7 +111,9 @@ public class RumbleManager : MonoBehaviour
     {
         if (rsc.eventMng != null)
         {
-            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, ClearAllRumbles);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_LOADED, ClearAllRumbles);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_UNLOADED, ClearAllRumbles);
             rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
             rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_CLOSED, TutorialClosed);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_PAUSED, GamePaused);
@@ -118,7 +122,7 @@ public class RumbleManager : MonoBehaviour
         //Debug.Log("Rumble Manager destroyed");
     }
 
-    private void GameReset(EventInfo eventInfo)
+    private void ClearAllRumbles(EventInfo eventInfo)
     {
         pauseRumble = false;
         temporalRumbleList.Clear();

@@ -42,6 +42,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
     protected virtual void Start()
     {
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+        rsc.eventMng.StartListening(EventManager.EventType.KILL_ENEMIES, KillMySelf);
     }
 
     protected virtual void OnDestroy()
@@ -49,6 +50,7 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         if (rsc.eventMng != null)
         {
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+            rsc.eventMng.StopListening(EventManager.EventType.KILL_ENEMIES, KillMySelf);
         }
     }
 
@@ -58,6 +60,12 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
 
         if (currentState != null)
             currentState.ColorChanged(info.newColor);
+    }
+
+
+    protected virtual void KillMySelf(EventInfo eventInfo)
+    {
+        InstantKill();
     }
 
     public virtual void ProcessColorChanged(ChromaColor newColor)
@@ -198,15 +206,15 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         return null;
     }
 
-    public void ImpactedByHexagon()
+    public void InstantKill()
     {
         if(currentState != null)
         {
-            ChangeStateIfNotNull(currentState.ImpactedByHexagon());
+            ChangeStateIfNotNull(currentState.InstantKill());
         }
     }
 
-    public virtual AIBaseState ProcessHexagonImpact()
+    public virtual AIBaseState ProcessInstantKill()
     {
         return null;
     }

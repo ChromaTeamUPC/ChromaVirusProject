@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour {
     private GameState state;
 
     public Level startLevel = Level.LEVEL_01;
+    private Level currentLevel;
 
     public GameState State { get { return state; } }
 
@@ -37,8 +38,8 @@ public class GameManager : MonoBehaviour {
     void Start ()
     {
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
-        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
         rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
+        rsc.eventMng.StartListening(EventManager.EventType.SHOW_STATS, LevelCleared); //TODo change proper event
     }
 
     void OnDestroy()
@@ -46,8 +47,8 @@ public class GameManager : MonoBehaviour {
         if (rsc.eventMng != null)
         {
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
-            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
             rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
+            rsc.eventMng.StopListening(EventManager.EventType.SHOW_STATS, LevelCleared);
         }
     }
 	
@@ -119,6 +120,18 @@ public class GameManager : MonoBehaviour {
     public void SetGameStartedDEBUG()
     {
         state = GameState.STARTED;
+
+        if (SceneManager.GetActiveScene().name == "Level01")
+        {
+            Debug.Log("Level01 scene loaded");
+            currentLevel = Level.LEVEL_01;
+        }
+        else if (SceneManager.GetActiveScene().name == "LevelBoss")
+        {
+            Debug.Log("LevelBoss scene loaded");
+            currentLevel = Level.LEVEL_BOSS;
+        }
+
         Debug.Log("WARNING: gameStarted set to true through a debug function!");
     }
 
@@ -132,9 +145,11 @@ public class GameManager : MonoBehaviour {
         {
             case Level.LEVEL_01:
                 //SceneManager.LoadScene("Level01");
+                currentLevel = Level.LEVEL_01;
                 SceneManager.LoadScene("Intro");
                 break;
             case Level.LEVEL_BOSS:
+                currentLevel = Level.LEVEL_BOSS;
                 SceneManager.LoadScene("LevelBoss");
                 break;
             default:
@@ -190,15 +205,13 @@ public class GameManager : MonoBehaviour {
 
     private void LevelCleared(EventInfo eventInfo)
     {
-        int levelId = ((LevelEventInfo)eventInfo).levelId;
-
-        switch(levelId)
+        switch(currentLevel)
         {
-            case 1: //Level01
-                StartCoroutine(GoToNextLevel("LevelBoss"));
+            case Level.LEVEL_01: //Level01
+                StartCoroutine(GoToNextLevel(Level.LEVEL_BOSS));
                 break;
 
-            case -1: //Boss
+            case Level.LEVEL_BOSS: //Boss
                 GameFinished();
                 break;
         }
@@ -233,7 +246,7 @@ public class GameManager : MonoBehaviour {
         rsc.gameInfo.player2Controller.Active = false;
 
         //Ensure all resources are in place (ie, enemies back to pool)
-        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
+        rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_UNLOADED, EventInfo.emptyInfo);
         SceneManager.LoadScene("MainMenu");
     }
 
@@ -247,7 +260,7 @@ public class GameManager : MonoBehaviour {
         rsc.gameInfo.player2Controller.Active = false;
 
         //Ensure all resources are in place (ie, enemies back to pool)
-        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
+        rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_UNLOADED, EventInfo.emptyInfo);
         SceneManager.LoadScene("MainMenu");
     }
 
@@ -261,18 +274,33 @@ public class GameManager : MonoBehaviour {
         rsc.gameInfo.player2Controller.Active = false;
 
         //Ensure all resources are in place (ie, enemies back to pool)
-        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
+        rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_UNLOADED, EventInfo.emptyInfo);
         SceneManager.LoadScene("Credits");
     }
 
-    private IEnumerator GoToNextLevel(string nextLevel)
+    private IEnumerator GoToNextLevel(Level newLevel)
     {
+        string nextLevel = "";
+
+        switch (newLevel)
+        {
+            case Level.LEVEL_01:
+                nextLevel = "Level01";
+                currentLevel = Level.LEVEL_01;
+                break;
+
+            case Level.LEVEL_BOSS:
+                nextLevel = "LevelBoss";
+                currentLevel = Level.LEVEL_BOSS;
+                break;
+        }
+
         rsc.audioMng.FadeOutMusic(2.5f);
 
         yield return new WaitForSeconds(3.0f);
 
         //Ensure all resources are in place (ie, enemies back to pool)
-        rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
+        rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_UNLOADED, EventInfo.emptyInfo);
         SceneManager.LoadScene(nextLevel);
     }
 }

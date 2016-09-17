@@ -24,6 +24,8 @@ public class ObjectPool {
         if (rsc.eventMng != null)
         {
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, RecallObjects);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_LOADED, RecallObjects);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_UNLOADED, RecallObjects);
         }
         //Debug.Log("Object Pool destroyed");
     }
@@ -49,6 +51,8 @@ public class ObjectPool {
             auxList.Add(aux);
         }
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, RecallObjects);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_LOADED, RecallObjects);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_UNLOADED, RecallObjects);
         //Debug.Log("Object Pool initialized");
     }
 

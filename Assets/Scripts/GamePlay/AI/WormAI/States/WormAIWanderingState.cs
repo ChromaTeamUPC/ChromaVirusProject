@@ -176,7 +176,7 @@ public class WormAIWanderingState : WormAIBaseState
                     return head.meteorAttackState;
                 }
 
-                if (bb.AboveAttackSettingsPhase.active && bb.aboveAttackCurrentExposureTime >= bb.AboveAttackSettingsPhase.exposureTimeNeeded &&
+                if (bb.attacksEnabled && bb.AboveAttackSettingsPhase.active && bb.aboveAttackCurrentExposureTime >= bb.AboveAttackSettingsPhase.exposureTimeNeeded &&
                     bb.aboveAttackCurrentCooldownTime >= bb.AboveAttackSettingsPhase.cooldownTime &&
                     head.CheckPlayerInSight(bb.AboveAttackSettingsPhase.attackMinHexagons, bb.AboveAttackSettingsPhase.attackMaxHexagons, true))
                 {
@@ -282,7 +282,7 @@ public class WormAIWanderingState : WormAIBaseState
                 {
                     bb.applySinMovement = false;
                     //If some random condition attack, else new wandering state
-                    if (bb.BelowAttackSettingsPhase.active &&
+                    if (bb.attacksEnabled && bb.BelowAttackSettingsPhase.active &&
                         Random.Range(0f, 1f) <= bb.BelowAttackSettingsPhase.chancesOfBelowAttackAfterWandering / 100)
                         return head.belowAttackState;
                     else

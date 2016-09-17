@@ -176,7 +176,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
         return null;
     }
 
-    public override AIBaseState ProcessHexagonImpact()
+    public override AIBaseState ProcessInstantKill()
     {
         spiderBlackboard.lastShotDirection = Vector3.zero;
         spiderBlackboard.lastShotSameColor = true;

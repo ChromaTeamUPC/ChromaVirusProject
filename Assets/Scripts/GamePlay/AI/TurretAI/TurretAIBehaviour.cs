@@ -7,6 +7,7 @@ public class TurretAIBehaviour : MonoBehaviour
 {
     private enum State
     {
+        DISABLED,
         ENABLED,
         KNOCKED_OUT
     }
@@ -75,6 +76,7 @@ public class TurretAIBehaviour : MonoBehaviour
         elapsedTime = 0f;
 
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+        rsc.eventMng.StartListening(EventManager.EventType.KILL_ENEMIES, SelfDisable);
         if(isPhaseControlled)    
             rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_ACTIVATED, SetCurrentPhase);
     }
@@ -83,8 +85,10 @@ public class TurretAIBehaviour : MonoBehaviour
     {
         if (rsc.eventMng != null)
         {
+            rsc.eventMng.StopListening(EventManager.EventType.KILL_ENEMIES, SelfDisable);
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
-            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_ACTIVATED, SetCurrentPhase);
+            if (isPhaseControlled)
+                rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_ACTIVATED, SetCurrentPhase);
         }
     }
 	
@@ -198,6 +202,11 @@ public class TurretAIBehaviour : MonoBehaviour
                 break;
         }       
 	}
+
+    private void SelfDisable(EventInfo eventInfo)
+    {
+        state = State.DISABLED;
+    }
 
     public bool CanTakeDamage()
     {

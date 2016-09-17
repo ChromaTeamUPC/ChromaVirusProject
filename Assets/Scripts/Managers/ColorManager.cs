@@ -88,6 +88,8 @@ public class ColorManager : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.WORM_SECTION_COLOR_CHANGED, WormSectionColorChanged);
         rsc.eventMng.StartListening(EventManager.EventType.WORM_SECTION_DESTROYED, WormSectionDestroyed);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_LOADED, GameReset);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_UNLOADED, GameReset);
     }
 
     void OnDestroy()
@@ -100,6 +102,8 @@ public class ColorManager : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.WORM_SECTION_COLOR_CHANGED, WormSectionColorChanged);
             rsc.eventMng.StopListening(EventManager.EventType.WORM_SECTION_DESTROYED, WormSectionDestroyed);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_LOADED, GameReset);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_UNLOADED, GameReset);
         }
         //Debug.Log("Color Manager destroyed");
     }

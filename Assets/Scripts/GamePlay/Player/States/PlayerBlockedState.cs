@@ -7,8 +7,19 @@ public class PlayerBlockedState : PlayerBaseState
     {
         bb.horizontalDirection = Vector3.zero;
         bb.blinkController.StopPreviousBlinkings();
+        bb.updateVerticalPosition = false;
+        bb.player.MakeInvisible();
     }
+
+    public override void OnStateExit()
+    {
+        bb.updateVerticalPosition = true;
+        bb.player.MakeVisible();
+    }
+
     //In this state the player can not move nor take damage
+    public override void RetrieveInput() { }
+
     public override PlayerBaseState TakeDamage(float damage, PlayerBaseState nextStateIfDamaged = null, bool whiteBlink = true)
     {
         return null;

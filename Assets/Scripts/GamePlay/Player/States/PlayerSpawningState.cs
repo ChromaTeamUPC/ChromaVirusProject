@@ -7,6 +7,7 @@ public class PlayerSpawningState : PlayerBaseState {
 
     public override void OnStateEnter()
     {
+        bb.player.MakeVisible();
         bb.horizontalDirection = Vector3.zero;
 
         bb.animator.Rebind();

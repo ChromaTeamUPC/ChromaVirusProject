@@ -51,7 +51,7 @@ public class HexagonAboveAttackState : HexagonBaseState
 
     public override HexagonBaseState EnemyStay(EnemyBaseAIBehaviour enemy)
     {
-        enemy.ImpactedByHexagon();
+        enemy.InstantKill();
         return null;
     }
 }

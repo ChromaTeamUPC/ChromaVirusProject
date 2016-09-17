@@ -49,6 +49,24 @@ public class EnemyShotControllerBase : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
     }
 
+    void OnEnable()
+    {
+        rsc.eventMng.StartListening(EventManager.EventType.KILL_ENEMIES, KillMySelf);
+    }
+
+    void OnDisable()
+    {
+        rsc.eventMng.StopListening(EventManager.EventType.KILL_ENEMIES, KillMySelf);
+    }
+
+    private void KillMySelf(EventInfo eventInfo)
+    {
+        if(active)
+        {
+            Impact();
+        }
+    }
+
     public virtual void Shoot()
     {
         shotCollider.enabled = true;

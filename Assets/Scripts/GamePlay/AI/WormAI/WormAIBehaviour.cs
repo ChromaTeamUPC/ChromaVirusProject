@@ -150,21 +150,6 @@ public class WormAIBehaviour : MonoBehaviour
         }
 
         return false;
-        int wormPhases = bb.wormMaxPhases - bb.wormCurrentPhase;
-
-        //if not reached cooldown or too many enemies in screen can not spawn
-        if (rsc.enemyMng.bb.activeEnemies >= bb.SpawningMinionsSettingsPhase.maxMinionsOnScreen + wormPhases ||
-            bb.spawningMinionsCurrentCooldownTime < bb.SpawningMinionsSettingsPhase.cooldownTime)
-            return false;
-
-        //if conditions met, random chance
-        if (Random.Range(0f, 1f) < bb.SpawningMinionsSettingsPhase.chancesOfSpawningMinion / 100)
-        {
-            bb.spawningMinionsCurrentCooldownTime = 0f;
-            return true;
-        }
-        else
-            return false;
     }
 
     protected void ChangeState(WormAIBaseState newState)
@@ -375,8 +360,8 @@ public class WormAIBehaviour : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
 
-        LevelEventInfo.eventInfo.levelId = -1;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_CLEARED, LevelEventInfo.eventInfo);
+        //rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_CLEARED, LevelEventInfo.eventInfo);
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_DIED, EnemyDiedEventInfo.eventInfo);
 
         //Destroy(gameObject);
         gameObject.SetActive(false);
@@ -407,7 +392,7 @@ public class WormAIBehaviour : MonoBehaviour
                 enemy = other.GetComponentInParent<EnemyBaseAIBehaviour>();
 
             if (enemy != null)
-                enemy.ImpactedByHexagon();
+                enemy.InstantKill();
         }
     }
 

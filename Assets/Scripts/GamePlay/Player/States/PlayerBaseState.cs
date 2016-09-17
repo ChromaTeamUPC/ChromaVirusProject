@@ -208,7 +208,7 @@ public class PlayerBaseState
         }
     }
 
-    private void LookAt(Vector3 destination)
+    protected void LookAt(Vector3 destination)
     {
         Quaternion newRotation = Quaternion.LookRotation(destination);
         newRotation = Quaternion.RotateTowards(bb.player.transform.rotation, newRotation, bb.player.angularSpeed * Time.deltaTime);
@@ -493,6 +493,15 @@ public class PlayerBaseState
         bb.player.StartCoroutine(HandleInvulnerabilityTime());
 
         return result;
+    }
+
+    public void SetInvulnerable()
+    {
+        bb.player.StopCoroutine(HandleInvulnerabilityTime());
+        bb.blinkController.StopPreviousBlinkings();
+        Physics.IgnoreLayerCollision(bb.playerPhysicsLayer, bb.enemyPhysicsPlayer, false);
+
+        bb.isInvulnerable = true;
     }
 
     public void StartInvulnerabilityTime()

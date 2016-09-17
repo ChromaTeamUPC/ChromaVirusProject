@@ -39,6 +39,8 @@ public class WormAIBaseState
 
     public virtual bool CanSpawnMinion()
     {
+        if (!bb.attacksEnabled) return false;
+
         int wormPhases = bb.wormMaxPhases - bb.wormCurrentPhase;
 
         //if not reached cooldown or too many enemies in screen can not spawn
