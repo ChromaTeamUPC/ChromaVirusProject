@@ -20,8 +20,10 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
 
     public float checkAttackEverySeconds = 2f;    
     public float mainAttackDamage = 20f;
-    public float patrolShotDamage = 10f;   
+    public float patrolShotDamage = 10f;
 
+    [HideInInspector]
+    public Projector projector;   
     private Transform rotationObject;
 
     // Use this for initialization
@@ -37,6 +39,7 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
         rotationObject = transform.Find("RotationObject");
         //mainCollider = rotationObject.GetComponent<Collider>();
         mainCollider = GetComponent<Collider>();
+        projector = GetComponentInChildren<Projector>();
     }
 
     public override void SetMaterials(Material[] materials)
@@ -50,6 +53,8 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
 
             blinkController.InvalidateMaterials();
         }
+
+        projector.material = materials[1];
     }
 
     public void AIInit(SpawnAnimation spawnAnimation, List<AIAction> patrolList, List<AIAction> attackList)

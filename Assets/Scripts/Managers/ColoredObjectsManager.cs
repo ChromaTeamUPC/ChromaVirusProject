@@ -47,6 +47,10 @@ public class ColoredObjectsManager : MonoBehaviour
     private Material[] mosquitoMats = new Material[4];
     private Material currentMosquitoMat;
 
+    [SerializeField]
+    private Material[] mosquitoLightSpotMats = new Material[4];
+    private Material currentMosquitoLightSpotMat;
+
     [Header("Worm Materials", order = 0)]
     [Header("Worm Head Materials", order = 1)]
     //Worm Materials
@@ -163,6 +167,7 @@ public class ColoredObjectsManager : MonoBehaviour
         currentVoxelMat = voxelMats[colorIndex];
         currentSpiderMat = spiderMats[colorIndex];
         currentMosquitoMat = mosquitoMats[colorIndex];
+        currentMosquitoLightSpotMat = mosquitoMats[colorIndex];
         currentTurretMuzzlePool = turretMuzzlePools[colorIndex];    
     }
 
@@ -316,7 +321,7 @@ public class ColoredObjectsManager : MonoBehaviour
         if (mosquito != null)
         {
             mosquito.color = color;
-            mosquito.SetMaterials(new[] { GetMaterial(mosquitoMats, color) });
+            mosquito.SetMaterials(new[] { GetMaterial(mosquitoMats, color), GetMaterial(mosquitoLightSpotMats, color) });
 
             return mosquito;
         }

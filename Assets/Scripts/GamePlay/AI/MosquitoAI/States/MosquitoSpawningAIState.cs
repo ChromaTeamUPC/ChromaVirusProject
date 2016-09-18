@@ -8,6 +8,7 @@ public class MosquitoSpawningAIState : MosquitoAIBaseState {
 
     public override void OnStateEnter()
     {
+        mosquitoBlackboard.mosquito.projector.enabled = false;
         mosquitoBlackboard.agent.enabled = false;
         mosquitoBlackboard.entity.mainCollider.enabled = false;
         //mosquitoBlackboard.entity.dyingCollider.SetActive(false);
@@ -24,6 +25,7 @@ public class MosquitoSpawningAIState : MosquitoAIBaseState {
 
     public override void OnStateExit()
     {
+        mosquitoBlackboard.mosquito.projector.enabled = true;
         mosquitoBlackboard.agent.enabled = true;
         mosquitoBlackboard.entity.mainCollider.enabled = true;
         mosquitoBlackboard.canReceiveDamage = true;
