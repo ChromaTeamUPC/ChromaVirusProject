@@ -11,9 +11,13 @@ public class GUIController : MonoBehaviour
     public float chainBreakBGDuration = 0.1f;
 
     [Header("Score Config")]
+    public float scoreInitialDelay = 0.5f;
     public float scoreChainDuration = 1f;
     public float scoreAccuracyDuration = 1f;
     public float scoreTimeDuration = 1f;
+    public float scoreFinalDelay = 0.2f;
+
+    [Header("Score Items")]
     public GameObject scoreGO;
     public GameObject scoreContinueHintGO;
     public GameObject scoreSingleGO;
@@ -89,9 +93,7 @@ public class GUIController : MonoBehaviour
     public Text zoneTxt;
     public Text clearedTxt;
 
-    [Header("Other Items")]
-    public GameObject infoArea;
-    public GameObject playersArea;
+    [Header("Pause Items")]
     public GameObject pauseGroup;
     public GameObject optionsGroup;
     public GameObject confirmationGroup;
@@ -99,14 +101,18 @@ public class GUIController : MonoBehaviour
     public Button quitBtn;
     public Button yesBtn;
     public Button noBtn;
+
+    [Header("Tutorial Items")]
     public GameObject tutorialGO;
     public Image tutorialImg;
+
+    [Header("Other Items")]
+    public GameObject infoArea;
+    public GameObject playersArea;
     public Text youWinTxt;
     public Text gameOverTxt;
     public Text godModeTxt;
-
     public GameObject skipHint;
-
     public FadeSceneScript fadeCurtain;
 
     private PlayerController player1Controller;
@@ -139,6 +145,10 @@ public class GUIController : MonoBehaviour
         player2ChainSlider.maxValue = player2Stats.chainMaxTime;
 
         DisableHintButtons(0);
+
+        scoreSingleGO.SetActive(false);
+        scoreMultiGO.SetActive(false);
+        scoreGO.SetActive(false);
 
         nextColorElapsedTime = 0f;
         nextColorPrewarnTime = 0f;
@@ -658,7 +668,7 @@ public class GUIController : MonoBehaviour
 
         scoreSingleGO.SetActive(true);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(scoreInitialDelay);
 
         //Chain update
         elapsedTime += Time.deltaTime;
@@ -733,7 +743,8 @@ public class GUIController : MonoBehaviour
         timeScore = percentScore + ((levelTime - actualTime) * rsc.statsMng.secondMultiplier);
         scoreSingleTime.text = actualTime.ToString();
         scoreSingleTotal.text = string.Format("{0:n0}", timeScore);
-        yield return new WaitForSeconds(0.2f);
+
+        yield return new WaitForSeconds(scoreFinalDelay);
 
         scoreContinueHintGO.SetActive(true);
         rsc.eventMng.TriggerEvent(EventManager.EventType.SCORE_OPENED, EventInfo.emptyInfo);
@@ -769,7 +780,7 @@ public class GUIController : MonoBehaviour
 
         scoreMultiGO.SetActive(true);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(scoreInitialDelay);
 
         //Chain update
         elapsedTime += Time.deltaTime;
@@ -868,7 +879,8 @@ public class GUIController : MonoBehaviour
         scoreMultiTime.text = actualTime.ToString();
         scoreMultiTotalP1.text = string.Format("{0:n0}", timeScoreP1);
         scoreMultiTotalP2.text = string.Format("{0:n0}", timeScoreP2);
-        yield return new WaitForSeconds(0.2f);
+
+        yield return new WaitForSeconds(scoreFinalDelay);
 
         scoreContinueHintGO.SetActive(true);
         rsc.eventMng.TriggerEvent(EventManager.EventType.SCORE_OPENED, EventInfo.emptyInfo);
