@@ -16,9 +16,6 @@ public class LevelBossController : MonoBehaviour
 
     public WormBlackboard worm;
 
-    [SerializeField]
-    private FadeSceneScript fadeScript;
-
     // Use this for initialization
     void Start () 
 	{
@@ -52,12 +49,13 @@ public class LevelBossController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
         rsc.eventMng.StartListening(EventManager.EventType.WORM_DYING, WormDying);
         rsc.eventMng.StartListening(EventManager.EventType.WORM_DIED, WormDied);
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameOver);
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameFinished);
 
         rsc.camerasMng.SetEntryCameraLevelAnimation(-1);
 
-        fadeScript.StartFadingToClear();
+        FadeCurtainEventInfo.eventInfo.fadeIn = true;
+        FadeCurtainEventInfo.eventInfo.useDefaultColor = true;
+        FadeCurtainEventInfo.eventInfo.useDefaultTime = true;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.FADE_CURTAIN, FadeCurtainEventInfo.eventInfo);
         rsc.audioMng.FadeInMusic(AudioManager.MusicType.LEVEL_BOSS_01);
 
         StartCoroutine(InitWorm());
@@ -73,8 +71,6 @@ public class LevelBossController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
             rsc.eventMng.StopListening(EventManager.EventType.WORM_DYING, WormDying);
             rsc.eventMng.StopListening(EventManager.EventType.WORM_DIED, WormDied);
-            rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameOver);
-            rsc.eventMng.StopListening(EventManager.EventType.GAME_FINISHED, GameFinished);
         }
     }
 
@@ -197,22 +193,5 @@ public class LevelBossController : MonoBehaviour
         {
             rsc.gameInfo.player2Controller.LevelCleared();
         }
-    }
-
-    private void GameOver(EventInfo eventInfo)
-    {
-        StartCoroutine(FadeOut());
-    }
-
-    private void GameFinished(EventInfo eventInfo)
-    {
-        StartCoroutine(FadeOut());
-    }
-
-    private IEnumerator FadeOut()
-    {
-        yield return new WaitForSeconds(1.5f);
-
-        fadeScript.StartFadingToColor(1.5f);
     }
 }

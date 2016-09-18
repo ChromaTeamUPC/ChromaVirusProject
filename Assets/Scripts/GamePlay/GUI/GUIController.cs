@@ -5,10 +5,30 @@ using System.Collections.Generic;
 
 public class GUIController : MonoBehaviour
 {
-    [Header("Both players config")]
+    [Header("Chain Config")]
     public float chainDelay = 0.1f;
     public float chainAddBGDuration = 0.1f;
     public float chainBreakBGDuration = 0.1f;
+
+    [Header("Score Config")]
+    public float scoreChainDuration = 1f;
+    public float scoreAccuracyDuration = 1f;
+    public float scoreTimeDuration = 1f;
+    public GameObject scoreGO;
+    public GameObject scoreContinueHintGO;
+    public GameObject scoreSingleGO;
+    public Text scoreSingleChain;
+    public Text scoreSingleAccuracy;
+    public Text scoreSingleTime;
+    public Text scoreSingleTotal;
+    public GameObject scoreMultiGO;
+    public Text scoreMultiChainP1;
+    public Text scoreMultiAccuracyP1;
+    public Text scoreMultiTotalP1;
+    public Text scoreMultiChainP2;
+    public Text scoreMultiAccuracyP2;
+    public Text scoreMultiTotalP2;
+    public Text scoreMultiTime;
 
     [Header("Player 1 Items")]
     public GameObject player1Zone;
@@ -79,13 +99,15 @@ public class GUIController : MonoBehaviour
     public Button quitBtn;
     public Button yesBtn;
     public Button noBtn;
-    public GameObject helpGO;
-    public Image helpImg;
+    public GameObject tutorialGO;
+    public Image tutorialImg;
     public Text youWinTxt;
     public Text gameOverTxt;
     public Text godModeTxt;
 
     public GameObject skipHint;
+
+    public FadeSceneScript fadeCurtain;
 
     private PlayerController player1Controller;
     private PlayerController player2Controller;
@@ -133,8 +155,11 @@ public class GUIController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
         rsc.eventMng.StartListening(EventManager.EventType.SHOW_TUTORIAL, ShowTutorial);
         rsc.eventMng.StartListening(EventManager.EventType.HIDE_TUTORIAL, HideTutorial);
+        rsc.eventMng.StartListening(EventManager.EventType.SHOW_SCORE, ShowScore);
+        rsc.eventMng.StartListening(EventManager.EventType.HIDE_SCORE, HideScore);
         rsc.eventMng.StartListening(EventManager.EventType.COMBO_ADD, ComboAdd);
         rsc.eventMng.StartListening(EventManager.EventType.COMBO_BREAK, ComboBreak);
+        rsc.eventMng.StartListening(EventManager.EventType.FADE_CURTAIN, FadeCurtain);
 
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
@@ -159,8 +184,11 @@ public class GUIController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
             rsc.eventMng.StopListening(EventManager.EventType.SHOW_TUTORIAL, ShowTutorial);
             rsc.eventMng.StopListening(EventManager.EventType.HIDE_TUTORIAL, HideTutorial);
+            rsc.eventMng.StopListening(EventManager.EventType.SHOW_SCORE, ShowScore);
+            rsc.eventMng.StopListening(EventManager.EventType.HIDE_SCORE, HideScore);
             rsc.eventMng.StopListening(EventManager.EventType.COMBO_ADD, ComboAdd);
             rsc.eventMng.StopListening(EventManager.EventType.COMBO_BREAK, ComboBreak);
+            rsc.eventMng.StartListening(EventManager.EventType.FADE_CURTAIN, FadeCurtain);
 
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
@@ -177,8 +205,8 @@ public class GUIController : MonoBehaviour
             player1Lives.text = player1Controller.Lives.ToString();
 
             //Combo
-            player1CurrentCombo.text = player1Stats.currentCombo.ToString();
-            player1ChainSlider.value = player1Stats.comboRemainingTime;
+            player1CurrentCombo.text = player1Stats.currentChain.ToString();
+            player1ChainSlider.value = player1Stats.chainRemainingTime;
 
             //Hints
             player1ButtonHints.transform.position = rsc.camerasMng.currentCamera.WorldToScreenPoint(player1Controller.hintPoint.position);            
@@ -192,8 +220,8 @@ public class GUIController : MonoBehaviour
             player2Lives.text = player2Controller.Lives.ToString();
 
             //Combo
-            player2CurrentCombo.text = player2Stats.currentCombo.ToString();
-            player2ChainSlider.value = player2Stats.comboRemainingTime;
+            player2CurrentCombo.text = player2Stats.currentChain.ToString();
+            player2ChainSlider.value = player2Stats.chainRemainingTime;
 
             //Hints
             player2ButtonHints.transform.position = rsc.camerasMng.currentCamera.WorldToScreenPoint(player2Controller.hintPoint.position);            
@@ -575,8 +603,8 @@ public class GUIController : MonoBehaviour
 
         if (sprite != null)
         {
-            helpImg.sprite = sprite;
-            helpGO.SetActive(true);
+            tutorialImg.sprite = sprite;
+            tutorialGO.SetActive(true);
             infoArea.SetActive(false);
             rsc.eventMng.TriggerEvent(EventManager.EventType.TUTORIAL_OPENED, EventInfo.emptyInfo);
         }
@@ -584,11 +612,291 @@ public class GUIController : MonoBehaviour
 
     private void HideTutorial(EventInfo eventInfo)
     {
-        if (helpGO.activeSelf)
+        if (tutorialGO.activeSelf)
         {
-            helpGO.SetActive(false);
+            tutorialGO.SetActive(false);
             infoArea.SetActive(true);
             rsc.eventMng.TriggerEvent(EventManager.EventType.TUTORIAL_CLOSED, EventInfo.emptyInfo);
+        }
+    }
+
+    private void ShowScore(EventInfo eventInfo)
+    {
+        if (!scoreGO.activeSelf)
+        {
+            rsc.eventMng.TriggerEvent(EventManager.EventType.SCORE_OPENING, EventInfo.emptyInfo);
+
+            scoreGO.SetActive(true);
+            infoArea.SetActive(false);
+
+            if (rsc.gameInfo.numberOfPlayers == 1)
+                StartCoroutine(ShowScoreSingleProgress());
+            else
+                StartCoroutine(ShowScoreMultiProgress());
+        }
+    }
+
+    private IEnumerator ShowScoreSingleProgress()
+    {
+        int currentChain = 0;
+        int totalScore = 0;
+
+        int currentAccuracy = 0;
+        int percentScore = 0;
+
+        int levelTime = rsc.statsMng.GetCurrentLevelBaseTime();
+        int actualTime = rsc.statsMng.GetTotalTime();
+        int timeScore = 0;
+
+        float elapsedTime = 0f;
+        float factor = 0f;
+
+        scoreSingleChain.text = totalScore.ToString();
+        scoreSingleAccuracy.text = totalScore.ToString();
+        scoreSingleTime.text = levelTime.ToString();
+        scoreSingleTotal.text = totalScore.ToString();
+
+        scoreSingleGO.SetActive(true);
+
+        yield return new WaitForSeconds(0.5f);
+
+        //Chain update
+        elapsedTime += Time.deltaTime;
+        factor = elapsedTime / scoreChainDuration;
+
+        while(elapsedTime < scoreChainDuration)
+        {
+            currentChain = (int)Mathf.Lerp(0, rsc.statsMng.p1Stats.maxChain, factor);
+            totalScore = currentChain * rsc.statsMng.maxChainMultiplier;
+
+            scoreSingleChain.text = currentChain.ToString();
+            scoreSingleTotal.text = string.Format("{0:n0}", totalScore);
+            Debug.Log("Chain: " + currentChain + " // Total: " + totalScore);
+
+            yield return null;
+
+            elapsedTime += Time.deltaTime;
+            factor = elapsedTime / scoreChainDuration;
+        }
+
+        totalScore = rsc.statsMng.p1Stats.maxChain * rsc.statsMng.maxChainMultiplier;
+        scoreSingleChain.text = rsc.statsMng.p1Stats.maxChain.ToString();
+        scoreSingleTotal.text = string.Format("{0:n0}", rsc.statsMng.p1Stats.maxChain * rsc.statsMng.maxChainMultiplier);
+        yield return null;
+
+        //Accuracy update
+        elapsedTime = 0f;
+        factor = 0f;
+
+        while(elapsedTime < scoreAccuracyDuration)
+        {
+            currentAccuracy = (int)Mathf.Lerp(0, rsc.statsMng.p1Stats.colorAccuracy, factor);
+            percentScore = totalScore / 100 * currentAccuracy;
+
+            scoreSingleAccuracy.text = currentAccuracy.ToString();
+            scoreSingleTotal.text = string.Format("{0:n0}", percentScore);
+
+            yield return null;
+
+            elapsedTime += Time.deltaTime;
+            factor = elapsedTime / scoreAccuracyDuration;
+        }
+
+        percentScore = totalScore / 100 * rsc.statsMng.p1Stats.colorAccuracy;
+        scoreSingleAccuracy.text = rsc.statsMng.p1Stats.colorAccuracy.ToString();
+        scoreSingleTotal.text = string.Format("{0:n0}", percentScore);
+        yield return null;
+
+        //Time update
+        elapsedTime = 0f;
+        factor = 0f;
+
+        if (actualTime < levelTime)
+            scoreSingleTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.GREEN);
+        else if (actualTime > levelTime)
+            scoreSingleTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.RED);
+
+        while (elapsedTime < scoreTimeDuration)
+        {
+            int seconds = (int)Mathf.Lerp(levelTime, actualTime, factor);
+            timeScore = percentScore + ((levelTime - seconds) * rsc.statsMng.secondMultiplier);
+
+            scoreSingleTime.text = seconds.ToString();
+            scoreSingleTotal.text = string.Format("{0:n0}", timeScore);
+
+            yield return null;
+
+            elapsedTime += Time.deltaTime;
+            factor = elapsedTime / scoreTimeDuration;
+        }
+
+        timeScore = percentScore + ((levelTime - actualTime) * rsc.statsMng.secondMultiplier);
+        scoreSingleTime.text = actualTime.ToString();
+        scoreSingleTotal.text = string.Format("{0:n0}", timeScore);
+        yield return new WaitForSeconds(0.2f);
+
+        scoreContinueHintGO.SetActive(true);
+        rsc.eventMng.TriggerEvent(EventManager.EventType.SCORE_OPENED, EventInfo.emptyInfo);
+    }
+
+    private IEnumerator ShowScoreMultiProgress()
+    {
+        int currentChainP1 = 0;
+        int totalScoreP1 = 0;
+        int currentChainP2 = 0;
+        int totalScoreP2 = 0;
+
+        int currentAccuracyP1 = 0;
+        int percentScoreP1 = 0;
+        int currentAccuracyP2 = 0;
+        int percentScoreP2 = 0;
+
+        int levelTime = rsc.statsMng.GetCurrentLevelBaseTime();
+        int actualTime = rsc.statsMng.GetTotalTime();
+        int timeScoreP1 = 0;
+        int timeScoreP2 = 0;
+
+        float elapsedTime = 0f;
+        float factor = 0f;
+
+        scoreMultiChainP1.text = totalScoreP1.ToString();
+        scoreMultiAccuracyP1.text = totalScoreP1.ToString();
+        scoreMultiTotalP1.text = totalScoreP1.ToString();
+        scoreMultiChainP2.text = totalScoreP2.ToString();
+        scoreMultiAccuracyP2.text = totalScoreP2.ToString();
+        scoreMultiTotalP2.text = totalScoreP2.ToString();
+        scoreMultiTime.text = levelTime.ToString();
+
+        scoreMultiGO.SetActive(true);
+
+        yield return new WaitForSeconds(0.5f);
+
+        //Chain update
+        elapsedTime += Time.deltaTime;
+        factor = elapsedTime / scoreChainDuration;
+
+        while (elapsedTime < scoreChainDuration)
+        {
+            currentChainP1 = (int)Mathf.Lerp(0, rsc.statsMng.p1Stats.maxChain, factor);
+            totalScoreP1 = currentChainP1 * rsc.statsMng.maxChainMultiplier;
+
+            scoreMultiChainP1.text = currentChainP1.ToString();
+            scoreMultiTotalP1.text = string.Format("{0:n0}", totalScoreP1);
+
+            currentChainP2 = (int)Mathf.Lerp(0, rsc.statsMng.p2Stats.maxChain, factor);
+            totalScoreP2 = currentChainP2 * rsc.statsMng.maxChainMultiplier;
+
+            scoreMultiChainP2.text = currentChainP2.ToString();
+            scoreMultiTotalP2.text = string.Format("{0:n0}", totalScoreP2);
+
+            yield return null;
+
+            elapsedTime += Time.deltaTime;
+            factor = elapsedTime / scoreChainDuration;
+        }
+
+        totalScoreP1 = rsc.statsMng.p1Stats.maxChain * rsc.statsMng.maxChainMultiplier;
+        scoreMultiChainP1.text = rsc.statsMng.p1Stats.maxChain.ToString();
+        scoreMultiTotalP1.text = string.Format("{0:n0}", rsc.statsMng.p1Stats.maxChain * rsc.statsMng.maxChainMultiplier);
+
+        totalScoreP2 = rsc.statsMng.p2Stats.maxChain * rsc.statsMng.maxChainMultiplier;
+        scoreMultiChainP2.text = rsc.statsMng.p2Stats.maxChain.ToString();
+        scoreMultiTotalP2.text = string.Format("{0:n0}", rsc.statsMng.p2Stats.maxChain * rsc.statsMng.maxChainMultiplier);
+        yield return null;
+
+        //Accuracy update
+        elapsedTime = 0f;
+        factor = 0f;
+
+        while (elapsedTime < scoreAccuracyDuration)
+        {
+            currentAccuracyP1 = (int)Mathf.Lerp(0, rsc.statsMng.p1Stats.colorAccuracy, factor);
+            percentScoreP1 = totalScoreP1 / 100 * currentAccuracyP1;
+
+            scoreMultiAccuracyP1.text = currentAccuracyP1.ToString();
+            scoreMultiTotalP1.text = string.Format("{0:n0}", percentScoreP1);
+
+            currentAccuracyP2 = (int)Mathf.Lerp(0, rsc.statsMng.p2Stats.colorAccuracy, factor);
+            percentScoreP2 = totalScoreP2 / 100 * currentAccuracyP2;
+
+            scoreMultiAccuracyP2.text = currentAccuracyP2.ToString();
+            scoreMultiTotalP2.text = string.Format("{0:n0}", percentScoreP2);
+
+            yield return null;
+
+            elapsedTime += Time.deltaTime;
+            factor = elapsedTime / scoreAccuracyDuration;
+        }
+
+        percentScoreP1 = totalScoreP1 / 100 * rsc.statsMng.p1Stats.colorAccuracy;
+        scoreMultiAccuracyP1.text = rsc.statsMng.p1Stats.colorAccuracy.ToString();
+        scoreMultiTotalP2.text = string.Format("{0:n0}", percentScoreP1);
+
+        percentScoreP2 = totalScoreP2 / 100 * rsc.statsMng.p2Stats.colorAccuracy;
+        scoreMultiAccuracyP2.text = rsc.statsMng.p2Stats.colorAccuracy.ToString();
+        scoreMultiTotalP2.text = string.Format("{0:n0}", percentScoreP2);
+        yield return null;
+
+        //Time update
+        elapsedTime = 0f;
+        factor = 0f;
+
+        if (actualTime < levelTime)
+            scoreMultiTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.GREEN);
+        else if (actualTime > levelTime)
+            scoreMultiTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.RED);
+
+        while (elapsedTime < scoreTimeDuration)
+        {
+            int seconds = (int)Mathf.Lerp(levelTime, actualTime, factor);
+
+            timeScoreP1 = percentScoreP1 + ((levelTime - seconds) * rsc.statsMng.secondMultiplier);
+            timeScoreP2 = percentScoreP2 + ((levelTime - seconds) * rsc.statsMng.secondMultiplier);
+
+            scoreMultiTime.text = seconds.ToString();
+            scoreMultiTotalP1.text = string.Format("{0:n0}", timeScoreP1);
+            scoreMultiTotalP2.text = string.Format("{0:n0}", timeScoreP2);
+
+            yield return null;
+
+            elapsedTime += Time.deltaTime;
+            factor = elapsedTime / scoreTimeDuration;
+        }
+
+        timeScoreP1 = percentScoreP1 + ((levelTime - actualTime) * rsc.statsMng.secondMultiplier);
+        timeScoreP2 = percentScoreP2 + ((levelTime - actualTime) * rsc.statsMng.secondMultiplier);
+        scoreMultiTime.text = actualTime.ToString();
+        scoreMultiTotalP1.text = string.Format("{0:n0}", timeScoreP1);
+        scoreMultiTotalP2.text = string.Format("{0:n0}", timeScoreP2);
+        yield return new WaitForSeconds(0.2f);
+
+        scoreContinueHintGO.SetActive(true);
+        rsc.eventMng.TriggerEvent(EventManager.EventType.SCORE_OPENED, EventInfo.emptyInfo);
+    }
+
+    private void HideScore(EventInfo eventInfo)
+    {
+        if (scoreGO.activeSelf)
+        {
+            //scoreGO.SetActive(false);
+            //infoArea.SetActive(true);
+            rsc.eventMng.TriggerEvent(EventManager.EventType.SCORE_CLOSED, EventInfo.emptyInfo);
+        }
+    }
+
+    private void FadeCurtain(EventInfo eventInfo)
+    {
+        FadeCurtainEventInfo info = (FadeCurtainEventInfo)eventInfo;
+
+        if(info.fadeIn)
+        {
+            fadeCurtain.StartFadingToClear((info.useDefaultColor ? fadeCurtain.defaultFadeColor : info.fadeColor),
+                                           (info.useDefaultTime ? fadeCurtain.defaultFadeSeconds : info.fadeTime));
+        }
+        else
+        {
+            fadeCurtain.StartFadingToColor((info.useDefaultColor ? fadeCurtain.defaultFadeColor : info.fadeColor),
+                                           (info.useDefaultTime ? fadeCurtain.defaultFadeSeconds : info.fadeTime));
         }
     }
 }

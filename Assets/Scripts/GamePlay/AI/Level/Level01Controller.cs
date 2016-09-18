@@ -80,9 +80,6 @@ public class Level01Controller : MonoBehaviour
     public FloorController floor;
 
     [SerializeField]
-    private FadeSceneScript fadeScript;
-
-    [SerializeField]
     private Animator elevatorAnimator;
 
     private int currentZoneId;
@@ -122,10 +119,11 @@ public class Level01Controller : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanFinished);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameOver);
 
-
-        fadeScript.StartFadingToClear();
+        FadeCurtainEventInfo.eventInfo.fadeIn = true;
+        FadeCurtainEventInfo.eventInfo.useDefaultColor = true;
+        FadeCurtainEventInfo.eventInfo.useDefaultTime = true;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.FADE_CURTAIN, FadeCurtainEventInfo.eventInfo);
         rsc.audioMng.FadeInMusic(AudioManager.MusicType.LEVEL_01);
 
         zoneDictionary = new Dictionary<int, ZoneActivableObjects>();
@@ -144,7 +142,6 @@ public class Level01Controller : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanFinished);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
-            rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameOver);
         }
     }
 
@@ -249,17 +246,5 @@ public class Level01Controller : MonoBehaviour
             player.transform.position = zoneActivableObjects[0].playerSpawnPoint.position;
 
         player.transform.SetParent(null);
-    }
-
-    private void GameOver(EventInfo eventInfo)
-    {
-        StartCoroutine(FadeOut());
-    }
-
-    private IEnumerator FadeOut()
-    {
-        yield return new WaitForSeconds(1.5f);
-
-        fadeScript.StartFadingToColor(1.5f);
     }
 }

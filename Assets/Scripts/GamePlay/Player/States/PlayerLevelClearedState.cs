@@ -91,7 +91,7 @@ public class PlayerLevelClearedState : PlayerBaseState
                     elapsedTime += Time.deltaTime;
                 if(!bb.player.IsBeamUpPlaying())
                 {
-                    rsc.eventMng.TriggerEvent(EventManager.EventType.SHOW_STATS, EventInfo.emptyInfo);
+                    rsc.eventMng.TriggerEvent(EventManager.EventType.SHOW_SCORE, EventInfo.emptyInfo);
                     subState = SubState.WAITING;
                 }
                 break;

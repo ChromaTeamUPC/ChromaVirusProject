@@ -114,7 +114,7 @@ public class ComboEventInfo: EventInfo
 
     public int playerId;
     public ChromaColor comboColor;
-    public uint comboAdd;
+    public int comboAdd;
 }
 
 public class ButtonHintEventInfo : EventInfo
@@ -150,6 +150,17 @@ public class MeteorAttackEventInfo: EventInfo
 
     public int meteorWaitTime = 0;
     public float meteorWarningTime = 2f;
+}
+
+public class FadeCurtainEventInfo: EventInfo
+{
+    public static FadeCurtainEventInfo eventInfo = new FadeCurtainEventInfo();
+
+    public bool fadeIn;
+    public bool useDefaultTime;
+    public float fadeTime;
+    public bool useDefaultColor;
+    public Color fadeColor;
 }
 
 
@@ -219,10 +230,11 @@ public class EventManager : MonoBehaviour {
         COMBO_ADD,
         COMBO_BREAK,
 
-        SHOW_STATS,
-        HIDE_STATS,
-        STATS_OPENED,
-        STATS_CLOSED,
+        SHOW_SCORE,
+        HIDE_SCORE,
+        SCORE_OPENING,
+        SCORE_OPENED,
+        SCORE_CLOSED,
 
         SHOW_TUTORIAL,
         HIDE_TUTORIAL,
@@ -238,6 +250,7 @@ public class EventManager : MonoBehaviour {
         DEVICE_INFECTION_LEVEL_CHANGED,
 
         BUTTON_HINT,
+        FADE_CURTAIN,
     }
 
     private Dictionary<EventType, CustomEvent> eventDictionary;

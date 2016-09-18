@@ -30,7 +30,7 @@ public class ChainIncrementController : MonoBehaviour
         text.enabled = false;
     }
 
-    public void Set(uint increment)
+    public void Set(int increment)
     {
         text.text = "+" + increment;
         text.color = Color.white;

@@ -19,7 +19,9 @@ public class GameManager : MonoBehaviour {
         NOT_STARTED,
         STARTED,
         PAUSED,
-        SHOWING_TUTORIAL
+        SHOWING_TUTORIAL,
+        OPENING_SCORE,
+        SHOWING_SCORE
     }
 
     private GameState state;
@@ -27,7 +29,10 @@ public class GameManager : MonoBehaviour {
     public Level startLevel = Level.LEVEL_01;
     private Level currentLevel;
 
+    private AsyncOperation nextLevel;
+
     public GameState State { get { return state; } }
+    public Level CurrentLevel { get { return currentLevel; } }
 
     void Awake()
     {
@@ -39,7 +44,10 @@ public class GameManager : MonoBehaviour {
     {
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
         rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
-        rsc.eventMng.StartListening(EventManager.EventType.SHOW_STATS, LevelCleared); //TODo change proper event
+        rsc.eventMng.StartListening(EventManager.EventType.SCORE_OPENING, ScoreOpening);
+        rsc.eventMng.StartListening(EventManager.EventType.SCORE_OPENED, ScoreOpened);
+        rsc.eventMng.StartListening(EventManager.EventType.SCORE_CLOSED, ScoreClosed);
+        //rsc.eventMng.StartListening(EventManager.EventType.SHOW_SCORE, LevelCleared); //TODo change proper event
     }
 
     void OnDestroy()
@@ -48,7 +56,10 @@ public class GameManager : MonoBehaviour {
         {
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
             rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
-            rsc.eventMng.StopListening(EventManager.EventType.SHOW_STATS, LevelCleared);
+            rsc.eventMng.StopListening(EventManager.EventType.SCORE_OPENING, ScoreOpening);
+            rsc.eventMng.StopListening(EventManager.EventType.SCORE_OPENED, ScoreOpened);
+            rsc.eventMng.StopListening(EventManager.EventType.SCORE_CLOSED, ScoreClosed);
+            //rsc.eventMng.StopListening(EventManager.EventType.SHOW_SCORE, LevelCleared);
         }
     }
 	
@@ -63,16 +74,27 @@ public class GameManager : MonoBehaviour {
                 if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Start))
                     Pause();
                 break;
+
             case GameState.PAUSED:
                 if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Start))
                     Resume();
                 break;
+
             case GameState.SHOWING_TUTORIAL:
                 if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action1))
                     CloseTutorial();
                 else if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action4))
                     CloseTutorial(true);
                 break;
+
+            case GameState.OPENING_SCORE:
+                break;
+
+            case GameState.SHOWING_SCORE:
+                if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action1))
+                    CloseScore();
+                break;
+
             default:
                 break;
         }
@@ -115,6 +137,37 @@ public class GameManager : MonoBehaviour {
         if (disableTutorial)
             rsc.tutorialMng.active = false;
         rsc.eventMng.TriggerEvent(EventManager.EventType.HIDE_TUTORIAL, EventInfo.emptyInfo);
+    }
+
+    public void ScoreOpening(EventInfo eventInfo)
+    {
+        state = GameState.OPENING_SCORE;
+    }
+
+    public void ScoreOpened(EventInfo eventInfo)
+    {
+        state = GameState.SHOWING_SCORE;
+    }
+
+    public void CloseScore()
+    {
+        if (state != GameState.SHOWING_SCORE) return;
+
+        rsc.eventMng.TriggerEvent(EventManager.EventType.HIDE_SCORE, EventInfo.emptyInfo);      
+    }
+
+    public void ScoreClosed(EventInfo eventInfo)
+    {
+        switch (currentLevel)
+        {
+            case Level.LEVEL_01: //Level01
+                StartCoroutine(GoToNextLevel(Level.LEVEL_BOSS));
+                break;
+
+            case Level.LEVEL_BOSS: //Boss
+                GameFinished();
+                break;
+        }
     }
 
     public void SetGameStartedDEBUG()
@@ -203,20 +256,6 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    private void LevelCleared(EventInfo eventInfo)
-    {
-        switch(currentLevel)
-        {
-            case Level.LEVEL_01: //Level01
-                StartCoroutine(GoToNextLevel(Level.LEVEL_BOSS));
-                break;
-
-            case Level.LEVEL_BOSS: //Boss
-                GameFinished();
-                break;
-        }
-    }
-
     private void GameOver()
     {
         state = GameState.NOT_STARTED;
@@ -254,7 +293,15 @@ public class GameManager : MonoBehaviour {
     {
         rsc.audioMng.FadeOutMusic(2.5f);
 
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(1.5f);
+
+        FadeCurtainEventInfo.eventInfo.fadeIn = false;
+        FadeCurtainEventInfo.eventInfo.useDefaultColor = true;
+        FadeCurtainEventInfo.eventInfo.useDefaultTime = false;
+        FadeCurtainEventInfo.eventInfo.fadeTime = 1.5f;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.FADE_CURTAIN, FadeCurtainEventInfo.eventInfo);
+
+        yield return new WaitForSeconds(1.5f);
 
         rsc.gameInfo.player1Controller.Active = false;
         rsc.gameInfo.player2Controller.Active = false;
@@ -268,7 +315,15 @@ public class GameManager : MonoBehaviour {
     {
         rsc.audioMng.FadeOutMusic(2.5f);
 
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(1.5f);
+
+        FadeCurtainEventInfo.eventInfo.fadeIn = false;
+        FadeCurtainEventInfo.eventInfo.useDefaultColor = true;
+        FadeCurtainEventInfo.eventInfo.useDefaultTime = false;
+        FadeCurtainEventInfo.eventInfo.fadeTime = 1.5f;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.FADE_CURTAIN, FadeCurtainEventInfo.eventInfo);
+
+        yield return new WaitForSeconds(1.5f);
 
         rsc.gameInfo.player1Controller.Active = false;
         rsc.gameInfo.player2Controller.Active = false;
@@ -280,27 +335,35 @@ public class GameManager : MonoBehaviour {
 
     private IEnumerator GoToNextLevel(Level newLevel)
     {
-        string nextLevel = "";
-
         switch (newLevel)
         {
             case Level.LEVEL_01:
-                nextLevel = "Level01";
                 currentLevel = Level.LEVEL_01;
+                nextLevel = SceneManager.LoadSceneAsync("Level01");
                 break;
 
             case Level.LEVEL_BOSS:
-                nextLevel = "LevelBoss";
                 currentLevel = Level.LEVEL_BOSS;
+                nextLevel = SceneManager.LoadSceneAsync("LevelBoss");
                 break;
         }
+        nextLevel.allowSceneActivation = false;
 
         rsc.audioMng.FadeOutMusic(2.5f);
 
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(1.5f);
+
+        FadeCurtainEventInfo.eventInfo.fadeIn = false;
+        FadeCurtainEventInfo.eventInfo.useDefaultColor = true;
+        FadeCurtainEventInfo.eventInfo.useDefaultTime = false;
+        FadeCurtainEventInfo.eventInfo.fadeTime = 1.5f;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.FADE_CURTAIN, FadeCurtainEventInfo.eventInfo);
+
+        yield return new WaitForSeconds(1.5f);
 
         //Ensure all resources are in place (ie, enemies back to pool)
         rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_UNLOADED, EventInfo.emptyInfo);
-        SceneManager.LoadScene(nextLevel);
+        //SceneManager.LoadScene(nextLevel);
+        nextLevel.allowSceneActivation = true;
     }
 }

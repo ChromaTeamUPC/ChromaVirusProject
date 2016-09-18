@@ -5,17 +5,22 @@ public class PlayerStats
 {
     private int playerId;
     ChromaColor lastKillColor;
-    public uint chain;
+
+    public int currentIncrement;
+    private int specialComboIncrement;
+
     public float chainMaxTime;
-    private uint specialComboIncrement;
-    public float comboRemainingTime;
+    public float chainRemainingTime;
 
-    public uint currentCombo;
-    public uint maxCombo;
-    public uint enemiesKilledOk;
-    public uint enemiesKilledWrong;
+    public int currentChain;
+    public int maxChain;
 
-    public PlayerStats(int id, float chainMax, uint specialComboInc)
+    public int enemiesKilledOk;
+    public int enemiesKilledWrong;
+
+    public int colorAccuracy;
+
+    public PlayerStats(int id, float chainMax, int specialComboInc)
     {
         playerId = id;
         chainMaxTime = chainMax;
@@ -28,23 +33,23 @@ public class PlayerStats
         enemiesKilledOk = 0;
         enemiesKilledWrong = 0;
 
-        chain = 0;
-        comboRemainingTime = 0f;
-        currentCombo = 0;
-        maxCombo = 0;
+        currentIncrement = 0;
+        chainRemainingTime = 0f;
+        currentChain = 0;
+        maxChain = 0;
     }
 
-    public void UpdateComboTime()
+    public void UpdateChainTime()
     {
-        if (comboRemainingTime > 0)
+        if (chainRemainingTime > 0)
         {
-            comboRemainingTime -= Time.deltaTime;
+            chainRemainingTime -= Time.deltaTime;
 
-            if(comboRemainingTime <= 0)
+            if(chainRemainingTime <= 0)
             {
-                comboRemainingTime = 0;
-                chain = 0;
-                currentCombo = 0;
+                chainRemainingTime = 0;
+                currentIncrement = 0;
+                currentChain = 0;
                 ComboEventInfo.eventInfo.playerId = playerId;
                 rsc.eventMng.TriggerEvent(EventManager.EventType.COMBO_BREAK, ComboEventInfo.eventInfo);
             }
@@ -55,49 +60,49 @@ public class PlayerStats
     {
         ++enemiesKilledOk;
 
-        uint total;
+        int total;
 
         if(specialKill)
         {
             total = specialComboIncrement;
 
             //To force start a chain
-            if (chain == 0)
+            if (currentIncrement == 0)
             {
-                ++chain;
+                ++currentIncrement;
                 lastKillColor = color;
             }
         }
         else
         {
             //If it was a chain ongoing
-            if (chain > 0)
+            if (currentIncrement > 0)
             {
                 if (color == lastKillColor)
                 {
-                    ++chain;
+                    ++currentIncrement;
                 }
                 else
                 {
-                    chain = 1;
+                    currentIncrement = 1;
                     lastKillColor = color;
                 }
             }
             //Start chain
             else
             {
-                ++chain;
+                ++currentIncrement;
                 lastKillColor = color;
             }
 
-            total = chain;
+            total = currentIncrement;
         }
 
-        currentCombo += total;
-        if (currentCombo > maxCombo)
-            maxCombo = currentCombo;
+        currentChain += total;
+        if (currentChain > maxChain)
+            maxChain = currentChain;
 
-        comboRemainingTime = chainMaxTime;
+        chainRemainingTime = chainMaxTime;
 
         ComboEventInfo.eventInfo.playerId = playerId;
         ComboEventInfo.eventInfo.comboColor = lastKillColor;
@@ -108,17 +113,27 @@ public class PlayerStats
     public void EnemyKilledWrong()
     {
         ++enemiesKilledWrong;
-        BreakCombo();
+        BreakChain();
     }
 
-    public void BreakCombo()
+    public void BreakChain()
     {
-        currentCombo = 0;
-        chain = 0;
-        comboRemainingTime = 0;
+        currentChain = 0;
+        currentIncrement = 0;
+        chainRemainingTime = 0;
 
         ComboEventInfo.eventInfo.playerId = playerId;
         rsc.eventMng.TriggerEvent(EventManager.EventType.COMBO_BREAK, ComboEventInfo.eventInfo);
+    }
+
+    public void ComputeAccuracy()
+    {
+        if (enemiesKilledOk + enemiesKilledWrong > 0)
+            colorAccuracy = Mathf.RoundToInt((float)enemiesKilledOk / (float)(enemiesKilledOk + enemiesKilledWrong) * 100);
+        else
+            colorAccuracy = 0;
+
+        Debug.Log("Accuracy = " + colorAccuracy);
     }
 }
 
@@ -129,14 +144,24 @@ public class StatsManager : MonoBehaviour
     public PlayerStats p1Stats;
     public PlayerStats p2Stats;
 
+    [Header("Chain Settings")]
     public float chainMaxTime = 5f;
-    public uint specialKillsComboIncrement = 3;
-    private bool updateComboTime = false;
+    public int specialKillsChainIncrement = 3;
+
+    [Header("Computed Score Settings")]
+    public int maxChainMultiplier = 1000;
+
+    public int level01BaseSeconds = 300;
+    public int levelBossBaseSeconds = 300;
+
+    public int secondMultiplier = 1000;
+
+    private bool updateChainTime = false;
 
     void Awake()
     {
-        p1Stats = new PlayerStats(1, chainMaxTime, specialKillsComboIncrement);
-        p2Stats = new PlayerStats(2, chainMaxTime, specialKillsComboIncrement);
+        p1Stats = new PlayerStats(1, chainMaxTime, specialKillsChainIncrement);
+        p2Stats = new PlayerStats(2, chainMaxTime, specialKillsChainIncrement);
     }
 
 	// Use this for initialization
@@ -173,20 +198,39 @@ public class StatsManager : MonoBehaviour
 
     void Update()
     {
-        if (updateComboTime && rsc.enemyMng.AreEnemies())
+        if (updateChainTime && rsc.enemyMng.AreEnemies())
         {
-            p1Stats.UpdateComboTime();
-            p2Stats.UpdateComboTime();
+            p1Stats.UpdateChainTime();
+            p2Stats.UpdateChainTime();
         }
     }
 
-	
+    public int GetCurrentLevelBaseTime()
+    {
+        switch (rsc.gameMng.CurrentLevel)
+        {
+            case GameManager.Level.LEVEL_01:
+                return level01BaseSeconds;
+
+            case GameManager.Level.LEVEL_BOSS:
+                return levelBossBaseSeconds;
+
+            default:
+                return level01BaseSeconds;
+        }
+    }
+
+	public int GetTotalTime()
+    {
+        return Mathf.RoundToInt(totalTime);
+    }
+
 	private void GameReset(EventInfo eventInfo)
     {     
         p1Stats.Reset();
         p2Stats.Reset();
 
-        updateComboTime = false;
+        updateChainTime = false;
         startTime = 0f;
         totalTime = 0f;
     }
@@ -196,33 +240,34 @@ public class StatsManager : MonoBehaviour
         p1Stats.Reset();
         p2Stats.Reset();
 
-        updateComboTime = false;
+        updateChainTime = false;
         startTime = 0f;
         totalTime = 0f;
     }
 
     private void LevelStarted(EventInfo eventInfo)
     {
-        updateComboTime = true;
+        updateChainTime = true;
         startTime = Time.time;
     }
 
     private void LevelCleared(EventInfo eventInfo)
     {
-        updateComboTime = false;
+        updateChainTime = false;
         totalTime = Time.time - startTime;
 
-        //ComputeScore();
+        p1Stats.ComputeAccuracy();
+        p2Stats.ComputeAccuracy();
     }
 
     private void ZoneStarted(EventInfo eventInfo)
     {
-        updateComboTime = true;
+        updateChainTime = true;
     }
 
     private void ZoneFinished(EventInfo eventInfo)
     {
-        updateComboTime = false;
+        updateChainTime = false;
     }
 
     private void EnemyDied(EventInfo eventInfo)
@@ -307,6 +352,6 @@ public class StatsManager : MonoBehaviour
                 break;
         }
 
-        stats.BreakCombo();
+        stats.BreakChain();
     }
 }
