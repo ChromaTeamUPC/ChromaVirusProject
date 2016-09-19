@@ -12,6 +12,8 @@ public class EntryCameraController : MonoBehaviour
     private float shakeDuration;
     private float currentShakeMaximum;
 
+    private bool pauseEffects;
+
     void Awake()
     {
         anim = GetComponent<Animator>();
@@ -19,7 +21,13 @@ public class EntryCameraController : MonoBehaviour
 
     void Start()
     {
+        pauseEffects = false;
+
         rsc.eventMng.StartListening(EventManager.EventType.WORM_ATTACK, WormAttack);
+        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_OPENED, GamePaused);
+        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_CLOSED, GameResumed);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_PAUSED, GamePaused);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESUMED, GameResumed);
 
         CutSceneEventInfo.eventInfo.skippeable = skippeable;
         rsc.eventMng.TriggerEvent(EventManager.EventType.START_CUT_SCENE, CutSceneEventInfo.eventInfo);
@@ -30,6 +38,10 @@ public class EntryCameraController : MonoBehaviour
         if (rsc.eventMng != null)
         {
             rsc.eventMng.StopListening(EventManager.EventType.WORM_ATTACK, WormAttack);
+            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_OPENED, GamePaused);
+            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_CLOSED, GameResumed);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_PAUSED, GamePaused);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESUMED, GameResumed);
         }
     }
 
@@ -64,19 +76,32 @@ public class EntryCameraController : MonoBehaviour
         rsc.rumbleMng.Rumble(0, shakeDuration);
     }
 
+    private void GamePaused(EventInfo eventInfo)
+    {
+        pauseEffects = true;
+    }
+
+    private void GameResumed(EventInfo eventInfo)
+    {
+        pauseEffects = false;
+    }
+
     void LateUpdate()
     {
-        if (shakeDuration > 0)
+        if (!pauseEffects)
         {
-            transform.position = transform.position + Random.insideUnitSphere * (currentShakeMaximum > 0 ? currentShakeMaximum : defaultShakeMaximum);
-
-            shakeDuration -= Time.deltaTime;
-
-            if (shakeDuration <= 0)
+            if (shakeDuration > 0)
             {
-                shakeDuration = 0f;
-                currentShakeMaximum = 0f;
+                transform.position = transform.position + Random.insideUnitSphere * (currentShakeMaximum > 0 ? currentShakeMaximum : defaultShakeMaximum);
+
+                shakeDuration -= Time.deltaTime;
+
+                if (shakeDuration <= 0)
+                {
+                    shakeDuration = 0f;
+                    currentShakeMaximum = 0f;
+                }
             }
-        }     	
+        }   	
     }
 }

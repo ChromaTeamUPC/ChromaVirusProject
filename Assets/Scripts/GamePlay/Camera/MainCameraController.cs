@@ -66,14 +66,17 @@ public class MainCameraController : MonoBehaviour {
         colorMismatchDuration = 0f;
         shakeDuration = 0f;
         currentShakeMaximum = 0f;
+        pauseEffects = false;
 
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DASHING, PlayerStartDash);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DASHED, PlayerEndDash);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerColorMismatch);
         rsc.eventMng.StartListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
         rsc.eventMng.StartListening(EventManager.EventType.WORM_ATTACK, WormAttack);
-        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
-        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_CLOSED, TutorialClosed);
+        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_OPENED, GamePaused);
+        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_CLOSED, GameResumed);
+        rsc.eventMng.StartListening(EventManager.EventType.SCORE_OPENING, GamePaused);
+        //rsc.eventMng.StartListening(EventManager.EventType.SCORE_CLOSED, GameResumed);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_PAUSED, GamePaused);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESUMED, GameResumed);
     }
@@ -87,8 +90,10 @@ public class MainCameraController : MonoBehaviour {
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerColorMismatch);
             rsc.eventMng.StopListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
             rsc.eventMng.StopListening(EventManager.EventType.WORM_ATTACK, WormAttack);
-            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
-            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_CLOSED, TutorialClosed);
+            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_OPENED, GamePaused);
+            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_CLOSED, GameResumed);
+            rsc.eventMng.StopListening(EventManager.EventType.SCORE_OPENING, GamePaused);
+            //rsc.eventMng.StopListening(EventManager.EventType.SCORE_CLOSED, GameResumed);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_PAUSED, GamePaused);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESUMED, GameResumed);
         }
@@ -125,16 +130,6 @@ public class MainCameraController : MonoBehaviour {
 
         shakeDuration = info.wormBb.attackRumbleDuration;
         rsc.rumbleMng.Rumble(0, shakeDuration);
-    }
-
-    private void TutorialOpened(EventInfo eventInfo)
-    {
-        pauseEffects = true;
-    }
-
-    private void TutorialClosed(EventInfo eventInfo)
-    {
-        pauseEffects = false;
     }
 
     private void GamePaused(EventInfo eventInfo)

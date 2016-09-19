@@ -14,6 +14,8 @@ public class PauseCameraController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESUMED, GameResumed);
         rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_OPENED, GamePaused);
         rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_CLOSED, GameResumed);
+        rsc.eventMng.StartListening(EventManager.EventType.SCORE_OPENING, GamePaused);
+        //rsc.eventMng.StartListening(EventManager.EventType.SCORE_CLOSED, GameResumed);
     }
 
     void OnDestroy()
@@ -24,6 +26,8 @@ public class PauseCameraController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESUMED, GameResumed);
             rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_OPENED, GamePaused);
             rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_CLOSED, GameResumed);
+            rsc.eventMng.StopListening(EventManager.EventType.SCORE_OPENING, GamePaused);
+            //rsc.eventMng.StopListening(EventManager.EventType.SCORE_CLOSED, GameResumed);
         }
     }
 	

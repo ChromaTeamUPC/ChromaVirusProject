@@ -77,21 +77,33 @@ public class GUIController : MonoBehaviour
     [Header("Central Panel")]
     public GameObject infectionAndNextColorZone;
 
-    private Color currentColor;
+    [Header("Next Color Panel")]
     public Slider nextColorSlider;
     public Image nextColorBackground;
     public Image nextColorForeground;
+    public Image nextColorHandle;
     private float nextColorElapsedTime;
     private float nextColorPrewarnTime;
+    private Color currentColor;
 
-    public Text currentInfectionTxt;
+    [Header("Infection Panel")]
+    public GameObject infectionZone;
+    public Slider clearMainSlider;
+    public Slider clearPercentageSlider;
+    public Text percentageBackgroundText;
+    public Text percentageForegroundText;
+    private int currentInfectionNumber;
+
+    /*public Text currentInfectionTxt;
     public Text maxInfectionTxt;
     public Text percentageTxt;
-    public Text infectionTxt;
-    private int currentInfectionNumber;
+    public Text infectionTxt;*/
 
     public Text zoneTxt;
     public Text clearedTxt;
+
+    [Header("Boss Panel")]
+    public GameObject bossZone;
 
     [Header("Pause Items")]
     public GameObject pauseGroup;
@@ -146,6 +158,9 @@ public class GUIController : MonoBehaviour
 
         DisableHintButtons(0);
 
+        infectionAndNextColorZone.SetActive(false);
+        infectionZone.SetActive(false);
+        bossZone.SetActive(false);
         scoreSingleGO.SetActive(false);
         scoreMultiGO.SetActive(false);
         scoreGO.SetActive(false);
@@ -258,9 +273,19 @@ public class GUIController : MonoBehaviour
         }
 
         //Current infection update
-        currentInfectionNumber = rsc.enemyMng.bb.GetCurrentInfectionPercentage();
+        if (infectionZone.activeSelf)
+        {
+            currentInfectionNumber = rsc.enemyMng.bb.GetCurrentInfectionPercentage();
 
-        if (currentInfectionNumber == 100)
+            int clearNumber = 100 - currentInfectionNumber;
+
+            clearMainSlider.value = clearNumber;
+            clearPercentageSlider.value = clearNumber;
+            percentageBackgroundText.text = clearNumber + "%";
+            percentageForegroundText.text = clearNumber + "%";
+        }
+
+        /*if (currentInfectionNumber == 100)
         {
             currentInfectionTxt.enabled = false;
             percentageTxt.enabled = false;
@@ -297,7 +322,7 @@ public class GUIController : MonoBehaviour
             clearedTxt.enabled = false;
 
             currentInfectionTxt.text = currentInfectionNumber.ToString();
-        }
+        }*/
     }
 
     private void DisableHintButtons(int playerId)
@@ -558,7 +583,9 @@ public class GUIController : MonoBehaviour
         nextColorElapsedTime = 0f;
 
         //nextColorBackground.color = nextColorForeground.color;
-        nextColorForeground.color = rsc.coloredObjectsMng.GetColor(info.newColor);
+        Color newColor = rsc.coloredObjectsMng.GetColor(info.newColor);
+        nextColorForeground.color = newColor;
+        nextColorHandle.color = newColor;
 
         if (info.prewarnSeconds > 0)
             nextColorSlider.value = 1f;
@@ -587,7 +614,23 @@ public class GUIController : MonoBehaviour
 
         nextColorSlider.value = Mathf.Lerp(0f, 1f, factor);
         nextColorBackground.color = Color.Lerp(currentColor, Color.black, factor * 2);
-        nextColorForeground.color = rsc.coloredObjectsMng.GetColor(rsc.colorMng.NextColor);
+        Color newColor = rsc.coloredObjectsMng.GetColor(rsc.colorMng.NextColor);
+        nextColorForeground.color = newColor;
+        nextColorHandle.color = newColor;
+
+        switch (rsc.gameMng.CurrentLevel)
+        {
+            case GameManager.Level.LEVEL_01:
+                infectionZone.SetActive(true);
+                bossZone.SetActive(false);
+                break;
+            case GameManager.Level.LEVEL_BOSS:
+                infectionZone.SetActive(false);
+                bossZone.SetActive(true);
+                break;
+            default:
+                break;
+        }
     }
 
     private void StartCutScene(EventInfo eventInfo)
@@ -681,7 +724,6 @@ public class GUIController : MonoBehaviour
 
             scoreSingleChain.text = currentChain.ToString();
             scoreSingleTotal.text = string.Format("{0:n0}", totalScore);
-            Debug.Log("Chain: " + currentChain + " // Total: " + totalScore);
 
             yield return null;
 
