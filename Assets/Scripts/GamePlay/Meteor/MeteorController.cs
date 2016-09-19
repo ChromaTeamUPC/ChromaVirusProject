@@ -13,6 +13,8 @@ public class MeteorController : MonoBehaviour
     public float upSpeed = 60f;
     public float upDuration = 3f;
 
+    public float destructionDuration = 1.5f;
+
     public float minXRotationDPS = 90f;
     public float maxXRotationDPS = 180f;
     public float minYRotationDPS = 90f;
@@ -23,15 +25,21 @@ public class MeteorController : MonoBehaviour
     private SubState subState;
     private float elapsedTime;
 
-    private GameObject model;
+    [SerializeField]
+    private GameObject mainModel;
+    [SerializeField]
+    private GameObject destructionModel;
+
     private RotateParticles rotateModel;
+    private Animator animator;
 
     public ParticleSystem fireTrail;
+    public GameObject explosionFX;
 
     void Awake()
     {
-        model = transform.Find("Model").gameObject;
-        rotateModel = model.GetComponent<RotateParticles>();
+        rotateModel = mainModel.GetComponent<RotateParticles>();
+        animator = destructionModel.GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -56,8 +64,15 @@ public class MeteorController : MonoBehaviour
                 break;
 
             case SubState.EXPLODING:
-                //TODO: FX, animations
-                rsc.poolMng.meteorPool.AddObject(this);
+                if (elapsedTime >= destructionDuration)
+                {
+                    explosionFX.SetActive(false);
+                    rsc.poolMng.meteorPool.AddObject(this);
+                }
+                else
+                {
+                    elapsedTime += Time.deltaTime;
+                }
                 break;
             default:
                 break;
@@ -66,7 +81,12 @@ public class MeteorController : MonoBehaviour
 
     void OnEnable()
     {
-        model.transform.rotation = Random.rotation;
+        mainModel.SetActive(true);
+        destructionModel.SetActive(false);
+        explosionFX.SetActive(false);
+        fireTrail.Play();
+
+        mainModel.transform.rotation = Random.rotation;
         //Default state is falling
         subState = SubState.FALLING;
 
@@ -74,7 +94,6 @@ public class MeteorController : MonoBehaviour
         rotateModel.dpsSpeedY = Random.Range(minYRotationDPS, maxYRotationDPS);
         rotateModel.dpsSpeedZ = Random.Range(minZRotationDPS, maxZRotationDPS);
         rotateModel.active = true;
-        fireTrail.Play();
     }
 
 
@@ -90,6 +109,18 @@ public class MeteorController : MonoBehaviour
     public void Explode()
     {
         fireTrail.Stop();
+
+        mainModel.SetActive(false);
+        destructionModel.SetActive(true);
+        destructionModel.transform.Rotate(0f, Random.Range(0f, 360f), 0f, Space.World);
+
+        animator.Rebind();
+        animator.SetFloat("SpeedFactor", Random.Range(1.5f, 2.5f));
+
+        explosionFX.SetActive(true);
+
+        elapsedTime = 0;
+
         subState = SubState.EXPLODING;
     }
 }
