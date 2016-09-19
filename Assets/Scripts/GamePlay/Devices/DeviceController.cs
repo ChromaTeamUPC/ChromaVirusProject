@@ -38,6 +38,8 @@ public class DeviceController : MonoBehaviour
 
     public GameObject[] endPoints;
 
+    public Slider infectionBar;
+    public Image infectionBarFillImg;
     public Text infectionNumberTxt;
     private Material infectionNumberMat;
     private Color currentColor;
@@ -66,6 +68,8 @@ public class DeviceController : MonoBehaviour
         currentBrightness = 1f;
         currentColor = Color.white;
         infectionNumberTxt.text = "0%";
+        infectionBar.value = 0;
+
 
         if (brightnessCicleDuration > 0)
             brightnessSpeed = 1 / brightnessCicleDuration;
@@ -74,15 +78,17 @@ public class DeviceController : MonoBehaviour
 
         tutorialTriggered = false;
 
-        SetTextColor();
+        SetColor();
     }
 
-    private void SetTextColor()
+    private void SetColor()
     {
         currentColor *= currentBrightness;
         currentColor.a = 1f;
 
         infectionNumberMat.SetColor("_EmissionColor", currentColor);
+
+        infectionBarFillImg.color = currentColor;
     }
 
     public void Activate()
@@ -141,6 +147,7 @@ public class DeviceController : MonoBehaviour
         if (!active) return;
 
         infectionNumberTxt.text = (Mathf.CeilToInt(currentInfection)) + "%";
+        infectionBar.value = Mathf.CeilToInt(currentInfection);
         currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 2) + 1; //Values between 0.5 and 1.5
 
         switch (infectionLevel)
@@ -224,7 +231,7 @@ public class DeviceController : MonoBehaviour
                 break;
         }
 
-        SetTextColor();
+        SetColor();
     }
 
     public GameObject GetRandomEndPoint()

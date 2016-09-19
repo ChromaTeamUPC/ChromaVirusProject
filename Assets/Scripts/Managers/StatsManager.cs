@@ -132,8 +132,6 @@ public class PlayerStats
             colorAccuracy = Mathf.RoundToInt((float)enemiesKilledOk / (float)(enemiesKilledOk + enemiesKilledWrong) * 100);
         else
             colorAccuracy = 0;
-
-        Debug.Log("Accuracy = " + colorAccuracy);
     }
 }
 
