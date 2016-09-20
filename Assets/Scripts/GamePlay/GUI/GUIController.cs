@@ -1033,7 +1033,7 @@ public class GUIController : MonoBehaviour
         //Head
         head.enabled = true;
         head.sprite = headHollowImage;
-        head.color = darkGrey;
+        head.color = Color.black;
         headSliderGO.SetActive(true);
 
         //Body
@@ -1080,7 +1080,7 @@ public class GUIController : MonoBehaviour
 
         head.enabled = true;
         head.sprite = headHollowImage;
-        head.color = darkGrey;
+        head.color = Color.black;
         headSliderGO.SetActive(true);
         headSlider.value = wormBb.headCurrentChargeLevel;
 
