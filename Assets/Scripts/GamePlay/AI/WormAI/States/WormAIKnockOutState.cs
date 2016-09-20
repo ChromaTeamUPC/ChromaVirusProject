@@ -38,6 +38,8 @@ public class WormAIKnockOutState : WormAIBaseState
 
         head.animator.SetBool("Stunned", true);
 
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_VULNERABLE, EventInfo.emptyInfo);
+
         subState = SubState.KNOCKED_OUT;
     }
 
@@ -75,12 +77,13 @@ public class WormAIKnockOutState : WormAIBaseState
                     Vector3 nextPosition = bb.GetJumpPositionGivenX(fakeNextX);
                     initialRotation = Quaternion.LookRotation(nextPosition - startPosition, headTrf.up);
 
-                    subState = SubState.MOVING_HEAD;
-
                     head.animator.SetBool("Stunned", false);
                     head.animator.SetBool("MouthOpen", true);
 
                     elapsedTime = 0f;
+
+                    rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_INVULNERABLE, EventInfo.emptyInfo);
+                    subState = SubState.MOVING_HEAD;
                 }
                 else
                     elapsedTime += Time.deltaTime;
@@ -160,6 +163,7 @@ public class WormAIKnockOutState : WormAIBaseState
         if (subState != SubState.KNOCKED_OUT) return null;
 
         bb.killerPlayer = player;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_INVULNERABLE, EventInfo.emptyInfo);
         return head.headDestroyedState;
     }
 }

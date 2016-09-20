@@ -124,7 +124,7 @@ public class BossFloorController : MonoBehaviour
 
         checkMeteorsEnd = false;
 
-        StopCoroutine(MeteorRain());
+        StopCoroutine("MeteorRain");
         StartCoroutine(MeteorRain());
     }
 

@@ -80,7 +80,7 @@ public class TurretAIBehaviour : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
         rsc.eventMng.StartListening(EventManager.EventType.KILL_ENEMIES, SelfDisable);
         if(isPhaseControlled)    
-            rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_ACTIVATED, SetCurrentPhase);
+            rsc.eventMng.StartListening(EventManager.EventType.WORM_PHASE_ACTIVATED, SetCurrentPhase);
     }
 
     void OnDestroy()
@@ -90,7 +90,7 @@ public class TurretAIBehaviour : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.KILL_ENEMIES, SelfDisable);
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
             if (isPhaseControlled)
-                rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_ACTIVATED, SetCurrentPhase);
+                rsc.eventMng.StopListening(EventManager.EventType.WORM_PHASE_ACTIVATED, SetCurrentPhase);
         }
     }
 	

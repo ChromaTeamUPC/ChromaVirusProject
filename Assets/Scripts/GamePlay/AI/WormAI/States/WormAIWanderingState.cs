@@ -105,7 +105,8 @@ public class WormAIWanderingState : WormAIBaseState
                     head.animator.SetBool("MouthOpen", true);
 
                     bb.isHeadOverground = true;
-                    bb.applySinMovement = true;
+                    bb.applySinMovement = true;               
+
                     subState = SubState.ENTERING;
                 }
                 else
@@ -144,6 +145,8 @@ public class WormAIWanderingState : WormAIBaseState
 
                     head.animator.SetBool("MouthOpen", false);
 
+                    rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_VULNERABLE, EventInfo.emptyInfo);
+
                     subState = SubState.FOLLOWING_PATH;
                 }
 
@@ -173,6 +176,7 @@ public class WormAIWanderingState : WormAIBaseState
                 //TODO: remove when tested
                 if (Input.GetKeyDown(KeyCode.M))
                 {
+                    rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_INVULNERABLE, EventInfo.emptyInfo);
                     return head.meteorAttackState;
                 }
 
@@ -191,6 +195,7 @@ public class WormAIWanderingState : WormAIBaseState
                                 angryEyes = false;
                                 head.angryEyes.Stop();
                             }
+                            rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_INVULNERABLE, EventInfo.emptyInfo);
                             return head.aboveAttackState;
                         }
                     }                   
@@ -224,7 +229,7 @@ public class WormAIWanderingState : WormAIBaseState
                             head.angryEyes.Stop();
                         }
                       
-                        head.animator.SetBool("MouthOpen", true);
+                        head.animator.SetBool("MouthOpen", true);                     
 
                         subState = SubState.EXITING;
                     }
@@ -281,6 +286,8 @@ public class WormAIWanderingState : WormAIBaseState
                 else
                 {
                     bb.applySinMovement = false;
+                    rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_INVULNERABLE, EventInfo.emptyInfo);
+
                     //If some random condition attack, else new wandering state
                     if (bb.attacksEnabled && bb.BelowAttackSettingsPhase.active &&
                         Random.Range(0f, 1f) <= bb.BelowAttackSettingsPhase.chancesOfBelowAttackAfterWandering / 100)

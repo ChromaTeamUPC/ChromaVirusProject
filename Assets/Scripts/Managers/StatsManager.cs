@@ -172,7 +172,7 @@ public class StatsManager : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.ZONE_REACHED, ZoneStarted);
         rsc.eventMng.StartListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZoneFinished);
         rsc.eventMng.StartListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
-        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed); 
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_PHASE_ENDED, WormPhaseEnded); 
         rsc.eventMng.StartListening(EventManager.EventType.WORM_SECTION_DESTROYED, EnemyDied);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
     }
@@ -188,7 +188,7 @@ public class StatsManager : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.ZONE_REACHED, ZoneStarted);
             rsc.eventMng.StopListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZoneFinished);
             rsc.eventMng.StopListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
-            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_PHASE_ENDED, WormPhaseEnded);
             rsc.eventMng.StopListening(EventManager.EventType.WORM_SECTION_DESTROYED, EnemyDied);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
         }
@@ -302,7 +302,7 @@ public class StatsManager : MonoBehaviour
         }
     }
 
-    private void WormHeadDestroyed(EventInfo eventInfo)
+    private void WormPhaseEnded(EventInfo eventInfo)
     {
         WormEventInfo info = (WormEventInfo)eventInfo;
 

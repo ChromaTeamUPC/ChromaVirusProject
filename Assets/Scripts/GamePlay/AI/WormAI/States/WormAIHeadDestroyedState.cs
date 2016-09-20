@@ -37,7 +37,7 @@ public class WormAIHeadDestroyedState : WormAIBaseState
         head.animator.SetBool("Hit", true);
 
         WormEventInfo.eventInfo.wormBb = bb;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_DESTROYED, WormEventInfo.eventInfo);
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_PHASE_ENDED, WormEventInfo.eventInfo);
 
         subState = SubState.WAITING_HEAD;
     }

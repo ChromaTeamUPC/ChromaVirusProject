@@ -164,8 +164,8 @@ public class EnemyManager : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.WORM_SPAWNED, WormSpawned);
         rsc.eventMng.StartListening(EventManager.EventType.WORM_DIED, WormDied);
 
-        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_ACTIVATED, WormHeadActivated);
-        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_PHASE_ACTIVATED, WormPhaseActivated);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_PHASE_ENDED, WormPhaseEnded);
 
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameOver); 
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, ResetValues);
@@ -192,8 +192,8 @@ public class EnemyManager : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.WORM_SPAWNED, WormSpawned);
             rsc.eventMng.StopListening(EventManager.EventType.WORM_DIED, WormDied);
 
-            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_ACTIVATED, WormHeadActivated);
-            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_ACTIVATED, WormPhaseActivated);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_PHASE_ENDED, WormPhaseEnded);
 
             rsc.eventMng.StopListening(EventManager.EventType.GAME_OVER, GameOver);
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, ResetValues);
@@ -274,12 +274,12 @@ public class EnemyManager : MonoBehaviour
         bb.worm = null;
     }
 
-    private void WormHeadActivated(EventInfo eventInfo)
+    private void WormPhaseActivated(EventInfo eventInfo)
     {
         //Nothing to do right now
     }
 
-    private void WormHeadDestroyed(EventInfo eventInfo)
+    private void WormPhaseEnded(EventInfo eventInfo)
     {
         --bb.activeEnemies;
 

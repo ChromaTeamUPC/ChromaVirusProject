@@ -46,7 +46,7 @@ public class LevelBossController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
-        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_PHASE_ENDED, WormPhaseEnded);
         rsc.eventMng.StartListening(EventManager.EventType.WORM_DYING, WormDying);
         rsc.eventMng.StartListening(EventManager.EventType.WORM_DIED, WormDied);
 
@@ -68,7 +68,7 @@ public class LevelBossController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
-            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_DESTROYED, WormHeadDestroyed);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_PHASE_ENDED, WormPhaseEnded);
             rsc.eventMng.StopListening(EventManager.EventType.WORM_DYING, WormDying);
             rsc.eventMng.StopListening(EventManager.EventType.WORM_DIED, WormDied);
         }
@@ -145,7 +145,7 @@ public class LevelBossController : MonoBehaviour
         player.transform.SetParent(null);
     }
 
-    private void WormHeadDestroyed(EventInfo eventInfo)
+    private void WormPhaseEnded(EventInfo eventInfo)
     {
         WormEventInfo info = (WormEventInfo)eventInfo;
 

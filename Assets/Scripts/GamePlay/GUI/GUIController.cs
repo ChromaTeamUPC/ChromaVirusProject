@@ -84,6 +84,7 @@ public class GUIController : MonoBehaviour
     public Image nextColorHandle;
     private float nextColorElapsedTime;
     private float nextColorPrewarnTime;
+    private ChromaColor currentChromaColor;
     private Color currentColor;
 
     [Header("Infection Panel")]
@@ -94,16 +95,49 @@ public class GUIController : MonoBehaviour
     public Text percentageForegroundText;
     private int currentInfectionNumber;
 
-    /*public Text currentInfectionTxt;
-    public Text maxInfectionTxt;
-    public Text percentageTxt;
-    public Text infectionTxt;*/
-
-    public Text zoneTxt;
-    public Text clearedTxt;
-
     [Header("Boss Panel")]
     public GameObject bossZone;
+    public float bossBodyBlinkInterval = 0.2f;
+    public float bossHeadBlinkInterval = 0.2f;
+    public float bossHeadStunnedBlinkInterval = 0.1f;
+    public float bossSpecialBlinkInterval = 0.3f;
+    public float bossDiedBlinkInterval = 0.5f;
+
+    public Color lightGrey;
+    public Color darkGrey;
+
+    public Image bossSpecialSign;
+    public Image head;
+    public Sprite headFillImage;
+    public Sprite headHollowImage;
+    public Slider headSlider;
+    public GameObject headSliderGO;
+
+    public Sprite bodyFillImage;
+    public Sprite bodyHollowImage;
+    public Image[] bodyParts;
+
+    public Image tail;
+    public Sprite tailFillImage;
+    public Sprite tailHollowImage;
+    private WormBlackboard wormBb;
+    private WormBodySegmentController[] bodySegmentControllers;
+
+    private Coroutine bodyBlinkCoroutine;
+    private Coroutine headBlinkCoroutine;
+    private Coroutine specialBlinkCoroutine;
+    private Coroutine diedBlinkCoroutine;
+
+    private enum BossUIState
+    {
+        DESTROYED,
+        INVULNERABLE,
+        BODY_ACTIVATED,
+        HEAD_ACTIVATED,
+        HEAD_STUNNED
+    }
+    private BossUIState bossUIState;
+
 
     [Header("Pause Items")]
     public GameObject pauseGroup;
@@ -189,6 +223,17 @@ public class GUIController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
 
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_VULNERABLE, BossVulnerable);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_INVULNERABLE, BossInvulnerable);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_CHARGED, BossHeadChargeChanged);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_DISCHARGED, BossHeadChargeChanged);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_ACTIVATED, BossHeadActivated);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_STUNNED, BossHeadStunned);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_HEAD_DEACTIVATED, BossHeadDeactivated);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_PHASE_ENDED, BossPhaseEnded);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_DYING, BossDying);
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_DIED, BossDied);
+
         StartCoroutine(ShowChainIncrementsP1());
         StartCoroutine(ShowChainIncrementsP2());
     }
@@ -217,6 +262,17 @@ public class GUIController : MonoBehaviour
 
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_WILL_CHANGE, ColorPrewarn);
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
+
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_VULNERABLE, BossVulnerable);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_INVULNERABLE, BossInvulnerable);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_CHARGED, BossHeadChargeChanged);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_DISCHARGED, BossHeadChargeChanged);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_ACTIVATED, BossHeadActivated);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_STUNNED, BossHeadStunned);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_HEAD_DEACTIVATED, BossHeadDeactivated);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_PHASE_ENDED, BossPhaseEnded);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_DYING, BossDying);
+            rsc.eventMng.StopListening(EventManager.EventType.WORM_DIED, BossDied);
         }
     }
 
@@ -284,45 +340,6 @@ public class GUIController : MonoBehaviour
             percentageBackgroundText.text = clearNumber + "%";
             percentageForegroundText.text = clearNumber + "%";
         }
-
-        /*if (currentInfectionNumber == 100)
-        {
-            currentInfectionTxt.enabled = false;
-            percentageTxt.enabled = false;
-
-            maxInfectionTxt.enabled = true;
-
-            infectionTxt.enabled = true;
-
-            zoneTxt.enabled = false;
-            clearedTxt.enabled = false;
-        }
-        else if (currentInfectionNumber == 0)
-        {
-            currentInfectionTxt.enabled = false;
-            percentageTxt.enabled = false;
-
-            maxInfectionTxt.enabled = false;
-
-            infectionTxt.enabled = false;
-
-            zoneTxt.enabled = true;
-            clearedTxt.enabled = true;
-        }
-        else
-        {
-            currentInfectionTxt.enabled = true;
-            percentageTxt.enabled = true;
-
-            maxInfectionTxt.enabled = false;
-
-            infectionTxt.enabled = true;
-
-            zoneTxt.enabled = false;
-            clearedTxt.enabled = false;
-
-            currentInfectionTxt.text = currentInfectionNumber.ToString();
-        }*/
     }
 
     private void DisableHintButtons(int playerId)
@@ -468,8 +485,8 @@ public class GUIController : MonoBehaviour
         if (info.playerId == 1)
         {
             player1ChainColorImg.color = rsc.coloredObjectsMng.GetColor(info.comboColor);
-            StopCoroutine(ShowP1ChainAdd());
-            StartCoroutine(ShowP1ChainAdd());
+            StopCoroutine("ShowP1ChainAdd");
+            StartCoroutine("ShowP1ChainAdd");
 
             ChainIncrementController inc = rsc.poolMng.comboIncrementPool.GetObject();
             if(inc != null)
@@ -483,8 +500,8 @@ public class GUIController : MonoBehaviour
         else
         {
             player2ChainColorImg.color = rsc.coloredObjectsMng.GetColor(info.comboColor);
-            StopCoroutine(ShowP2ChainAdd());
-            StartCoroutine(ShowP2ChainAdd());
+            StopCoroutine("ShowP2ChainAdd");
+            StartCoroutine("ShowP2ChainAdd");
 
             ChainIncrementController inc = rsc.poolMng.comboIncrementPool.GetObject();
             if (inc != null)
@@ -547,13 +564,13 @@ public class GUIController : MonoBehaviour
 
         if (info.playerId == 1)
         {           
-            StopCoroutine(ShowP1ChainBreak());
-            StartCoroutine(ShowP1ChainBreak());
+            StopCoroutine("ShowP1ChainBreak");
+            StartCoroutine("ShowP1ChainBreak");
         }
         else
         {
-            StopCoroutine(ShowP2ChainBreak());
-            StartCoroutine(ShowP2ChainBreak());
+            StopCoroutine("ShowP2ChainBreak");
+            StartCoroutine("ShowP2ChainBreak");
         }
     }
 
@@ -596,6 +613,7 @@ public class GUIController : MonoBehaviour
     private void ColorChanged(EventInfo eventInfo)
     {
         ColorEventInfo info = (ColorEventInfo)eventInfo;
+        currentChromaColor = info.newColor;
         currentColor = rsc.coloredObjectsMng.GetColor(info.newColor);
         nextColorBackground.color = currentColor;
         nextColorSlider.value = 0f;
@@ -606,6 +624,7 @@ public class GUIController : MonoBehaviour
         infectionAndNextColorZone.SetActive(true);
 
         //Set initial values
+        currentChromaColor = rsc.colorMng.CurrentColor;
         currentColor = rsc.coloredObjectsMng.GetColor(rsc.colorMng.CurrentColor);
         nextColorPrewarnTime = rsc.colorMng.prewarningSeconds;
         nextColorElapsedTime = rsc.colorMng.ElapsedTime;
@@ -627,11 +646,15 @@ public class GUIController : MonoBehaviour
             case GameManager.Level.LEVEL_BOSS:
                 infectionZone.SetActive(false);
                 bossZone.SetActive(true);
+                wormBb = rsc.enemyMng.bb.worm;
+                bodySegmentControllers = wormBb.bodySegmentControllers;
+                bossUIState = BossUIState.INVULNERABLE;
+                InitBossValues();
                 break;
             default:
                 break;
         }
-    }
+    } 
 
     private void StartCutScene(EventInfo eventInfo)
     {
@@ -953,4 +976,315 @@ public class GUIController : MonoBehaviour
                                            (info.useDefaultTime ? fadeCurtain.defaultFadeSeconds : info.fadeTime));
         }
     }
+
+    #region Boss UI Management
+    private void InitBossValues()
+    {
+        if (wormBb != null)
+        {
+            headSlider.maxValue = wormBb.headMaxChargeLevel;
+            headSlider.value = wormBb.headCurrentChargeLevel;
+
+            tail.color = darkGrey;
+
+            SetBossDisabled();
+        }
+    }
+
+    private void StopAllBossCoroutines()
+    {
+        //Stop all boss-related coroutines
+
+        if (bodyBlinkCoroutine != null)
+        {
+            StopCoroutine(bodyBlinkCoroutine);
+            bodyBlinkCoroutine = null;
+        }
+
+        if (headBlinkCoroutine != null)
+        {
+            StopCoroutine(headBlinkCoroutine);
+            headBlinkCoroutine = null;
+        }
+
+        if (specialBlinkCoroutine != null)
+        {
+            StopCoroutine(specialBlinkCoroutine);
+            specialBlinkCoroutine = null;
+        }
+
+        if (diedBlinkCoroutine != null)
+        {
+            StopCoroutine(diedBlinkCoroutine);
+            diedBlinkCoroutine = null;
+        }
+    }
+
+    private void SetBossDisabled()
+    {
+        StopAllBossCoroutines();
+
+        bossUIState = BossUIState.INVULNERABLE;
+
+        //Set boss elements
+        //Sign
+        bossSpecialSign.enabled = false;
+
+        //Head
+        head.enabled = true;
+        head.sprite = headHollowImage;
+        head.color = darkGrey;
+        headSliderGO.SetActive(true);
+
+        //Body
+        for (int i = 0; i < bodyParts.Length; ++i)
+        {
+            bodyParts[i].sprite = bodyFillImage;
+            bodyParts[i].color = darkGrey;
+        }
+    }
+
+    private void SetBossEnabled()
+    {
+        if (wormBb == null) return;
+
+        StopAllBossCoroutines();
+
+        switch (wormBb.head.HeadState)
+        {
+            case WormAIBehaviour.HeadSubState.DEACTIVATED:
+                bossUIState = BossUIState.BODY_ACTIVATED;
+                SetBodyActivated();
+                break;
+
+            case WormAIBehaviour.HeadSubState.ACTIVATED:
+                bossUIState = BossUIState.HEAD_ACTIVATED;
+                SetHeadActivated();
+                break;
+
+            case WormAIBehaviour.HeadSubState.KNOCKED_OUT:
+                bossUIState = BossUIState.HEAD_STUNNED;
+                SetHeadActivated();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void SetBodyActivated()
+    {
+        //Set boss elements
+        //Sign
+        bossSpecialSign.enabled = false;
+
+        head.enabled = true;
+        head.sprite = headHollowImage;
+        head.color = darkGrey;
+        headSliderGO.SetActive(true);
+        headSlider.value = wormBb.headCurrentChargeLevel;
+
+        for (int i = 0; i < bodyParts.Length; ++i)
+        {
+            switch (bodySegmentControllers[i].BodyState)
+            {
+                case WormBodySegmentController.BodySubState.SETTING:
+                case WormBodySegmentController.BodySubState.NORMAL:
+                    bodyParts[i].sprite = bodyFillImage;
+                    bodyParts[i].color = rsc.coloredObjectsMng.GetColor(bodySegmentControllers[i].Color);
+                    break;
+
+                case WormBodySegmentController.BodySubState.NORMAL_DISABLED:
+                case WormBodySegmentController.BodySubState.DEACTIVATED:
+                    bodyParts[i].sprite = bodyFillImage;
+                    bodyParts[i].color = darkGrey;
+                    break;
+
+                case WormBodySegmentController.BodySubState.DESTROYED:
+                    bodyParts[i].sprite = bodyHollowImage;
+                    bodyParts[i].color = lightGrey;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        bodyBlinkCoroutine = StartCoroutine(BossBodyBlink());
+    }
+
+    private IEnumerator BossBodyBlink()
+    {
+        bool white = false;
+
+        while (true)
+        {
+            for (int i = 0; i < bodyParts.Length; ++i)
+            {
+                if (bodySegmentControllers[i].BodyState != WormBodySegmentController.BodySubState.DEACTIVATED &&
+                    bodySegmentControllers[i].BodyState != WormBodySegmentController.BodySubState.DESTROYED)
+                {
+                    if (bodySegmentControllers[i].Color == currentChromaColor)
+                    {
+                        if (white)
+                            bodyParts[i].color = Color.white;
+                        else
+                            bodyParts[i].color = rsc.coloredObjectsMng.GetColor(bodySegmentControllers[i].Color);
+                    }
+                    else
+                        bodyParts[i].color = rsc.coloredObjectsMng.GetColor(bodySegmentControllers[i].Color);
+                }
+            }
+
+            white = !white;
+            yield return new WaitForSeconds(bossBodyBlinkInterval);
+        }
+    }
+
+    private void SetHeadActivated()
+    {
+        //Set boss elements
+        head.sprite = headFillImage;
+        head.color = Color.white;
+        headSliderGO.SetActive(false);
+
+        for (int i = 0; i < bodyParts.Length; ++i)
+        {
+            bodyParts[i].sprite = bodyFillImage;
+            bodyParts[i].color = darkGrey;
+        }
+
+        if (bossUIState == BossUIState.HEAD_STUNNED)
+        {
+            headBlinkCoroutine = StartCoroutine(BossHeadBlink(bossHeadStunnedBlinkInterval));
+            specialBlinkCoroutine = StartCoroutine(BossSpecialBlink());
+        }
+        else
+        {
+            headBlinkCoroutine = StartCoroutine(BossHeadBlink(bossHeadBlinkInterval));
+        }
+    }
+
+    private IEnumerator BossHeadBlink(float interval)
+    {
+        bool visible = true;
+
+        while (true)
+        {
+            head.enabled = visible;
+
+            visible = !visible;
+            yield return new WaitForSeconds(interval);
+        }
+    }
+
+    private IEnumerator BossSpecialBlink()
+    {
+        bool visible = true;
+
+        while (true)
+        {
+            bossSpecialSign.enabled = visible;
+
+            visible = !visible;
+            yield return new WaitForSeconds(bossSpecialBlinkInterval);
+        }
+    }
+
+    private void SetBossDying()
+    {
+        StopAllBossCoroutines();
+
+        bossUIState = BossUIState.DESTROYED;
+
+        //Set boss elements
+        head.sprite = headHollowImage;
+        head.color = lightGrey;
+        headSliderGO.SetActive(false);
+
+        for (int i = 0; i < bodyParts.Length; ++i)
+        {
+            bodyParts[i].sprite = bodyHollowImage;
+            bodyParts[i].color = lightGrey;
+        }
+
+        tail.sprite = tailHollowImage;
+        tail.color = lightGrey;
+
+        diedBlinkCoroutine = StartCoroutine(BossDiedBlink());
+    }
+
+    private IEnumerator BossDiedBlink()
+    {
+        bool visible = true;
+
+        while (true)
+        {
+            head.enabled = visible;
+            for (int i = 0; i < bodyParts.Length; ++i)
+                bodyParts[i].enabled = visible;
+
+            tail.enabled = visible;
+
+            visible = !visible;
+            yield return new WaitForSeconds(bossDiedBlinkInterval);
+        }
+    }
+
+    private void BossInvulnerable(EventInfo eventInfo)
+    {
+        Debug.Log("Boss Invulnerable");
+        SetBossDisabled();      
+    }
+
+    private void BossVulnerable(EventInfo eventInfo)
+    {
+        Debug.Log("Boss Vulnerable");
+        SetBossEnabled();       
+    }
+
+    private void BossHeadChargeChanged(EventInfo eventInfo)
+    {
+        Debug.Log("Boss Section Destroyed");
+        headSlider.value = wormBb.headCurrentChargeLevel;
+        SetBossEnabled();
+    }
+
+    private void BossHeadActivated(EventInfo eventInfo)
+    {
+        Debug.Log("Boss Head Activated");
+        SetBossEnabled();
+    }
+
+    private void BossHeadStunned(EventInfo eventInfo)
+    {
+        Debug.Log("Boss Head Stunned");
+        SetBossEnabled();
+    }
+
+    private void BossHeadDeactivated(EventInfo eventInfo)
+    {
+        Debug.Log("Boss Head Deactivated");   
+        SetBossEnabled();
+    }
+
+    private void BossPhaseEnded(EventInfo eventInfo)
+    {
+        Debug.Log("Boss Phase Ended");
+        SetBossDisabled();
+    }
+
+    private void BossDying(EventInfo eventInfo)
+    {
+        Debug.Log("Boss dying");
+        SetBossDying();      
+    }
+
+    public void BossDied(EventInfo eventInfo)
+    {
+        Debug.Log("Boss died");
+        StopAllBossCoroutines();
+        bossZone.SetActive(false);
+    }
+    #endregion
 }

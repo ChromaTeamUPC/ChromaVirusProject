@@ -3,7 +3,7 @@ using System.Collections;
 
 public class WormBodySegmentController : MonoBehaviour 
 {
-    private enum State
+    public enum BodySubState
     {
         SETTING,
         NORMAL,
@@ -12,12 +12,16 @@ public class WormBodySegmentController : MonoBehaviour
         DESTROYED
     }
 
-    private State state;
+    private BodySubState bodyState;
+    public BodySubState BodyState { get { return bodyState; } }
+
     private float currentDamage;
     private float currentDamageWrongColor;
 
     [SerializeField]
     private ChromaColor color;
+
+    public ChromaColor Color { get { return color; } }
 
     [Header("Fx")]
     public GameObject[] bodyDeactivatePrefabs;
@@ -40,7 +44,7 @@ public class WormBodySegmentController : MonoBehaviour
         rend = GetComponentInChildren<Renderer>();
         col = GetComponent<BoxCollider>();
         voxelization = GetComponentInChildren<VoxelizationClient>();
-        state = State.NORMAL;
+        bodyState = BodySubState.NORMAL;
 
         bodyDeactivate = new ParticleSystem[bodyDeactivatePrefabs.Length];
 
@@ -84,20 +88,20 @@ public class WormBodySegmentController : MonoBehaviour
         ColorEventInfo.eventInfo.newColor = color;
         rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SECTION_ACTIVATED, ColorEventInfo.eventInfo);
 
-        state = State.NORMAL;
+        bodyState = BodySubState.NORMAL;
     }
 
     public bool IsDestroyed()
     {
-        return state == State.DESTROYED;
+        return bodyState == BodySubState.DESTROYED;
     }
 
     public void ResetColor(ChromaColor color)
     {
-        if (state == State.DESTROYED) return;
+        if (bodyState == BodySubState.DESTROYED) return;
 
         ChromaColor oldColor = this.color;
-        if(state == State.DEACTIVATED)
+        if(bodyState == BodySubState.DEACTIVATED)
         {
             ColorEventInfo.eventInfo.newColor = color;
             rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SECTION_ACTIVATED, ColorEventInfo.eventInfo);
@@ -112,20 +116,20 @@ public class WormBodySegmentController : MonoBehaviour
         this.color = color;
         currentDamage = 0;
         currentDamageWrongColor = 0;
-        state = State.SETTING;
+        bodyState = BodySubState.SETTING;
 
         StartCoroutine(SetRandomColors());
     }
 
     public void Consolidate(ChromaColor color)
     {
-        if (state == State.DESTROYED) return;
+        if (bodyState == BodySubState.DESTROYED) return;
 
-        if (state == State.DEACTIVATED)
+        if (bodyState == BodySubState.DEACTIVATED)
         {
             SetMaterial(rsc.coloredObjectsMng.GetWormBodyWireframeMaterial());
             bodyDestruction.Play();
-            state = State.DESTROYED;
+            bodyState = BodySubState.DESTROYED;
             //col.enabled = false;
             col.isTrigger = true;
         }
@@ -140,7 +144,7 @@ public class WormBodySegmentController : MonoBehaviour
             ColorEventInfo.eventInfo.newColor = color;
             rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_SECTION_COLOR_CHANGED, ColorEventInfo.eventInfo);
 
-            state = State.SETTING;
+            bodyState = BodySubState.SETTING;
             StartCoroutine(SetRandomColors());
         }
     }
@@ -160,15 +164,15 @@ public class WormBodySegmentController : MonoBehaviour
         }
 
         SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(color));
-        state = State.NORMAL;
+        bodyState = BodySubState.NORMAL;
     }
 
     public void Disable()
     {
-        if (state != State.NORMAL) return;
+        if (bodyState != BodySubState.NORMAL) return;
 
         SetMaterial(rsc.coloredObjectsMng.GetWormBodyDimMaterial(color));
-        state = State.NORMAL_DISABLED;
+        bodyState = BodySubState.NORMAL_DISABLED;
     }
 
 
@@ -208,7 +212,7 @@ public class WormBodySegmentController : MonoBehaviour
 
     public void ImpactedByShot(ChromaColor shotColor, float damage, PlayerController player)
     {
-        if (state != State.NORMAL) return;
+        if (bodyState != BodySubState.NORMAL) return;
 
         blinkController.BlinkWhiteOnce();
 
@@ -218,7 +222,7 @@ public class WormBodySegmentController : MonoBehaviour
 
             if(currentDamageWrongColor >= bb.HealthSettingsPhase.bodyMaxHealth)
             {
-                state = State.DEACTIVATED; //not really deactivated but flagged to allow notify properly when colors reset
+                bodyState = BodySubState.DEACTIVATED; //not really deactivated but flagged to allow notify properly when colors reset
 
                 rsc.rumbleMng.Rumble(0, 0.25f, 0f, 0.5f);
 
@@ -243,7 +247,7 @@ public class WormBodySegmentController : MonoBehaviour
                 //Set material grey
                 SetMaterial(rsc.coloredObjectsMng.GetWormBodyGreyMaterial());
                 bodyDeactivate[(int)color].Play();
-                state = State.DEACTIVATED;
+                bodyState = BodySubState.DEACTIVATED;
 
                 rsc.rumbleMng.Rumble(0, 0.25f, 0f, 0.5f);
 

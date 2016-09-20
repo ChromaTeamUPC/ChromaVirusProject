@@ -207,8 +207,18 @@ public class EventManager : MonoBehaviour {
         WORM_DYING,
         WORM_DIED,
 
+        WORM_VULNERABLE,
+        WORM_INVULNERABLE,
+
+        WORM_PHASE_ACTIVATED,
+        WORM_PHASE_ENDED,
+
+        WORM_HEAD_CHARGED,
+        WORM_HEAD_DISCHARGED,
+
         WORM_HEAD_ACTIVATED,
-        WORM_HEAD_DESTROYED,
+        WORM_HEAD_STUNNED,
+        WORM_HEAD_DEACTIVATED,
 
         WORM_SECTION_ACTIVATED,
         WORM_SECTION_COLOR_CHANGED,

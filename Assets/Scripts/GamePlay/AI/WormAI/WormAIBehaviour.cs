@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class WormAIBehaviour : MonoBehaviour
 {
-    private enum HeadSubState
+    public enum HeadSubState
     {
         DEACTIVATED,
         ACTIVATED,
@@ -27,6 +27,7 @@ public class WormAIBehaviour : MonoBehaviour
     public Transform[] energyVoxelsSpawnPoints;
 
     private HeadSubState headState;
+    public HeadSubState HeadState { get { return headState; } }
 
     public WormAISpawningState spawningState;
     public WormAIWanderingState wanderingState;
@@ -172,12 +173,13 @@ public class WormAIBehaviour : MonoBehaviour
         bb.headCurrentChargeLevel++;
         SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
 
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_CHARGED, EventInfo.emptyInfo);
+
         if (bb.headCurrentChargeLevel >= bb.headMaxChargeLevel)
         {
             bb.DisableBodyParts();
             ActivateHead();
         }
-
         //rsc.colorMng.PrintColors();
     }
 
@@ -185,7 +187,10 @@ public class WormAIBehaviour : MonoBehaviour
     {
         bb.headCurrentChargeLevel = 0;
         SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
+
         bb.ShuffleBodyParts();
+
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_DISCHARGED, EventInfo.emptyInfo);
     }
 
     public void SetMaterial(Material materials)
@@ -207,6 +212,7 @@ public class WormAIBehaviour : MonoBehaviour
 
         knockOutFx.SetActive(false);
         StopAllCoroutines();
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_DEACTIVATED, EventInfo.emptyInfo);
         headState = HeadSubState.DEACTIVATED;
     }
 
@@ -216,6 +222,7 @@ public class WormAIBehaviour : MonoBehaviour
 
         StopAllCoroutines();
         headState = HeadSubState.ACTIVATED;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);
         StartCoroutine(BlinkHeadActivated());
     }
 
@@ -237,6 +244,7 @@ public class WormAIBehaviour : MonoBehaviour
         knockOutFx.SetActive(true);
         StopAllCoroutines();
         headState = HeadSubState.KNOCKED_OUT;
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_STUNNED, EventInfo.emptyInfo);
         StartCoroutine(BlinkHeadKnockOut());
     }
 
@@ -302,7 +310,7 @@ public class WormAIBehaviour : MonoBehaviour
         bb.headCurrentDamage = 0;
         bb.headCurrentChargeLevel = 0;
         WormEventInfo.eventInfo.wormBb = bb;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, WormEventInfo.eventInfo);
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_PHASE_ACTIVATED, WormEventInfo.eventInfo);
     }
 
     public void ResetPhase()
