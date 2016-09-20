@@ -98,7 +98,7 @@ public class EnergyVoxelController : MonoBehaviour {
                 break;
 
             case State.ATTRACTED:
-                if (target.Active && target.Alive)
+                if (target.ActiveAndAlive)
                 {
                     /*check target distance
                      if < threshold add energy to player and go to pool
@@ -173,7 +173,7 @@ public class EnergyVoxelController : MonoBehaviour {
         {
             PlayerController player = other.gameObject.GetComponent<PlayerController>();
 
-            if(player.Active && player.Alive)
+            if(player.ActiveAndAlive)
             {               
                 target = player;
             }

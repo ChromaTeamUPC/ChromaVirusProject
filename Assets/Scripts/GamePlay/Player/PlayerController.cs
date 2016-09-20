@@ -142,10 +142,14 @@ public class PlayerController : MonoBehaviour
     public bool Initialized { get { return init; } }
     public bool Active { get { return bb.active; } set { bb.active = value; } }
     public bool Alive { get { return bb.alive; } }
+    public bool ActiveAndAlive { get { return bb.active && bb.alive; } }
     public int Id { get { return playerId; } }
     public int Lives { get { return bb.currentLives; } }
     public float Health { get { return bb.currentHealth; } }
     public float Energy { get { return bb.currentEnergy; } }
+
+    public bool IsFalling { get { return currentState == bb.fallingState; } }
+    public bool IsDying { get { return currentState == bb.dyingState; } }
 
     void Awake()
     {

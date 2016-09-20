@@ -170,7 +170,7 @@ public class BossFloorController : MonoBehaviour
         while(elapsedTime < meteorRainDuration)
         {
             //Force meteor over player
-            if(player1.Active && player1.Alive)
+            if(player1.ActiveAndAlive)
             {
                 hexagon = player1.GetNearestHexagon();
                 if(hexagon != null && hexagon.CanFallMeteor())
@@ -180,7 +180,7 @@ public class BossFloorController : MonoBehaviour
                 }
             }
 
-            if (player2.Active && player2.Alive)
+            if (player2.ActiveAndAlive)
             {
                 hexagon = player2.GetNearestHexagon();
                 if (hexagon != null && hexagon.CanFallMeteor())

@@ -262,13 +262,13 @@ public class TurretAIBehaviour : MonoBehaviour
         PlayerController result = null;
         float distance = 0;
 
-        if(player1 != null && player1.Active && player1.Alive)
+        if(player1 != null && player1.ActiveAndAlive)
         {
             result = player1;
             distance = (transform.position - player1.transform.position).sqrMagnitude;
         }
 
-        if (player2 != null && player2.Active && player2.Alive)
+        if (player2 != null && player2.ActiveAndAlive)
         {
             if(result == null)
             {

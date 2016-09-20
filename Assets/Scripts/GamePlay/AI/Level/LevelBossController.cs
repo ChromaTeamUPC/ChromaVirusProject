@@ -171,11 +171,11 @@ public class LevelBossController : MonoBehaviour
 
     private void WormDying(EventInfo eventInfo)
     {
-        if (rsc.gameInfo.player1Controller.Active && rsc.gameInfo.player1Controller.Alive)
+        if (rsc.gameInfo.player1Controller.ActiveAndAlive)
         {
             rsc.gameInfo.player1Controller.SetInvulnerable();
         }
-        if (rsc.gameInfo.numberOfPlayers == 2 && rsc.gameInfo.player2Controller.Alive && rsc.gameInfo.player2Controller.Active)
+        if (rsc.gameInfo.numberOfPlayers == 2 && rsc.gameInfo.player2Controller.ActiveAndAlive)
         {
             rsc.gameInfo.player2Controller.SetInvulnerable();
         }
@@ -185,11 +185,11 @@ public class LevelBossController : MonoBehaviour
 
     private void WormDied(EventInfo eventInfo)
     { 
-        if (rsc.gameInfo.player1Controller.Active && rsc.gameInfo.player1Controller.Alive)
+        if (rsc.gameInfo.player1Controller.ActiveAndAlive)
         {
             rsc.gameInfo.player1Controller.LevelCleared();
         }
-        if (rsc.gameInfo.numberOfPlayers == 2 && rsc.gameInfo.player2Controller.Alive && rsc.gameInfo.player2Controller.Active)
+        if (rsc.gameInfo.numberOfPlayers == 2 && rsc.gameInfo.player2Controller.ActiveAndAlive)
         {
             rsc.gameInfo.player2Controller.LevelCleared();
         }
