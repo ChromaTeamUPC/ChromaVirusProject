@@ -447,7 +447,7 @@ public class PlayerBaseState
                 bb.isAffectedByContact = false;
                 bb.isContactCooldown = false;
             }
-            bb.player.StartCoroutine("HandleInvulnerabilityTime");
+            bb.player.StartCoroutine(HandleInvulnerabilityTime());
             return result;
         }
 
@@ -490,7 +490,7 @@ public class PlayerBaseState
             bb.isAffectedByContact = false;
             bb.isContactCooldown = false;
         }
-        bb.player.StartCoroutine("HandleInvulnerabilityTime");
+        bb.player.StartCoroutine(HandleInvulnerabilityTime());
 
         return result;
     }
