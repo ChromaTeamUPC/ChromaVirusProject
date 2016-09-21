@@ -12,7 +12,8 @@ public class TutorialManager : MonoBehaviour
         COLOR_MECHANICS,
         SPECIAL_ATTACK,
         CAPACITOR,
-        DEVICE
+        DEVICE,
+        HIT_BOSS_HEAD
     }
 
     [SerializeField]

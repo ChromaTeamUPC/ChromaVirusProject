@@ -21,6 +21,7 @@ public class WormAIKnockOutState : WormAIBaseState
     private float destinyInRangeDistance = 1f;
     private bool destinyInRange;
     private float speed;
+    private bool knockOutTutorialTriggered = false;
 
     public WormAIKnockOutState(WormBlackboard bb) : base(bb)
     { }
@@ -39,6 +40,13 @@ public class WormAIKnockOutState : WormAIBaseState
         head.animator.SetBool("Stunned", true);
 
         rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_VULNERABLE, EventInfo.emptyInfo);
+
+        if (!knockOutTutorialTriggered)
+        {
+            knockOutTutorialTriggered = true;
+            TutorialEventInfo.eventInfo.type = TutorialManager.Type.HIT_BOSS_HEAD;
+            rsc.eventMng.TriggerEvent(EventManager.EventType.SHOW_TUTORIAL, TutorialEventInfo.eventInfo);
+        }
 
         subState = SubState.KNOCKED_OUT;
     }

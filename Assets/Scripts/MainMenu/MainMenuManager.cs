@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
@@ -11,7 +12,6 @@ public class MainMenuManager : MonoBehaviour {
         FADING_IN,
         IDLE,
         SHOW_HELP,
-        SELECTING_PLAYERS,
         FADING_TO_GAME,
         FADING_TO_CREDITS,
         FADING_TO_OPTIONS,
@@ -26,14 +26,20 @@ public class MainMenuManager : MonoBehaviour {
 
     public FadeSceneScript fadeScript;
 
+    public Sprite singlePlayerIdleSprite;
+    public Sprite singlePlayerSelectedSprite;
+    public Sprite singlePlayerClickedSprite;
+    public Sprite player1IdleSprite;
+    public Sprite player1SelectedSprite;
+    public Sprite player1ClickedSprite;
+
     public Button playBtn;
+    public Button player2Btn;
+
     public Button helpBtn;
     public Button optionsBtn;
     public Button creditsBtn;
     public Button exitBtn;
-
-    public Button p1Btn;
-    public Button p2Btn;
 
     public GameObject help;
     public Image helpImg;
@@ -43,7 +49,6 @@ public class MainMenuManager : MonoBehaviour {
     public Color unselectedLevelColor;
     public GameObject backArrow;
     public GameObject forwardArrow;
-    public GameObject playerSelection;
     private AsyncOperation loadResources;
     private bool loadingResources;
     private AsyncOperation loadLevel;
@@ -72,7 +77,10 @@ public class MainMenuManager : MonoBehaviour {
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESET, EventInfo.emptyInfo);
         tutorialCurrentIndex = 0;
         tutorialTotalItems = rsc.tutorialMng.GetTotalImages();
-        DisableMainButtons();      
+
+        SetPlayButtonImages();
+        DisableMainButtons();
+              
         currentState = MainMenuState.FADING_IN;
         fadeScript.StartFadingToClear(fadeInTime);
         if(!rsc.audioMng.IsMusicPlaying() || !rsc.audioMng.IsCurrentMusic(AudioManager.MusicType.MAIN_MENU))
@@ -92,6 +100,27 @@ public class MainMenuManager : MonoBehaviour {
             default:
                 break;
         }
+
+        InputManager.OnDeviceAttached += OnDeviceAttached;
+        InputManager.OnDeviceDetached += OnDeviceDetached;
+    }
+
+    void OnDestroy()
+    {
+        InputManager.OnDeviceAttached -= OnDeviceAttached;
+        InputManager.OnDeviceDetached -= OnDeviceDetached;
+    }
+
+    private void OnDeviceAttached(InputDevice obj)
+    {
+        Debug.Log("Added controller: " + obj.Name);
+        SetPlayButtonImages();
+    }
+    private void OnDeviceDetached(InputDevice obj)
+    {
+        Debug.Log("Removed controller: " + obj.Name);
+        playBtn.Select();
+        SetPlayButtonImages();
     }
 
     // Update is called once per frame
@@ -152,17 +181,6 @@ public class MainMenuManager : MonoBehaviour {
                 }
                 break;
 
-            case MainMenuState.SELECTING_PLAYERS:
-                //if (Input.GetButtonDown("Back"))
-                if ((InputManager.Devices.Count >= 1 && InputManager.Devices[0].Action2.WasPressed)
-                    || (InputManager.Devices.Count >= 2 && InputManager.Devices[1].Action2.WasPressed))
-                {
-                    DisablePlayerSelectionButtons();
-                    playerSelection.SetActive(false);
-                    EnableMainButtons();                               
-                }
-                break;
-
             case MainMenuState.FADING_TO_GAME:
                 if(!fadeScript.FadingToColor)
                 {
@@ -207,9 +225,34 @@ public class MainMenuManager : MonoBehaviour {
             rsc.audioMng.FadeOutMusic(fadeMusicTime);
     }
 
+    private void SetPlayButtonImages()
+    {
+        SpriteState st = new SpriteState();
+        if (InputManager.Devices.Count == 1)
+        {
+            playBtn.GetComponent<Image>().sprite = singlePlayerIdleSprite;
+            st.highlightedSprite = singlePlayerSelectedSprite;
+            st.pressedSprite = singlePlayerClickedSprite;
+
+            player2Btn.gameObject.SetActive(false);
+        }
+        else if (InputManager.Devices.Count > 1)
+        {
+            playBtn.GetComponent<Image>().sprite = player1IdleSprite;
+            st.highlightedSprite = player1SelectedSprite;
+            st.pressedSprite = player1ClickedSprite;
+
+            player2Btn.gameObject.SetActive(true);
+        }
+        playBtn.spriteState = st;     
+    }
+
     private void EnableMainButtons()
     {
+        SetPlayButtonImages();
+
         playBtn.interactable = true;
+        player2Btn.interactable = true;
         helpBtn.interactable = true;
         optionsBtn.interactable = true;
         creditsBtn.interactable = true;
@@ -220,71 +263,33 @@ public class MainMenuManager : MonoBehaviour {
     private void DisableMainButtons()
     {
         playBtn.interactable = false;
+        player2Btn.interactable = false;
         helpBtn.interactable = false;
         optionsBtn.interactable = false;
         creditsBtn.interactable = false;
         exitBtn.interactable = false;
-    }
-    
-    private void EnablePlayerSelectionButtons()
-    {      
-        p1Btn.interactable = true;
-        
-        //if(Input.GetJoystickNames().Length > 1)
-        if(InputManager.Devices.Count > 1)
-        {
-            p2Btn.interactable = true;
-        }
-        else
-        {
-            p2Btn.interactable = false;
-        }
+    }  
 
-        p1Btn.Select();
-    }
-
-    private void DisablePlayerSelectionButtons()
-    {
-        p1Btn.interactable = false;
-        p2Btn.interactable = false;
-    }
-
-    public void OnClickStart()
+    public void OnClick1Player()
     {
         if (!loadingResources || loadResources.isDone)
         {
             DisableMainButtons();
-
-            //if(Input.GetJoystickNames().Length > 1)
-            if (InputManager.Devices.Count > 1)
-            {
-                playerSelection.SetActive(true);
-                EnablePlayerSelectionButtons();
-                currentState = MainMenuState.SELECTING_PLAYERS;
-            }
-            else
-            {
-                playersNumber = 1;
-                currentState = MainMenuState.FADING_TO_GAME;
-                FadeOut(fadeOutToPlayTime, fadeOutToPlayTime);
-            }          
+            playersNumber = 1;
+            currentState = MainMenuState.FADING_TO_GAME;
+            FadeOut(fadeOutToPlayTime, fadeOutToPlayTime);
         }
-    }
-
-    public void OnClick1Player()
-    {
-        playersNumber = 1;
-        DisablePlayerSelectionButtons();
-        currentState = MainMenuState.FADING_TO_GAME;
-        FadeOut(fadeOutToPlayTime, fadeOutToPlayTime);
     }
 
     public void OnClick2Players()
     {
-        playersNumber = 2;
-        DisablePlayerSelectionButtons();
-        currentState = MainMenuState.FADING_TO_GAME;
-        FadeOut(fadeOutToPlayTime, fadeOutToPlayTime);
+        if (!loadingResources || loadResources.isDone)
+        {
+            DisableMainButtons();
+            playersNumber = 2;
+            currentState = MainMenuState.FADING_TO_GAME;
+            FadeOut(fadeOutToPlayTime, fadeOutToPlayTime);
+        }
     }
 
     public void OnClickHelp()
