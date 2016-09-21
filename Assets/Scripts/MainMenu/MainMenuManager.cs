@@ -34,6 +34,7 @@ public class MainMenuManager : MonoBehaviour {
     public Sprite player1ClickedSprite;
 
     public Button playBtn;
+    private MainMenuButtonController playBtnController;
     public Button player2Btn;
 
     public Button helpBtn;
@@ -70,6 +71,8 @@ public class MainMenuManager : MonoBehaviour {
         {
             loadingResources = false;
         }
+
+        playBtnController = playBtn.GetComponent<MainMenuButtonController>();
     }
 
     void Start()
@@ -180,6 +183,7 @@ public class MainMenuManager : MonoBehaviour {
                 {
                     rsc.audioMng.BackFx.Play();
                     help.SetActive(false);
+                    playBtnController.SetFirstTime();
                     EnableMainButtons();
                 }
                 break;
