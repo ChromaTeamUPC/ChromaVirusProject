@@ -158,6 +158,7 @@ public class GameManager : MonoBehaviour {
 
     public void ScoreClosed(EventInfo eventInfo)
     {
+        state = GameState.STARTED;
         switch (currentLevel)
         {
             case Level.LEVEL_01: //Level01
