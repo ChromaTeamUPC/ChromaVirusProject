@@ -145,7 +145,7 @@ public class CapacitorController : MonoBehaviour {
     private void SetMaterial(Material mat)
     {
         Material[] mats = rend.sharedMaterials;
-        mats[0] = mat;
+        mats[1] = mat;
         rend.sharedMaterials = mats;
         blinkController.InvalidateMaterials();
     }
