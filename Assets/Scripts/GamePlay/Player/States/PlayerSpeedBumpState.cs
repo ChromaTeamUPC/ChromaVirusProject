@@ -33,7 +33,7 @@ public class PlayerSpeedBumpState : PlayerBaseState
         elapsedTime += Time.deltaTime;
                 
         //if(!Input.GetButton(blackboard.dash))
-        if(!bb.controller.LeftTrigger.IsPressed)
+        if(!bb.controller.LeftBumper.IsPressed)
         {
             return ReturnIdleOrMoving();
         }

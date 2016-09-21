@@ -28,8 +28,10 @@ public class PlayerLongIdleState : PlayerBaseState
         }
         else if (bb.dashPressed)
         {
-            return bb.dashingState;
-            //return blackboard.speedBumpState;
+            if (bb.player.Id == 1)
+                return bb.dashingState;
+            else
+                return bb.speedBumpState;
         }
         else if (bb.speedBumpPressed)
         {
