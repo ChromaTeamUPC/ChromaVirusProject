@@ -9,6 +9,8 @@ public class PlayerFallingState : PlayerBaseState
         bb.player.StopTrail();
         bb.player.DisableUI();
         bb.animator.SetBool("Falling", true);
+
+        bb.falling = true;
     }
 
     public override void OnStateExit()

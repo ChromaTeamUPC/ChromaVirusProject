@@ -229,10 +229,24 @@ public class RumbleManager : MonoBehaviour
             //GamePad.SetVibration(PlayerIndex.One, p1Strong, p1Weak);
             //GamePad.SetVibration(PlayerIndex.Two, p2Strong, p2Weak);
 
-            if (InputManager.Devices.Count >= 1) InputManager.Devices[0].Vibrate(p1Strong, p1Weak);
-            if (InputManager.Devices.Count >= 2) InputManager.Devices[1].Vibrate(p2Strong, p2Weak);
+            if (ShouldVibratePlayer(1)) InputManager.Devices[0].Vibrate(p1Strong, p1Weak);
+            if (ShouldVibratePlayer(2)) InputManager.Devices[1].Vibrate(p2Strong, p2Weak);
         }
 	}
+
+    private bool ShouldVibratePlayer(int playerId)
+    {
+        if (playerId == 1)
+        {
+            return (InputManager.Devices.Count >= 1 && rsc.gameInfo.player1Controller.IsPlaying);
+        }
+        else if (playerId == 2)
+        {
+            return (rsc.gameInfo.numberOfPlayers == 2 && InputManager.Devices.Count >= 2 && rsc.gameInfo.player2Controller.IsPlaying);
+        }
+
+        return false;
+    }
 
     public void Rumble(int player = 0, float duration = 0.5f, float weakMotor = 1f, float strongMotor = 1f, float startFading = -1f)
     {

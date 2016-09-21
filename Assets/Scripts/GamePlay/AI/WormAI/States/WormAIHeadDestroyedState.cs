@@ -91,11 +91,21 @@ public class WormAIHeadDestroyedState : WormAIBaseState
                         return head.dyingState;
                     else
                     {
+                        //Check it before changing phase
+                        bool shouldTriggerMeteor = bb.attacksEnabled && bb.MeteorAttackSettingsPhase.active && bb.MeteorAttackSettingsPhase.triggerAfterHeadDestroyed;
+
                         head.StartNewPhase();
                         head.SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
                         //rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);                     
 
-                        subState = SubState.JUMPING;
+                        if (shouldTriggerMeteor)
+                        {
+                            return head.meteorAttackState;
+                        }
+                        else
+                        {
+                            subState = SubState.JUMPING;
+                        }
                     }
                 }
                 else

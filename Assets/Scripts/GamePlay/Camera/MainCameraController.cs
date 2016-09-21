@@ -214,29 +214,41 @@ public class MainCameraController : MonoBehaviour {
 
     public Vector3 GetCamTargetPosition()
     {
-        if (player1.Active && player2.Active)
+        //1 player: follow him until last life lost
+        if (rsc.gameInfo.numberOfPlayers == 1)
         {
-            /*Vector3 p1ScreenPos = thisCamera.WorldToScreenPoint(target1.position);
-            Vector3 p2ScreenPos = thisCamera.WorldToScreenPoint(target2.position);
-            Vector3 targetCamPos = ((p1ScreenPos + p2ScreenPos) / 2);            
-
-            Ray camRay = thisCamera.ScreenPointToRay(targetCamPos);
-            RaycastHit playerRaycastHit;
-
-            if (Physics.Raycast(camRay, out playerRaycastHit, 100, playerRayCastMask))
+            if(player1.IsPlaying)
+                return target1.position + offset;
+        }
+        //2 players
+        {           
+            if (player1.IsPlaying || player2.IsPlaying)
             {
-                return playerRaycastHit.point + offset;
-            } */
-            return ((target1.position + target2.position) / 2) + offset;
+                if (player1.IsPlaying && !player2.IsPlaying)
+                {
+                    return target1.position + offset;
+                }
 
-        }
-        else if (player1.Active)
-        {
-            return target1.position + offset;
-        }
-        else if (player2.Active)
-        {
-            return target2.position + offset;
+                if (!player1.IsPlaying && player2.IsPlaying)
+                {
+                    return target2.position + offset;
+                }
+
+                if (!player1.IsFalling || !player2.IsFalling)
+                {
+                    if (player1.IsFalling && !player2.IsFalling)
+                    {
+                        return target2.position + offset;
+                    }
+
+                    if (!player1.IsFalling && player2.IsFalling)
+                    {
+                        return target1.position + offset;
+                    }
+
+                    return ((target1.position + target2.position) / 2) + offset;
+                }
+            }
         }
 
         return transform.position; //Not moving

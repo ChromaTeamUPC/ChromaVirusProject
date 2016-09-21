@@ -1,5 +1,35 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System;
+
+public enum StatsGrade
+{
+    S,
+    A,
+    B,
+    C
+}
+
+
+[Serializable]
+public class LevelStats
+{
+    [Header("Chain Settings")]
+    public float chainMaxTime = 5f;
+    public int specialKillsChainIncrement = 3;
+
+    [Header("Computed Score Settings")]
+    public int maxChainMultiplier = 1000;
+
+    public int baseSeconds = 300;
+    public int secondMultiplier = 1000;
+
+    [Header("Grade Settings")]
+    public int sGradeMinPoints = 300000;
+    public int aGradeMinPoints = 200000;
+    public int bGradeMinPoints = 100000;
+}
 
 public class PlayerStats
 {
@@ -7,9 +37,6 @@ public class PlayerStats
     ChromaColor lastKillColor;
 
     public int currentIncrement;
-    private int specialComboIncrement;
-
-    public float chainMaxTime;
     public float chainRemainingTime;
 
     public int currentChain;
@@ -19,12 +46,14 @@ public class PlayerStats
     public int enemiesKilledWrong;
 
     public int colorAccuracy;
+    public int finalScore;
+    public StatsGrade finalGrade;
 
-    public PlayerStats(int id, float chainMax, int specialComboInc)
+    private LevelStats currentLevelStats;
+
+    public PlayerStats(int id)
     {
         playerId = id;
-        chainMaxTime = chainMax;
-        specialComboIncrement = specialComboInc;
         Reset();
     }
 
@@ -37,6 +66,17 @@ public class PlayerStats
         chainRemainingTime = 0f;
         currentChain = 0;
         maxChain = 0;
+
+        colorAccuracy = 0;
+        finalScore = 0;
+        finalGrade = StatsGrade.C;
+
+        currentLevelStats = null;
+    }
+
+    public void SetCurrentLevelStats(LevelStats levelStats)
+    {
+        currentLevelStats = levelStats;
     }
 
     public void UpdateChainTime()
@@ -64,7 +104,7 @@ public class PlayerStats
 
         if(specialKill)
         {
-            total = specialComboIncrement;
+            total = currentLevelStats != null ? currentLevelStats.specialKillsChainIncrement : 0;
 
             //To force start a chain
             if (currentIncrement == 0)
@@ -102,7 +142,7 @@ public class PlayerStats
         if (currentChain > maxChain)
             maxChain = currentChain;
 
-        chainRemainingTime = chainMaxTime;
+        chainRemainingTime = currentLevelStats != null ? currentLevelStats.chainMaxTime : 0;
 
         ComboEventInfo.eventInfo.playerId = playerId;
         ComboEventInfo.eventInfo.comboColor = lastKillColor;
@@ -126,12 +166,36 @@ public class PlayerStats
         rsc.eventMng.TriggerEvent(EventManager.EventType.COMBO_BREAK, ComboEventInfo.eventInfo);
     }
 
-    public void ComputeAccuracy()
+    public void ComputeScore(int totalTime)
     {
+        if (currentLevelStats == null) return;
+
+
         if (enemiesKilledOk + enemiesKilledWrong > 0)
             colorAccuracy = Mathf.RoundToInt((float)enemiesKilledOk / (float)(enemiesKilledOk + enemiesKilledWrong) * 100);
         else
             colorAccuracy = 0;
+
+        //Chain * multiplier
+        finalScore = maxChain * currentLevelStats.maxChainMultiplier;
+
+        //Accuracy factor
+        finalScore = finalScore / 100 * colorAccuracy;
+
+        //Time score
+        finalScore += (currentLevelStats.baseSeconds - totalTime) * currentLevelStats.secondMultiplier;
+
+        if (finalScore < 0) finalScore = 0;
+
+        //Grade
+        if (finalScore >= currentLevelStats.sGradeMinPoints)
+            finalGrade = StatsGrade.S;
+        else if (finalScore >= currentLevelStats.aGradeMinPoints)
+            finalGrade = StatsGrade.A;
+        else if (finalScore >= currentLevelStats.bGradeMinPoints)
+            finalGrade = StatsGrade.B;
+        else
+            finalGrade = StatsGrade.C;
     }
 }
 
@@ -142,24 +206,15 @@ public class StatsManager : MonoBehaviour
     public PlayerStats p1Stats;
     public PlayerStats p2Stats;
 
-    [Header("Chain Settings")]
-    public float chainMaxTime = 5f;
-    public int specialKillsChainIncrement = 3;
-
-    [Header("Computed Score Settings")]
-    public int maxChainMultiplier = 1000;
-
-    public int level01BaseSeconds = 300;
-    public int levelBossBaseSeconds = 300;
-
-    public int secondMultiplier = 1000;
+    [SerializeField]
+    public LevelStats[] levelStats = new LevelStats[2];
 
     private bool updateChainTime = false;
 
     void Awake()
     {
-        p1Stats = new PlayerStats(1, chainMaxTime, specialKillsChainIncrement);
-        p2Stats = new PlayerStats(2, chainMaxTime, specialKillsChainIncrement);
+        p1Stats = new PlayerStats(1);
+        p2Stats = new PlayerStats(2);
     }
 
 	// Use this for initialization
@@ -203,24 +258,14 @@ public class StatsManager : MonoBehaviour
         }
     }
 
-    public int GetCurrentLevelBaseTime()
-    {
-        switch (rsc.gameMng.CurrentLevel)
-        {
-            case GameManager.Level.LEVEL_01:
-                return level01BaseSeconds;
-
-            case GameManager.Level.LEVEL_BOSS:
-                return levelBossBaseSeconds;
-
-            default:
-                return level01BaseSeconds;
-        }
-    }
-
 	public int GetTotalTime()
     {
         return Mathf.RoundToInt(totalTime);
+    }
+
+    public LevelStats GetCurrentLevelStats()
+    {
+        return levelStats[(int)rsc.gameMng.CurrentLevel];
     }
 
 	private void GameReset(EventInfo eventInfo)
@@ -240,13 +285,17 @@ public class StatsManager : MonoBehaviour
 
         updateChainTime = false;
         startTime = 0f;
-        totalTime = 0f;
+        totalTime = 0f;      
     }
 
     private void LevelStarted(EventInfo eventInfo)
     {
         updateChainTime = true;
         startTime = Time.time;
+
+        LevelStats currentLevelStats = levelStats[(int)rsc.gameMng.CurrentLevel];
+        p1Stats.SetCurrentLevelStats(currentLevelStats);
+        p2Stats.SetCurrentLevelStats(currentLevelStats);
     }
 
     private void LevelCleared(EventInfo eventInfo)
@@ -254,8 +303,8 @@ public class StatsManager : MonoBehaviour
         updateChainTime = false;
         totalTime = Time.time - startTime;
 
-        p1Stats.ComputeAccuracy();
-        p2Stats.ComputeAccuracy();
+        p1Stats.ComputeScore(GetTotalTime());
+        p2Stats.ComputeScore(GetTotalTime());
     }
 
     private void ZoneStarted(EventInfo eventInfo)

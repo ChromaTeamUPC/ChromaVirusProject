@@ -180,6 +180,13 @@ public class WormAIBehaviour : MonoBehaviour
             bb.DisableBodyParts();
             ActivateHead();
         }
+
+        if (bb.attacksEnabled && bb.MeteorAttackSettingsPhase.active && 
+            bb.MeteorAttackSettingsPhase.triggerAfterNumberOfBodySegmentsDestroyed > 0 &&
+            bb.headCurrentChargeLevel % bb.MeteorAttackSettingsPhase.triggerAfterNumberOfBodySegmentsDestroyed == 0)
+        {
+            ChangeState(meteorAttackState);
+        }
         //rsc.colorMng.PrintColors();
     }
 

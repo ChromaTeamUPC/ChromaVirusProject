@@ -66,9 +66,11 @@ public class PlayerBlackboard
     //State control variables
     public bool active;     //Player is participating in current game (not necesarily alive) //Reset per game
     public bool alive;      //Player is alive at the moment //Reset per game
+    public bool playing;    //Player is playing (game started and not all lives lost)
     public bool animationTrigger; //Reset per needed state
     public bool animationEnded; //Reset per needed state
     public bool isGrounded;
+    public bool falling; //Reset when player returns back to idle, but not when die
 
     //Health variables
     public int currentLives;
@@ -184,6 +186,7 @@ public class PlayerBlackboard
     {
         active = false;
         alive = false;
+        playing = false;
         currentLives = player.maxLives;
         specialAttackTutorialTriggered = false;
         hexagons.Clear();     
@@ -192,8 +195,12 @@ public class PlayerBlackboard
     //This variables have to be reset every spawn
     public void ResetLifeVariables()
     {
+        alive = true;
+        playing = true;
+
         animationEnded = false;
         isGrounded = true;
+        falling = false;
 
         currentHealth = player.maxHealth;
         currentEnergy = 0;

@@ -15,23 +15,35 @@ public class GUIController : MonoBehaviour
     public float scoreChainDuration = 1f;
     public float scoreAccuracyDuration = 1f;
     public float scoreTimeDuration = 1f;
+    public float showPlayerImgDuration = 2f;
+    public float showGradeInitialScale = 20f;
+    public float showGradeImgDuration = 0.5f;
     public float scoreFinalDelay = 0.2f;
 
     [Header("Score Items")]
     public GameObject scoreGO;
     public GameObject scoreContinueHintGO;
     public GameObject scoreSingleGO;
+    public Sprite[] player1ScoreImages = new Sprite[4];
+    public Sprite[] player2ScoreImages = new Sprite[4];
+    public Sprite[] gradeScoreImages = new Sprite[4];
     public Text scoreSingleChain;
     public Text scoreSingleAccuracy;
     public Text scoreSingleTime;
     public Text scoreSingleTotal;
+    public Image scoreSinglePlayerImg;
+    public Image scoreSingleGradeImg;
     public GameObject scoreMultiGO;
     public Text scoreMultiChainP1;
     public Text scoreMultiAccuracyP1;
     public Text scoreMultiTotalP1;
+    public Image scoreMultiPlayerImgP1;
+    public Image scoreMultiGradeImgP1;
     public Text scoreMultiChainP2;
     public Text scoreMultiAccuracyP2;
     public Text scoreMultiTotalP2;
+    public Image scoreMultiPlayerImgP2;
+    public Image scoreMultiGradeImgP2;
     public Text scoreMultiTime;
 
     [Header("Player 1 Items")]
@@ -164,9 +176,6 @@ public class GUIController : MonoBehaviour
     private PlayerController player1Controller;
     private PlayerController player2Controller;
 
-    private float referenceHealthFactor;
-    private float referenceEnergyFactor;
-
     private Queue<ChainIncrementController> chainsP1 = new Queue<ChainIncrementController>();
     private Queue<ChainIncrementController> chainsP2 = new Queue<ChainIncrementController>();
 
@@ -186,9 +195,7 @@ public class GUIController : MonoBehaviour
         player2Controller = rsc.gameInfo.player2Controller;
 
         player1Stats = rsc.statsMng.p1Stats;
-        player1ChainSlider.maxValue = player1Stats.chainMaxTime;
         player2Stats = rsc.statsMng.p2Stats;
-        player2ChainSlider.maxValue = player2Stats.chainMaxTime;
 
         DisableHintButtons(0);
 
@@ -624,6 +631,10 @@ public class GUIController : MonoBehaviour
         infectionAndNextColorZone.SetActive(true);
 
         //Set initial values
+        float chainMaxTime = rsc.statsMng.GetCurrentLevelStats().chainMaxTime;
+        player1ChainSlider.maxValue = chainMaxTime;
+        player2ChainSlider.maxValue = chainMaxTime;
+
         currentChromaColor = rsc.colorMng.CurrentColor;
         currentColor = rsc.coloredObjectsMng.GetColor(rsc.colorMng.CurrentColor);
         nextColorPrewarnTime = rsc.colorMng.prewarningSeconds;
@@ -714,14 +725,18 @@ public class GUIController : MonoBehaviour
 
     private IEnumerator ShowScoreSingleProgress()
     {
+        scoreSinglePlayerImg.enabled = false;
+        scoreSingleGradeImg.enabled = false;
+
+        LevelStats levelStats = rsc.statsMng.GetCurrentLevelStats();
+        int totalTime = rsc.statsMng.GetTotalTime();
+
         int currentChain = 0;
         int totalScore = 0;
 
         int currentAccuracy = 0;
         int percentScore = 0;
 
-        int levelTime = rsc.statsMng.GetCurrentLevelBaseTime();
-        int actualTime = rsc.statsMng.GetTotalTime();
         int timeScore = 0;
 
         float elapsedTime = 0f;
@@ -729,8 +744,8 @@ public class GUIController : MonoBehaviour
 
         scoreSingleChain.text = totalScore.ToString();
         scoreSingleAccuracy.text = totalScore.ToString();
-        scoreSingleTime.text = levelTime.ToString();
         scoreSingleTotal.text = totalScore.ToString();
+        scoreSingleTime.text = levelStats.baseSeconds.ToString();
 
         scoreSingleGO.SetActive(true);
 
@@ -742,8 +757,8 @@ public class GUIController : MonoBehaviour
 
         while(elapsedTime < scoreChainDuration)
         {
-            currentChain = (int)Mathf.Lerp(0, rsc.statsMng.p1Stats.maxChain, factor);
-            totalScore = currentChain * rsc.statsMng.maxChainMultiplier;
+            currentChain = (int)Mathf.Lerp(0, player1Stats.maxChain, factor);
+            totalScore = currentChain * levelStats.maxChainMultiplier;
 
             scoreSingleChain.text = currentChain.ToString();
             scoreSingleTotal.text = string.Format("{0:n0}", totalScore);
@@ -754,9 +769,9 @@ public class GUIController : MonoBehaviour
             factor = elapsedTime / scoreChainDuration;
         }
 
-        totalScore = rsc.statsMng.p1Stats.maxChain * rsc.statsMng.maxChainMultiplier;
-        scoreSingleChain.text = rsc.statsMng.p1Stats.maxChain.ToString();
-        scoreSingleTotal.text = string.Format("{0:n0}", rsc.statsMng.p1Stats.maxChain * rsc.statsMng.maxChainMultiplier);
+        totalScore = player1Stats.maxChain * levelStats.maxChainMultiplier;
+        scoreSingleChain.text = player1Stats.maxChain.ToString();
+        scoreSingleTotal.text = string.Format("{0:n0}", player1Stats.maxChain * levelStats.maxChainMultiplier);
         yield return null;
 
         //Accuracy update
@@ -765,7 +780,7 @@ public class GUIController : MonoBehaviour
 
         while(elapsedTime < scoreAccuracyDuration)
         {
-            currentAccuracy = (int)Mathf.Lerp(0, rsc.statsMng.p1Stats.colorAccuracy, factor);
+            currentAccuracy = (int)Mathf.Lerp(0, player1Stats.colorAccuracy, factor);
             percentScore = totalScore / 100 * currentAccuracy;
 
             scoreSingleAccuracy.text = currentAccuracy.ToString();
@@ -777,8 +792,8 @@ public class GUIController : MonoBehaviour
             factor = elapsedTime / scoreAccuracyDuration;
         }
 
-        percentScore = totalScore / 100 * rsc.statsMng.p1Stats.colorAccuracy;
-        scoreSingleAccuracy.text = rsc.statsMng.p1Stats.colorAccuracy.ToString();
+        percentScore = totalScore / 100 * player1Stats.colorAccuracy;
+        scoreSingleAccuracy.text = player1Stats.colorAccuracy.ToString();
         scoreSingleTotal.text = string.Format("{0:n0}", percentScore);
         yield return null;
 
@@ -786,15 +801,15 @@ public class GUIController : MonoBehaviour
         elapsedTime = 0f;
         factor = 0f;
 
-        if (actualTime < levelTime)
+        if (totalTime < levelStats.baseSeconds)
             scoreSingleTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.GREEN);
-        else if (actualTime > levelTime)
+        else if (totalTime > levelStats.baseSeconds)
             scoreSingleTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.RED);
 
         while (elapsedTime < scoreTimeDuration)
         {
-            int seconds = (int)Mathf.Lerp(levelTime, actualTime, factor);
-            timeScore = percentScore + ((levelTime - seconds) * rsc.statsMng.secondMultiplier);
+            int seconds = (int)Mathf.Lerp(levelStats.baseSeconds, totalTime, factor);
+            timeScore = percentScore + ((levelStats.baseSeconds - seconds) * levelStats.secondMultiplier);
 
             scoreSingleTime.text = seconds.ToString();
             scoreSingleTotal.text = string.Format("{0:n0}", timeScore);
@@ -805,9 +820,49 @@ public class GUIController : MonoBehaviour
             factor = elapsedTime / scoreTimeDuration;
         }
 
-        timeScore = percentScore + ((levelTime - actualTime) * rsc.statsMng.secondMultiplier);
-        scoreSingleTime.text = actualTime.ToString();
+        timeScore = percentScore + ((levelStats.baseSeconds - totalTime) * levelStats.secondMultiplier);
+        scoreSingleTime.text = totalTime.ToString();
         scoreSingleTotal.text = string.Format("{0:n0}", timeScore);
+
+        //Player Image fading
+        elapsedTime = 0f;
+        factor = 0f;
+        scoreSinglePlayerImg.enabled = true;
+        scoreSinglePlayerImg.color = new Color(1, 1, 1, 0);
+        scoreSinglePlayerImg.sprite = player1ScoreImages[(int)player1Stats.finalGrade];
+
+        while(elapsedTime < showPlayerImgDuration)
+        {
+            float alpha = Mathf.Lerp(0, 1, factor);
+            scoreSinglePlayerImg.color = new Color(1, 1, 1, alpha);
+
+            yield return null;
+
+            elapsedTime += Time.deltaTime;
+            factor = elapsedTime / showPlayerImgDuration;
+        }
+
+        scoreSinglePlayerImg.color = Color.white;
+
+        //Grade Img Stamp
+        elapsedTime = 0;
+        factor = 0;
+        scoreSingleGradeImg.enabled = true;
+        scoreSingleGradeImg.transform.localScale = new Vector3(showGradeInitialScale, showGradeInitialScale, 1f);
+        scoreSingleGradeImg.sprite = gradeScoreImages[(int)player1Stats.finalGrade];
+
+        while (elapsedTime < showGradeImgDuration)
+        {
+            float scale = Mathf.Lerp(showGradeInitialScale, 1, factor);
+            scoreSingleGradeImg.transform.localScale = new Vector3(scale, scale, 1f);
+
+            yield return null;
+
+            elapsedTime += Time.deltaTime;
+            factor = elapsedTime / showGradeImgDuration;
+        }
+
+        scoreSingleGradeImg.transform.localScale = Vector3.one;
 
         yield return new WaitForSeconds(scoreFinalDelay);
 
@@ -817,6 +872,14 @@ public class GUIController : MonoBehaviour
 
     private IEnumerator ShowScoreMultiProgress()
     {
+        scoreMultiPlayerImgP1.enabled = false;
+        scoreMultiGradeImgP1.enabled = false;
+        scoreMultiPlayerImgP2.enabled = false;
+        scoreMultiGradeImgP2.enabled = false;
+
+        LevelStats levelStats = rsc.statsMng.GetCurrentLevelStats();
+        int totalTime = rsc.statsMng.GetTotalTime();
+
         int currentChainP1 = 0;
         int totalScoreP1 = 0;
         int currentChainP2 = 0;
@@ -827,8 +890,6 @@ public class GUIController : MonoBehaviour
         int currentAccuracyP2 = 0;
         int percentScoreP2 = 0;
 
-        int levelTime = rsc.statsMng.GetCurrentLevelBaseTime();
-        int actualTime = rsc.statsMng.GetTotalTime();
         int timeScoreP1 = 0;
         int timeScoreP2 = 0;
 
@@ -841,7 +902,7 @@ public class GUIController : MonoBehaviour
         scoreMultiChainP2.text = totalScoreP2.ToString();
         scoreMultiAccuracyP2.text = totalScoreP2.ToString();
         scoreMultiTotalP2.text = totalScoreP2.ToString();
-        scoreMultiTime.text = levelTime.ToString();
+        scoreMultiTime.text = levelStats.baseSeconds.ToString();
 
         scoreMultiGO.SetActive(true);
 
@@ -853,14 +914,14 @@ public class GUIController : MonoBehaviour
 
         while (elapsedTime < scoreChainDuration)
         {
-            currentChainP1 = (int)Mathf.Lerp(0, rsc.statsMng.p1Stats.maxChain, factor);
-            totalScoreP1 = currentChainP1 * rsc.statsMng.maxChainMultiplier;
+            currentChainP1 = (int)Mathf.Lerp(0, player1Stats.maxChain, factor);
+            totalScoreP1 = currentChainP1 * levelStats.maxChainMultiplier;
 
             scoreMultiChainP1.text = currentChainP1.ToString();
             scoreMultiTotalP1.text = string.Format("{0:n0}", totalScoreP1);
 
-            currentChainP2 = (int)Mathf.Lerp(0, rsc.statsMng.p2Stats.maxChain, factor);
-            totalScoreP2 = currentChainP2 * rsc.statsMng.maxChainMultiplier;
+            currentChainP2 = (int)Mathf.Lerp(0, player2Stats.maxChain, factor);
+            totalScoreP2 = currentChainP2 * levelStats.maxChainMultiplier;
 
             scoreMultiChainP2.text = currentChainP2.ToString();
             scoreMultiTotalP2.text = string.Format("{0:n0}", totalScoreP2);
@@ -871,13 +932,13 @@ public class GUIController : MonoBehaviour
             factor = elapsedTime / scoreChainDuration;
         }
 
-        totalScoreP1 = rsc.statsMng.p1Stats.maxChain * rsc.statsMng.maxChainMultiplier;
-        scoreMultiChainP1.text = rsc.statsMng.p1Stats.maxChain.ToString();
-        scoreMultiTotalP1.text = string.Format("{0:n0}", rsc.statsMng.p1Stats.maxChain * rsc.statsMng.maxChainMultiplier);
+        totalScoreP1 = player1Stats.maxChain * levelStats.maxChainMultiplier;
+        scoreMultiChainP1.text = player1Stats.maxChain.ToString();
+        scoreMultiTotalP1.text = string.Format("{0:n0}", player1Stats.maxChain * levelStats.maxChainMultiplier);
 
-        totalScoreP2 = rsc.statsMng.p2Stats.maxChain * rsc.statsMng.maxChainMultiplier;
-        scoreMultiChainP2.text = rsc.statsMng.p2Stats.maxChain.ToString();
-        scoreMultiTotalP2.text = string.Format("{0:n0}", rsc.statsMng.p2Stats.maxChain * rsc.statsMng.maxChainMultiplier);
+        totalScoreP2 = player2Stats.maxChain * levelStats.maxChainMultiplier;
+        scoreMultiChainP2.text = player2Stats.maxChain.ToString();
+        scoreMultiTotalP2.text = string.Format("{0:n0}", player2Stats.maxChain * levelStats.maxChainMultiplier);
         yield return null;
 
         //Accuracy update
@@ -886,13 +947,13 @@ public class GUIController : MonoBehaviour
 
         while (elapsedTime < scoreAccuracyDuration)
         {
-            currentAccuracyP1 = (int)Mathf.Lerp(0, rsc.statsMng.p1Stats.colorAccuracy, factor);
+            currentAccuracyP1 = (int)Mathf.Lerp(0, player1Stats.colorAccuracy, factor);
             percentScoreP1 = totalScoreP1 / 100 * currentAccuracyP1;
 
             scoreMultiAccuracyP1.text = currentAccuracyP1.ToString();
             scoreMultiTotalP1.text = string.Format("{0:n0}", percentScoreP1);
 
-            currentAccuracyP2 = (int)Mathf.Lerp(0, rsc.statsMng.p2Stats.colorAccuracy, factor);
+            currentAccuracyP2 = (int)Mathf.Lerp(0, player2Stats.colorAccuracy, factor);
             percentScoreP2 = totalScoreP2 / 100 * currentAccuracyP2;
 
             scoreMultiAccuracyP2.text = currentAccuracyP2.ToString();
@@ -904,12 +965,12 @@ public class GUIController : MonoBehaviour
             factor = elapsedTime / scoreAccuracyDuration;
         }
 
-        percentScoreP1 = totalScoreP1 / 100 * rsc.statsMng.p1Stats.colorAccuracy;
-        scoreMultiAccuracyP1.text = rsc.statsMng.p1Stats.colorAccuracy.ToString();
+        percentScoreP1 = totalScoreP1 / 100 * player1Stats.colorAccuracy;
+        scoreMultiAccuracyP1.text = player1Stats.colorAccuracy.ToString();
         scoreMultiTotalP2.text = string.Format("{0:n0}", percentScoreP1);
 
-        percentScoreP2 = totalScoreP2 / 100 * rsc.statsMng.p2Stats.colorAccuracy;
-        scoreMultiAccuracyP2.text = rsc.statsMng.p2Stats.colorAccuracy.ToString();
+        percentScoreP2 = totalScoreP2 / 100 * player2Stats.colorAccuracy;
+        scoreMultiAccuracyP2.text = player2Stats.colorAccuracy.ToString();
         scoreMultiTotalP2.text = string.Format("{0:n0}", percentScoreP2);
         yield return null;
 
@@ -917,17 +978,17 @@ public class GUIController : MonoBehaviour
         elapsedTime = 0f;
         factor = 0f;
 
-        if (actualTime < levelTime)
+        if (totalTime < levelStats.baseSeconds)
             scoreMultiTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.GREEN);
-        else if (actualTime > levelTime)
+        else if (totalTime > levelStats.baseSeconds)
             scoreMultiTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.RED);
 
         while (elapsedTime < scoreTimeDuration)
         {
-            int seconds = (int)Mathf.Lerp(levelTime, actualTime, factor);
+            int seconds = (int)Mathf.Lerp(levelStats.baseSeconds, totalTime, factor);
 
-            timeScoreP1 = percentScoreP1 + ((levelTime - seconds) * rsc.statsMng.secondMultiplier);
-            timeScoreP2 = percentScoreP2 + ((levelTime - seconds) * rsc.statsMng.secondMultiplier);
+            timeScoreP1 = percentScoreP1 + ((levelStats.baseSeconds - seconds) * levelStats.secondMultiplier);
+            timeScoreP2 = percentScoreP2 + ((levelStats.baseSeconds - seconds) * levelStats.secondMultiplier);
 
             scoreMultiTime.text = seconds.ToString();
             scoreMultiTotalP1.text = string.Format("{0:n0}", timeScoreP1);
@@ -939,11 +1000,61 @@ public class GUIController : MonoBehaviour
             factor = elapsedTime / scoreTimeDuration;
         }
 
-        timeScoreP1 = percentScoreP1 + ((levelTime - actualTime) * rsc.statsMng.secondMultiplier);
-        timeScoreP2 = percentScoreP2 + ((levelTime - actualTime) * rsc.statsMng.secondMultiplier);
-        scoreMultiTime.text = actualTime.ToString();
+        timeScoreP1 = percentScoreP1 + ((levelStats.baseSeconds - totalTime) * levelStats.secondMultiplier);
+        timeScoreP2 = percentScoreP2 + ((levelStats.baseSeconds - totalTime) * levelStats.secondMultiplier);
+        scoreMultiTime.text = totalTime.ToString();
         scoreMultiTotalP1.text = string.Format("{0:n0}", timeScoreP1);
         scoreMultiTotalP2.text = string.Format("{0:n0}", timeScoreP2);
+
+        //Player Image fading
+        elapsedTime = 0f;
+        factor = 0f;
+        scoreMultiPlayerImgP1.enabled = true;
+        scoreMultiPlayerImgP1.color = new Color(1, 1, 1, 0);
+        scoreMultiPlayerImgP1.sprite = player1ScoreImages[(int)player1Stats.finalGrade];
+        scoreMultiPlayerImgP2.enabled = true;
+        scoreMultiPlayerImgP2.color = new Color(1, 1, 1, 0);
+        scoreMultiPlayerImgP2.sprite = player2ScoreImages[(int)player2Stats.finalGrade];
+
+        while (elapsedTime < showPlayerImgDuration)
+        {
+            float alpha = Mathf.Lerp(0, 1, factor);
+            scoreMultiPlayerImgP1.color = new Color(1, 1, 1, alpha);
+            scoreMultiPlayerImgP2.color = new Color(1, 1, 1, alpha);
+
+            yield return null;
+
+            elapsedTime += Time.deltaTime;
+            factor = elapsedTime / showPlayerImgDuration;
+        }
+
+        scoreMultiPlayerImgP1.color = Color.white;
+        scoreMultiPlayerImgP2.color = Color.white;
+
+        //Grade Img Stamp
+        elapsedTime = 0;
+        factor = 0;
+        scoreMultiGradeImgP1.enabled = true;
+        scoreMultiGradeImgP1.transform.localScale = new Vector3(showGradeInitialScale, showGradeInitialScale, 1f);
+        scoreMultiGradeImgP1.sprite = gradeScoreImages[(int)player1Stats.finalGrade];
+        scoreMultiGradeImgP2.enabled = true;
+        scoreMultiGradeImgP2.transform.localScale = new Vector3(showGradeInitialScale, showGradeInitialScale, 1f);
+        scoreMultiGradeImgP2.sprite = gradeScoreImages[(int)player2Stats.finalGrade];
+
+        while (elapsedTime < showGradeImgDuration)
+        {
+            float scale = Mathf.Lerp(showGradeInitialScale, 1, factor);
+            scoreMultiGradeImgP1.transform.localScale = new Vector3(scale, scale, 1f);
+            scoreMultiGradeImgP2.transform.localScale = new Vector3(scale, scale, 1f);
+
+            yield return null;
+
+            elapsedTime += Time.deltaTime;
+            factor = elapsedTime / showGradeImgDuration;
+        }
+
+        scoreMultiGradeImgP1.transform.localScale = Vector3.one;
+        scoreMultiGradeImgP2.transform.localScale = Vector3.one;
 
         yield return new WaitForSeconds(scoreFinalDelay);
 

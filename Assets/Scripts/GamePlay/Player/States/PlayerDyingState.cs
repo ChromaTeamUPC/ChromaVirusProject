@@ -3,6 +3,16 @@ using System.Collections;
 
 public class PlayerDyingState : PlayerBaseState
 {
+    private enum SubState
+    {
+        WAITING_ANIMATION,
+        WAITING_RUMBLE
+    }
+
+    private SubState subState;
+
+    private float elapsedTime;
+
     public override void OnStateEnter()
     {
         EndColorMismatch(); //Ensure it is not active
@@ -12,6 +22,8 @@ public class PlayerDyingState : PlayerBaseState
         bb.shield.SetActive(false);
         bb.animator.SetTrigger("Die");
         bb.animationEnded = false;
+
+        subState = SubState.WAITING_ANIMATION;
 
         rsc.rumbleMng.AddContinousRumble(RumbleType.PLAYER_DYING, bb.player.Id, 0.2f, 0f);
 
@@ -28,24 +40,49 @@ public class PlayerDyingState : PlayerBaseState
 
     public override PlayerBaseState Update()
     {
-        bb.currentSpeed *= 0.95f;
-
-        if (bb.animationEnded)
+        switch (subState)
         {
-            rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_DYING);
-            rsc.rumbleMng.Rumble(bb.player.Id, 0.5f, 0.5f, 0.5f);
+            case SubState.WAITING_ANIMATION:
+                bb.currentSpeed *= 0.95f;
 
-            bb.alive = false;
-            bb.currentLives--;
-            bb.blinkController.StopPreviousBlinkings();
-            bb.player.SpawnVoxels();
-            PlayerEventInfo.eventInfo.player = bb.player;
-            rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DIED, PlayerEventInfo.eventInfo);
-            //blackboard.player.gameObject.SetActive(false);
-            return null;
+                if (bb.animationEnded)
+                {
+                    rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_DYING);
+                    rsc.rumbleMng.Rumble(bb.player.Id, 0.5f, 0.5f, 0.5f);
+                   
+                    bb.blinkController.StopPreviousBlinkings();
+                    bb.player.SpawnVoxels();
+                    bb.currentSpeed = 0;
+                    bb.player.MakeInvisible();
+
+                    elapsedTime = 0f;
+
+                    subState = SubState.WAITING_RUMBLE;
+                }
+                break;
+
+            case SubState.WAITING_RUMBLE:
+                if (elapsedTime >= 0.5f)
+                {
+                    bb.alive = false;
+                    bb.currentLives--;
+                    if (bb.currentLives == 0)
+                        bb.playing = false;
+
+                    PlayerEventInfo.eventInfo.player = bb.player;
+                    rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DIED, PlayerEventInfo.eventInfo);
+                    //blackboard.player.gameObject.SetActive(false);
+                    return null;
+                }
+                else
+                    elapsedTime += Time.deltaTime;
+                break;
+
+            default:
+                break;
         }
-        else
-            return null;  
+
+        return null;       
     }
 
     public override PlayerBaseState TakeDamage(float damage, PlayerBaseState nextStateIfDamaged = null, bool whiteBlink = true)

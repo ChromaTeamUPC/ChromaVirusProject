@@ -41,8 +41,11 @@ public class WormBlackboard : MonoBehaviour
     [Serializable]
     public class BelowAttackSettings
     {
+        [Header("Trigger Settings")]
         public bool active = true;
         public float chancesOfBelowAttackAfterWandering = 50f;
+
+        [Header("Attack Settings")]
         public float initialWaitTime = 2f;
         public float warningTime = 1f;
         public int adjacentDamagingCells = 3;
@@ -53,6 +56,7 @@ public class WormBlackboard : MonoBehaviour
     [Serializable]
     public class AboveAttackSettings
     {
+        [Header("Trigger Settings")]
         public bool active = true;
         public float exposureTimeNeeded = 3f;
         public float exposureMaxAngle = 135f;
@@ -61,6 +65,8 @@ public class WormBlackboard : MonoBehaviour
         public float attackMinHexagons = 2;
         public float attackMaxHexagons = 5;
         public float cooldownTime = 10f;
+
+        [Header("Attack Settings")]
         public float warningTime = 0.5f;
         public float jumpDuration = 1f;
         public float selfRotation = 180f;
@@ -71,6 +77,8 @@ public class WormBlackboard : MonoBehaviour
     {
         [Header("Trigger Settings")]
         public bool active = true;
+        public bool triggerAfterHeadDestroyed = false;
+        public int triggerAfterNumberOfBodySegmentsDestroyed = 0;
 
         [Header("Worm Settings")]
         public int numberOfThrownMeteors = 3;

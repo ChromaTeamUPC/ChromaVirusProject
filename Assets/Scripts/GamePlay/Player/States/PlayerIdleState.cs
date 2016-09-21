@@ -7,6 +7,7 @@ public class PlayerIdleState : PlayerBaseState {
 
     public override void OnStateEnter()
     {
+        bb.falling = false;
         bb.horizontalDirection = Vector3.zero;
         elapsedTime = 0f;
     }
