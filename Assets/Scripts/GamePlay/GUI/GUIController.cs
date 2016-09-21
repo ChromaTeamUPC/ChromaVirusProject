@@ -156,6 +156,7 @@ public class GUIController : MonoBehaviour
     public GameObject optionsGroup;
     public GameObject confirmationGroup;
     public Button continueBtn;
+    private PauseOptionsController continueBtnController;
     public Button quitBtn;
     public Button yesBtn;
     public Button noBtn;
@@ -182,6 +183,8 @@ public class GUIController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        continueBtnController = continueBtn.GetComponent<PauseOptionsController>();
+
         if (rsc.gameInfo.numberOfPlayers == 2)
         {
             player2Zone.SetActive(true);
@@ -372,15 +375,18 @@ public class GUIController : MonoBehaviour
 
     private void GamePaused(EventInfo eventInfo)
     {
+        rsc.audioMng.StartFx.Play();
         infoArea.SetActive(false);
         pauseGroup.SetActive(true);
         optionsGroup.SetActive(true);
         confirmationGroup.SetActive(false);
+        continueBtnController.SetFirstTime();
         continueBtn.Select();
     }
 
     private void GameResumed(EventInfo eventInfo)
     {
+        rsc.audioMng.StartFx.Play();
         infoArea.SetActive(true);
         pauseGroup.SetActive(false);
     }

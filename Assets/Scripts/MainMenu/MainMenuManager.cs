@@ -162,6 +162,7 @@ public class MainMenuManager : MonoBehaviour {
                 if (InputManager.GetAnyControllerWasLeft()
                     && tutorialCurrentIndex > 0)
                 {
+                    rsc.audioMng.SelectFx.Play();
                     tutorialCurrentIndex--;
                     SetHelpImage();
                 }
@@ -169,6 +170,7 @@ public class MainMenuManager : MonoBehaviour {
                 if (InputManager.GetAnyControllerWasRight()
                     && tutorialCurrentIndex < tutorialTotalItems - 1)
                 {
+                    rsc.audioMng.SelectFx.Play();
                     tutorialCurrentIndex++;
                     SetHelpImage();
                 }
@@ -176,6 +178,7 @@ public class MainMenuManager : MonoBehaviour {
                 if ((InputManager.Devices.Count >= 1 && InputManager.Devices[0].Action2.WasPressed)
                     || (InputManager.Devices.Count >= 2 && InputManager.Devices[1].Action2.WasPressed))
                 {
+                    rsc.audioMng.BackFx.Play();
                     help.SetActive(false);
                     EnableMainButtons();
                 }
@@ -277,6 +280,7 @@ public class MainMenuManager : MonoBehaviour {
             DisableMainButtons();
             playersNumber = 1;
             currentState = MainMenuState.FADING_TO_GAME;
+            rsc.audioMng.StartFx.Play();
             FadeOut(fadeOutToPlayTime, fadeOutToPlayTime);
         }
     }
@@ -288,6 +292,7 @@ public class MainMenuManager : MonoBehaviour {
             DisableMainButtons();
             playersNumber = 2;
             currentState = MainMenuState.FADING_TO_GAME;
+            rsc.audioMng.StartFx.Play();
             FadeOut(fadeOutToPlayTime, fadeOutToPlayTime);
         }
     }
@@ -299,6 +304,7 @@ public class MainMenuManager : MonoBehaviour {
         SetHelpImage();
 
         help.SetActive(true);
+        rsc.audioMng.AcceptFx.Play();
         currentState = MainMenuState.SHOW_HELP;
     }
 
@@ -308,6 +314,7 @@ public class MainMenuManager : MonoBehaviour {
         currentState = MainMenuState.FADING_TO_CREDITS;
         loadLevel = SceneManager.LoadSceneAsync("Credits");
         loadLevel.allowSceneActivation = false;
+        rsc.audioMng.AcceptFx.Play();
         FadeOut(fadeOutToCreditsTime, fadeOutToCreditsTime);
     }
 
@@ -317,6 +324,7 @@ public class MainMenuManager : MonoBehaviour {
         currentState = MainMenuState.FADING_TO_OPTIONS;
         loadLevel = SceneManager.LoadSceneAsync("Options");
         loadLevel.allowSceneActivation = false;
+        rsc.audioMng.AcceptFx.Play();
         FadeOut(fadeOutToOptionsTime, -1f);
     }
 

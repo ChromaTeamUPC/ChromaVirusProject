@@ -10,19 +10,37 @@ public class OptionsSliderController : MonoBehaviour, ISelectHandler, IDeselectH
 
     private Image image;
 
+    public bool skipFirstTimeSelect = false;
+    private bool firstTimeSelect = true;
+
+    public bool skipFirstTimeSetValue = true;
+    private bool firstTimeSetValue = true;
+ 
     void Awake()
     {
         image = transform.FindDeepChild("Fill").GetComponent<Image>();
     }
 
-
     public void OnSelect(BaseEventData eventData)
     {
+        if (!skipFirstTimeSelect || !firstTimeSelect)
+            rsc.audioMng.SelectFx.Play();
+
+        firstTimeSelect = false;
+
         manager.SetSelectedSliderFill(image);
     }
 
     public void OnDeselect(BaseEventData data)
     {
         image.color = Color.white;
+    }
+
+    public void SetValue(float value)
+    {
+        if (!skipFirstTimeSetValue || !firstTimeSetValue)
+            rsc.audioMng.SelectFx.Play();
+
+        firstTimeSetValue = false;
     }
 }

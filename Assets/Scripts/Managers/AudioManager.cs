@@ -23,6 +23,7 @@ public class AudioManager : MonoBehaviour {
 
     public float musicMaxVolume = 1f;
 
+    [Header("Music")]
     [SerializeField]
     private AudioSource mainMenuMusic;
     [SerializeField]
@@ -39,6 +40,12 @@ public class AudioManager : MonoBehaviour {
     private AudioSource levelBoss03Music;
     [SerializeField]
     private AudioSource levelBoss04Music;
+
+    [Header("Sound Fx")]
+    public AudioSource AcceptFx;
+    public AudioSource BackFx;
+    public AudioSource SelectFx;
+    public AudioSource StartFx;
 
     #region MUSIC_CONTROL
     public void FadeInMusic(MusicType type)

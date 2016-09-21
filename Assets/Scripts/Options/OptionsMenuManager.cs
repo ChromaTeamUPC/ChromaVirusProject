@@ -44,6 +44,10 @@ public class OptionsMenuManager : MonoBehaviour
 
     private bool buttonPressed;
 
+    public bool skipFirstTimeSoundFx = true;
+    private bool firstTimeMusic = true;
+    private bool firstTimeSound = true;
+
     // Use this for initialization
     void Start () 
 	{
@@ -101,11 +105,24 @@ public class OptionsMenuManager : MonoBehaviour
     public void SetAudioVolume(float volume)
     {
         rsc.audioMng.audioMixer.SetFloat("MusicVolume", volume);
+        if (!skipFirstTimeSoundFx || !firstTimeMusic)
+            rsc.audioMng.SelectFx.Play();
+
+        firstTimeMusic = false;
     }
 
     public void SetFxVolume(float volume)
     {
         rsc.audioMng.audioMixer.SetFloat("FxVolume", volume);
+        if (!skipFirstTimeSoundFx || !firstTimeSound)
+            rsc.audioMng.SelectFx.Play();
+
+        firstTimeSound = false;
+    }
+
+    public void SoundFx()
+    {
+        rsc.audioMng.SelectFx.Play();
     }
 
     // Update is called once per frame
@@ -151,9 +168,15 @@ public class OptionsMenuManager : MonoBehaviour
             buttonPressed = true;
 
             if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action1))
+            {
+                rsc.audioMng.AcceptFx.Play();
                 SaveValues();
+            }
             else
+            {
+                rsc.audioMng.BackFx.Play();
                 RestoreValues();
+            }
 
             if (currentState != CreditsState.FADING_OUT)
             {

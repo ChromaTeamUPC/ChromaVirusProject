@@ -109,6 +109,7 @@ public class CreditsController : MonoBehaviour
 
             if (currentState != CreditsState.FADING_OUT)
             {
+                rsc.audioMng.BackFx.Play();
                 loadingScene = SceneManager.LoadSceneAsync("MainMenu");
                 loadingScene.allowSceneActivation = false;
 
@@ -164,6 +165,7 @@ public class CreditsController : MonoBehaviour
             {
                 kcIndex++;
                 kcTime = 0;
+                rsc.audioMng.StartFx.Play();
                 ctImg.enabled = true;
             }
             else
