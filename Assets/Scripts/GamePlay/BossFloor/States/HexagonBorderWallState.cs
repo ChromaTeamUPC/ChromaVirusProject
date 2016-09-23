@@ -23,6 +23,7 @@ public class HexagonBorderWallState : HexagonBaseState
 
         subState = SubState.GOING_UP;
         totalHeight = hex.geometryOriginalY + Random.Range(hex.borderMinHeight, hex.borderMaxHeight);
+        hex.columnColliders.transform.localPosition = new Vector3(0f, 10f, 0f);
     }
 
     public override void OnStateExit()
@@ -32,6 +33,7 @@ public class HexagonBorderWallState : HexagonBaseState
         hex.navMeshObstacles.SetActive(false);
 
         hex.geometryOffset.transform.position = new Vector3(hex.geometryOffset.transform.position.x, hex.geometryOriginalY, hex.geometryOffset.transform.position.z);
+        hex.columnColliders.transform.localPosition = new Vector3(0f, 0f, 0f);
     }
 
     public override HexagonBaseState Update()
