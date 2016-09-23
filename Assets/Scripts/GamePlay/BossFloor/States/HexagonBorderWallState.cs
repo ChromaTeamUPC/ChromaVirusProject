@@ -69,9 +69,4 @@ public class HexagonBorderWallState : HexagonBaseState
 
         return null;
     }
-
-    public override HexagonBaseState ProbeTouched()
-    {
-        return hex.borderWallState;
-    }
 }
