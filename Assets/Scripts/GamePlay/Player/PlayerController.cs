@@ -118,8 +118,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Material bodyBaseMaterial;
     [SerializeField]
-    private float standardBodyBrightness = 0.4f;
-    [SerializeField]
     private GameObject shield;
     [SerializeField]
     private GameObject laserAim;
@@ -268,6 +266,13 @@ public class PlayerController : MonoBehaviour
             forceMovementForward *= -1;
         }
         //ctrl.attachedRigidbody.WakeUp();
+    }
+
+    public void ForcePosition(Vector3 newPosition)
+    {
+        newPosition.y = transform.position.y;
+
+        transform.position = newPosition;
     }
 
     public Vector3 PositionPrediction(float secondsPrediction = 1f)

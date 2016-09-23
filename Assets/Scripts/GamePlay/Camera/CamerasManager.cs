@@ -20,6 +20,8 @@ public class CamerasManager : MonoBehaviour {
     private DebugKeys keys;
 
     private float camRayLength = 100f;
+    private MainCameraController cameraController;
+
     /*private Transform target1;
     private Transform target2;
     private PlayerController player1;
@@ -33,7 +35,9 @@ public class CamerasManager : MonoBehaviour {
 
     void Awake()
     {
-        currentCamera = mainCameraObj.GetComponent<Camera>();
+        currentCameraObj = mainCameraObj;
+        currentCamera = currentCameraObj.GetComponent<Camera>();
+        cameraController = currentCameraObj.GetComponent<MainCameraController>();
 
         //We are sure rsc is created because we forced script execution order from unity editor - project settings
         rsc.camerasMng = this;
@@ -121,6 +125,7 @@ public class CamerasManager : MonoBehaviour {
         //Enable it and send event
         currentCameraObj.SetActive(true);
         currentCamera = currentCameraObj.GetComponent<Camera>();
+        cameraController = currentCameraObj.GetComponent<MainCameraController>();
         /*maxYPosition = currentCamera.pixelHeight - cameraBorderMargin;
         maxXPosition = currentCamera.pixelWidth - cameraBorderMargin;*/
 

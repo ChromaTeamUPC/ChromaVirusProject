@@ -1350,56 +1350,56 @@ public class GUIController : MonoBehaviour
 
     private void BossInvulnerable(EventInfo eventInfo)
     {
-        Debug.Log("Boss Invulnerable");
+        //Debug.Log("Boss Invulnerable");
         SetBossDisabled();      
     }
 
     private void BossVulnerable(EventInfo eventInfo)
     {
-        Debug.Log("Boss Vulnerable");
+        //Debug.Log("Boss Vulnerable");
         SetBossEnabled();       
     }
 
     private void BossHeadChargeChanged(EventInfo eventInfo)
     {
-        Debug.Log("Boss Section Destroyed");
+        //Debug.Log("Boss Section Destroyed");
         headSlider.value = wormBb.headCurrentChargeLevel;
         SetBossEnabled();
     }
 
     private void BossHeadActivated(EventInfo eventInfo)
     {
-        Debug.Log("Boss Head Activated");
+        //Debug.Log("Boss Head Activated");
         SetBossEnabled();
     }
 
     private void BossHeadStunned(EventInfo eventInfo)
     {
-        Debug.Log("Boss Head Stunned");
+        //Debug.Log("Boss Head Stunned");
         SetBossEnabled();
     }
 
     private void BossHeadDeactivated(EventInfo eventInfo)
     {
-        Debug.Log("Boss Head Deactivated");   
+        //Debug.Log("Boss Head Deactivated");   
         SetBossEnabled();
     }
 
     private void BossPhaseEnded(EventInfo eventInfo)
     {
-        Debug.Log("Boss Phase Ended");
+        //Debug.Log("Boss Phase Ended");
         SetBossDisabled();
     }
 
     private void BossDying(EventInfo eventInfo)
     {
-        Debug.Log("Boss dying");
+        //Debug.Log("Boss dying");
         SetBossDying();      
     }
 
     public void BossDied(EventInfo eventInfo)
     {
-        Debug.Log("Boss died");
+        //Debug.Log("Boss died");
         StopAllBossCoroutines();
         bossZone.SetActive(false);
     }
