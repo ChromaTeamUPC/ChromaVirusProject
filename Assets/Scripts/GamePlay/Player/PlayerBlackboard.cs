@@ -49,6 +49,7 @@ public class PlayerBlackboard
 
     //Input variables
     private bool keyPressed; //Reset per frame
+    public Vector2 screenVector; //Reset per frame
     public Vector3 moveVector; //Reset per frame
     public bool movePressed; //Reset per frame
     public Vector3 aimVector; //Reset per frame

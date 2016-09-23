@@ -123,9 +123,6 @@ public class TurretAIBehaviour : MonoBehaviour
                         MosquitoMainAttackControllerBase attack1;
                         MosquitoMainAttackControllerBase attack2;
 
-                        MuzzleController muzzle1 = rsc.coloredObjectsMng.GetTurretMuzzle();
-                        MuzzleController muzzle2 = rsc.coloredObjectsMng.GetTurretMuzzle();
-
                         switch (currentColor)
                         {
                             case ChromaColor.RED:
@@ -158,20 +155,28 @@ public class TurretAIBehaviour : MonoBehaviour
                         {
                             attack1.Shoot(shotSpawnPoint1, target);
 
-                            muzzle1.transform.position = muzzleSpawnPoint1.position;
-                            muzzle1.transform.rotation = muzzleSpawnPoint1.rotation;
-                            muzzle1.transform.SetParent(muzzleSpawnPoint1);
-                            muzzle1.Play();
+                            MuzzleController muzzle1 = rsc.coloredObjectsMng.GetTurretMuzzle();
+                            if (muzzle1 != null)
+                            {
+                                muzzle1.transform.position = muzzleSpawnPoint1.position;
+                                muzzle1.transform.rotation = muzzleSpawnPoint1.rotation;
+                                muzzle1.transform.SetParent(muzzleSpawnPoint1);
+                                muzzle1.Play();
+                            }
                         }
 
                         if (attack2 != null)
                         {
                             attack2.Shoot(shotSpawnPoint2, target);
 
-                            muzzle2.transform.position = muzzleSpawnPoint2.position;
-                            muzzle2.transform.rotation = muzzleSpawnPoint2.rotation;
-                            muzzle2.transform.SetParent(muzzleSpawnPoint2);
-                            muzzle2.Play();
+                            MuzzleController muzzle2 = rsc.coloredObjectsMng.GetTurretMuzzle();
+                            if (muzzle2 != null)
+                            {
+                                muzzle2.transform.position = muzzleSpawnPoint2.position;
+                                muzzle2.transform.rotation = muzzleSpawnPoint2.rotation;
+                                muzzle2.transform.SetParent(muzzleSpawnPoint2);
+                                muzzle2.Play();
+                            }
                         }
 
                         anim.SetTrigger("Fire");

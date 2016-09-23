@@ -24,8 +24,10 @@ public class MainCameraController : MonoBehaviour {
     private Vector3 target1LastPos;
     private Vector3 target2LastPos;
 
+    public bool smoothMovement = false;
     public float smoothing = 5f;
     public float defaultShakeMaximum = 0.3f;
+    public bool showPlayerLimits = true;
     public float topViewportLimit = 0.9f;
     public float bottomViewportLimit = 0.1f;
     public float leftViewportLimit = 0.1f;
@@ -44,16 +46,18 @@ public class MainCameraController : MonoBehaviour {
     private Vector3 offset;
     private Camera thisCamera;
     private float cameraBorderMargin = 50f;
-    float maxYPosition;
-    float maxXPosition;
-    float minYPosition;
-    float minXPosition;
+    private float maxYPosition;
+    private float maxXPosition;
+    private float minYPosition;
+    private float minXPosition;
 
     private float colorMismatchDuration;
     private float shakeDuration;
     private float currentShakeMaximum;
 
     private bool pauseEffects;
+
+
 
     void Awake()
     {
@@ -280,29 +284,17 @@ public class MainCameraController : MonoBehaviour {
 
     private Vector3 CheckPlayersAndCameraPosition()
     {      
-        //return ((target1.position + target2.position) / 2) + offset;
-
-        //Save current camera position and move to posible new position
-        Vector3 currentCamPos = smoothedPosition;
-        Vector3 newCamPos = ((target1.position + target2.position) / 2) + offset;
-        transform.position = newCamPos;
-
-        //Check if new final position is valid
         Vector3 p1NewViewportPos = thisCamera.WorldToViewportPoint(target1.position);
         Vector3 p2NewViewportPos = thisCamera.WorldToViewportPoint(target2.position);
 
         //If both players inside new limits: no problem
-        if(IsPositionInsideLimits(p1NewViewportPos) && IsPositionInsideLimits(p2NewViewportPos))
+        if (IsPositionInsideLimits(p1NewViewportPos) && IsPositionInsideLimits(p2NewViewportPos))
         {
-            transform.position = currentCamPos;
-            return newCamPos;
+            return GetNewCamPosition();
         }
         //Uh oh. Someone is off the limits
         else
         {
-            transform.position = currentCamPos;
-            p1NewViewportPos = thisCamera.WorldToViewportPoint(target1.position);
-            p2NewViewportPos = thisCamera.WorldToViewportPoint(target2.position);
             Vector3 p1LastViewportPos = thisCamera.WorldToViewportPoint(target1LastPos);
             Vector3 p2LastViewportPos = thisCamera.WorldToViewportPoint(target2LastPos);
 
@@ -311,11 +303,13 @@ public class MainCameraController : MonoBehaviour {
             PlayerController leftPlayer;
             Vector3 leftNewViewportPos;
             Vector3 leftLastViewportPos;
+            bool leftMoved;
 
             Transform rightTransform;
             PlayerController rightPlayer;
             Vector3 rightNewViewportPos;
             Vector3 rightLastViewportPos;
+            bool rightMoved;
 
             Horizontal p1Horizontal;
 
@@ -326,11 +320,13 @@ public class MainCameraController : MonoBehaviour {
                 leftPlayer = player1;
                 leftNewViewportPos = p1NewViewportPos;
                 leftLastViewportPos = p1LastViewportPos;
+                leftMoved = leftPlayer.bb.screenVector.x != 0;
 
                 rightTransform = target2;
                 rightPlayer = player2;
                 rightNewViewportPos = p2NewViewportPos;
                 rightLastViewportPos = p2LastViewportPos;
+                rightMoved = rightPlayer.bb.screenVector.x != 0;
             }
             else
             {
@@ -339,18 +335,27 @@ public class MainCameraController : MonoBehaviour {
                 rightPlayer = player1;
                 rightNewViewportPos = p1NewViewportPos;
                 rightLastViewportPos = p1LastViewportPos;
+                rightMoved = rightPlayer.bb.screenVector.x != 0;
 
                 leftTransform = target2;
                 leftPlayer = player2;
                 leftNewViewportPos = p2NewViewportPos;
                 leftLastViewportPos = p2LastViewportPos;
+                leftMoved = leftPlayer.bb.screenVector.x != 0;
             }
 
             //If both players are outside horizontal limits simply restrict to current limit
             if (leftNewViewportPos.x < leftViewportLimit && rightNewViewportPos.x > rightViewportLimit)
             {
-                leftNewViewportPos.x = Mathf.Max(leftViewportLimit, leftNewViewportPos.x);
-                rightNewViewportPos.x = Mathf.Min(rightViewportLimit, rightNewViewportPos.x);
+                if(leftMoved)
+                {
+                    leftNewViewportPos.x = Mathf.Max(leftViewportLimit, leftNewViewportPos.x);
+                }
+
+                if (rightMoved)
+                {
+                    rightNewViewportPos.x = Mathf.Min(rightViewportLimit, rightNewViewportPos.x);
+                }
             }
             //If left is outside but right is inside
             else if (leftNewViewportPos.x < leftViewportLimit)
@@ -362,17 +367,23 @@ public class MainCameraController : MonoBehaviour {
                 {
                     float newLeftLimit = leftNewViewportPos.x + (leftTotalOffset - rightTotalOffset);
 
-                    if (leftNewViewportPos.x != leftLastViewportPos.x)
+                    if (leftMoved)
                     {
-                        if (leftNewViewportPos.x < leftLastViewportPos.x)
-                            leftNewViewportPos.x = Mathf.Min(leftLastViewportPos.x, newLeftLimit);
-                        else
-                            leftNewViewportPos.x = Mathf.Max(leftNewViewportPos.x, newLeftLimit);
+                        if (leftNewViewportPos.x != leftLastViewportPos.x)
+                        {
+                            if (leftNewViewportPos.x < leftLastViewportPos.x)
+                                leftNewViewportPos.x = Mathf.Min(leftLastViewportPos.x, newLeftLimit);
+                            else
+                                leftNewViewportPos.x = Mathf.Max(leftNewViewportPos.x, newLeftLimit);
+                        }
                     }
 
-                    if (rightNewViewportPos.x - leftNewViewportPos.x > maxHorizontalDistance)
+                    if (rightMoved)
                     {
-                        rightNewViewportPos.x = leftNewViewportPos.x + maxHorizontalDistance;
+                        if (rightNewViewportPos.x - leftNewViewportPos.x > maxHorizontalDistance)
+                        {
+                            rightNewViewportPos.x = leftNewViewportPos.x + maxHorizontalDistance;
+                        }
                     }
                 }
             }
@@ -386,17 +397,23 @@ public class MainCameraController : MonoBehaviour {
                 {
                     float newRightLimit = rightNewViewportPos.x - (rightTotalOffset - leftTotalOffset);
 
-                    if (rightNewViewportPos.x != rightLastViewportPos.x)
+                    if (rightMoved)
                     {
-                        if (rightNewViewportPos.x > rightLastViewportPos.x)
-                            rightNewViewportPos.x = Mathf.Max(rightLastViewportPos.x, newRightLimit);
-                        else
-                            rightNewViewportPos.x = Mathf.Min(rightNewViewportPos.x, newRightLimit);
+                        if (rightNewViewportPos.x != rightLastViewportPos.x)
+                        {
+                            if (rightNewViewportPos.x > rightLastViewportPos.x)
+                                rightNewViewportPos.x = Mathf.Max(rightLastViewportPos.x, newRightLimit);
+                            else
+                                rightNewViewportPos.x = Mathf.Min(rightNewViewportPos.x, newRightLimit);
+                        }
                     }
 
-                    if(rightNewViewportPos.x - leftNewViewportPos.x > maxHorizontalDistance)
+                    if (leftMoved)
                     {
-                        leftNewViewportPos.x = rightNewViewportPos.x - maxHorizontalDistance;
+                        if (rightNewViewportPos.x - leftNewViewportPos.x > maxHorizontalDistance)
+                        {
+                            leftNewViewportPos.x = rightNewViewportPos.x - maxHorizontalDistance;
+                        }
                     }
                 }
             }
@@ -407,11 +424,13 @@ public class MainCameraController : MonoBehaviour {
             PlayerController bottomPlayer;
             Vector3 bottomNewViewportPos;
             Vector3 bottomLastViewportPos;
+            bool bottomMoved;
 
             Transform topTransform;
             PlayerController topPlayer;
             Vector3 topNewViewportPos;
             Vector3 topLastViewportPos;
+            bool topMoved;
 
             Vertical p1Vertical;
 
@@ -422,11 +441,13 @@ public class MainCameraController : MonoBehaviour {
                 bottomPlayer = player1;
                 bottomNewViewportPos = p1NewViewportPos;
                 bottomLastViewportPos = p1LastViewportPos;
+                bottomMoved = bottomPlayer.bb.screenVector.y != 0;
 
                 topTransform = target2;
                 topPlayer = player2;
                 topNewViewportPos = p2NewViewportPos;
                 topLastViewportPos = p2LastViewportPos;
+                topMoved = topPlayer.bb.screenVector.y != 0;
             }
             else
             {
@@ -435,19 +456,27 @@ public class MainCameraController : MonoBehaviour {
                 topPlayer = player1;
                 topNewViewportPos = p1NewViewportPos;
                 topLastViewportPos = p1LastViewportPos;
+                topMoved = topPlayer.bb.screenVector.y != 0;
 
                 bottomTransform = target2;
                 bottomPlayer = player2;
                 bottomNewViewportPos = p2NewViewportPos;
                 bottomLastViewportPos = p2LastViewportPos;
-
+                bottomMoved = bottomPlayer.bb.screenVector.y != 0;
             }
 
             //If both players are outside vertical limits simply restrict to current limit
             if (bottomNewViewportPos.y < bottomViewportLimit && topNewViewportPos.y > topViewportLimit)
             {
-                bottomNewViewportPos.y = Mathf.Max(bottomViewportLimit, bottomNewViewportPos.y);
-                topNewViewportPos.y = Mathf.Min(topViewportLimit, topNewViewportPos.y);
+                if (bottomMoved)
+                {
+                    bottomNewViewportPos.y = Mathf.Max(bottomViewportLimit, bottomNewViewportPos.y);
+                }
+
+                if (topMoved)
+                {
+                    topNewViewportPos.y = Mathf.Min(topViewportLimit, topNewViewportPos.y);
+                }
             }
             //If bottom is outside but top is inside
             else if (bottomNewViewportPos.y < bottomViewportLimit)
@@ -459,17 +488,23 @@ public class MainCameraController : MonoBehaviour {
                 {
                     float newBottomLimit = bottomNewViewportPos.y + (bottomTotalOffset - topTotalOffset);
 
-                    if (bottomNewViewportPos.y != bottomLastViewportPos.y)
+                    if (bottomMoved)
                     {
-                        if (bottomNewViewportPos.y < bottomLastViewportPos.y)
-                            bottomNewViewportPos.y = Mathf.Min(bottomLastViewportPos.y, newBottomLimit);
-                        else
-                            bottomNewViewportPos.y = Mathf.Max(bottomNewViewportPos.y, newBottomLimit);
+                        if (bottomNewViewportPos.y != bottomLastViewportPos.y)
+                        {
+                            if (bottomNewViewportPos.y < bottomLastViewportPos.y)
+                                bottomNewViewportPos.y = Mathf.Min(bottomLastViewportPos.y, newBottomLimit);
+                            else
+                                bottomNewViewportPos.y = Mathf.Max(bottomNewViewportPos.y, newBottomLimit);
+                        }
                     }
 
-                    if (topNewViewportPos.y - bottomNewViewportPos.y > maxVerticalDistance)
+                    if (topMoved)
                     {
-                        topNewViewportPos.y = bottomNewViewportPos.y + maxVerticalDistance;
+                        if (topNewViewportPos.y - bottomNewViewportPos.y > maxVerticalDistance)
+                        {
+                            topNewViewportPos.y = bottomNewViewportPos.y + maxVerticalDistance;
+                        }
                     }
                 }
             }
@@ -483,17 +518,23 @@ public class MainCameraController : MonoBehaviour {
                 {
                     float newTopLimit = topNewViewportPos.y - (topTotalOffset - bottomTotalOffset);
 
-                    if (topNewViewportPos.y != topLastViewportPos.y)
+                    if (topMoved)
                     {
-                        if (topNewViewportPos.y > topLastViewportPos.y)
-                            topNewViewportPos.y = Mathf.Max(topLastViewportPos.y, newTopLimit);
-                        else
-                            topNewViewportPos.y = Mathf.Min(topNewViewportPos.y, newTopLimit);
+                        if (topNewViewportPos.y != topLastViewportPos.y)
+                        {
+                            if (topNewViewportPos.y > topLastViewportPos.y)
+                                topNewViewportPos.y = Mathf.Max(topLastViewportPos.y, newTopLimit);
+                            else
+                                topNewViewportPos.y = Mathf.Min(topNewViewportPos.y, newTopLimit);
+                        }
                     }
 
-                    if (topNewViewportPos.y - bottomNewViewportPos.y > maxVerticalDistance)
+                    if (bottomMoved)
                     {
-                        bottomNewViewportPos.y = topNewViewportPos.y - maxVerticalDistance;
+                        if (topNewViewportPos.y - bottomNewViewportPos.y > maxVerticalDistance)
+                        {
+                            bottomNewViewportPos.y = topNewViewportPos.y - maxVerticalDistance;
+                        }
                     }
                 }
             }
@@ -540,7 +581,8 @@ public class MainCameraController : MonoBehaviour {
             {
                 Vector3 screenPoint = thisCamera.ViewportToScreenPoint(newPlayer1Pos);
 
-                Ray camRay = thisCamera.ScreenPointToRay(screenPoint);
+                Ray camRay = thisCamera.ViewportPointToRay(newPlayer1Pos);
+
                 RaycastHit raycastHit;
 
                 if (Physics.Raycast(camRay, out raycastHit, camRayLength, player1.bb.playerRayCastMask))
@@ -554,7 +596,7 @@ public class MainCameraController : MonoBehaviour {
             {
                 Vector3 screenPoint = thisCamera.ViewportToScreenPoint(newPlayer2Pos);
 
-                Ray camRay = thisCamera.ScreenPointToRay(screenPoint);
+                Ray camRay = thisCamera.ViewportPointToRay(newPlayer2Pos);
                 RaycastHit raycastHit;
 
                 if (Physics.Raycast(camRay, out raycastHit, camRayLength, player2.bb.playerRayCastMask))
@@ -564,105 +606,24 @@ public class MainCameraController : MonoBehaviour {
                 }
             }
 
-            //Recalc camera position with new players positioned
-            newCamPos = ((target1.position + target2.position) / 2) + offset;
-            return newCamPos;
-
-            //If both players moved
-            /*if (target1.position != target1LastPos && target2.position != target2LastPos)
-            {      
-                transform.position = currentCamPos;
-                p1ViewportPos = thisCamera.WorldToViewportPoint(target1.position);
-                p2ViewportPos = thisCamera.WorldToViewportPoint(target2.position);
-
-                Vector3 newP1ViewportPos = p1ViewportPos;
-                Vector3 newP2ViewportPos = p2ViewportPos;
-
-                //Check Horizontal displacement
-
-                //If both players outside limits
-                if (!IsPositionInsideHorizontalLimits(p1ViewportPos) && !IsPositionInsideHorizontalLimits(p2ViewportPos))
-                {
-                    //Camera not move horizontal
-                    newCamViewportPosition.x = 0.5f;
-
-                    newP1ViewportPos = SetHorizontalPositionInsideLimits(newP1ViewportPos);
-                    newP2ViewportPos = SetHorizontalPositionInsideLimits(newP2ViewportPos);
-                }
-                //Only one player outside limits
-                else
-                {
-                    //Maybe player 1?
-                    if (!IsPositionInsideHorizontalLimits(p1ViewportPos))
-                    {
-                        //if (p1ViewportPos.x >)
-                    }
-                }
-
-
-                //Check Vertical displacement
-
-                //If both players outside limits
-                if (!IsPositionInsideVerticalLimits(p1ViewportPos) && !IsPositionInsideVerticalLimits(p2ViewportPos))
-                {
-                    //Camera not move vertical
-                    newCamViewportPosition.y = 0.5f;
-
-                    newP1ViewportPos = SetVerticalPositionInsideLimits(newP1ViewportPos);
-                    newP2ViewportPos = SetVerticalPositionInsideLimits(newP2ViewportPos);
-                }
-                //Only one player outside limits
-                else
-                {
-                    //Maybe player 1?
-                    if (!IsPositionInsideHorizontalLimits(p1ViewportPos))
-                    {
-                        //if (p1ViewportPos.x >)
-                    }
-                }
-
-
-                //Calculate and return new cam position
-                transform.position = currentCamPos;
-
-                if (newCamViewportPosition.x != 0.5f || newCamViewportPosition.y != 0.5f)
-                {
-                    return thisCamera.ViewportToWorldPoint(newCamViewportPosition);
-                }
-
-                //Players middle point in viewport coordinates
-                /*Vector3 viewPortPlayersMiddlePoint = (p1ViewportPos + p2ViewportPos) / 2;
-                viewPortPlayersMiddlePoint.z = 0;
-
-                newCamPos = thisCamera.ViewportToWorldPoint(viewPortPlayersMiddlePoint);
-                transform.position = newCamPos;
-
-                p1ViewportPos = thisCamera.WorldToViewportPoint(target1.position);
-                p2ViewportPos = thisCamera.WorldToViewportPoint(target2.position);
-
-                SetPositionInsideLimits(player1, p1ViewportPos);
-                SetPositionInsideLimits(player2, p2ViewportPos);
-
-                transform.position = currentCamPos;
-                return newCamPos;                   
-            }*/
-
-            /*transform.position = currentCamPos;
-            p1ViewportPos = thisCamera.WorldToViewportPoint(target1.position);
-            p2ViewportPos = thisCamera.WorldToViewportPoint(target2.position);
-
-            if (!IsPositionInsideLimits(p1ViewportPos))
-            {
-                Debug.Log("P1 Outside Limits: " + p1ViewportPos);
-                SetPositionInsideLimits(player1, p1ViewportPos);
-            }
-
-            if (!IsPositionInsideLimits(p2ViewportPos))
-            {
-                Debug.Log("P2 Outside Limits: " + p2ViewportPos);
-                SetPositionInsideLimits(player2, p2ViewportPos);
-            }*/
+            return GetNewCamPosition();
         }
+    }
+
+    private Vector3 GetNewCamPosition()
+    {
+        //Method 1
+        Vector3 p1NewViewportPos = thisCamera.WorldToViewportPoint(target1.position);
+        Vector3 p2NewViewportPos = thisCamera.WorldToViewportPoint(target2.position);
+
+        Vector3 newCamViewportPos = (p1NewViewportPos + p2NewViewportPos) / 2;
+        Vector3 newCamWorldPos = thisCamera.ViewportToWorldPoint(newCamViewportPos);
+        newCamWorldPos += offset;
+
+        return newCamWorldPos;
+
+        //Method 2
+        //return ((target1.position + target2.position) / 2) + offset;
     }
 
     private bool IsPositionInsideLimits(Vector3 viewportPosition)
@@ -675,112 +636,111 @@ public class MainCameraController : MonoBehaviour {
         return true;
     }
 
-    private bool IsPositionInsideHorizontalLimits(Vector3 viewportPosition)
-    {
-        if (viewportPosition.x < leftViewportLimit) return false;
-        if (viewportPosition.x > rightViewportLimit) return false;
-
-        return true;
-    }
-
-    private bool IsPositionInsideVerticalLimits(Vector3 viewportPosition)
-    {
-        if (viewportPosition.y < bottomViewportLimit) return false;
-        if (viewportPosition.y > topViewportLimit) return false;
-
-        return true;
-    }
-
-    private void SetPositionInsideLimits(PlayerController player, Vector3 viewportPosition)
-    {
-        if (viewportPosition.x < leftViewportLimit) viewportPosition.x = leftViewportLimit;
-        else if (viewportPosition.x > rightViewportLimit) viewportPosition.x = rightViewportLimit;
-
-        if (viewportPosition.y < bottomViewportLimit) viewportPosition.y = bottomViewportLimit;
-        else if (viewportPosition.y > topViewportLimit) viewportPosition.y = topViewportLimit;
-
-        Vector3 screenPoint = thisCamera.ViewportToScreenPoint(viewportPosition);
-
-        Ray camRay = thisCamera.ScreenPointToRay(screenPoint);
-        RaycastHit raycastHit;
-
-        if (Physics.Raycast(camRay, out raycastHit, camRayLength, player.bb.playerRayCastMask))
-        {
-            Vector3 newPos = raycastHit.point;
-            player.ForcePosition(newPos);
-        }
-    }
-
-    private Vector3 SetHorizontalPositionInsideLimits(Vector3 viewportPosition)
-    {
-        Vector3 result = viewportPosition;
-
-        if (result.x < leftViewportLimit) result.x = leftViewportLimit;
-        else if (result.x > rightViewportLimit) result.x = rightViewportLimit;
-
-        return result;
-    }
-
-    private Vector3 SetVerticalPositionInsideLimits(Vector3 viewportPosition)
-    {
-        Vector3 result = viewportPosition;
-
-        if (result.y < bottomViewportLimit) result.y = bottomViewportLimit;
-        else if (result.y > topViewportLimit) result.y = topViewportLimit;
-
-        return result;
-    }
-
-    public Vector3 GetPosition(Vector3 originalPosition, Vector3 displacement)
-    {
-        if (player1.Active && player2.Active)
-        {
-            Vector3 p1ScreenPos = thisCamera.WorldToScreenPoint(target1.position);
-            Vector3 p2ScreenPos = thisCamera.WorldToScreenPoint(target2.position);
-
-            float yMargin = Mathf.Min(maxYPosition - p1ScreenPos.y, maxYPosition - p2ScreenPos.y) +
-                Mathf.Min(p1ScreenPos.y - minYPosition, p2ScreenPos.y - minYPosition);
-
-            float xMargin = Mathf.Min(maxXPosition - p1ScreenPos.x, maxXPosition - p2ScreenPos.x) +
-                Mathf.Min(p1ScreenPos.x - minXPosition, p2ScreenPos.x - minXPosition);
-
-
-            Vector3 finalPosition = originalPosition + displacement;
-
-            if (finalPosition.y < minYPosition)
-            {
-                finalPosition.y = Mathf.Max(finalPosition.y, originalPosition.y - yMargin);
-            }
-            else if (finalPosition.y > maxYPosition)
-            {
-                finalPosition.y = Mathf.Min(finalPosition.y, originalPosition.y + yMargin);
-            }
-
-            if (finalPosition.x < minXPosition)
-            {
-                finalPosition.x = Mathf.Max(finalPosition.x, originalPosition.x - xMargin);
-            }
-            else if (finalPosition.x > maxXPosition)
-            {
-                finalPosition.x = Mathf.Min(finalPosition.x, originalPosition.x + xMargin);
-            }
-
-            return finalPosition;
-        }
-        else
-        {
-            return originalPosition + displacement;
-        }
-    }
-
     public void SetCamPosition()
     {
         transform.position = GetCamTargetPosition();
     }
 
+    void OnGUI()
+    {
+        if (showPlayerLimits)
+        {
+            GUI.color = Color.red;
+
+            //Vertical center
+            Vector3 screenPoint1 = thisCamera.ViewportToScreenPoint(new Vector3(0.5f, 1f, 0f));
+            Vector3 screenPoint2 = thisCamera.ViewportToScreenPoint(new Vector3(0.5f, 0f, 0f));
+            Rect rect = new Rect();
+            rect.xMin = screenPoint1.x;
+            rect.xMax = screenPoint1.x + 1;
+            rect.yMin = screenPoint2.y;
+            rect.yMax = screenPoint1.y;
+
+            GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill);
+
+            //Horizontal center
+            screenPoint1 = thisCamera.ViewportToScreenPoint(new Vector3(0f, 0.5f, 0f));
+            screenPoint2 = thisCamera.ViewportToScreenPoint(new Vector3(1f, 0.5f, 0f));
+            rect = new Rect();
+            rect.xMin = screenPoint1.x;
+            rect.xMax = screenPoint2.x;
+            rect.yMin = screenPoint2.y;
+            rect.yMax = screenPoint1.y + 1;
+
+            GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill);
+
+            GUI.color = Color.green;
+
+            //Left
+            screenPoint1 = thisCamera.ViewportToScreenPoint(new Vector3(leftViewportLimit, 1f, 0f));
+            screenPoint2 = thisCamera.ViewportToScreenPoint(new Vector3(leftViewportLimit, 0f, 0f));
+            rect = new Rect();
+            rect.xMin = screenPoint1.x;
+            rect.xMax = screenPoint1.x + 1;
+            rect.yMin = screenPoint2.y;
+            rect.yMax = screenPoint1.y;
+
+            GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill);
+
+            //Right
+            screenPoint1 = thisCamera.ViewportToScreenPoint(new Vector3(rightViewportLimit, 1f, 0f));
+            screenPoint2 = thisCamera.ViewportToScreenPoint(new Vector3(rightViewportLimit, 0f, 0f));
+            rect = new Rect();
+            rect.xMin = screenPoint1.x;
+            rect.xMax = screenPoint1.x + 1;
+            rect.yMin = screenPoint2.y;
+            rect.yMax = screenPoint1.y;
+
+            GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill);
+
+            //Bottom
+            screenPoint1 = thisCamera.ViewportToScreenPoint(new Vector3(0f, bottomViewportLimit, 0f));
+            screenPoint2 = thisCamera.ViewportToScreenPoint(new Vector3(1f, bottomViewportLimit, 0f));
+            rect = new Rect();
+            rect.xMin = screenPoint1.x;
+            rect.xMax = screenPoint2.x;
+            rect.yMin = Screen.height - screenPoint2.y;
+            rect.yMax = Screen.height - screenPoint1.y + 1;
+
+            GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill);
+
+            //Top
+            screenPoint1 = thisCamera.ViewportToScreenPoint(new Vector3(0f, topViewportLimit, 0f));
+            screenPoint2 = thisCamera.ViewportToScreenPoint(new Vector3(1f, topViewportLimit, 0f));
+            rect = new Rect();
+            rect.xMin = screenPoint1.x;
+            rect.xMax = screenPoint2.x;
+            rect.yMin = Screen.height - screenPoint2.y;
+            rect.yMax = Screen.height - screenPoint1.y + 1;
+
+            GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill);
+
+            GUI.color = Color.magenta;
+
+            screenPoint1 = thisCamera.WorldToScreenPoint(player1.transform.position);
+            rect = new Rect();
+            rect.xMin = screenPoint1.x - 2;
+            rect.xMax = screenPoint1.x + 2;
+            rect.yMin = Screen.height - screenPoint1.y - 2;
+            rect.yMax = Screen.height - screenPoint1.y + 2;
+
+            GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill);
+
+            screenPoint1 = thisCamera.WorldToScreenPoint(player2.transform.position);
+            rect = new Rect();
+            rect.xMin = screenPoint1.x - 2;
+            rect.xMax = screenPoint1.x + 2;
+            rect.yMin = Screen.height - screenPoint1.y - 2;
+            rect.yMax = Screen.height - screenPoint1.y + 2;
+
+            GUI.DrawTexture(rect, Texture2D.whiteTexture, ScaleMode.StretchToFill);
+
+        }
+    }
+
     void Update()
     {
-        if(colorMismatchDuration > 0)
+        if (colorMismatchDuration > 0)
         {
             colorMismatchDuration -= Time.deltaTime; 
             
@@ -797,7 +757,11 @@ public class MainCameraController : MonoBehaviour {
     {
         if (!pauseEffects)
         {
-            smoothedPosition = Vector3.Lerp(smoothedPosition, GetCamTargetPosition(), smoothing * Time.deltaTime);
+            Vector3 newCamPos = GetCamTargetPosition();
+            if (smoothMovement)
+                smoothedPosition = Vector3.Lerp(smoothedPosition, newCamPos, smoothing * Time.deltaTime);
+            else
+                smoothedPosition = newCamPos;
 
             if (shakeDuration > 0)
             {

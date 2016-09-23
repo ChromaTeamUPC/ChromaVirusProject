@@ -35,11 +35,14 @@ public class PlayerBaseState
         //float v = Input.GetAxisRaw(blackboard.moveVertical);
         float h = bb.controller.LeftStickX.Value;
         float v = bb.controller.LeftStickY.Value;
-
+        bb.screenVector = Vector3.zero;
         bb.moveVector = Vector3.zero;
 
         if (Mathf.Abs(v) > 0 || Mathf.Abs(h) > 0)
         {
+            bb.screenVector.x = h;
+            bb.screenVector.y = v;
+
             bb.moveVector.x = h;
             bb.moveVector.y = v;
             if (bb.moveVector.magnitude > 1f)
