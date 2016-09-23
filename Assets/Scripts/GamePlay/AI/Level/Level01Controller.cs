@@ -74,6 +74,7 @@ public class Level01Controller : MonoBehaviour
     public ZoneActivableObjects[] zoneActivableObjects;
 
     private float respawnDelay = 2f;
+    public Transform singlePlayerStartPoint;
     public Transform player1StartPoint;
     public Transform player2StartPoint;
 
@@ -97,8 +98,8 @@ public class Level01Controller : MonoBehaviour
 
         if (rsc.gameInfo.player1Controller.Active)
         {
-            rsc.gameInfo.player1.transform.position = player1StartPoint.position;
-            rsc.gameInfo.player1.transform.rotation = player1StartPoint.rotation;
+            rsc.gameInfo.player1.transform.position = singlePlayerStartPoint.position;
+            rsc.gameInfo.player1.transform.rotation = singlePlayerStartPoint.rotation;
             rsc.gameInfo.player1.transform.SetParent(null);
             if (!rsc.gameInfo.player1.activeSelf)
                 rsc.gameInfo.player1.SetActive(true);
@@ -106,6 +107,8 @@ public class Level01Controller : MonoBehaviour
         }
         if (rsc.gameInfo.numberOfPlayers == 2 && rsc.gameInfo.player2Controller.Active)
         {
+            rsc.gameInfo.player1.transform.position = player1StartPoint.position;
+
             rsc.gameInfo.player2.transform.position = player2StartPoint.position;
             rsc.gameInfo.player2.transform.rotation = player2StartPoint.rotation;
             rsc.gameInfo.player2.transform.SetParent(null);
