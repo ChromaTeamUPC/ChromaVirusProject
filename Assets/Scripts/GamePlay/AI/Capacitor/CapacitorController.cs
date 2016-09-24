@@ -35,6 +35,11 @@ public class CapacitorController : MonoBehaviour {
     public GameObject modelCollider;
     public float damageColliderRange;
     public GameObject[] explosionBlast = new GameObject[4];
+    private bool attractingStopped;
+
+    public AudioSource activationSoundFx;
+    public AudioSource warningSoundFx;
+    public AudioSource explosionSoundFx;
 
     public Renderer rend;
 
@@ -110,8 +115,10 @@ public class CapacitorController : MonoBehaviour {
                     detectingPlayerCollider.SetActive(false);
                     state = State.CHARGED;
                     attractingDome.Play();
+                    activationSoundFx.Play();                 
                     blinkController.BlinkWhiteIncremental(timeToExplode, 0.03f, 0.5f);
                     elapsedTime = 0f;
+                    attractingStopped = false;
                     //Debug.Log("Moving to Charged state");
                 }
                 break;
@@ -123,6 +130,8 @@ public class CapacitorController : MonoBehaviour {
                     model.SetActive(false);
                     modelCollider.SetActive(false);
                     explosionBlast[(int)currentColor].SetActive(true);
+                    warningSoundFx.Stop();
+                    explosionSoundFx.Play();
                     state = State.EXPLODING;
                     rsc.rumbleMng.Rumble(0, 0.5f, 0.5f, 0.5f);
                     //Debug.Log("Moving to Exploding state");
@@ -130,7 +139,12 @@ public class CapacitorController : MonoBehaviour {
                 }
                 else if (elapsedTime >= timeToExplodeMinus2)
                 {
-                    attractingDome.Stop();
+                    if (!attractingStopped)
+                    {
+                        attractingDome.Stop();
+                        warningSoundFx.Play();
+                        attractingStopped = true;
+                    }
                 }
 
                 break;

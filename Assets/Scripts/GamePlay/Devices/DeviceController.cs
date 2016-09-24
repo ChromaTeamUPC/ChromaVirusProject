@@ -47,6 +47,9 @@ public class DeviceController : MonoBehaviour
     public float brightnessCicleDuration;
     private float brightnessSpeed;
 
+    public AudioSource disinfectSoundFx;
+    private bool shouldDisinfectSoundBePlayed;
+
     private BlinkController blinkController;
 
     private bool tutorialTriggered;
@@ -137,14 +140,28 @@ public class DeviceController : MonoBehaviour
     {
         if (!active) return;
 
-        currentInfection -= disinfectionPerSecond * Time.deltaTime;
-        if (currentInfection < 0f)
-            currentInfection = 0f;
+        if (currentInfection > 0)
+        {
+            if(!disinfectSoundFx.isPlaying)
+            {
+                disinfectSoundFx.Play();
+            }
+            shouldDisinfectSoundBePlayed = true;
+
+            currentInfection -= disinfectionPerSecond * Time.deltaTime;
+            if (currentInfection < 0f)
+                currentInfection = 0f;
+        }
     }
 
     void Update()
     {
         if (!active) return;
+
+        if (!shouldDisinfectSoundBePlayed && disinfectSoundFx.isPlaying)
+        {
+            disinfectSoundFx.Stop();
+        }
 
         infectionNumberTxt.text = (Mathf.CeilToInt(currentInfection)) + "%";
         infectionBar.value = Mathf.CeilToInt(currentInfection);
@@ -232,6 +249,8 @@ public class DeviceController : MonoBehaviour
         }
 
         SetColor();
+
+        shouldDisinfectSoundBePlayed = false;
     }
 
     public GameObject GetRandomEndPoint()
