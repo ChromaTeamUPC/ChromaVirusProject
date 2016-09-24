@@ -157,6 +157,10 @@ public class WormBlackboard : MonoBehaviour
 
     private WormWayPoint headWayPoint;
 
+    [Header("Spawn Settings")]
+    public float spawnJumpToHeightRatio = 1f;
+    public float spawnSpeed = 8f;
+
     [Header("Health Settings")]
     [SerializeField]
     public HealthSettings[] healthSettings = new HealthSettings[4];
@@ -183,6 +187,8 @@ public class WormBlackboard : MonoBehaviour
     [Header("Jump Settings")]
     public float jumpOffset = 0f;
     public float jumpHeightToDistanceRatio = 0.5f;
+    [HideInInspector]
+    public float realJumpHeightToDistanceRatio = 0.5f;
     private Vector3 jumpOrigin;
     private Vector3 jumpDestiny;
     private Vector3 jumpCenter;
@@ -282,6 +288,9 @@ public class WormBlackboard : MonoBehaviour
 
     void OnDrawGizmos()
     {
+        //Uncomment to view in scene the initial parabola of the boss
+
+        /*realJumpHeightToDistanceRatio = spawnJumpToHeightRatio;
         CalculateParabola(spawnEntry.transform.position, spawnExit.transform.position);
         Vector3 highestPoint = GetJumpPositionGivenX(0);
         Gizmos.color = new Color(1f, 0.5f, 0f);
@@ -303,7 +312,7 @@ public class WormBlackboard : MonoBehaviour
 
             point = GetJumpPositionGivenX(-half / 10 * i);
             Gizmos.DrawCube(point, Vector3.one / 2);
-        }
+        }*/
     }
 
     void Awake () 
@@ -502,7 +511,7 @@ public class WormBlackboard : MonoBehaviour
         jumpDistance = (jumpOrigin - jumpDestiny).magnitude;
         jumpHalfDistance = jumpDistance / 2;
 
-        jumpMaxHeight = jumpDistance * jumpHeightToDistanceRatio;
+        jumpMaxHeight = jumpDistance * realJumpHeightToDistanceRatio;
 
         jumpParabolaAperture = -jumpMaxHeight / (jumpHalfDistance * jumpHalfDistance);
 

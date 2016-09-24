@@ -35,6 +35,7 @@ public class WormAISpawningState : WormAIBaseState
         origin = bb.spawnEntry.GetComponent<HexagonController>();
         destiny = bb.spawnExit.GetComponent<HexagonController>();
 
+        bb.realJumpHeightToDistanceRatio = bb.spawnJumpToHeightRatio;
         bb.CalculateParabola(bb.spawnEntry.transform.position, bb.spawnExit.transform.position);
 
         head.agent.enabled = false;
@@ -52,6 +53,7 @@ public class WormAISpawningState : WormAIBaseState
     {
         base.OnStateExit();
 
+        bb.realJumpHeightToDistanceRatio = bb.spawnJumpToHeightRatio;
         head.animator.SetBool("Bite", false);
     }
 
@@ -74,7 +76,7 @@ public class WormAISpawningState : WormAIBaseState
 
             case SubState.JUMPING:
                 //While not again below underground navmesh layer advance
-                currentX += Time.deltaTime * bb.WanderingSettingsPhase.wanderingSpeed;
+                currentX += Time.deltaTime * bb.spawnSpeed;
                 lastPosition = headTrf.position;
                 headTrf.position = bb.GetJumpPositionGivenX(currentX);
 
@@ -95,11 +97,14 @@ public class WormAISpawningState : WormAIBaseState
                 if (!destinyInRange)
                 {
                     float distanceToDestiny = (headTrf.position - destiny.transform.position).magnitude;
-                    if (distanceToDestiny <= destinyInRangeDistance)
+                    if (distanceToDestiny <= destinyInRangeDistance ||
+                        (headTrf.position.y < destiny.transform.position.y &&
+                        currentX >= 0)) //Safety check. When jump is too fast distance can never be less than range distance
                     {
                         destinyInRange = true;
-                        destiny.WormAboveAttackStart();
+                        WormEventInfo.eventInfo.wormBb = bb;
                         rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_ATTACK, WormEventInfo.eventInfo);
+                        destiny.WormAboveAttackStart();
                     }
                 }
 
@@ -112,7 +117,7 @@ public class WormAISpawningState : WormAIBaseState
                 break;
 
             case SubState.EXITING:
-                currentX += Time.deltaTime * bb.WanderingSettingsPhase.wanderingSpeed;
+                currentX += Time.deltaTime * bb.spawnSpeed;
                 lastPosition = headTrf.position;
                 headTrf.position = bb.GetJumpPositionGivenX(currentX);
 
