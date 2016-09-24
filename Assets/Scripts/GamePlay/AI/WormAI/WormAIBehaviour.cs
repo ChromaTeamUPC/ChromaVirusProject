@@ -22,6 +22,11 @@ public class WormAIBehaviour : MonoBehaviour
     public ParticleSystem angryEyes;
     public GameObject knockOutFx;
 
+    [Header("Sound Fx")]
+    public AudioSource attackWarningSoundFx;
+    public AudioSource jumpAttackSoundFx;
+    public AudioSource meteorThrowSoundFx;
+
     [Header("Misc Settings")]
     public GameObject headModel;
     public Transform[] energyVoxelsSpawnPoints;

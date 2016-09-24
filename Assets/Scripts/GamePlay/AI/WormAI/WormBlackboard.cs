@@ -268,12 +268,14 @@ public class WormBlackboard : MonoBehaviour
     public float aboveAttackCurrentExposureTime;
     [HideInInspector]
     public float aboveAttackCurrentCooldownTime;
-    public AudioClip aboveAttackWarningSound;
 
     [Header("Meteor Attack Settings")]
     [SerializeField]
     public MeteorAttackSettings[] meteorAttackSettings = new MeteorAttackSettings[4];
     public MeteorAttackSettings MeteorAttackSettingsPhase { get { return meteorAttackSettings[wormCurrentPhase]; } }
+
+    [Header("Sound Fx")]
+    public AudioClip aboveAttackWarningSound;
 
     [Header("Misc variables")]
     public GameObject spawnEntry;

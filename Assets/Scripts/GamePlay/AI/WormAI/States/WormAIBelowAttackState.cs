@@ -83,6 +83,8 @@ public class WormAIBelowAttackState : WormAIBaseState
                     origin.WormBelowAttackWarning(bb.BelowAttackSettingsPhase.adjacentDamagingCells);
 
                     elapsedTime = 0f;
+                    head.attackWarningSoundFx.Play();
+
                     subState = SubState.WARNING_PLAYER;
                 }
                 else

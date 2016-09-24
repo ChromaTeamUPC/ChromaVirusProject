@@ -36,6 +36,8 @@ public class MeteorController : MonoBehaviour
     public ParticleSystem fireTrail;
     public GameObject explosionFX;
 
+    public AudioSource fallingSoundFx;
+
     void Awake()
     {
         rotateModel = mainModel.GetComponent<RotateParticles>();
@@ -85,6 +87,7 @@ public class MeteorController : MonoBehaviour
         destructionModel.SetActive(false);
         explosionFX.SetActive(false);
         fireTrail.Play();
+        //fallingSoundFx.Play();
 
         mainModel.transform.rotation = Random.rotation;
         //Default state is falling
@@ -104,11 +107,13 @@ public class MeteorController : MonoBehaviour
         subState = SubState.GOING_UP;
         rotateModel.active = false;
         fireTrail.Stop();
+        fallingSoundFx.Stop();
     }
 
     public void Explode()
     {
         fireTrail.Stop();
+        fallingSoundFx.Stop();
 
         mainModel.SetActive(false);
         destructionModel.SetActive(true);

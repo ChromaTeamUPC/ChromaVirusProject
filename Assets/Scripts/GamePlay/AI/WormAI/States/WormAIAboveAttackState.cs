@@ -66,7 +66,7 @@ public class WormAIAboveAttackState : WormAIBaseState
 
                 bb.isHeadOverground = true;
 
-                head.audioSource.PlayOneShot(bb.aboveAttackWarningSound);
+                head.attackWarningSoundFx.Play();
                 destiny.WormAboveAttackWarning();
                 subState = SubState.WARNING_PLAYER;
             }
@@ -94,6 +94,7 @@ public class WormAIAboveAttackState : WormAIBaseState
 
                 if (elapsedTime >= bb.AboveAttackSettingsPhase.warningTime)
                 {
+                    head.jumpAttackSoundFx.Play();
                     subState = SubState.JUMPING;
                 }
                 else

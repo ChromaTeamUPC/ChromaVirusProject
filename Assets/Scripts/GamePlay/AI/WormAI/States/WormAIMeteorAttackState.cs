@@ -80,6 +80,8 @@ public class WormAIMeteorAttackState : WormAIBaseState
                         meteor.transform.position = headTrf.position;                        
                         meteor.GoUp(bb.MeteorAttackSettingsPhase.speedOfThrownMeteors);
 
+                        head.meteorThrowSoundFx.Play();
+
                         ++totalShots;
                         elapsedTime = timeBetweenShots;
                     }
