@@ -6,10 +6,13 @@ public class EnemyExplosionController : MonoBehaviour
     public ChromaColor color;
     public GameObject[] colorExplosionPrefabs;
 
+    private AudioSource audioSource;
+
     private GameObject[] colorExplosion;
 
     void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
         colorExplosion = new GameObject[colorExplosionPrefabs.Length];
 
         for (int i = 0; i < colorExplosionPrefabs.Length; ++i)
@@ -20,22 +23,43 @@ public class EnemyExplosionController : MonoBehaviour
         }
     }
 
-    public void Play(ChromaColor color)
+    public void Play(ChromaColor color, AudioClip clip)
     {
         this.color = color;
+        audioSource.clip = clip;
+
         Play();
     }
 
     public void Play()
     {
         colorExplosion[(int)color].SetActive(true);
+
+        if (audioSource.clip != null)
+            audioSource.Play();
+
         StartCoroutine(WaitAndReturnToPool());
     }
 
-    public void PlayAll()
+    public void PlayAudioOnly(AudioClip clip)
     {
+        audioSource.clip = clip;
+
+        if (audioSource.clip != null)
+            audioSource.Play();
+
+        StartCoroutine(WaitAndReturnToPool());
+    }
+
+    public void PlayAll(AudioClip clip = null)
+    {        
         for(int i = 0; i < colorExplosion.Length; ++i)
             colorExplosion[i].SetActive(true);
+
+        audioSource.clip = clip;
+        if (audioSource.clip != null)
+            audioSource.Play();
+
         StartCoroutine(WaitAndReturnToPool());
     }
 

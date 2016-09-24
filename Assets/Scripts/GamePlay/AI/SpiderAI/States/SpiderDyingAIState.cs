@@ -43,11 +43,13 @@ public class SpiderDyingAIState : SpiderAIBaseState
             if (explosion != null)
             {
                 explosion.transform.position = blackboard.entityGO.transform.position;
-                explosion.Play(color);
+                explosion.Play(color, spiderBlackboard.spider.explosion1SoundFx);
             }
         }
         else
+        {
             spiderBlackboard.spider.SpawnVoxelsAndReturnToPool(false);
+        }
     }
 
     public override void OnStateExit()

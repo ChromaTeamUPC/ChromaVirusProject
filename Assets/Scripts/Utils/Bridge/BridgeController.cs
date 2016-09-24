@@ -7,6 +7,7 @@ public class BridgeController : MonoBehaviour
     private Renderer rend;
 
     public GameObject[] fragments;
+    private BridgeFragmentController[] fragmentControllers;
 
     private ChromaColor currentColor;
     private bool active;
@@ -15,6 +16,12 @@ public class BridgeController : MonoBehaviour
     {
         rend = model.GetComponentInChildren<Renderer>();
         active = false;
+
+        fragmentControllers = new BridgeFragmentController[fragments.Length];
+        for(int i = 0; i < fragments.Length; ++i)
+        {
+            fragmentControllers[i] = fragments[i].GetComponent<BridgeFragmentController>();
+        }
     }
 
 	// Use this for initialization
@@ -58,8 +65,7 @@ public class BridgeController : MonoBehaviour
         for(int i = 0; i < fragments.Length; ++i)
         {
             fragments[i].SetActive(true);
-            Animator anim = fragments[i].GetComponentInChildren<Animator>();
-            anim.SetTrigger("EnterNow");
+            fragmentControllers[i].Enter();
             yield return new WaitForSeconds(0.4f);
         }
 
@@ -84,9 +90,8 @@ public class BridgeController : MonoBehaviour
     {
         for (int i = 0; i < fragments.Length; ++i)
         {
-            fragments[i].SetActive(true);           
-            Animator anim = fragments[i].GetComponentInChildren<Animator>();
-            anim.SetTrigger("WaitNow");
+            fragments[i].SetActive(true);
+            fragmentControllers[i].Wait();
         }
 
         model.SetActive(false);
@@ -95,8 +100,7 @@ public class BridgeController : MonoBehaviour
 
         for (int i = 0; i < fragments.Length; ++i)
         {
-            Animator anim = fragments[i].GetComponentInChildren<Animator>();
-            anim.SetTrigger("ExitNow");
+            fragmentControllers[i].Exit();
             yield return new WaitForSeconds(0.4f);
         }
 

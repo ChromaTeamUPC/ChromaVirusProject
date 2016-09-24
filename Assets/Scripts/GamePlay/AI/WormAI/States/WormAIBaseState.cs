@@ -136,7 +136,6 @@ public class WormAIBaseState
         if (colliders.Length == 0) return null;
 
         HexagonController result = null;
-        float targetDistance = Mathf.Pow(hexagonsDistance * HexagonController.DISTANCE_BETWEEN_HEXAGONS, 2);
         float distanceDelta = float.MaxValue;
 
         for (int i = 0; i < colliders.Length; ++i)

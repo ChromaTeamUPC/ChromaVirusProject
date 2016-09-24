@@ -98,6 +98,8 @@ public class RandomMoveActionExecutor : BaseExecutor
 
             blackBoard.animator.SetFloat("moveSpeed", blackBoard.agent.speed / 4);
             blackBoard.animator.SetBool("moving", true);
+
+            blackBoard.entity.PlayRandomMoveSound();
         }
     }
 

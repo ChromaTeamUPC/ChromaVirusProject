@@ -22,6 +22,7 @@ public class PlayerDyingState : PlayerBaseState
         bb.shield.SetActive(false);
         bb.animator.SetTrigger("Die");
         bb.animationEnded = false;
+        bb.player.PlayDieSound();
 
         subState = SubState.WAITING_ANIMATION;
 

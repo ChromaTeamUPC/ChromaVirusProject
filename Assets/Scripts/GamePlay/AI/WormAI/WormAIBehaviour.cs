@@ -38,8 +38,6 @@ public class WormAIBehaviour : MonoBehaviour
     public WormAIHeadDestroyedState headDestroyedState;
     public WormAIDyingState dyingState;
 
-    public WormAITestState testState;
-
     private WormAIBaseState currentState;
 
     [HideInInspector]
@@ -104,8 +102,6 @@ public class WormAIBehaviour : MonoBehaviour
         knockOutState = new WormAIKnockOutState(bb);
         headDestroyedState = new WormAIHeadDestroyedState(bb);
         dyingState = new WormAIDyingState(bb);
-
-        testState = new WormAITestState(bb);
     }
 
     public void Init()
@@ -330,7 +326,6 @@ public class WormAIBehaviour : MonoBehaviour
 
     public void SpawnEnergyVoxels()
     {
-        Vector3 pos = transform.position;
         EnergyVoxelPool pool = rsc.poolMng.bigEnergyVoxelPool;
         for (int i = 0; i < bb.knockOutEnergyVoxelsSpawned; ++i)
         {

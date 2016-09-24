@@ -4,7 +4,6 @@ using System.Collections;
 public class WormTailController : MonoBehaviour 
 {
     public float tailHeight;
-    private Transform trf;
     private VoxelizationClient voxelization;
     private Renderer rend;
 
@@ -12,7 +11,6 @@ public class WormTailController : MonoBehaviour
 
     void Awake()
     {
-        trf = gameObject.transform;
         voxelization = GetComponentInChildren<VoxelizationClient>();
         rend = GetComponentInChildren<Renderer>();
     }

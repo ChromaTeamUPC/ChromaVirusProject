@@ -43,8 +43,8 @@ public class MosquitoDyingAIState : MosquitoAIBaseState
             if (explosion != null)
             {
                 explosion.transform.position = blackboard.entityGO.transform.position;
-                explosion.Play(color);
-            }
+                explosion.Play(color, mosquitoBlackboard.mosquito.explosion1SoundFx);
+            }            
         }
         else
             mosquitoBlackboard.mosquito.SpawnVoxelsAndReturnToPool(false);

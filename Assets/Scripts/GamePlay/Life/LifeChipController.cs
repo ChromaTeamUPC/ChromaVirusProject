@@ -10,12 +10,15 @@ public class LifeChipController : MonoBehaviour
     public ParticleSystem fx;
     private SphereCollider sphereCollider;
     private PlayerController player;
+    private AudioSource audioSource;
     private float attractionSpeed = 6;
+
 
     void Awake()
     {
         sphereCollider = GetComponent<SphereCollider>();
         anim = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         animationEnded = false;
         player = null;
     }
@@ -29,6 +32,8 @@ public class LifeChipController : MonoBehaviour
             player = other.GetComponent<PlayerController>();
             player.RechargeLife(extraLife, heal);
 
+            audioSource.Play();
+
             anim.SetTrigger("Fade");
             fx.Stop();
         }
@@ -41,7 +46,7 @@ public class LifeChipController : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, player.transform.position, Time.deltaTime * attractionSpeed);
         }
 
-        if(animationEnded && fx.isStopped)
+        if(animationEnded && fx.isStopped && !audioSource.isPlaying)
         {
             Destroy(gameObject);
         }

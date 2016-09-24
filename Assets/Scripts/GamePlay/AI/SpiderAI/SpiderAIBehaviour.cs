@@ -22,6 +22,11 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     public float checkAttackEverySeconds = 1f;
     public float checkDeviceEverySeconds = 3f;
 
+    [Header("Sound FX")]
+    public AudioClip explosion1SoundFx;
+    public AudioClip explosion2SoundFx;
+    public AudioClip explosionWrongColorSoundFx;
+
 	// Use this for initialization
 	protected override void Awake ()
     {
@@ -198,16 +203,15 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 
     public void SpawnVoxelsAndReturnToPool(bool spawnEnergyVoxels = true)
     {
+        EnemyExplosionController explosion = rsc.poolMng.enemyExplosionPool.GetObject();
+        Vector3 pos = transform.position;
+
         if (spawnEnergyVoxels)
         {
-            Vector3 pos = transform.position;
-
-            EnemyExplosionController explosion = rsc.poolMng.enemyExplosionPool.GetObject();
-
-            if(explosion != null)
+            if (explosion != null)
             {
                 explosion.transform.position = pos;
-                explosion.Play(color);
+                explosion.Play(color, explosion2SoundFx);
             }
 
             EnergyVoxelPool pool = rsc.poolMng.energyVoxelPool;
@@ -219,6 +223,14 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
                     voxel.transform.position = pos;
                     voxel.transform.rotation = Random.rotation;
                 }
+            }
+        }
+        else
+        {
+            if (explosion != null)
+            {
+                explosion.transform.position = pos;
+                explosion.PlayAudioOnly(explosionWrongColorSoundFx);
             }
         }
 

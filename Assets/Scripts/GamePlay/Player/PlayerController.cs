@@ -105,6 +105,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private LineRenderer fadeBeam;
 
+    //Sound Fx
+    [Header("Sound FX")]
+    [SerializeField]
+    private AudioSource specialChargeSoundFx;
+    [SerializeField]
+    private AudioSource beamUpSoundFx;
+    [SerializeField]
+    private AudioSource dieSoundFx;
+    [SerializeField]
+    private AudioClip dieExplosionSoundFx;
+
     //Misc
     [Header("Miscelaneous Settings")]
     public float idleRandomAnimTime = 10f;
@@ -518,6 +529,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void PlayDieSound()
+    {
+        dieSoundFx.Play();
+    }
+
     public void SpawnVoxels()
     {
         voxelization.CalculateVoxelsGrid();
@@ -528,7 +544,7 @@ public class PlayerController : MonoBehaviour
         if (explosion != null)
         {
             explosion.transform.position = transform.position;
-            explosion.PlayAll();
+            explosion.PlayAll(dieExplosionSoundFx);
         }
     }
 
@@ -722,11 +738,13 @@ public class PlayerController : MonoBehaviour
     public void StartSpecialEnergyCharging()
     {
         energyChargehargePS.Play();
+        specialChargeSoundFx.Play();
     }
 
     public void StopSpecialEnergyCharging()
     {
         energyChargehargePS.Stop();
+        specialChargeSoundFx.Stop();
     }
 
     public void StartSpecial()
@@ -759,6 +777,7 @@ public class PlayerController : MonoBehaviour
     public void PlayBeamUp()
     {
         beamUpPS.Play();
+        beamUpSoundFx.Play();
     }
 
     public bool IsBeamUpPlaying()

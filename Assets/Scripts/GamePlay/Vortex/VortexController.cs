@@ -33,11 +33,13 @@ public class VortexController : MonoBehaviour
 
     private BlinkController blinkController;
     private Animator anim;
+    private AudioSource audioSource;
 
     void Awake()
     {
         blinkController = GetComponent<BlinkController>();
         anim = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Start()
@@ -65,6 +67,7 @@ public class VortexController : MonoBehaviour
     {
         rsc.eventMng.StopListening(EventManager.EventType.ZONE_WAVES_FINISHED, ZoneWavesFinished);
         active = false;
+        audioSource.Play();
         particleSys.Stop();
         rsc.rumbleMng.Rumble(0, 0.5f, 0f, 0.75f);
         anim.SetTrigger("Destroyed");

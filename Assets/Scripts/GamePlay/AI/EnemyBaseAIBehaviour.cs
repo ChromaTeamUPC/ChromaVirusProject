@@ -167,6 +167,8 @@ public class EnemyBaseAIBehaviour : MonoBehaviour {
         }
     }
 
+    public virtual void PlayRandomMoveSound() { }
+
     public void ImpactedByShot(ChromaColor shotColor, float damage, Vector3 direction, PlayerController player)
     {
         if (currentState != null)

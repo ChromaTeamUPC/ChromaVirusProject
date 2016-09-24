@@ -33,6 +33,11 @@ public class PlayerShotController : MonoBehaviour {
     [SerializeField]
     private GameObject projectileParticlePrefab;
 
+    [SerializeField]
+    private AudioClip goodImpact;
+    [SerializeField]
+    private AudioClip wrongImpact;
+
     private GameObject impactParticle;
     private GameObject projectileParticle;
 
@@ -86,9 +91,8 @@ public class PlayerShotController : MonoBehaviour {
         //Stop shot
         rigidBody.velocity = Vector3.zero;
         projectileParticle.SetActive(false);
-        if(collision.contacts.Length > 0)
-            impactParticle.transform.rotation = Quaternion.FromToRotation(Vector3.up, collision.contacts[0].normal);
-        impactParticle.SetActive(true);
+
+        impactParticle.GetComponent<AudioSource>().clip = wrongImpact;
 
         if (collision.collider.tag == "Enemy")
         {
@@ -97,13 +101,20 @@ public class PlayerShotController : MonoBehaviour {
                 enemy = collision.collider.GetComponentInParent<EnemyBaseAIBehaviour>();
 
             if (enemy != null)
+            {
+                if (enemy.color == color)
+                    impactParticle.GetComponent<AudioSource>().clip = goodImpact;
+
                 enemy.ImpactedByShot(color, damage, transform.forward * forceMultiplier, player);
+            }
         }
         else if (collision.collider.tag == "Vortex")
         {
             VortexController vortex = collision.collider.GetComponent<VortexController>();
             if (vortex != null)
                 vortex.ImpactedByShot(color, damage);
+
+            impactParticle.GetComponent<AudioSource>().clip = goodImpact;
         }
         else if (collision.collider.tag == "Barrel")
         {
@@ -115,13 +126,20 @@ public class PlayerShotController : MonoBehaviour {
         {
             WormBodySegmentController worm = collision.collider.GetComponent<WormBodySegmentController>();
             if (worm != null)
+            {
+                if (worm.Color == color)
+                    impactParticle.GetComponent<AudioSource>().clip = goodImpact;
+
                 worm.ImpactedByShot(color, damage, player);
+            }
         }
         else if (collision.collider.tag == "WormHead")
         {
             WormAIBehaviour worm = collision.collider.GetComponent<WormAIBehaviour>();
             if (worm != null)
                 worm.ImpactedByShot(color, damage, player);
+
+            impactParticle.GetComponent<AudioSource>().clip = goodImpact;
         }
         else if (collision.collider.tag == "Hexagon")
         {
@@ -129,6 +147,10 @@ public class PlayerShotController : MonoBehaviour {
             if (hexagon != null)
                 hexagon.ImpactedByShot();
         }
+
+        if(collision.contacts.Length > 0)
+            impactParticle.transform.rotation = Quaternion.FromToRotation(Vector3.up, collision.contacts[0].normal);
+        impactParticle.SetActive(true);
 
         shotCollider.enabled = false;
         //We let the impactParticle do its job

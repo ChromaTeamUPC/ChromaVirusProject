@@ -45,11 +45,6 @@ public class MainCameraController : MonoBehaviour {
 
     private Vector3 offset;
     private Camera thisCamera;
-    private float cameraBorderMargin = 50f;
-    private float maxYPosition;
-    private float maxXPosition;
-    private float minYPosition;
-    private float minXPosition;
 
     private float colorMismatchDuration;
     private float shakeDuration;
@@ -76,13 +71,6 @@ public class MainCameraController : MonoBehaviour {
         offset = rsc.gameInfo.gameCameraOffset;
         smoothedPosition = transform.position;
         //gameObject.transform.rotation = rsc.gameInfo.gameCameraRotation;
-
-        //playerRayCastMask = LayerMask.GetMask("PlayerRayCast");
-            
-        maxYPosition = thisCamera.pixelHeight - cameraBorderMargin;
-        maxXPosition = thisCamera.pixelWidth - cameraBorderMargin;
-        minYPosition = cameraBorderMargin;
-        minXPosition = cameraBorderMargin;
 
         target1 = rsc.gameInfo.player1.transform;
         player1 = rsc.gameInfo.player1Controller;
@@ -299,13 +287,11 @@ public class MainCameraController : MonoBehaviour {
             Vector3 p2LastViewportPos = thisCamera.WorldToViewportPoint(target2LastPos);
 
             //Horizontal calculations
-            Transform leftTransform;
             PlayerController leftPlayer;
             Vector3 leftNewViewportPos;
             Vector3 leftLastViewportPos;
             bool leftMoved;
 
-            Transform rightTransform;
             PlayerController rightPlayer;
             Vector3 rightNewViewportPos;
             Vector3 rightLastViewportPos;
@@ -316,13 +302,11 @@ public class MainCameraController : MonoBehaviour {
             if (p1NewViewportPos.x < p2NewViewportPos.x)
             {
                 p1Horizontal = Horizontal.LEFT;
-                leftTransform = target1;
                 leftPlayer = player1;
                 leftNewViewportPos = p1NewViewportPos;
                 leftLastViewportPos = p1LastViewportPos;
                 leftMoved = leftPlayer.bb.screenVector.x != 0;
 
-                rightTransform = target2;
                 rightPlayer = player2;
                 rightNewViewportPos = p2NewViewportPos;
                 rightLastViewportPos = p2LastViewportPos;
@@ -331,13 +315,11 @@ public class MainCameraController : MonoBehaviour {
             else
             {
                 p1Horizontal = Horizontal.RIGHT;
-                rightTransform = target1;
                 rightPlayer = player1;
                 rightNewViewportPos = p1NewViewportPos;
                 rightLastViewportPos = p1LastViewportPos;
                 rightMoved = rightPlayer.bb.screenVector.x != 0;
 
-                leftTransform = target2;
                 leftPlayer = player2;
                 leftNewViewportPos = p2NewViewportPos;
                 leftLastViewportPos = p2LastViewportPos;
@@ -420,13 +402,11 @@ public class MainCameraController : MonoBehaviour {
             //Else both players are in horitzontal limits do nothing
 
             //Vertical calculations
-            Transform bottomTransform;
             PlayerController bottomPlayer;
             Vector3 bottomNewViewportPos;
             Vector3 bottomLastViewportPos;
             bool bottomMoved;
 
-            Transform topTransform;
             PlayerController topPlayer;
             Vector3 topNewViewportPos;
             Vector3 topLastViewportPos;
@@ -437,13 +417,11 @@ public class MainCameraController : MonoBehaviour {
             if (p1NewViewportPos.y < p2NewViewportPos.y)
             {
                 p1Vertical = Vertical.BOTTOM;
-                bottomTransform = target1;
                 bottomPlayer = player1;
                 bottomNewViewportPos = p1NewViewportPos;
                 bottomLastViewportPos = p1LastViewportPos;
                 bottomMoved = bottomPlayer.bb.screenVector.y != 0;
 
-                topTransform = target2;
                 topPlayer = player2;
                 topNewViewportPos = p2NewViewportPos;
                 topLastViewportPos = p2LastViewportPos;
@@ -452,13 +430,11 @@ public class MainCameraController : MonoBehaviour {
             else
             {
                 p1Vertical = Vertical.TOP;
-                topTransform = target1;
                 topPlayer = player1;
                 topNewViewportPos = p1NewViewportPos;
                 topLastViewportPos = p1LastViewportPos;
                 topMoved = topPlayer.bb.screenVector.y != 0;
 
-                bottomTransform = target2;
                 bottomPlayer = player2;
                 bottomNewViewportPos = p2NewViewportPos;
                 bottomLastViewportPos = p2LastViewportPos;
@@ -579,8 +555,6 @@ public class MainCameraController : MonoBehaviour {
 
             if (movePlayer1H || movePlayer1V)
             {
-                Vector3 screenPoint = thisCamera.ViewportToScreenPoint(newPlayer1Pos);
-
                 Ray camRay = thisCamera.ViewportPointToRay(newPlayer1Pos);
 
                 RaycastHit raycastHit;
@@ -594,8 +568,6 @@ public class MainCameraController : MonoBehaviour {
 
             if (movePlayer2H || movePlayer2V)
             {
-                Vector3 screenPoint = thisCamera.ViewportToScreenPoint(newPlayer2Pos);
-
                 Ray camRay = thisCamera.ViewportPointToRay(newPlayer2Pos);
                 RaycastHit raycastHit;
 

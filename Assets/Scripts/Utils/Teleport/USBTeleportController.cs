@@ -12,12 +12,19 @@ public class USBTeleportController : MonoBehaviour {
     private PlayerController player2;
     //public ParticleSystem electricPS;
 
+    private AudioSource audioSource;
+
     private bool multiPlayerTransport;
     public float multiPlayerTransportOffset = 1f;
 
     private List<PlayerController> players = new List<PlayerController>();
     private List<int> playerCurrentDestiny = new List<int>();
     private List<float> playerCurrentLerpTime = new List<float>();
+
+    void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
 
     void OnTriggerEnter(Collider other)
     {
@@ -70,6 +77,8 @@ public class USBTeleportController : MonoBehaviour {
             players.Add(player1);
             playerCurrentDestiny.Add(1);
             playerCurrentLerpTime.Add(0f);
+
+            audioSource.Play();
         }
         //two players
         else
@@ -92,6 +101,8 @@ public class USBTeleportController : MonoBehaviour {
                 players.Add(player2);
                 playerCurrentDestiny.Add(1);
                 playerCurrentLerpTime.Add(0.3f);
+
+                audioSource.Play();
             }
             else
             {
@@ -103,6 +114,8 @@ public class USBTeleportController : MonoBehaviour {
                     players.Add(player1);
                     playerCurrentDestiny.Add(1);
                     playerCurrentLerpTime.Add(0f);
+
+                    audioSource.Play();
                 }
 
                 if (player2 != null && rsc.gameInfo.player1Controller.Lives == 0)
@@ -113,6 +126,8 @@ public class USBTeleportController : MonoBehaviour {
                     players.Add(player2);
                     playerCurrentDestiny.Add(1);
                     playerCurrentLerpTime.Add(0f);
+
+                    audioSource.Play();
                 }
             }
         }       
@@ -160,6 +175,10 @@ public class USBTeleportController : MonoBehaviour {
                     }
                 }
             }
+        }
+        else
+        {
+            audioSource.Stop();
         }
     }
 }

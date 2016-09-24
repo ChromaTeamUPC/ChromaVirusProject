@@ -81,7 +81,7 @@ public class Level01Controller : MonoBehaviour
     public FloorController floor;
 
     [SerializeField]
-    private Animator elevatorAnimator;
+    private ElevatorController elevator;
 
     private int currentZoneId;
     private ZoneActivableObjects currentZoneObjects;
@@ -151,7 +151,7 @@ public class Level01Controller : MonoBehaviour
     private void CameraEnded(EventInfo eventInfo)
     {
         rsc.camerasMng.ChangeCamera(0);
-        elevatorAnimator.SetFloat("AnimationSpeed", 1f);
+        elevator.Activate();
 
         if (rsc.gameInfo.player1Controller.Active)
         {
