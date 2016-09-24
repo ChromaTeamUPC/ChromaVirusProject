@@ -422,7 +422,7 @@ public class GUIController : MonoBehaviour
 
     private void GameFinished(EventInfo eventInfo)
     {
-        youWinTxt.enabled = true;
+        //youWinTxt.enabled = true;
     }
 
     private void PlayerDying(EventInfo eventInfo)
