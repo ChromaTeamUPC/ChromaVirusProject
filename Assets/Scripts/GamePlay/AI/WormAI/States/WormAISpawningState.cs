@@ -52,7 +52,7 @@ public class WormAISpawningState : WormAIBaseState
     {
         base.OnStateExit();
 
-        head.animator.SetBool("MouthOpen", false);
+        head.animator.SetBool("Bite", false);
     }
 
     public override WormAIBaseState Update()
@@ -84,8 +84,6 @@ public class WormAISpawningState : WormAIBaseState
                 {
                     if(!highestPointReached)
                     {
-                        head.animator.SetBool("Bite", false);
-                        head.animator.SetBool("MouthOpen", true);
                         highestPointReached = true;
                     }
 
