@@ -51,10 +51,7 @@ public class LevelBossController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
         rsc.eventMng.StartListening(EventManager.EventType.WORM_PHASE_ENDED, WormPhaseEnded);
         rsc.eventMng.StartListening(EventManager.EventType.WORM_DYING, WormDying);
-        rsc.eventMng.StartListening(EventManager.EventType.WORM_DIED, WormDied);
-
-        rsc.colorMng.Activate();
-        floor.Activate();
+        rsc.eventMng.StartListening(EventManager.EventType.WORM_DIED, WormDied);     
 
         rsc.camerasMng.SetEntryCameraLevelAnimation(-1);
 
@@ -83,6 +80,9 @@ public class LevelBossController : MonoBehaviour
     private IEnumerator InitWorm()
     {
         yield return null; //Wait 1 frame to allow every module Start method to be called
+
+        rsc.colorMng.Activate();
+        floor.Activate();
 
         worm.Init(sceneCenter);
     }
