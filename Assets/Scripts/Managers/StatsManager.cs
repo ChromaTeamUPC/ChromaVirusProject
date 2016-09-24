@@ -158,12 +158,15 @@ public class PlayerStats
 
     public void BreakChain()
     {
-        currentChain = 0;
-        currentIncrement = 0;
-        chainRemainingTime = 0;
+        if (currentChain > 0)
+        {
+            currentChain = 0;
+            currentIncrement = 0;
+            chainRemainingTime = 0;
 
-        ComboEventInfo.eventInfo.playerId = playerId;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.COMBO_BREAK, ComboEventInfo.eventInfo);
+            ComboEventInfo.eventInfo.playerId = playerId;
+            rsc.eventMng.TriggerEvent(EventManager.EventType.COMBO_BREAK, ComboEventInfo.eventInfo);
+        }
     }
 
     public void ComputeScore(int totalTime)

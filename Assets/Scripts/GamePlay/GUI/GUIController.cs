@@ -15,9 +15,11 @@ public class GUIController : MonoBehaviour
     public float scoreChainDuration = 1f;
     public float scoreAccuracyDuration = 1f;
     public float scoreTimeDuration = 1f;
+    public float scoreTickEverySeconds = 0.05f;
     public float showPlayerImgDuration = 2f;
     public float showGradeInitialScale = 20f;
     public float showGradeImgDuration = 0.5f;
+    public float gradeStampSoundFxAtDurationRatio = 0.75f;
     public float scoreFinalDelay = 0.2f;
 
     [Header("Score Items")]
@@ -173,6 +175,15 @@ public class GUIController : MonoBehaviour
     public Text godModeTxt;
     public GameObject skipHint;
     public FadeSceneScript fadeCurtain;
+
+    [Header("Sound Fx")]
+    public AudioSource enterPauseSoundFx;
+    public AudioSource exitPauseToGameSoundFx;
+    public AudioSource exitPauseToMenuSoundFx;
+    public AudioSource brokenChainSoundFx;
+    public AudioSource gameOverSoundFx;
+    public AudioSource scoreTicSoundFx;
+    public AudioSource gradeStampSoundFx;
 
     private PlayerController player1Controller;
     private PlayerController player2Controller;
@@ -352,6 +363,22 @@ public class GUIController : MonoBehaviour
         }
     }
 
+    private void FadeCurtain(EventInfo eventInfo)
+    {
+        FadeCurtainEventInfo info = (FadeCurtainEventInfo)eventInfo;
+
+        if (info.fadeIn)
+        {
+            fadeCurtain.StartFadingToClear((info.useDefaultColor ? fadeCurtain.defaultFadeColor : info.fadeColor),
+                                           (info.useDefaultTime ? fadeCurtain.defaultFadeSeconds : info.fadeTime));
+        }
+        else
+        {
+            fadeCurtain.StartFadingToColor((info.useDefaultColor ? fadeCurtain.defaultFadeColor : info.fadeColor),
+                                           (info.useDefaultTime ? fadeCurtain.defaultFadeSeconds : info.fadeTime));
+        }
+    }
+
     private void DisableHintButtons(int playerId)
     {
         if (playerId == 0 || playerId == 1)
@@ -375,7 +402,7 @@ public class GUIController : MonoBehaviour
 
     private void GamePaused(EventInfo eventInfo)
     {
-        rsc.audioMng.StartFx.Play();
+        enterPauseSoundFx.Play();
         infoArea.SetActive(false);
         pauseGroup.SetActive(true);
         optionsGroup.SetActive(true);
@@ -386,7 +413,7 @@ public class GUIController : MonoBehaviour
 
     private void GameResumed(EventInfo eventInfo)
     {
-        rsc.audioMng.StartFx.Play();
+        exitPauseToGameSoundFx.Play();
         infoArea.SetActive(true);
         pauseGroup.SetActive(false);
     }
@@ -405,6 +432,7 @@ public class GUIController : MonoBehaviour
 
     public void QuitConfirmed()
     {
+        exitPauseToMenuSoundFx.Play();
         rsc.gameMng.GameCancelled();
     }
 
@@ -417,6 +445,7 @@ public class GUIController : MonoBehaviour
 
     private void GameOver(EventInfo eventInfo)
     {
+        gameOverSoundFx.Play();
         gameOverTxt.enabled = true;
     }
 
@@ -585,6 +614,8 @@ public class GUIController : MonoBehaviour
             StopCoroutine("ShowP2ChainBreak");
             StartCoroutine("ShowP2ChainBreak");
         }
+
+        brokenChainSoundFx.Play();
     }
 
     private IEnumerator ShowP1ChainBreak()
@@ -746,6 +777,7 @@ public class GUIController : MonoBehaviour
         int timeScore = 0;
 
         float elapsedTime = 0f;
+        float elapsedTimeTick = 0f;
         float factor = 0f;
 
         scoreSingleChain.text = totalScore.ToString();
@@ -758,11 +790,18 @@ public class GUIController : MonoBehaviour
         yield return new WaitForSeconds(scoreInitialDelay);
 
         //Chain update
-        elapsedTime += Time.deltaTime;
         factor = elapsedTime / scoreChainDuration;
 
-        while(elapsedTime < scoreChainDuration)
+        scoreTicSoundFx.Play();
+
+        while (elapsedTime < scoreChainDuration)
         {
+            if (elapsedTimeTick >= scoreTickEverySeconds)
+            {
+                scoreTicSoundFx.Play();
+                elapsedTimeTick -= scoreTickEverySeconds;
+            }
+
             currentChain = (int)Mathf.Lerp(0, player1Stats.maxChain, factor);
             totalScore = currentChain * levelStats.maxChainMultiplier;
 
@@ -772,6 +811,7 @@ public class GUIController : MonoBehaviour
             yield return null;
 
             elapsedTime += Time.deltaTime;
+            elapsedTimeTick += Time.deltaTime;
             factor = elapsedTime / scoreChainDuration;
         }
 
@@ -782,10 +822,19 @@ public class GUIController : MonoBehaviour
 
         //Accuracy update
         elapsedTime = 0f;
+        elapsedTimeTick = 0f;
         factor = 0f;
 
-        while(elapsedTime < scoreAccuracyDuration)
+        scoreTicSoundFx.Play();
+
+        while (elapsedTime < scoreAccuracyDuration)
         {
+            if (elapsedTimeTick >= scoreTickEverySeconds)
+            {
+                scoreTicSoundFx.Play();
+                elapsedTimeTick -= scoreTickEverySeconds;
+            }
+
             currentAccuracy = (int)Mathf.Lerp(0, player1Stats.colorAccuracy, factor);
             percentScore = totalScore / 100 * currentAccuracy;
 
@@ -795,6 +844,7 @@ public class GUIController : MonoBehaviour
             yield return null;
 
             elapsedTime += Time.deltaTime;
+            elapsedTimeTick += Time.deltaTime;
             factor = elapsedTime / scoreAccuracyDuration;
         }
 
@@ -805,6 +855,7 @@ public class GUIController : MonoBehaviour
 
         //Time update
         elapsedTime = 0f;
+        elapsedTimeTick = 0f;
         factor = 0f;
 
         if (totalTime < levelStats.baseSeconds)
@@ -812,8 +863,16 @@ public class GUIController : MonoBehaviour
         else if (totalTime > levelStats.baseSeconds)
             scoreSingleTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.RED);
 
+        scoreTicSoundFx.Play();
+
         while (elapsedTime < scoreTimeDuration)
         {
+            if (elapsedTimeTick >= scoreTickEverySeconds)
+            {
+                scoreTicSoundFx.Play();
+                elapsedTimeTick -= scoreTickEverySeconds;
+            }
+
             int seconds = (int)Mathf.Lerp(levelStats.baseSeconds, totalTime, factor);
             timeScore = percentScore + ((levelStats.baseSeconds - seconds) * levelStats.secondMultiplier);
 
@@ -823,6 +882,7 @@ public class GUIController : MonoBehaviour
             yield return null;
 
             elapsedTime += Time.deltaTime;
+            elapsedTimeTick += Time.deltaTime;
             factor = elapsedTime / scoreTimeDuration;
         }
 
@@ -857,8 +917,16 @@ public class GUIController : MonoBehaviour
         scoreSingleGradeImg.transform.localScale = new Vector3(showGradeInitialScale, showGradeInitialScale, 1f);
         scoreSingleGradeImg.sprite = gradeScoreImages[(int)player1Stats.finalGrade];
 
+        bool stampSoundPlayed = false;
+
         while (elapsedTime < showGradeImgDuration)
         {
+            if(!stampSoundPlayed && elapsedTime >= showGradeImgDuration * gradeStampSoundFxAtDurationRatio)
+            {
+                gradeStampSoundFx.Play();
+                stampSoundPlayed = true;
+            }
+
             float scale = Mathf.Lerp(showGradeInitialScale, 1, factor);
             scoreSingleGradeImg.transform.localScale = new Vector3(scale, scale, 1f);
 
@@ -900,6 +968,7 @@ public class GUIController : MonoBehaviour
         int timeScoreP2 = 0;
 
         float elapsedTime = 0f;
+        float elapsedTimeTick = 0f;
         float factor = 0f;
 
         scoreMultiChainP1.text = totalScoreP1.ToString();
@@ -915,11 +984,18 @@ public class GUIController : MonoBehaviour
         yield return new WaitForSeconds(scoreInitialDelay);
 
         //Chain update
-        elapsedTime += Time.deltaTime;
         factor = elapsedTime / scoreChainDuration;
+
+        scoreTicSoundFx.Play();
 
         while (elapsedTime < scoreChainDuration)
         {
+            if (elapsedTimeTick >= scoreTickEverySeconds)
+            {
+                scoreTicSoundFx.Play();
+                elapsedTimeTick -= scoreTickEverySeconds;
+            }
+
             currentChainP1 = (int)Mathf.Lerp(0, player1Stats.maxChain, factor);
             totalScoreP1 = currentChainP1 * levelStats.maxChainMultiplier;
 
@@ -935,6 +1011,7 @@ public class GUIController : MonoBehaviour
             yield return null;
 
             elapsedTime += Time.deltaTime;
+            elapsedTimeTick += Time.deltaTime;
             factor = elapsedTime / scoreChainDuration;
         }
 
@@ -949,10 +1026,19 @@ public class GUIController : MonoBehaviour
 
         //Accuracy update
         elapsedTime = 0f;
+        elapsedTimeTick = 0f;
         factor = 0f;
+
+        scoreTicSoundFx.Play();
 
         while (elapsedTime < scoreAccuracyDuration)
         {
+            if (elapsedTimeTick >= scoreTickEverySeconds)
+            {
+                scoreTicSoundFx.Play();
+                elapsedTimeTick -= scoreTickEverySeconds;
+            }
+
             currentAccuracyP1 = (int)Mathf.Lerp(0, player1Stats.colorAccuracy, factor);
             percentScoreP1 = totalScoreP1 / 100 * currentAccuracyP1;
 
@@ -968,6 +1054,7 @@ public class GUIController : MonoBehaviour
             yield return null;
 
             elapsedTime += Time.deltaTime;
+            elapsedTimeTick += Time.deltaTime;
             factor = elapsedTime / scoreAccuracyDuration;
         }
 
@@ -982,6 +1069,7 @@ public class GUIController : MonoBehaviour
 
         //Time update
         elapsedTime = 0f;
+        elapsedTimeTick = 0f;
         factor = 0f;
 
         if (totalTime < levelStats.baseSeconds)
@@ -989,8 +1077,16 @@ public class GUIController : MonoBehaviour
         else if (totalTime > levelStats.baseSeconds)
             scoreMultiTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.RED);
 
+        scoreTicSoundFx.Play();
+
         while (elapsedTime < scoreTimeDuration)
         {
+            if (elapsedTimeTick >= scoreTickEverySeconds)
+            {
+                scoreTicSoundFx.Play();
+                elapsedTimeTick -= scoreTickEverySeconds;
+            }
+
             int seconds = (int)Mathf.Lerp(levelStats.baseSeconds, totalTime, factor);
 
             timeScoreP1 = percentScoreP1 + ((levelStats.baseSeconds - seconds) * levelStats.secondMultiplier);
@@ -1003,6 +1099,7 @@ public class GUIController : MonoBehaviour
             yield return null;
 
             elapsedTime += Time.deltaTime;
+            elapsedTimeTick += Time.deltaTime;
             factor = elapsedTime / scoreTimeDuration;
         }
 
@@ -1047,8 +1144,16 @@ public class GUIController : MonoBehaviour
         scoreMultiGradeImgP2.transform.localScale = new Vector3(showGradeInitialScale, showGradeInitialScale, 1f);
         scoreMultiGradeImgP2.sprite = gradeScoreImages[(int)player2Stats.finalGrade];
 
+        bool stampSoundPlayed = false;
+
         while (elapsedTime < showGradeImgDuration)
         {
+            if (!stampSoundPlayed && elapsedTime >= showGradeImgDuration * gradeStampSoundFxAtDurationRatio)
+            {
+                gradeStampSoundFx.Play();
+                stampSoundPlayed = true;
+            }
+
             float scale = Mathf.Lerp(showGradeInitialScale, 1, factor);
             scoreMultiGradeImgP1.transform.localScale = new Vector3(scale, scale, 1f);
             scoreMultiGradeImgP2.transform.localScale = new Vector3(scale, scale, 1f);
@@ -1075,22 +1180,6 @@ public class GUIController : MonoBehaviour
             //scoreGO.SetActive(false);
             //infoArea.SetActive(true);
             rsc.eventMng.TriggerEvent(EventManager.EventType.SCORE_CLOSED, EventInfo.emptyInfo);
-        }
-    }
-
-    private void FadeCurtain(EventInfo eventInfo)
-    {
-        FadeCurtainEventInfo info = (FadeCurtainEventInfo)eventInfo;
-
-        if(info.fadeIn)
-        {
-            fadeCurtain.StartFadingToClear((info.useDefaultColor ? fadeCurtain.defaultFadeColor : info.fadeColor),
-                                           (info.useDefaultTime ? fadeCurtain.defaultFadeSeconds : info.fadeTime));
-        }
-        else
-        {
-            fadeCurtain.StartFadingToColor((info.useDefaultColor ? fadeCurtain.defaultFadeColor : info.fadeColor),
-                                           (info.useDefaultTime ? fadeCurtain.defaultFadeSeconds : info.fadeTime));
         }
     }
 
