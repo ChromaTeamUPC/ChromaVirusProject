@@ -278,8 +278,34 @@ public class WormBlackboard : MonoBehaviour
     public PlayerController killerPlayer;
     [HideInInspector]
     public PlayerController playerInSight;
-
     #endregion
+
+    void OnDrawGizmos()
+    {
+        CalculateParabola(spawnEntry.transform.position, spawnExit.transform.position);
+        Vector3 highestPoint = GetJumpPositionGivenX(0);
+        Gizmos.color = new Color(1f, 0.5f, 0f);
+        Gizmos.DrawCube(highestPoint, Vector3.one);
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawCube(spawnEntry.transform.position, Vector3.one);
+
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawCube(spawnExit.transform.position, Vector3.one);
+
+        Gizmos.color = Color.grey;
+        float half = GetJumpHalfDistance();
+
+        for (int i = 1; i < 10; ++i)
+        {
+            Vector3 point = GetJumpPositionGivenX(half / 10 * i);
+            Gizmos.DrawCube(point, Vector3.one / 2);
+
+            point = GetJumpPositionGivenX(-half / 10 * i);
+            Gizmos.DrawCube(point, Vector3.one / 2);
+        }
+    }
+
     void Awake () 
 	{
         navMeshLayersDistance = new Vector3(0, WormBlackboard.NAVMESH_LAYER_HEIGHT, 0);
