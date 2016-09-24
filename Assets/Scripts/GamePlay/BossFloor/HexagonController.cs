@@ -126,6 +126,7 @@ public class HexagonController : MonoBehaviour
 
     [Header("Materials")]
     public Material floorStaticMat;
+    public Material floorNonStaticMat;
     public Material planeTransparentMat;
     public Material planeMainWarningMat;
     public Material planeSecondaryWarningMat;
@@ -178,6 +179,8 @@ public class HexagonController : MonoBehaviour
     {
         if (isStatic)
             columnRend.sharedMaterial = floorStaticMat;
+        else
+            columnRend.sharedMaterial = floorNonStaticMat;
     }
 
     void Awake()
