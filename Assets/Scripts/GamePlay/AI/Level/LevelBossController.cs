@@ -53,6 +53,9 @@ public class LevelBossController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.WORM_DYING, WormDying);
         rsc.eventMng.StartListening(EventManager.EventType.WORM_DIED, WormDied);
 
+        rsc.colorMng.Activate();
+        floor.Activate();
+
         rsc.camerasMng.SetEntryCameraLevelAnimation(-1);
 
         FadeCurtainEventInfo.eventInfo.fadeIn = true;
@@ -98,8 +101,8 @@ public class LevelBossController : MonoBehaviour
             rsc.gameInfo.player2Controller.GoToIdle();
         }
 
-        rsc.colorMng.Activate();
-        floor.Activate();
+        //rsc.colorMng.Activate();
+        //floor.Activate();
         rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_STARTED, EventInfo.emptyInfo);
     }
 
