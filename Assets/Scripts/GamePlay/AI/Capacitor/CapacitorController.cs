@@ -23,6 +23,7 @@ public class CapacitorController : MonoBehaviour {
     public int chargePerShot = 10;
     public bool manualInstantCharge = false;
     public float manualChargePerSecond = 100;
+    public float timeToStopAura = 3f;
     public float timeToExplode = 5f;
     public int damage = 50;
     public float forceMultiplier = 15f;
@@ -53,7 +54,6 @@ public class CapacitorController : MonoBehaviour {
     public ChromaColor currentColor;
     private float currentCharge;
     private float elapsedTime;
-    private float timeToExplodeMinus2;
 
     private HashSet<EnemyBaseAIBehaviour> enemiesInRange;
 
@@ -77,8 +77,6 @@ public class CapacitorController : MonoBehaviour {
 
         charge33 = maxCharge / 100 * 33;
         charge66 = maxCharge / 100 * 66;
-
-        timeToExplodeMinus2 = timeToExplode -2;
 
         enemiesInRange = new HashSet<EnemyBaseAIBehaviour>();
         blinkController = GetComponent<BlinkController>();
@@ -137,7 +135,7 @@ public class CapacitorController : MonoBehaviour {
                     //Debug.Log("Moving to Exploding state");
                     StartCoroutine(Exploding());
                 }
-                else if (elapsedTime >= timeToExplodeMinus2)
+                else if (elapsedTime >= timeToStopAura)
                 {
                     if (!attractingStopped)
                     {
