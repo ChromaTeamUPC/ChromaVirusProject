@@ -138,6 +138,11 @@ public class HexagonController : MonoBehaviour
     public ParticleSystem continousPurple;
     public ParticleSystem infectionPurple;
 
+    [Header("Sound Fx")]
+    public AudioSource aboveImpactSoundFx;
+    public AudioSource belowImpactSoundFx;
+    public AudioSource inOutSoundFx;
+
     [HideInInspector]
     public GameObject geometryOffset;
     [HideInInspector]

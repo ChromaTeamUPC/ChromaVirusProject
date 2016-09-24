@@ -20,6 +20,8 @@ public class HexagonBelowAttackState : HexagonBaseState
         hex.columnBlinkController.InvalidateMaterials();
         hex.columnBlinkController.BlinkWhiteNoStop(hex.belowAttackBlinkInterval, hex.belowAttackBlinkInterval);
 
+        hex.belowImpactSoundFx.Play();
+
         if (!hex.continousPurple.isPlaying)
             hex.continousPurple.Play();
 

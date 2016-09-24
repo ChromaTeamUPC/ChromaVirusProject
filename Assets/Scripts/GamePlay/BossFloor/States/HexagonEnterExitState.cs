@@ -14,6 +14,8 @@ public class HexagonEnterExitState : HexagonBaseState
         hex.columnBlinkController.InvalidateMaterials();
         hex.columnBlinkController.BlinkWhiteNoStop(hex.enterExitBlinkInterval, hex.enterExitBlinkInterval);
 
+        hex.inOutSoundFx.Play();
+
         if (!hex.continousPurple.isPlaying)
             hex.continousPurple.Play();
 
