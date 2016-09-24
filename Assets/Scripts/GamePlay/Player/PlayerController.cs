@@ -115,6 +115,8 @@ public class PlayerController : MonoBehaviour
     private AudioSource dieSoundFx;
     [SerializeField]
     private AudioClip dieExplosionSoundFx;
+    [SerializeField]
+    private AudioSource dashSoundFx;
 
     //Misc
     [Header("Miscelaneous Settings")]
@@ -681,6 +683,7 @@ public class PlayerController : MonoBehaviour
     //Particle Systems methods
     public void SpawnDashParticles()
     {
+        dashSoundFx.Play();
         dashPSs[(int)bb.currentColor].Play();
     }
 
