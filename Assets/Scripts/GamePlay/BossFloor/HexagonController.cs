@@ -174,6 +174,12 @@ public class HexagonController : MonoBehaviour
 
     private bool adjacentCellsSetupTop; //true = top, bottom left, bottom right, false = bottom, top left, top right
 
+    void OnDrawGizmos()
+    {
+        if (isStatic)
+            columnRend.sharedMaterial = floorStaticMat;
+    }
+
     void Awake()
     {
         if(hexagonLayer == 0)
