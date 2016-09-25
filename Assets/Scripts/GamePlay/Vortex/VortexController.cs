@@ -35,6 +35,8 @@ public class VortexController : MonoBehaviour
     private Animator anim;
     private AudioSource audioSource;
 
+    public bool Active { get { return active; } }
+
     void Awake()
     {
         blinkController = GetComponent<BlinkController>();

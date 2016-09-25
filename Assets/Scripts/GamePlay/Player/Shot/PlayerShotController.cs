@@ -112,9 +112,14 @@ public class PlayerShotController : MonoBehaviour {
         {
             VortexController vortex = collision.collider.GetComponent<VortexController>();
             if (vortex != null)
+            {
                 vortex.ImpactedByShot(color, damage);
+                if(vortex.Active)
+                    impactParticle.GetComponent<AudioSource>().clip = goodImpact;
+                else
+                    impactParticle.GetComponent<AudioSource>().clip = wrongImpact;
+            }
 
-            impactParticle.GetComponent<AudioSource>().clip = goodImpact;
         }
         else if (collision.collider.tag == "Barrel")
         {
