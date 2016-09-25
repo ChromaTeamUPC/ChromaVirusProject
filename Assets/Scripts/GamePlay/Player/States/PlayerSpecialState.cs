@@ -112,6 +112,16 @@ public class PlayerSpecialState : PlayerBaseState {
             bb.worm.ImpactedBySpecial(damage, bb.player);
         }
 
+        foreach (VortexController vortex in bb.vortexInRange)
+        {
+            vortex.ImpactedBySpecial();
+        }
+
+        foreach (TurretAIBehaviour turret in bb.turretsInRange)
+        {
+            turret.ImpactedBySpecial();
+        }
+
         while (i < enemies.Count)
         {
             float currentDistance = bb.player.specialAttackAffectationRadius / elapsedTime;

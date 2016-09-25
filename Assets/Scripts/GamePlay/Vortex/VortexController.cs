@@ -94,6 +94,21 @@ public class VortexController : MonoBehaviour
         }
     }
 
+    public void ImpactedBySpecial()
+    {
+        if (!active) return;
+
+        blinkController.BlinkWhiteOnce();
+
+        currentHealth -= maxHealth / 2;
+
+        if (currentHealth <= 0)
+        {
+            //Play destroy animation, then destroy object
+            Deactivate();
+        }
+    }
+
     // Update is called once per frame
     void Update ()
     {

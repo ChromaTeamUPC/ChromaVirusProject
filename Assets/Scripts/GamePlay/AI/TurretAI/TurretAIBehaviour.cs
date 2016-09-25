@@ -249,6 +249,25 @@ public class TurretAIBehaviour : MonoBehaviour
         }
     }
 
+    public void ImpactedBySpecial()
+    {
+        if (state == State.KNOCKED_OUT) return;
+
+        currentHealth = 0;
+        blinkController.BlinkWhiteOnce();
+
+        if (currentHealth <= 0)
+        {
+            anim.SetInteger("BrokenAnim", UnityEngine.Random.Range(0, 2));
+            anim.SetBool("Broken", true);
+            knockedOutFx.Play();
+            stunnedSoundFx.Play();
+            elapsedTime = 0f;
+            rsc.rumbleMng.Rumble(0, 0.35f, 0f, 0.75f);
+            state = State.KNOCKED_OUT;
+        }
+    }
+
     private void ColorChanged(EventInfo eventInfo)
     {
         ColorEventInfo info = (ColorEventInfo)eventInfo;

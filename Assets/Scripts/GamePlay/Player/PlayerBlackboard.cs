@@ -98,6 +98,8 @@ public class PlayerBlackboard
     //Special attack variables
     public List<EnemyBaseAIBehaviour> enemiesInRange = new List<EnemyBaseAIBehaviour>();
     public List<EnemyShotControllerBase> shotsInRange = new List<EnemyShotControllerBase>();
+    public List<VortexController> vortexInRange = new List<VortexController>();
+    public List<TurretAIBehaviour> turretsInRange = new List<TurretAIBehaviour>();
     public WormAIBehaviour worm;
     public GameObject specialAttackDetector;
     public bool specialAttackTutorialTriggered;
@@ -222,6 +224,8 @@ public class PlayerBlackboard
 
         enemiesInRange.Clear();
         shotsInRange.Clear();
+        vortexInRange.Clear();
+        turretsInRange.Clear();
         worm = null;
         specialAttackDetector.SetActive(false);
 

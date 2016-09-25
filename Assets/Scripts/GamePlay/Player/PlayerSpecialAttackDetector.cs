@@ -14,6 +14,8 @@ public class PlayerSpecialAttackDetector : MonoBehaviour
             bb.worm = null;
             bb.enemiesInRange.Clear();
             bb.shotsInRange.Clear();
+            bb.vortexInRange.Clear();
+            bb.turretsInRange.Clear();
         }
     }
 
@@ -24,6 +26,8 @@ public class PlayerSpecialAttackDetector : MonoBehaviour
             bb.worm = null;
             bb.enemiesInRange.Clear();
             bb.shotsInRange.Clear();
+            bb.vortexInRange.Clear();
+            bb.turretsInRange.Clear();
         }
     }
 
@@ -53,7 +57,21 @@ public class PlayerSpecialAttackDetector : MonoBehaviour
 
             if (worm != null)
                 bb.worm = worm;
-        }    
+        }
+        else if (other.tag == "Vortex")
+        {
+            VortexController vortex = other.GetComponent<VortexController>();
+
+            if (vortex != null)
+                bb.vortexInRange.Add(vortex);
+        }
+        else if (other.tag == "Turret")
+        {
+            TurretAIBehaviour turret = other.GetComponent<TurretAIBehaviour>();
+
+            if (turret != null)
+                bb.turretsInRange.Add(turret);
+        }
     }
 
     void OnTriggerExit(Collider other)
@@ -82,6 +100,20 @@ public class PlayerSpecialAttackDetector : MonoBehaviour
 
             if (worm != null)
                 bb.worm = null;
+        }
+        else if (other.tag == "Vortex")
+        {
+            VortexController vortex = other.GetComponent<VortexController>();
+
+            if (vortex != null)
+                bb.vortexInRange.Remove(vortex);
+        }
+        else if (other.tag == "Turret")
+        {
+            TurretAIBehaviour turret = other.GetComponent<TurretAIBehaviour>();
+
+            if (turret != null)
+                bb.turretsInRange.Remove(turret);
         }
     }
 }
