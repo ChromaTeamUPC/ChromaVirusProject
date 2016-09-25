@@ -17,6 +17,7 @@ public class DebugManager : MonoBehaviour {
     private bool calculateTriangles = false;
 
     public bool godMode = false;
+    public bool alwaysKillOk = false;
 
     private float elapsedTime;
     private int frameCount;
@@ -43,7 +44,12 @@ public class DebugManager : MonoBehaviour {
             godMode = !godMode;
         }
 
-        if(Input.GetKeyDown(keys.doubleSpeed))
+        if (Input.GetKeyDown(keys.toggleAlwaysKillOk))
+        {
+            alwaysKillOk = !alwaysKillOk;
+        }
+
+        if (Input.GetKeyDown(keys.doubleSpeed))
         {
             Time.timeScale *= 2;
         }

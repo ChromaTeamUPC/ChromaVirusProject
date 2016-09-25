@@ -162,7 +162,7 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
             }
             //Else future behaviour like duplicate or increase health*/
 
-            if (shotColor != color)
+            if (shotColor != color && !rsc.debugMng.alwaysKillOk)
             {
                 mosquitoBlackboard.currentHealthWrongColor -= damage * wrongColorDamageModifier;
             }
@@ -173,13 +173,13 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
 
             if (!mosquitoBlackboard.HaveHealthRemaining())
             {
-                if (shotColor != color)
+                if (shotColor != color && !rsc.debugMng.alwaysKillOk)
                 {
                     player.ColorMismatch();
                 }
 
                 mosquitoBlackboard.lastShotDirection = direction;
-                mosquitoBlackboard.lastShotSameColor = (shotColor == color);
+                mosquitoBlackboard.lastShotSameColor = (shotColor == color || rsc.debugMng.alwaysKillOk);
                 mosquitoBlackboard.lastShotPlayer = player;
                 mosquitoBlackboard.specialKill = false;
 

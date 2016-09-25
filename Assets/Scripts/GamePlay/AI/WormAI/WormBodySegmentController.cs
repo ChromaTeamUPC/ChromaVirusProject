@@ -221,7 +221,7 @@ public class WormBodySegmentController : MonoBehaviour
 
         blinkController.BlinkWhiteOnce();
 
-        if (shotColor != color)
+        if (shotColor != color && !rsc.debugMng.alwaysKillOk)
         {
             currentDamageWrongColor += damage * bb.HealthSettingsPhase.bodyWrongColorDamageModifier;
 

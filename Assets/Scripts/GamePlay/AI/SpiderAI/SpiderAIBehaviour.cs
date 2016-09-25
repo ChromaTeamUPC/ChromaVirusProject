@@ -111,7 +111,7 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
             }
             //Else future behaviour like duplicate or increase health*/
 
-            if (shotColor != color)
+            if (shotColor != color && !rsc.debugMng.alwaysKillOk)
             {
                 spiderBlackboard.currentHealthWrongColor -= damage * wrongColorDamageModifier;
             }
@@ -122,13 +122,13 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
 
             if (!spiderBlackboard.HaveHealthRemaining())
             {
-                if (shotColor != color)
+                if (shotColor != color && !rsc.debugMng.alwaysKillOk)
                 {
                     player.ColorMismatch();
                 }
 
                 spiderBlackboard.lastShotDirection = direction;
-                spiderBlackboard.lastShotSameColor = (shotColor == color);
+                spiderBlackboard.lastShotSameColor = (shotColor == color || rsc.debugMng.alwaysKillOk);
                 spiderBlackboard.lastShotPlayer = player;
                 spiderBlackboard.specialKill = false;
                 return spiderBlackboard.dyingState;

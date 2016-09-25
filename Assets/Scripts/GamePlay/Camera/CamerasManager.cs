@@ -13,9 +13,6 @@ public class CamerasManager : MonoBehaviour {
     public GameObject mainCameraObj;
     public GameObject entryCameraObj;
     public GameObject godCameraObj;
-    public GameObject staticCamera1Obj;
-    public GameObject staticCamera2Obj;
-    public GameObject staticCamera3Obj;
 
     private DebugKeys keys;
 
@@ -47,12 +44,6 @@ public class CamerasManager : MonoBehaviour {
             ChangeCamera(0);
         else if (Input.GetKeyDown(keys.godCameraActivationKey))
             ChangeCamera(2);
-        else if (Input.GetKeyDown(keys.staticCamera1ActivationKey))
-            ChangeCamera(3);
-        else if (Input.GetKeyDown(keys.staticCamera2ActivationKey))
-            ChangeCamera(4);
-        else if (Input.GetKeyDown(keys.staticCamera3ActivationKey))
-            ChangeCamera(5);
         else if (Input.GetKeyDown(keys.mainCameraFollowPlayersKey))
             ToggleCameraFollowPlayers();
     }
@@ -73,9 +64,6 @@ public class CamerasManager : MonoBehaviour {
         mainCameraObj.SetActive(false);
         if (entryCameraObj != null) entryCameraObj.SetActive(false);
         if (godCameraObj != null) godCameraObj.SetActive(false);
-        if (staticCamera1Obj != null) staticCamera1Obj.SetActive(false);
-        if (staticCamera2Obj != null) staticCamera2Obj.SetActive(false);
-        if (staticCamera3Obj != null) staticCamera3Obj.SetActive(false);
 
         currentCameraObj = mainCameraObj;
         //Find selected camera
@@ -86,15 +74,6 @@ public class CamerasManager : MonoBehaviour {
                 break;
             case 2:
                 if (godCameraObj != null) currentCameraObj = godCameraObj;
-                break;
-            case 3:
-                if (staticCamera1Obj != null) currentCameraObj = staticCamera1Obj;
-                break;
-            case 4:
-                if (staticCamera2Obj != null) currentCameraObj = staticCamera2Obj;
-                break;
-            case 5:
-                if (staticCamera3Obj != null) currentCameraObj = staticCamera3Obj;
                 break;
         }
 
