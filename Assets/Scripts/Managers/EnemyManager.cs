@@ -206,10 +206,7 @@ public class EnemyManager : MonoBehaviour
 
     private void ResetValues(EventInfo eventInfo)
     {
-        currentPlan = null;
-        currentPlanId = -1;
-        executingWaves = 0;
-        sequentialWavesIndex = 0;
+        StopCurrentPlan();
 
         bb.ResetValues();
     }
@@ -372,8 +369,10 @@ public class EnemyManager : MonoBehaviour
         {
             StopAllCoroutines();
             currentPlan = null;
-            currentPlanId = -1;
         }
+        currentPlanId = -1;
+        executingWaves = 0;
+        sequentialWavesIndex = 0;
     }
 
     private IEnumerator CastWave(List<WaveAction> actions)
