@@ -10,7 +10,7 @@ public class ElevatorController : MonoBehaviour
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();
-        audioSource = GetComponent<AudioSource>();
+        audioSource = GetComponentInChildren<AudioSource>();
     }
 
     void Start()
@@ -27,5 +27,6 @@ public class ElevatorController : MonoBehaviour
     public void Deactivate()
     {
         colliders.SetActive(false);
+        audioSource.Stop();
     }
 }

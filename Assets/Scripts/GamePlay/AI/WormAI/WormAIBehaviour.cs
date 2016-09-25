@@ -26,6 +26,10 @@ public class WormAIBehaviour : MonoBehaviour
     public AudioSource attackWarningSoundFx;
     public AudioSource jumpAttackSoundFx;
     public AudioSource meteorThrowSoundFx;
+    public AudioSource explosion1SoundFx;
+    public AudioSource explosion2SoundFx;
+    public AudioSource recoverSoundFx;
+    public AudioClip finalExplosionSoundFx;
 
     [Header("Misc Settings")]
     public GameObject headModel;
@@ -367,7 +371,7 @@ public class WormAIBehaviour : MonoBehaviour
         if (explosion != null)
         {
             explosion.transform.position = transform.position;
-            explosion.PlayAll();
+            explosion.PlayAll(finalExplosionSoundFx);
         }
 
         voxelization.SpawnFakeVoxels();

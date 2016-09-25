@@ -33,6 +33,7 @@ public class WormAIHeadDestroyedState : WormAIBaseState
         destinyInRange = false;
         elapsedTime = 0f;
 
+        head.explosion2SoundFx.Play();
         head.phaseExplosion.Play();
         head.animator.SetBool("Hit", true);
 

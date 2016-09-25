@@ -108,15 +108,17 @@ public class PlayerController : MonoBehaviour
     //Sound Fx
     [Header("Sound FX")]
     [SerializeField]
+    private AudioSource energyFullSoundFx;
+    [SerializeField]
     private AudioSource specialChargeSoundFx;
+    [SerializeField]
+    private AudioSource dashSoundFx;
     [SerializeField]
     private AudioSource beamUpSoundFx;
     [SerializeField]
     private AudioSource dieSoundFx;
     [SerializeField]
     private AudioClip dieExplosionSoundFx;
-    [SerializeField]
-    private AudioSource dashSoundFx;
 
     //Misc
     [Header("Miscelaneous Settings")]
@@ -329,7 +331,10 @@ public class PlayerController : MonoBehaviour
 
         bb.currentEnergy += energy;
         if (bb.currentEnergy >= maxEnergy)
+        {
             bb.currentEnergy = maxEnergy;
+            energyFullSoundFx.Play();
+        }
 
         CheckEnergyFullPS();
     }

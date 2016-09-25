@@ -4,6 +4,7 @@ using System.Collections;
 public class WormTailController : MonoBehaviour 
 {
     public float tailHeight;
+    public AudioClip finalExplosionSoundFx;
     private VoxelizationClient voxelization;
     private Renderer rend;
 
@@ -27,7 +28,7 @@ public class WormTailController : MonoBehaviour
         if (explosion != null)
         {
             explosion.transform.position = transform.position;
-            explosion.PlayAll();
+            explosion.PlayAll(finalExplosionSoundFx);
         }
 
         voxelization.SpawnVoxels();

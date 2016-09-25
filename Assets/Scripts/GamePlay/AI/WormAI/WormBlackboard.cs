@@ -274,9 +274,6 @@ public class WormBlackboard : MonoBehaviour
     public MeteorAttackSettings[] meteorAttackSettings = new MeteorAttackSettings[4];
     public MeteorAttackSettings MeteorAttackSettingsPhase { get { return meteorAttackSettings[wormCurrentPhase]; } }
 
-    [Header("Sound Fx")]
-    public AudioClip aboveAttackWarningSound;
-
     [Header("Misc variables")]
     public GameObject spawnEntry;
     public GameObject spawnExit;

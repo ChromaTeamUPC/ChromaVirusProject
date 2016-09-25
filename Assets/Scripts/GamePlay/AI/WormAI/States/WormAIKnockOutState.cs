@@ -34,6 +34,7 @@ public class WormAIKnockOutState : WormAIBaseState
         destinyInRange = false;
         elapsedTime = 0f;
 
+        head.explosion1SoundFx.Play();
         head.SpawnEnergyVoxels();
         head.HeadKnockOut();
 
@@ -68,6 +69,7 @@ public class WormAIKnockOutState : WormAIBaseState
                 if (elapsedTime >= bb.HealthSettingsPhase.knockOutTime)
                 {
                     //Restore
+                    head.recoverSoundFx.Play();
                     head.ResetPhase();
 
                     destiny = GetExitHexagon();

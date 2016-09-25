@@ -21,6 +21,7 @@ public class EnergyVoxelController : MonoBehaviour {
 
     public ParticleSystem lifeTimeParticles;
     public ParticleSystem pickUpParticles;
+    public AudioSource pickUpSoundFx;
 
     private  State state;
 
@@ -115,6 +116,7 @@ public class EnergyVoxelController : MonoBehaviour {
                         elapsedTime = 0f;
                         lifeTimeParticles.Stop();
                         pickUpParticles.Play();
+                        pickUpSoundFx.Play();
                         state = State.WAIT_PICK_UP_FX;
                     }
                 }

@@ -27,6 +27,11 @@ public class WormBodySegmentController : MonoBehaviour
     public GameObject[] bodyDeactivatePrefabs;
     public GameObject bodyDestructionPrefab;
 
+    [Header("Sound Fx")]
+    public AudioSource explosionOkSoundFx;
+    public AudioSource explosionWrongSoundFx;
+    public AudioClip finalExplosionSoundFx;
+
     private ParticleSystem[] bodyDeactivate;
     private ParticleSystem bodyDestruction;
 
@@ -203,7 +208,7 @@ public class WormBodySegmentController : MonoBehaviour
         if (explosion != null)
         {
             explosion.transform.position = transform.position;
-            explosion.PlayAll();
+            explosion.PlayAll(finalExplosionSoundFx);
         }
 
         //Destroy(gameObject);
@@ -224,6 +229,7 @@ public class WormBodySegmentController : MonoBehaviour
             {
                 bodyState = BodySubState.DEACTIVATED; //not really deactivated but flagged to allow notify properly when colors reset
 
+                explosionWrongSoundFx.Play();
                 rsc.rumbleMng.Rumble(0, 0.25f, 0f, 0.5f);
 
                 EnemyDiedEventInfo.eventInfo.color = color;
@@ -249,6 +255,7 @@ public class WormBodySegmentController : MonoBehaviour
                 bodyDeactivate[(int)color].Play();
                 bodyState = BodySubState.DEACTIVATED;
 
+                explosionOkSoundFx.Play();
                 rsc.rumbleMng.Rumble(0, 0.25f, 0f, 0.5f);
 
                 EnemyDiedEventInfo.eventInfo.color = color;

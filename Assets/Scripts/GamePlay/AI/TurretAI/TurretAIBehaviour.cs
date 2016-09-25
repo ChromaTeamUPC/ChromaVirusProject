@@ -41,6 +41,8 @@ public class TurretAIBehaviour : MonoBehaviour
     private BlinkController blinkController;
     public Animator anim;
 
+    public AudioSource stunnedSoundFx;
+
     private PlayerController player1;
     private PlayerController player2;
 
@@ -240,6 +242,7 @@ public class TurretAIBehaviour : MonoBehaviour
             anim.SetInteger("BrokenAnim", UnityEngine.Random.Range(0, 2));
             anim.SetBool("Broken", true);
             knockedOutFx.Play();
+            stunnedSoundFx.Play();
             elapsedTime = 0f;
             rsc.rumbleMng.Rumble(0, 0.35f, 0f, 0.75f);
             state = State.KNOCKED_OUT;
