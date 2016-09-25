@@ -268,6 +268,14 @@ public class HexagonController : MonoBehaviour
             sphereCollider.enabled = false;
     }
 
+    public bool HasActiveTurret()
+    {
+        if (turret != null)
+            return turret.Active;
+
+        return false;
+    }
+
     public void SetAuxTimer(float time)
     {
         auxTimer = time;

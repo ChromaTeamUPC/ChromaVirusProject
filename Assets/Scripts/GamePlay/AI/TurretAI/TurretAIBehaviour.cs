@@ -59,6 +59,8 @@ public class TurretAIBehaviour : MonoBehaviour
     private ChromaColor currentColor;
     private float currentHealth;
 
+    public bool Active { get { return state == State.ENABLED; } }
+
     // Use this for initialization
     void Awake () 
 	{

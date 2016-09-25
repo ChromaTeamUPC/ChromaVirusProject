@@ -119,13 +119,14 @@ public class PlayerShotController : MonoBehaviour {
                 else
                     impactParticle.GetComponent<AudioSource>().clip = wrongImpact;
             }
-
         }
         else if (collision.collider.tag == "Barrel")
         {
             CapacitorImpacted barrel = collision.collider.GetComponent<CapacitorImpacted>();
             if (barrel != null)
                 barrel.controller.ImpactedByShot(color, player);
+
+            impactParticle.GetComponent<AudioSource>().clip = goodImpact;
         }
         else if (collision.collider.tag == "WormBody")
         {
@@ -150,7 +151,13 @@ public class PlayerShotController : MonoBehaviour {
         {
             HexagonController hexagon = collision.collider.GetComponentInParent<HexagonController>();
             if (hexagon != null)
+            {
                 hexagon.ImpactedByShot();
+                if(hexagon.HasActiveTurret())
+                    impactParticle.GetComponent<AudioSource>().clip = goodImpact;
+                else
+                    impactParticle.GetComponent<AudioSource>().clip = wrongImpact;
+            }
         }
 
         if(collision.contacts.Length > 0)
