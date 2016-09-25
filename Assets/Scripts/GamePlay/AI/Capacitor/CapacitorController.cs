@@ -113,7 +113,8 @@ public class CapacitorController : MonoBehaviour {
                     detectingPlayerCollider.SetActive(false);
                     state = State.CHARGED;
                     attractingDome.Play();
-                    activationSoundFx.Play();                 
+                    activationSoundFx.Play();
+                    warningSoundFx.Play();
                     blinkController.BlinkWhiteIncremental(timeToExplode, 0.03f, 0.5f);
                     elapsedTime = 0f;
                     attractingStopped = false;
@@ -139,8 +140,7 @@ public class CapacitorController : MonoBehaviour {
                 {
                     if (!attractingStopped)
                     {
-                        attractingDome.Stop();
-                        warningSoundFx.Play();
+                        attractingDome.Stop();                     
                         attractingStopped = true;
                     }
                 }
