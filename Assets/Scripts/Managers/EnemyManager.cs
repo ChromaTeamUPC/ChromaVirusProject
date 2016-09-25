@@ -295,7 +295,7 @@ public class EnemyManager : MonoBehaviour
 
     public bool AreEnemies()
     {
-        return bb.activeEnemies > 0 || bb.activeTurrets > 0;
+        return bb.activeEnemies > 0 || bb.activeVortex > 0;
     }
 
     private void DeviceActivated(EventInfo eventInfo)
