@@ -20,13 +20,13 @@ public class WormAIBehaviour : MonoBehaviour
     [Header("Fx")]
     public ParticleSystem phaseExplosion;
     public ParticleSystem angryEyes;
+    public ParticleSystem fireSpray;
     public GameObject knockOutFx;
 
     [Header("Sound Fx")]
     public AudioSource inOutSoundFx;
     public AudioSource attackWarningSoundFx;
     public AudioSource jumpAttackSoundFx;
-    public AudioSource meteorThrowSoundFx;
     public AudioSource explosion1SoundFx;
     public AudioSource explosion2SoundFx;
     public AudioSource recoverSoundFx;
@@ -34,6 +34,7 @@ public class WormAIBehaviour : MonoBehaviour
 
     [Header("Misc Settings")]
     public GameObject headModel;
+    public Transform meteorSpawnPoint;
     public Transform[] energyVoxelsSpawnPoints;
 
     private HeadSubState headState;

@@ -46,6 +46,8 @@ public class WormBodySegmentController : MonoBehaviour
 
     private bool overground;
 
+    private bool invulnerable;
+
     void Awake()
     {
         blinkController = GetComponent<BlinkController>();
@@ -73,6 +75,7 @@ public class WormBodySegmentController : MonoBehaviour
         bodyDestruction = temp.GetComponent<ParticleSystem>();
 
         overground = false;
+        invulnerable = false;
     }
 
     void Start()
@@ -113,6 +116,20 @@ public class WormBodySegmentController : MonoBehaviour
     public bool IsDestroyed()
     {
         return bodyState == BodySubState.DESTROYED;
+    }
+
+    public void SetInvulnerable()
+    {       
+        invulnerable = true;
+        if (bodyState == BodySubState.NORMAL)
+            SetMaterial(rsc.coloredObjectsMng.GetWormBodyDimMaterial(color));
+    }
+
+    public void SetVulnerable()
+    {
+        invulnerable = false;
+        if (bodyState == BodySubState.NORMAL)
+            SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(color));
     }
 
     public void ResetColor(ChromaColor color)
@@ -176,13 +193,20 @@ public class WormBodySegmentController : MonoBehaviour
 
         while(elapsedTime < duration)
         {
-            SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(ChromaColorInfo.Random));
+            if (invulnerable)
+                SetMaterial(rsc.coloredObjectsMng.GetWormBodyDimMaterial(ChromaColorInfo.Random));
+            else
+                SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(ChromaColorInfo.Random));
 
             yield return new WaitForSeconds(bb.bodyColorsCarrouselChangeInterval);
             elapsedTime += bb.bodyColorsCarrouselChangeInterval;
         }
 
-        SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(color));
+        if (invulnerable)
+            SetMaterial(rsc.coloredObjectsMng.GetWormBodyDimMaterial(color));
+        else
+            SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(color));
+
         bodyState = BodySubState.NORMAL;
     }
 
@@ -231,7 +255,7 @@ public class WormBodySegmentController : MonoBehaviour
 
     public void ImpactedByShot(ChromaColor shotColor, float damage, PlayerController player)
     {
-        if (bodyState != BodySubState.NORMAL) return;
+        if (bodyState != BodySubState.NORMAL || invulnerable) return;
 
         blinkController.BlinkWhiteOnce();
 

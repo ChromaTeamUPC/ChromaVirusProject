@@ -413,6 +413,22 @@ public class WormBlackboard : MonoBehaviour
         }
     }
 
+    public void SetBodyPartsVulnerable()
+    {
+        for (int i = 0; i < bodySegmentControllers.Length; ++i)
+        {
+            bodySegmentControllers[i].SetVulnerable();
+        }
+    }
+
+    public void SetBodyPartsInvulnerable()
+    {
+        for (int i = 0; i < bodySegmentControllers.Length; ++i)
+        {
+            bodySegmentControllers[i].SetInvulnerable();
+        }
+    }
+
     public void ShuffleBodyParts()
     {
         //Debug.Log("Shuffle body parts");

@@ -35,6 +35,7 @@ public class MeteorController : MonoBehaviour
 
     public ParticleSystem fireTrail;
     public GameObject explosionFX;
+    public GameObject meteorThrowFx;
 
     public AudioSource fallingSoundFx;
 
@@ -52,6 +53,7 @@ public class MeteorController : MonoBehaviour
             case SubState.GOING_UP:
                 if(elapsedTime >= upDuration)
                 {
+                    meteorThrowFx.SetActive(false);
                     rsc.poolMng.meteorPool.AddObject(this);
                 }
                 else
@@ -86,6 +88,7 @@ public class MeteorController : MonoBehaviour
         mainModel.SetActive(true);
         destructionModel.SetActive(false);
         explosionFX.SetActive(false);
+        meteorThrowFx.SetActive(false);
         fireTrail.Play();
         //fallingSoundFx.Play();
 
@@ -108,6 +111,7 @@ public class MeteorController : MonoBehaviour
         rotateModel.active = false;
         fireTrail.Stop();
         fallingSoundFx.Stop();
+        meteorThrowFx.SetActive(true);
     }
 
     public void Explode()

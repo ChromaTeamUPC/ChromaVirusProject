@@ -46,7 +46,9 @@ public class WormAIMeteorAttackState : WormAIBaseState
 
         head.agent.enabled = false;
         destinyInRange = false;
-        elapsedTime = 0f;    
+        elapsedTime = 0f;
+
+        bb.SetBodyPartsInvulnerable();    
 
         timeBetweenShots = bb.MeteorAttackSettingsPhase.timeShooting / (bb.MeteorAttackSettingsPhase.numberOfThrownMeteors -1);
         totalShots = 0;
@@ -73,6 +75,8 @@ public class WormAIMeteorAttackState : WormAIBaseState
     public override void OnStateExit()
     {
         base.OnStateExit();
+
+        bb.SetBodyPartsVulnerable();
 
         rsc.eventMng.StopListening(EventManager.EventType.METEOR_RAIN_ENDED, MeteorRainEnded);
     }
@@ -165,6 +169,9 @@ public class WormAIMeteorAttackState : WormAIBaseState
                 if (elapsedTime >= 1.5f)
                 {                  
                     elapsedTime = 0;
+                    //head.fireSpray.transform.position = head.headModel.transform.position + (Vector3.up * 0.5f);
+                    //head.fireSpray.transform.LookAt(head.fireSpray.transform.position + Vector3.up, head.transform.up);
+                    //head.fireSpray.Play();
                     subState = SubState.SHOOTING;
                 }
                 else
@@ -177,10 +184,8 @@ public class WormAIMeteorAttackState : WormAIBaseState
                     if(elapsedTime <= 0)
                     {
                         MeteorController meteor = rsc.poolMng.meteorPool.GetObject();
-                        meteor.transform.position = head.headModel.transform.position;                        
+                        meteor.transform.position = head.meteorSpawnPoint.position;               
                         meteor.GoUp(bb.MeteorAttackSettingsPhase.speedOfThrownMeteors);
-
-                        head.meteorThrowSoundFx.Play();
 
                         ++totalShots;
                         elapsedTime = timeBetweenShots;
@@ -204,6 +209,8 @@ public class WormAIMeteorAttackState : WormAIBaseState
                     float fakeNextX = currentX + Time.deltaTime * 2;
                     Vector3 nextPosition = bb.GetJumpPositionGivenX(fakeNextX);
                     initialRotation = Quaternion.LookRotation(nextPosition - startPosition, headTrf.up);
+
+                    head.fireSpray.Stop();
 
                     elapsedTime = 0;
                     if(underground)

@@ -22,6 +22,8 @@ public class WormAIHeadDestroyedState : WormAIBaseState
     private bool destinyInRange;
     private float speed;
 
+    private bool shouldTriggerMeteor;
+
     public WormAIHeadDestroyedState(WormBlackboard bb) : base(bb)
     { }
 
@@ -40,6 +42,8 @@ public class WormAIHeadDestroyedState : WormAIBaseState
         WormEventInfo.eventInfo.wormBb = bb;
         rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_PHASE_ENDED, WormEventInfo.eventInfo);
 
+        shouldTriggerMeteor = bb.attacksEnabled && bb.MeteorAttackSettingsPhase.active && bb.MeteorAttackSettingsPhase.triggerAfterHeadDestroyed;
+
         subState = SubState.WAITING_HEAD;
     }
 
@@ -51,27 +55,28 @@ public class WormAIHeadDestroyedState : WormAIBaseState
             case SubState.WAITING_HEAD:
                 if(elapsedTime >= bb.headDestroyedWaitTime)
                 {
-                    destiny = GetExitHexagon();
-                    bb.CalculateParabola(headTrf.position, destiny.transform.position);
-                    speed = (headTrf.position - destiny.transform.position).magnitude / bb.headDestroyedJumpDuration;
+                    if (!shouldTriggerMeteor)
+                    {
+                        destiny = GetExitHexagon();
+                        bb.CalculateParabola(headTrf.position, destiny.transform.position);
+                        speed = (headTrf.position - destiny.transform.position).magnitude / bb.headDestroyedJumpDuration;
 
-                    //Calculate start point and prior point
-                    currentX = bb.GetJumpXGivenY(0, false);
-                    Vector3 startPosition = bb.GetJumpPositionGivenY(0, false);
-                    headTrf.position = startPosition;
+                        //Calculate start point and prior point
+                        currentX = bb.GetJumpXGivenY(0, false);
+                        Vector3 startPosition = bb.GetJumpPositionGivenY(0, false);
+                        headTrf.position = startPosition;
 
-                    lastPosition = bb.GetJumpPositionGivenX(currentX);
+                        lastPosition = bb.GetJumpPositionGivenX(currentX);
 
-                    float fakeNextX = currentX + Time.deltaTime * 2;
-                    Vector3 nextPosition = bb.GetJumpPositionGivenX(fakeNextX);
-                    initialRotation = Quaternion.LookRotation(nextPosition - startPosition, headTrf.up);
+                        float fakeNextX = currentX + Time.deltaTime * 2;
+                        Vector3 nextPosition = bb.GetJumpPositionGivenX(fakeNextX);
+                        initialRotation = Quaternion.LookRotation(nextPosition - startPosition, headTrf.up);
+                    }
 
                     head.animator.SetBool("Hit", false);
 
                     bb.ConsolidateBodyParts();
-                    subState = SubState.WAITING_BODY;
-
-                    head.animator.SetBool("MouthOpen", true);
+                    subState = SubState.WAITING_BODY;                  
 
                     elapsedTime = 0f;
                 }
@@ -83,7 +88,8 @@ public class WormAIHeadDestroyedState : WormAIBaseState
 
             //Wait for body parts destruction
             case SubState.WAITING_BODY:
-                if(bb.wormCurrentPhase < bb.wormMaxPhases - 1)
+
+                if(bb.wormCurrentPhase < bb.wormMaxPhases - 1 && !shouldTriggerMeteor)
                     headTrf.rotation = Quaternion.RotateTowards(headTrf.rotation, initialRotation, bb.headDestroyedLookRotationSpeed * Time.deltaTime);
 
                 if (elapsedTime >= bb.headDestoryedBodyWaitTime)
@@ -92,9 +98,6 @@ public class WormAIHeadDestroyedState : WormAIBaseState
                         return head.dyingState;
                     else
                     {
-                        //Check it before changing phase
-                        bool shouldTriggerMeteor = bb.attacksEnabled && bb.MeteorAttackSettingsPhase.active && bb.MeteorAttackSettingsPhase.triggerAfterHeadDestroyed;
-
                         head.StartNewPhase();
                         head.SetMaterial(rsc.coloredObjectsMng.GetWormHeadMaterial(bb.headCurrentChargeLevel));
                         //rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_HEAD_ACTIVATED, EventInfo.emptyInfo);                     
@@ -106,6 +109,7 @@ public class WormAIHeadDestroyedState : WormAIBaseState
                         }
                         else
                         {
+                            head.animator.SetBool("MouthOpen", true);
                             subState = SubState.JUMPING;
                         }
                     }
