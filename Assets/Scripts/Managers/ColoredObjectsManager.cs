@@ -23,10 +23,13 @@ public class ColoredObjectsManager : MonoBehaviour
     private Material[] player1Mats = new Material[4];
 
     [SerializeField]
-    private Material[] player1ShieldMats = new Material[4];
+    private Material[] player2Mats = new Material[4];
 
     [SerializeField]
-    private Material[] player1TrailMats = new Material[4];
+    private Material[] playerShieldMats = new Material[4];
+
+    [SerializeField]
+    private Material[] playerTrailMats = new Material[4];
 
     //Voxel Materials
     [Header("Voxel Materials")]
@@ -198,14 +201,19 @@ public class ColoredObjectsManager : MonoBehaviour
         return GetMaterial(player1Mats, color);
     }
 
-    public Material GetPlayer1ShieldMaterial(ChromaColor color)
+    public Material GetPlayer2Material(ChromaColor color)
     {
-        return GetMaterial(player1ShieldMats, color);
+        return GetMaterial(player2Mats, color);
     }
 
-    public Material GetPlayer1TrailMaterial(ChromaColor color)
+    public Material GetPlayerShieldMaterial(ChromaColor color)
     {
-        return GetMaterial(player1TrailMats, color);
+        return GetMaterial(playerShieldMats, color);
+    }
+
+    public Material GetPlayerTrailMaterial(ChromaColor color)
+    {
+        return GetMaterial(playerTrailMats, color);
     }
 
     //Player Shot methods

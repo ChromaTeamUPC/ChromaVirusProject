@@ -242,30 +242,34 @@ public class PlayerController : MonoBehaviour
         Material bodyMat;
         Material shieldMat;
 
+        int colorMatIndex = 1; //Player 1 and 2 has material array arranged different
+
         switch (playerId)
         {
             case 1:
                 bodyMat = coloredObjMng.GetPlayer1Material(bb.currentColor);
-                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(bb.currentColor);
+                shieldMat = coloredObjMng.GetPlayerShieldMaterial(bb.currentColor);
+                colorMatIndex = 1;
                 break;
             case 2:
-                bodyMat = coloredObjMng.GetPlayer1Material(bb.currentColor); //TODO: Change to player2 material
-                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(bb.currentColor);
+                bodyMat = coloredObjMng.GetPlayer2Material(bb.currentColor);
+                shieldMat = coloredObjMng.GetPlayerShieldMaterial(bb.currentColor);
+                colorMatIndex = 2;
                 break;
             default:
                 bodyMat = coloredObjMng.GetPlayer1Material(bb.currentColor);
-                shieldMat = coloredObjMng.GetPlayer1ShieldMaterial(bb.currentColor);
+                shieldMat = coloredObjMng.GetPlayerShieldMaterial(bb.currentColor);
                 break;
         }
         Material[] mats = bodyRend.sharedMaterials;
-        mats[1] = bodyMat;
+        mats[colorMatIndex] = bodyMat;
         bodyRend.sharedMaterials = mats;
 
         shieldRend.sharedMaterial = shieldMat;
 
         bb.blinkController.InvalidateMaterials();
 
-        trail.sharedMaterial = coloredObjMng.GetPlayer1TrailMaterial(bb.currentColor);
+        trail.sharedMaterial = coloredObjMng.GetPlayerTrailMaterial(bb.currentColor);
 
         Color color = rsc.coloredObjectsMng.GetColor(bb.currentColor);
         Color alpha = color;
