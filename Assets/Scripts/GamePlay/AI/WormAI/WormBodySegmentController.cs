@@ -28,6 +28,7 @@ public class WormBodySegmentController : MonoBehaviour
     public GameObject bodyDestructionPrefab;
 
     [Header("Sound Fx")]
+    public AudioSource inOutSoundFx;
     public AudioSource explosionOkSoundFx;
     public AudioSource explosionWrongSoundFx;
     public AudioClip finalExplosionSoundFx;
@@ -42,6 +43,8 @@ public class WormBodySegmentController : MonoBehaviour
 
     private WormBlackboard bb;
     private WormAIBehaviour head; //Shortcut
+
+    private bool overground;
 
     void Awake()
     {
@@ -68,11 +71,22 @@ public class WormBodySegmentController : MonoBehaviour
         temp.transform.SetParent(fx);
         temp.transform.localPosition = Vector3.zero;
         bodyDestruction = temp.GetComponent<ParticleSystem>();
+
+        overground = false;
     }
 
     void Start()
     {
         SetMaterial(rsc.coloredObjectsMng.GetWormBodyMaterial(color));
+    }
+
+    void Update()
+    {
+        if ((transform.position.y > -1) != overground)
+        {
+            inOutSoundFx.Play();
+            overground = transform.position.y > -1;
+        }
     }
 
     public void SetBlackboard(WormBlackboard bb)

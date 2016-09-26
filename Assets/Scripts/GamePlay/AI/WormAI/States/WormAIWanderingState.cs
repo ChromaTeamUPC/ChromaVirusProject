@@ -51,6 +51,8 @@ public class WormAIWanderingState : WormAIBaseState
 
     private void SetInitialState()
     {
+        bb.shouldMeteorBeTriggedAfterWandering = false;
+        bb.meteorInmediate = false;
         angryEyes = false;
         exitRumble = false;
         head.angryEyes.Stop();
@@ -146,6 +148,7 @@ public class WormAIWanderingState : WormAIBaseState
                     head.animator.SetBool("MouthOpen", false);
 
                     rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_VULNERABLE, EventInfo.emptyInfo);
+                    bb.meteorInmediate = true;
 
                     subState = SubState.FOLLOWING_PATH;
                 }
@@ -229,7 +232,8 @@ public class WormAIWanderingState : WormAIBaseState
                             head.angryEyes.Stop();
                         }
                       
-                        head.animator.SetBool("MouthOpen", true);                     
+                        head.animator.SetBool("MouthOpen", true);
+                        bb.meteorInmediate = false;
 
                         subState = SubState.EXITING;
                     }
@@ -243,6 +247,12 @@ public class WormAIWanderingState : WormAIBaseState
                 break;
 
             case SubState.EXITING:
+                //TODO: remove when tested
+                if (Input.GetKeyDown(KeyCode.M))
+                {
+                    bb.shouldMeteorBeTriggedAfterWandering = true;
+                }
+
                 if (t <= 2)
                 {
                     shouldMove = Time.deltaTime * bb.WanderingSettingsPhase.wanderingSpeed;
@@ -278,8 +288,14 @@ public class WormAIWanderingState : WormAIBaseState
                 break;
 
             case SubState.WAITING_FOR_TAIL:
+                //TODO: remove when tested
+                if (Input.GetKeyDown(KeyCode.M))
+                {
+                    bb.shouldMeteorBeTriggedAfterWandering = true;
+                }
+
                 //move head until tail is undeground
-                if(!bb.tailReachedMilestone)
+                if (!bb.tailReachedMilestone)
                 {
                     MoveUndergroundDirection();
                 }
@@ -288,8 +304,12 @@ public class WormAIWanderingState : WormAIBaseState
                     bb.applySinMovement = false;
                     rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_INVULNERABLE, EventInfo.emptyInfo);
 
+                    if(bb.shouldMeteorBeTriggedAfterWandering)
+                    {
+                        return head.meteorAttackState;
+                    }                   
                     //If some random condition attack, else new wandering state
-                    if (bb.attacksEnabled && bb.BelowAttackSettingsPhase.active &&
+                    else if (bb.attacksEnabled && bb.BelowAttackSettingsPhase.active &&
                         Random.Range(0f, 1f) <= bb.BelowAttackSettingsPhase.chancesOfBelowAttackAfterWandering / 100)
                         return head.belowAttackState;
                     else

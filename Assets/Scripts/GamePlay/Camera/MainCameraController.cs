@@ -27,7 +27,6 @@ public class MainCameraController : MonoBehaviour {
     public bool smoothMovement = false;
     public float smoothing = 5f;
     public float defaultShakeMaximum = 0.3f;
-    public bool showPlayerLimits = true;
     public float topViewportLimit = 0.9f;
     public float bottomViewportLimit = 0.1f;
     public float leftViewportLimit = 0.1f;
@@ -615,7 +614,7 @@ public class MainCameraController : MonoBehaviour {
 
     void OnGUI()
     {
-        if (showPlayerLimits)
+        if (rsc.debugMng.showPlayerLimits)
         {
             GUI.color = Color.red;
 

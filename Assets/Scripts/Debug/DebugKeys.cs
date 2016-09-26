@@ -4,7 +4,8 @@ using System.Collections;
 public class DebugKeys : MonoBehaviour {
     public KeyCode toggleGodMode = KeyCode.F1;
     public KeyCode toggleAlwaysKillOk = KeyCode.F2;
-    public KeyCode mainCameraFollowPlayersKey = KeyCode.F3;
+    public KeyCode toggleShowPlayerLimits = KeyCode.F3;
+    public KeyCode mainCameraFollowPlayersKey = KeyCode.F4;
     public KeyCode mainCameraActivationKey = KeyCode.Alpha1;
     public KeyCode godCameraActivationKey = KeyCode.Alpha2;
     //... morrrre camerrasssss

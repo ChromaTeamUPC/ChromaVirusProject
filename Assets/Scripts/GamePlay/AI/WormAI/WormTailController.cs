@@ -4,16 +4,31 @@ using System.Collections;
 public class WormTailController : MonoBehaviour 
 {
     public float tailHeight;
+    [Header("Sound Fx")]
+    public AudioSource inOutSoundFx;
     public AudioClip finalExplosionSoundFx;
+
     private VoxelizationClient voxelization;
     private Renderer rend;
 
     private WormBlackboard bb;
 
+    private bool overground;
+
     void Awake()
     {
         voxelization = GetComponentInChildren<VoxelizationClient>();
         rend = GetComponentInChildren<Renderer>();
+        overground = false;
+    }
+
+    void Update()
+    {
+        if((transform.position.y > -1) != overground)
+        {
+            inOutSoundFx.Play();
+            overground = transform.position.y > -1;
+        }
     }
 
     public void SetBlackboard(WormBlackboard bb)

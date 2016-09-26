@@ -30,6 +30,8 @@ public class WormAISpawningState : WormAIBaseState
     {
         base.OnStateEnter();
 
+        bb.spawningMinionsCurrentCooldownTime = -10f;
+
         head.animator.SetBool("Bite", true);
 
         origin = bb.spawnEntry.GetComponent<HexagonController>();
@@ -53,7 +55,7 @@ public class WormAISpawningState : WormAIBaseState
     {
         base.OnStateExit();
 
-        bb.realJumpHeightToDistanceRatio = bb.spawnJumpToHeightRatio;
+        bb.realJumpHeightToDistanceRatio = bb.jumpHeightToDistanceRatio;
         head.animator.SetBool("Bite", false);
     }
 

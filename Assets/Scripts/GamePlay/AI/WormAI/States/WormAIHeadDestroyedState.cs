@@ -101,6 +101,7 @@ public class WormAIHeadDestroyedState : WormAIBaseState
 
                         if (shouldTriggerMeteor)
                         {
+                            bb.meteorInmediate = true;
                             return head.meteorAttackState;
                         }
                         else
