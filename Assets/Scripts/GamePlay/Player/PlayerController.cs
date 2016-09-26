@@ -108,6 +108,8 @@ public class PlayerController : MonoBehaviour
     //Sound Fx
     [Header("Sound FX")]
     [SerializeField]
+    private AudioSource shieldProtectSoundFx;
+    [SerializeField]
     private AudioSource energyFullSoundFx;
     [SerializeField]
     private AudioSource specialChargeSoundFx;
@@ -683,6 +685,11 @@ public class PlayerController : MonoBehaviour
         rsc.eventMng.TriggerEvent(EventManager.EventType.BUTTON_HINT, ButtonHintEventInfo.eventInfo);
 
         bb.device = device;
+    }
+
+    public void ShieldProtected()
+    {
+        shieldProtectSoundFx.Play();
     }
 
     //Particle Systems methods

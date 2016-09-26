@@ -427,6 +427,7 @@ public class PlayerBaseState
                 {
                     shouldTakeDamage = false;
                     shouldRechargeEnergy = true;
+                    bb.player.ShieldProtected();
                 }
                 else
                 {

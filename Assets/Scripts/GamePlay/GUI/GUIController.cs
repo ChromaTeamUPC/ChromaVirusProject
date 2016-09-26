@@ -745,6 +745,7 @@ public class GUIController : MonoBehaviour
         {
             tutorialGO.SetActive(false);
             infoArea.SetActive(true);
+            rsc.audioMng.acceptFx.Play();
             rsc.eventMng.TriggerEvent(EventManager.EventType.TUTORIAL_CLOSED, EventInfo.emptyInfo);
         }
     }
