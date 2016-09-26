@@ -194,6 +194,11 @@ public class GUIController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        enterPauseSoundFx.ignoreListenerPause = true;
+        exitPauseToGameSoundFx.ignoreListenerPause = true;
+        exitPauseToMenuSoundFx.ignoreListenerPause = true;
+
+
         continueBtnController = continueBtn.GetComponent<PauseOptionsController>();
 
         if (rsc.gameInfo.numberOfPlayers == 2)
@@ -806,7 +811,7 @@ public class GUIController : MonoBehaviour
             totalScore = currentChain * levelStats.maxChainMultiplier;
 
             scoreSingleChain.text = currentChain.ToString();
-            scoreSingleTotal.text = string.Format("{0:n0}", totalScore);
+            scoreSingleTotal.text = string.Format("{0:n0}", (totalScore > 0) ? totalScore : 0);
 
             yield return null;
 
@@ -817,7 +822,7 @@ public class GUIController : MonoBehaviour
 
         totalScore = player1Stats.maxChain * levelStats.maxChainMultiplier;
         scoreSingleChain.text = player1Stats.maxChain.ToString();
-        scoreSingleTotal.text = string.Format("{0:n0}", player1Stats.maxChain * levelStats.maxChainMultiplier);
+        scoreSingleTotal.text = string.Format("{0:n0}", (totalScore > 0) ? totalScore : 0);
         yield return null;
 
         //Accuracy update
@@ -839,7 +844,7 @@ public class GUIController : MonoBehaviour
             percentScore = totalScore / 100 * currentAccuracy;
 
             scoreSingleAccuracy.text = currentAccuracy.ToString();
-            scoreSingleTotal.text = string.Format("{0:n0}", percentScore);
+            scoreSingleTotal.text = string.Format("{0:n0}", (percentScore > 0) ? percentScore : 0);
 
             yield return null;
 
@@ -850,7 +855,7 @@ public class GUIController : MonoBehaviour
 
         percentScore = totalScore / 100 * player1Stats.colorAccuracy;
         scoreSingleAccuracy.text = player1Stats.colorAccuracy.ToString();
-        scoreSingleTotal.text = string.Format("{0:n0}", percentScore);
+        scoreSingleTotal.text = string.Format("{0:n0}", (percentScore > 0) ? percentScore : 0);
         yield return null;
 
         //Time update
@@ -877,7 +882,7 @@ public class GUIController : MonoBehaviour
             timeScore = percentScore + ((levelStats.baseSeconds - seconds) * levelStats.secondMultiplier);
 
             scoreSingleTime.text = seconds.ToString();
-            scoreSingleTotal.text = string.Format("{0:n0}", timeScore);
+            scoreSingleTotal.text = string.Format("{0:n0}", (timeScore > 0) ? timeScore : 0);
 
             yield return null;
 
@@ -888,7 +893,7 @@ public class GUIController : MonoBehaviour
 
         timeScore = percentScore + ((levelStats.baseSeconds - totalTime) * levelStats.secondMultiplier);
         scoreSingleTime.text = totalTime.ToString();
-        scoreSingleTotal.text = string.Format("{0:n0}", timeScore);
+        scoreSingleTotal.text = string.Format("{0:n0}", (timeScore > 0) ? timeScore : 0);
 
         //Player Image fading
         elapsedTime = 0f;
@@ -1000,13 +1005,13 @@ public class GUIController : MonoBehaviour
             totalScoreP1 = currentChainP1 * levelStats.maxChainMultiplier;
 
             scoreMultiChainP1.text = currentChainP1.ToString();
-            scoreMultiTotalP1.text = string.Format("{0:n0}", totalScoreP1);
+            scoreMultiTotalP1.text = string.Format("{0:n0}", (player1Stats.maxChain * levelStats.maxChainMultiplier > 0) ? player1Stats.maxChain * levelStats.maxChainMultiplier : 0);
 
             currentChainP2 = (int)Mathf.Lerp(0, player2Stats.maxChain, factor);
             totalScoreP2 = currentChainP2 * levelStats.maxChainMultiplier;
 
             scoreMultiChainP2.text = currentChainP2.ToString();
-            scoreMultiTotalP2.text = string.Format("{0:n0}", totalScoreP2);
+            scoreMultiTotalP2.text = string.Format("{0:n0}", (player2Stats.maxChain * levelStats.maxChainMultiplier > 0) ? player2Stats.maxChain * levelStats.maxChainMultiplier : 0);
 
             yield return null;
 
@@ -1017,11 +1022,11 @@ public class GUIController : MonoBehaviour
 
         totalScoreP1 = player1Stats.maxChain * levelStats.maxChainMultiplier;
         scoreMultiChainP1.text = player1Stats.maxChain.ToString();
-        scoreMultiTotalP1.text = string.Format("{0:n0}", player1Stats.maxChain * levelStats.maxChainMultiplier);
+        scoreMultiTotalP1.text = string.Format("{0:n0}", (player1Stats.maxChain * levelStats.maxChainMultiplier > 0) ? player1Stats.maxChain * levelStats.maxChainMultiplier : 0);
 
         totalScoreP2 = player2Stats.maxChain * levelStats.maxChainMultiplier;
         scoreMultiChainP2.text = player2Stats.maxChain.ToString();
-        scoreMultiTotalP2.text = string.Format("{0:n0}", player2Stats.maxChain * levelStats.maxChainMultiplier);
+        scoreMultiTotalP2.text = string.Format("{0:n0}", (player2Stats.maxChain * levelStats.maxChainMultiplier > 0) ? player2Stats.maxChain * levelStats.maxChainMultiplier : 0);
         yield return null;
 
         //Accuracy update
@@ -1043,13 +1048,13 @@ public class GUIController : MonoBehaviour
             percentScoreP1 = totalScoreP1 / 100 * currentAccuracyP1;
 
             scoreMultiAccuracyP1.text = currentAccuracyP1.ToString();
-            scoreMultiTotalP1.text = string.Format("{0:n0}", percentScoreP1);
+            scoreMultiTotalP1.text = string.Format("{0:n0}", (percentScoreP1 > 0) ? percentScoreP1 : 0);
 
             currentAccuracyP2 = (int)Mathf.Lerp(0, player2Stats.colorAccuracy, factor);
             percentScoreP2 = totalScoreP2 / 100 * currentAccuracyP2;
 
             scoreMultiAccuracyP2.text = currentAccuracyP2.ToString();
-            scoreMultiTotalP2.text = string.Format("{0:n0}", percentScoreP2);
+            scoreMultiTotalP2.text = string.Format("{0:n0}", (percentScoreP2 > 0) ? percentScoreP2 : 0);
 
             yield return null;
 
@@ -1060,11 +1065,11 @@ public class GUIController : MonoBehaviour
 
         percentScoreP1 = totalScoreP1 / 100 * player1Stats.colorAccuracy;
         scoreMultiAccuracyP1.text = player1Stats.colorAccuracy.ToString();
-        scoreMultiTotalP2.text = string.Format("{0:n0}", percentScoreP1);
+        scoreMultiTotalP2.text = string.Format("{0:n0}", (percentScoreP1 > 0) ? percentScoreP1 : 0);
 
         percentScoreP2 = totalScoreP2 / 100 * player2Stats.colorAccuracy;
         scoreMultiAccuracyP2.text = player2Stats.colorAccuracy.ToString();
-        scoreMultiTotalP2.text = string.Format("{0:n0}", percentScoreP2);
+        scoreMultiTotalP2.text = string.Format("{0:n0}", (percentScoreP2 > 0) ? percentScoreP2 : 0);
         yield return null;
 
         //Time update
@@ -1093,8 +1098,8 @@ public class GUIController : MonoBehaviour
             timeScoreP2 = percentScoreP2 + ((levelStats.baseSeconds - seconds) * levelStats.secondMultiplier);
 
             scoreMultiTime.text = seconds.ToString();
-            scoreMultiTotalP1.text = string.Format("{0:n0}", timeScoreP1);
-            scoreMultiTotalP2.text = string.Format("{0:n0}", timeScoreP2);
+            scoreMultiTotalP1.text = string.Format("{0:n0}", (timeScoreP1 > 0) ? timeScoreP1 : 0);
+            scoreMultiTotalP2.text = string.Format("{0:n0}", (timeScoreP2 > 0) ? timeScoreP2 : 0);
 
             yield return null;
 
@@ -1106,8 +1111,8 @@ public class GUIController : MonoBehaviour
         timeScoreP1 = percentScoreP1 + ((levelStats.baseSeconds - totalTime) * levelStats.secondMultiplier);
         timeScoreP2 = percentScoreP2 + ((levelStats.baseSeconds - totalTime) * levelStats.secondMultiplier);
         scoreMultiTime.text = totalTime.ToString();
-        scoreMultiTotalP1.text = string.Format("{0:n0}", timeScoreP1);
-        scoreMultiTotalP2.text = string.Format("{0:n0}", timeScoreP2);
+        scoreMultiTotalP1.text = string.Format("{0:n0}", (timeScoreP1 > 0) ? timeScoreP1 : 0);
+        scoreMultiTotalP2.text = string.Format("{0:n0}", (timeScoreP2 > 0) ? timeScoreP2 : 0);
 
         //Player Image fading
         elapsedTime = 0f;

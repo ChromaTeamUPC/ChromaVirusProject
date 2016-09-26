@@ -42,10 +42,26 @@ public class AudioManager : MonoBehaviour {
     private AudioSource levelBoss04Music;
 
     [Header("Sound Fx")]
-    public AudioSource AcceptFx;
-    public AudioSource BackFx;
-    public AudioSource SelectFx;
-    public AudioSource StartFx;
+    public AudioSource acceptFx;
+    public AudioSource backFx;
+    public AudioSource selectFx;
+    public AudioSource startFx;
+
+    void Awake()
+    {
+        mainMenuMusic.ignoreListenerPause = true;
+        introMusic.ignoreListenerPause = true;
+        creditsMusic.ignoreListenerPause = true;
+        level01Music.ignoreListenerPause = true;
+        levelBoss01Music.ignoreListenerPause = true;
+        levelBoss02Music.ignoreListenerPause = true;
+        levelBoss03Music.ignoreListenerPause = true;
+        levelBoss04Music.ignoreListenerPause = true;
+        acceptFx.ignoreListenerPause = true;
+        backFx.ignoreListenerPause = true;
+        selectFx.ignoreListenerPause = true;
+        startFx.ignoreListenerPause = true;
+    }
 
     #region MUSIC_CONTROL
     public void FadeInMusic(MusicType type)

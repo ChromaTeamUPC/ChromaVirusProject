@@ -106,7 +106,7 @@ public class OptionsMenuManager : MonoBehaviour
     {
         rsc.audioMng.audioMixer.SetFloat("MusicVolume", volume);
         if (!skipFirstTimeSoundFx || !firstTimeMusic)
-            rsc.audioMng.SelectFx.Play();
+            rsc.audioMng.selectFx.Play();
 
         firstTimeMusic = false;
     }
@@ -115,14 +115,14 @@ public class OptionsMenuManager : MonoBehaviour
     {
         rsc.audioMng.audioMixer.SetFloat("FxVolume", volume);
         if (!skipFirstTimeSoundFx || !firstTimeSound)
-            rsc.audioMng.SelectFx.Play();
+            rsc.audioMng.selectFx.Play();
 
         firstTimeSound = false;
     }
 
     public void SoundFx()
     {
-        rsc.audioMng.SelectFx.Play();
+        rsc.audioMng.selectFx.Play();
     }
 
     // Update is called once per frame
@@ -169,12 +169,12 @@ public class OptionsMenuManager : MonoBehaviour
 
             if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action1))
             {
-                rsc.audioMng.AcceptFx.Play();
+                rsc.audioMng.acceptFx.Play();
                 SaveValues();
             }
             else
             {
-                rsc.audioMng.BackFx.Play();
+                rsc.audioMng.backFx.Play();
                 RestoreValues();
             }
 

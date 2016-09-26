@@ -107,6 +107,7 @@ public class GameManager : MonoBehaviour {
         state = GameState.PAUSED;
         Time.timeScale = 0.000000000001f;
         rsc.audioMng.PauseMusic();
+        AudioListener.pause = true;
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_PAUSED, EventInfo.emptyInfo);
     }
 
@@ -117,6 +118,7 @@ public class GameManager : MonoBehaviour {
         state = GameState.STARTED;
         Time.timeScale = 1f;
         rsc.audioMng.ResumeMusic();
+        AudioListener.pause = false;
         rsc.eventMng.TriggerEvent(EventManager.EventType.GAME_RESUMED, EventInfo.emptyInfo);
     }
 
@@ -124,7 +126,7 @@ public class GameManager : MonoBehaviour {
     {
         state = GameState.SHOWING_TUTORIAL;
         Time.timeScale = 0.000000000001f;
-        //rsc.audioMng.PauseMainMusic();
+        AudioListener.pause = true;
     }
 
     public void CloseTutorial(bool disableTutorial = false)
@@ -133,7 +135,7 @@ public class GameManager : MonoBehaviour {
 
         state = GameState.STARTED;
         Time.timeScale = 1f;
-        //rsc.audioMng.ResumeMainMusic();
+        AudioListener.pause = false;
         if (disableTutorial)
             rsc.tutorialMng.active = false;
         rsc.eventMng.TriggerEvent(EventManager.EventType.HIDE_TUTORIAL, EventInfo.emptyInfo);
@@ -281,6 +283,7 @@ public class GameManager : MonoBehaviour {
     {
         Time.timeScale = 1f;
         rsc.audioMng.StopMusic();
+        AudioListener.pause = false;
 
         rsc.gameInfo.player1Controller.Active = false;
         rsc.gameInfo.player2Controller.Active = false;

@@ -31,7 +31,7 @@ public class PauseOptionsController : MonoBehaviour, ISelectHandler, IDeselectHa
         text.color = rsc.coloredObjectsMng.GetColor();
 
         if (!skipFirstTime || !firstTime)
-            rsc.audioMng.SelectFx.Play();
+            rsc.audioMng.selectFx.Play();
 
         firstTime = false;
     }

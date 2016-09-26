@@ -24,7 +24,7 @@ public class OptionsSliderController : MonoBehaviour, ISelectHandler, IDeselectH
     public void OnSelect(BaseEventData eventData)
     {
         if (!skipFirstTimeSelect || !firstTimeSelect)
-            rsc.audioMng.SelectFx.Play();
+            rsc.audioMng.selectFx.Play();
 
         firstTimeSelect = false;
 
@@ -39,7 +39,7 @@ public class OptionsSliderController : MonoBehaviour, ISelectHandler, IDeselectH
     public void SetValue(float value)
     {
         if (!skipFirstTimeSetValue || !firstTimeSetValue)
-            rsc.audioMng.SelectFx.Play();
+            rsc.audioMng.selectFx.Play();
 
         firstTimeSetValue = false;
     }

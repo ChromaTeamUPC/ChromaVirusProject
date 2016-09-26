@@ -16,7 +16,7 @@ public class MainMenuButtonController : MonoBehaviour, ISelectHandler //This Int
     public void OnSelect(BaseEventData eventData)
     {
         if (!skipFirstTime || !firstTime)
-            rsc.audioMng.SelectFx.Play();
+            rsc.audioMng.selectFx.Play();
 
         firstTime = false;
     }
