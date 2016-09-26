@@ -32,6 +32,8 @@ public class WormAIBaseState
         return null;
     }
 
+    public virtual void SpecialAttackInRange() { }
+
     public virtual WormAIBaseState ImpactedBySpecial(float damage, PlayerController player)
     {
         return null;

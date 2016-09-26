@@ -42,12 +42,12 @@ public class WormAIKnockOutState : WormAIBaseState
 
         rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_VULNERABLE, EventInfo.emptyInfo);
 
-        if (!knockOutTutorialTriggered)
+        /*if (!knockOutTutorialTriggered)
         {
             knockOutTutorialTriggered = true;
             TutorialEventInfo.eventInfo.type = TutorialManager.Type.HIT_BOSS_HEAD;
             rsc.eventMng.TriggerEvent(EventManager.EventType.SHOW_TUTORIAL, TutorialEventInfo.eventInfo);
-        }
+        }*/
 
         subState = SubState.KNOCKED_OUT;
     }
@@ -96,7 +96,16 @@ public class WormAIKnockOutState : WormAIBaseState
                     subState = SubState.MOVING_HEAD;
                 }
                 else
+                {
+                    if (elapsedTime >= 3f && !knockOutTutorialTriggered)
+                    {
+                        knockOutTutorialTriggered = true;
+                        TutorialEventInfo.eventInfo.type = TutorialManager.Type.HIT_BOSS_HEAD;
+                        rsc.eventMng.TriggerEvent(EventManager.EventType.SHOW_TUTORIAL, TutorialEventInfo.eventInfo);
+                    }
+
                     elapsedTime += Time.deltaTime;
+                }
                 break;
 
             case SubState.MOVING_HEAD:
@@ -168,10 +177,16 @@ public class WormAIKnockOutState : WormAIBaseState
         return null;
     }
 
+    public override void SpecialAttackInRange()
+    {
+        knockOutTutorialTriggered = true;
+    }
+
     public override WormAIBaseState ImpactedBySpecial(float damage, PlayerController player)
     {
         if (subState != SubState.KNOCKED_OUT) return null;
 
+        knockOutTutorialTriggered = true;
         bb.killerPlayer = player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_INVULNERABLE, EventInfo.emptyInfo);
         return head.headDestroyedState;

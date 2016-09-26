@@ -315,7 +315,13 @@ public class WormAIBehaviour : MonoBehaviour
         return null;
     }
 
-    public virtual void ImpactedBySpecial(float damage, PlayerController player)
+    public void SpecialAttackInRange()
+    {
+        if (currentState != null)
+            currentState.SpecialAttackInRange();
+    }
+
+    public void ImpactedBySpecial(float damage, PlayerController player)
     {
         if (headState != HeadSubState.KNOCKED_OUT) return;
 

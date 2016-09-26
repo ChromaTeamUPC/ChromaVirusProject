@@ -56,7 +56,10 @@ public class PlayerSpecialAttackDetector : MonoBehaviour
             WormAIBehaviour worm = other.GetComponent<WormAIBehaviour>();
 
             if (worm != null)
+            {
                 bb.worm = worm;
+                worm.SpecialAttackInRange();
+            }
         }
         else if (other.tag == "Vortex")
         {
