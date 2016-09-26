@@ -1186,6 +1186,7 @@ public class GUIController : MonoBehaviour
         {
             //scoreGO.SetActive(false);
             //infoArea.SetActive(true);
+            rsc.audioMng.acceptFx.Play();
             rsc.eventMng.TriggerEvent(EventManager.EventType.SCORE_CLOSED, EventInfo.emptyInfo);
         }
     }
