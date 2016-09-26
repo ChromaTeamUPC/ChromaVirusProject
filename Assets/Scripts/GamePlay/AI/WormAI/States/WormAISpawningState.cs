@@ -30,6 +30,8 @@ public class WormAISpawningState : WormAIBaseState
     {
         base.OnStateEnter();
 
+        bb.spawningMinionsCurrentCooldownTime = -10f;
+
         head.animator.SetBool("Bite", true);
 
         origin = bb.spawnEntry.GetComponent<HexagonController>();
