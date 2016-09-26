@@ -172,12 +172,26 @@ public class LevelBossController : MonoBehaviour
             default:
                 break;
         }
+
+        if(info.wormBb.wormCurrentPhase == info.wormBb.wormMaxPhases - 1)
+        {
+            if (rsc.gameInfo.player1Controller.ActiveAndAlive)
+            {
+                rsc.gameInfo.player1Controller.SetInvulnerable();
+            }
+            if (rsc.gameInfo.numberOfPlayers == 2 && rsc.gameInfo.player2Controller.ActiveAndAlive)
+            {
+                rsc.gameInfo.player2Controller.SetInvulnerable();
+            }
+
+            rsc.eventMng.TriggerEvent(EventManager.EventType.KILL_ENEMIES, EventInfo.emptyInfo);
+        }
     }
 
 
     private void WormDying(EventInfo eventInfo)
     {
-        if (rsc.gameInfo.player1Controller.ActiveAndAlive)
+        /*if (rsc.gameInfo.player1Controller.ActiveAndAlive)
         {
             rsc.gameInfo.player1Controller.SetInvulnerable();
         }
@@ -186,7 +200,7 @@ public class LevelBossController : MonoBehaviour
             rsc.gameInfo.player2Controller.SetInvulnerable();
         }
 
-        rsc.eventMng.TriggerEvent(EventManager.EventType.KILL_ENEMIES, EventInfo.emptyInfo);
+        rsc.eventMng.TriggerEvent(EventManager.EventType.KILL_ENEMIES, EventInfo.emptyInfo);*/
     }
 
     private void WormDied(EventInfo eventInfo)
