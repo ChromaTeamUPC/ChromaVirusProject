@@ -5,6 +5,11 @@ public class WormAIMeteorAttackState : WormAIBaseState
 {
     private enum SubState
     {
+        UNDERGROUND_START,
+        WARNING_PLAYER,
+        HEAD_EXIT,
+
+        OVERGROUND_START,
         OPENING_MOUTH,
         SHOOTING,
         CLOSING_MOUTH,
@@ -17,6 +22,7 @@ public class WormAIMeteorAttackState : WormAIBaseState
     private SubState subState;
 
     private float elapsedTime;
+    private HexagonController origin;
     private HexagonController destiny;
 
     private float currentX;
@@ -29,6 +35,8 @@ public class WormAIMeteorAttackState : WormAIBaseState
     private float timeBetweenShots;
     private int totalShots;
 
+    private bool underground;
+
     public WormAIMeteorAttackState(WormBlackboard bb) : base(bb)
     { }
 
@@ -38,16 +46,28 @@ public class WormAIMeteorAttackState : WormAIBaseState
 
         head.agent.enabled = false;
         destinyInRange = false;
-        elapsedTime = 0f;
-
-        head.animator.SetBool("MouthOpen", true);
+        elapsedTime = 0f;    
 
         timeBetweenShots = bb.MeteorAttackSettingsPhase.timeShooting / (bb.MeteorAttackSettingsPhase.numberOfThrownMeteors -1);
         totalShots = 0;
 
         rsc.eventMng.StartListening(EventManager.EventType.METEOR_RAIN_ENDED, MeteorRainEnded);
 
-        subState = SubState.OPENING_MOUTH;
+        if (bb.meteorInmediate)
+        {
+            underground = false;
+            head.animator.SetBool("MouthOpenTrans", true);
+            subState = SubState.OVERGROUND_START;
+        }
+        else
+        {
+            underground = true;
+            head.animator.SetBool("MouthOpen", true);
+            subState = SubState.UNDERGROUND_START;
+        }
+
+        bb.meteorInmediate = false;
+        bb.shouldMeteorBeTriggedAfterWandering = false;
     }
 
     public override void OnStateExit()
@@ -61,8 +81,88 @@ public class WormAIMeteorAttackState : WormAIBaseState
     {
         switch (subState)
         {
+            //Underground path
+            case SubState.UNDERGROUND_START:
+                GameObject playerGO = rsc.enemyMng.SelectPlayerRandom();
+                if (playerGO != null)
+                {
+                    PlayerController player = playerGO.GetComponent<PlayerController>();
+                    origin = player.GetNearestHexagon();
+
+                    if (origin != null)
+                    {
+                        if (!origin.isWormSelectable)
+                            return head.wanderingState;
+
+                        destiny = GetHexagonFacingCenter(origin, 2);
+                        bb.CalculateParabola(origin.transform.position, destiny.transform.position);
+
+                        head.agent.enabled = false;
+                    }
+                    else
+                        return head.wanderingState;
+                }
+                else
+                    return head.wanderingState;
+
+                origin.WormEnterExit();
+
+                elapsedTime = 0f;
+                head.attackWarningSoundFx.Play();
+
+                subState = SubState.WARNING_PLAYER;
+
+                break;
+
+            case SubState.WARNING_PLAYER:
+
+                if (elapsedTime >= bb.MeteorAttackSettingsPhase.warningTime)
+                {
+                    //Position head below entry point
+                    currentX = bb.GetJumpXGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false);
+                    Vector3 startPosition = bb.GetJumpPositionGivenY(-WormBlackboard.NAVMESH_LAYER_HEIGHT, false);
+                    headTrf.position = startPosition;
+                    lastPosition = startPosition;
+                    head.SetVisible(true);
+
+                    elapsedTime = 0f;
+                    bb.isHeadOverground = true;
+                    subState = SubState.HEAD_EXIT;
+                }
+                else
+                    elapsedTime += Time.deltaTime;
+
+                break;
+
+            case SubState.HEAD_EXIT:
+                if(headTrf.position.y < 2)
+                {
+                    currentX += Time.deltaTime * bb.MeteorAttackSettingsPhase.enterHeadSpeed;
+                    lastPosition = headTrf.position;
+                    headTrf.position = bb.GetJumpPositionGivenX(currentX);
+
+                    headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition), headTrf.up);
+
+                    elapsedTime += Time.deltaTime;
+                }
+                else
+                {
+                    elapsedTime += bb.MeteorAttackSettingsPhase.warningTime;
+                    subState = SubState.OPENING_MOUTH;
+                }
+
+                break;
+
+            //Overground path
+            case SubState.OVERGROUND_START:
+                destiny = GetExitHexagon();
+                bb.CalculateParabola(headTrf.position, destiny.transform.position);
+                subState = SubState.OPENING_MOUTH;
+                break;
+
+            //Common path
             case SubState.OPENING_MOUTH:
-                if (elapsedTime >= 1)
+                if (elapsedTime >= 1.5f)
                 {                  
                     elapsedTime = 0;
                     subState = SubState.SHOOTING;
@@ -77,7 +177,7 @@ public class WormAIMeteorAttackState : WormAIBaseState
                     if(elapsedTime <= 0)
                     {
                         MeteorController meteor = rsc.poolMng.meteorPool.GetObject();
-                        meteor.transform.position = headTrf.position;                        
+                        meteor.transform.position = head.headModel.transform.position;                        
                         meteor.GoUp(bb.MeteorAttackSettingsPhase.speedOfThrownMeteors);
 
                         head.meteorThrowSoundFx.Play();
@@ -91,14 +191,12 @@ public class WormAIMeteorAttackState : WormAIBaseState
                     }
                 }
                 else
-                {
-                    destiny = GetExitHexagon();
-                    bb.CalculateParabola(headTrf.position, destiny.transform.position);
+                {                                  
                     speed = (headTrf.position - destiny.transform.position).magnitude / bb.MeteorAttackSettingsPhase.jumpDuration;
 
                     //Calculate start point and prior point
-                    currentX = bb.GetJumpXGivenY(0, false);
-                    Vector3 startPosition = bb.GetJumpPositionGivenY(0, false);
+                    currentX = bb.GetJumpXGivenY(headTrf.position.y, false);
+                    Vector3 startPosition = bb.GetJumpPositionGivenY(headTrf.position.y, false);
                     headTrf.position = startPosition;
 
                     lastPosition = bb.GetJumpPositionGivenX(currentX);
@@ -108,7 +206,10 @@ public class WormAIMeteorAttackState : WormAIBaseState
                     initialRotation = Quaternion.LookRotation(nextPosition - startPosition, headTrf.up);
 
                     elapsedTime = 0;
-                    head.animator.SetBool("MouthOpen", false);
+                    if(underground)
+                        head.animator.SetBool("MouthOpen", false);
+                    else
+                        head.animator.SetBool("MouthOpenTrans", false);
                     subState = SubState.CLOSING_MOUTH;
                 }
                 break;

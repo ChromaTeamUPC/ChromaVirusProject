@@ -81,6 +81,8 @@ public class WormBlackboard : MonoBehaviour
         public int triggerAfterNumberOfBodySegmentsDestroyed = 0;
 
         [Header("Worm Settings")]
+        public float warningTime = 0.75f;
+        public float enterHeadSpeed = 20f;
         public int numberOfThrownMeteors = 3;
         public float speedOfThrownMeteors = 30f;
         public float timeShooting = 1f;
@@ -273,6 +275,11 @@ public class WormBlackboard : MonoBehaviour
     [SerializeField]
     public MeteorAttackSettings[] meteorAttackSettings = new MeteorAttackSettings[4];
     public MeteorAttackSettings MeteorAttackSettingsPhase { get { return meteorAttackSettings[wormCurrentPhase]; } }
+    [HideInInspector]
+    public bool shouldMeteorBeTriggedAfterWandering;
+    [HideInInspector]
+    public bool meteorInmediate;
+
 
     [Header("Misc variables")]
     public GameObject spawnEntry;

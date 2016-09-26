@@ -201,7 +201,10 @@ public class WormAIBehaviour : MonoBehaviour
             bb.MeteorAttackSettingsPhase.triggerAfterNumberOfBodySegmentsDestroyed > 0 &&
             bb.headCurrentChargeLevel % bb.MeteorAttackSettingsPhase.triggerAfterNumberOfBodySegmentsDestroyed == 0)
         {
-            ChangeState(meteorAttackState);
+            if (bb.meteorInmediate)
+                ChangeState(meteorAttackState);
+            else
+                bb.shouldMeteorBeTriggedAfterWandering = true;
         }
         //rsc.colorMng.PrintColors();
     }

@@ -55,7 +55,7 @@ public class WormAISpawningState : WormAIBaseState
     {
         base.OnStateExit();
 
-        bb.realJumpHeightToDistanceRatio = bb.spawnJumpToHeightRatio;
+        bb.realJumpHeightToDistanceRatio = bb.jumpHeightToDistanceRatio;
         head.animator.SetBool("Bite", false);
     }
 
