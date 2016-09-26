@@ -22,7 +22,8 @@ public class LevelStats
     [Header("Computed Score Settings")]
     public int maxChainMultiplier = 1000;
 
-    public int baseSeconds = 300;
+    public int baseSeconds1Player = 300;
+    public int baseSeconds2Players = 300;
     public int secondMultiplier = 1000;
 
     [Header("Grade Settings")]
@@ -186,7 +187,7 @@ public class PlayerStats
         finalScore = finalScore / 100 * colorAccuracy;
 
         //Time score
-        finalScore += (currentLevelStats.baseSeconds - totalTime) * currentLevelStats.secondMultiplier;
+        finalScore += ((rsc.gameInfo.numberOfPlayers == 1? currentLevelStats.baseSeconds1Player: currentLevelStats.baseSeconds2Players) - totalTime) * currentLevelStats.secondMultiplier;
 
         if (finalScore < 0) finalScore = 0;
 
