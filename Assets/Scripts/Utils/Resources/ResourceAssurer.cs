@@ -6,6 +6,7 @@ public class ResourceAssurer : MonoBehaviour {
 
     public bool godMode = false;
     public bool alwaysKillOk = false;
+    public bool showPlayerLimits = false;
     [Range(1,2)]
     public int numberOfPlayers = 1;
     public bool vibration = true;
@@ -39,6 +40,7 @@ public class ResourceAssurer : MonoBehaviour {
         {
             rsc.debugMng.godMode = godMode;
             rsc.debugMng.alwaysKillOk = alwaysKillOk;
+            rsc.debugMng.showPlayerLimits = showPlayerLimits;
             rsc.rumbleMng.active = vibration;
             rsc.tutorialMng.active = tutorial;
             rsc.audioMng.audioMixer.SetFloat("MusicVolume", musicVol);

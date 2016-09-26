@@ -18,6 +18,7 @@ public class DebugManager : MonoBehaviour {
 
     public bool godMode = false;
     public bool alwaysKillOk = false;
+    public bool showPlayerLimits = false;
 
     private float elapsedTime;
     private int frameCount;
@@ -47,6 +48,11 @@ public class DebugManager : MonoBehaviour {
         if (Input.GetKeyDown(keys.toggleAlwaysKillOk))
         {
             alwaysKillOk = !alwaysKillOk;
+        }
+
+        if (Input.GetKeyDown(keys.toggleShowPlayerLimits))
+        {
+            showPlayerLimits = !showPlayerLimits;
         }
 
         if (Input.GetKeyDown(keys.doubleSpeed))
