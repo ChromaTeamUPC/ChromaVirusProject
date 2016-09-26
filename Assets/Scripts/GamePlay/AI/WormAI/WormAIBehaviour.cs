@@ -23,6 +23,7 @@ public class WormAIBehaviour : MonoBehaviour
     public GameObject knockOutFx;
 
     [Header("Sound Fx")]
+    public AudioSource inOutSoundFx;
     public AudioSource attackWarningSoundFx;
     public AudioSource jumpAttackSoundFx;
     public AudioSource meteorThrowSoundFx;
@@ -59,6 +60,8 @@ public class WormAIBehaviour : MonoBehaviour
     private Renderer rend;
     private VoxelizationClient voxelization;
 
+    private bool overground;
+
     private Color[] gizmosColors = { Color.blue, Color.cyan, Color.green, Color.grey, Color.magenta, Color.red, Color.yellow };
     //Debug
     void OnDrawGizmos()
@@ -92,6 +95,8 @@ public class WormAIBehaviour : MonoBehaviour
         rend = GetComponentInChildren<Renderer>();
         voxelization = GetComponentInChildren<VoxelizationClient>();       
         headState = HeadSubState.DEACTIVATED;
+
+        overground = false;
     }
 
     void Start()
@@ -125,6 +130,12 @@ public class WormAIBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if ((transform.position.y > -1) != overground)
+        {
+            inOutSoundFx.Play();
+            overground = transform.position.y > -1;
+        }
+
         if (currentState != null)
         {
             if(bb.aboveAttackCurrentCooldownTime < bb.AboveAttackSettingsPhase.cooldownTime)

@@ -141,7 +141,6 @@ public class HexagonController : MonoBehaviour
     [Header("Sound Fx")]
     public AudioSource aboveImpactSoundFx;
     public AudioSource belowImpactSoundFx;
-    public AudioSource inOutSoundFx;
 
     [HideInInspector]
     public GameObject geometryOffset;
