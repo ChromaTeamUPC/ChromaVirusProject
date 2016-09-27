@@ -9,13 +9,17 @@ public class BridgeFragmentController : MonoBehaviour
     [SerializeField]
     private AudioSource exitSoundFx;
 
+    private BoxCollider col;
+
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();
+        col = GetComponentInChildren<BoxCollider>();
     }
      
 	public void Enter()
     {
+        col.enabled = true;
         animator.SetTrigger("EnterNow");
         enterSoundFx.Play();
     }
@@ -27,6 +31,7 @@ public class BridgeFragmentController : MonoBehaviour
 
     public void Exit()
     {
+        col.enabled = false;
         animator.SetTrigger("ExitNow");
         exitSoundFx.Play();
     }
