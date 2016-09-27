@@ -9,6 +9,7 @@ using System;
 [Serializable] public class EnergyVoxelPool : MonoBehaviourObjectPool<EnergyVoxelController> { }
 [Serializable] public class SpiderPool : MonoBehaviourObjectPool<SpiderAIBehaviour> { }
 [Serializable] public class SpiderBoltPool : MonoBehaviourObjectPool<SpiderBolt> { }
+[Serializable] public class SpiderSparksPool : MonoBehaviourObjectPool<SpiderSparks> { }
 [Serializable] public class MosquitoPool : MonoBehaviourObjectPool<MosquitoAIBehaviour> { }
 [Serializable] public class MosquitoWeakShotPool : MonoBehaviourObjectPool<MosquitoWeakShotController> { }
 [Serializable] public class MosquitoMainAttackPool : MonoBehaviourObjectPool<MosquitoMainAttackControllerBase> { }
@@ -41,6 +42,7 @@ public class PoolManager : MonoBehaviour
 
     public SpiderPool spiderPool = new SpiderPool();
     public SpiderBoltPool spiderBoltPool = new SpiderBoltPool();
+    public SpiderSparksPool spiderSparksPool = new SpiderSparksPool();
 
     public MosquitoPool mosquitoPool = new MosquitoPool();
     public MosquitoWeakShotPool mosquitoWeakShotRedPool = new MosquitoWeakShotPool();
@@ -84,6 +86,7 @@ public class PoolManager : MonoBehaviour
 
         spiderPool.Init(gameObject, poolContainerPrefab);
         spiderBoltPool.Init(gameObject, poolContainerPrefab);
+        spiderSparksPool.Init(gameObject, poolContainerPrefab);
 
         mosquitoPool.Init(gameObject, poolContainerPrefab);
         mosquitoWeakShotRedPool.Init(gameObject, poolContainerPrefab);

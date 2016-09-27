@@ -33,7 +33,7 @@ public class SpiderInfectExecutor : BaseExecutor
         {
             blackBoard.attackAnimationTrigger = false;
 
-            SpiderBolt bolt = rsc.poolMng.spiderBoltPool.GetObject();
+            /*SpiderBolt bolt = rsc.poolMng.spiderBoltPool.GetObject();
             if (bolt != null)
             {
                 bolt.transform.position = spiderBlackBoard.boltSpawnPoint.position;
@@ -41,6 +41,12 @@ public class SpiderInfectExecutor : BaseExecutor
                 bolt.damage = spiderBlackBoard.spider.biteDamage;
                 bolt.origin = spiderBlackBoard.spider.transform.position;
                 bolt.Spawn(false);
+            }*/
+
+            SpiderSparks sparks = rsc.poolMng.spiderSparksPool.GetObject();
+            if (sparks != null)
+            {
+                sparks.transform.position = spiderBlackBoard.boltSpawnPoint.position;
             }
 
             blackBoard.deviceController.Infect();
