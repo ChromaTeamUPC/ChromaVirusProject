@@ -30,6 +30,7 @@ public class WormAIKnockOutState : WormAIBaseState
     {
         base.OnStateEnter();
 
+
         head.agent.enabled = false;
         destinyInRange = false;
         elapsedTime = 0f;
@@ -40,7 +41,7 @@ public class WormAIKnockOutState : WormAIBaseState
 
         head.animator.SetBool("Stunned", true);
 
-        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_VULNERABLE, EventInfo.emptyInfo);
+        bb.SetWormVulnerable();
 
         /*if (!knockOutTutorialTriggered)
         {
@@ -92,7 +93,8 @@ public class WormAIKnockOutState : WormAIBaseState
 
                     elapsedTime = 0f;
 
-                    rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_INVULNERABLE, EventInfo.emptyInfo);
+                    head.SetInvulnerable();
+
                     subState = SubState.MOVING_HEAD;
                 }
                 else
@@ -188,7 +190,6 @@ public class WormAIKnockOutState : WormAIBaseState
 
         knockOutTutorialTriggered = true;
         bb.killerPlayer = player;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_INVULNERABLE, EventInfo.emptyInfo);
         return head.headDestroyedState;
     }
 }

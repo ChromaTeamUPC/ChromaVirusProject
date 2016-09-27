@@ -33,6 +33,8 @@ public class WormAIBelowAttackState : WormAIBaseState
     {
         base.OnStateEnter();
 
+        bb.SetWormInvulnerable();
+
         origin = null;
         elapsedTime = 0f;
         subState = SubState.WAITING;     

@@ -402,6 +402,30 @@ public class WormBlackboard : MonoBehaviour
         head.Init();
     }
 
+    public void SetWormVulnerable()
+    {
+        head.SetVulnerable();
+
+        for (int i = 0; i < bodySegmentControllers.Length; ++i)
+        {
+            bodySegmentControllers[i].SetVulnerable();
+        }
+
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_VULNERABLE, EventInfo.emptyInfo);
+    }
+
+    public void SetWormInvulnerable()
+    {
+        head.SetInvulnerable();
+
+        for (int i = 0; i < bodySegmentControllers.Length; ++i)
+        {
+            bodySegmentControllers[i].SetInvulnerable();
+        }
+
+        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_INVULNERABLE, EventInfo.emptyInfo);
+    }
+
     //Body segments management
     #region Body Segments
     public void InitBodyParts()
@@ -412,22 +436,7 @@ public class WormBlackboard : MonoBehaviour
             bodySegmentControllers[i].SetInitialState((ChromaColor)(i % ChromaColorInfo.Count));
         }
     }
-
-    public void SetBodyPartsVulnerable()
-    {
-        for (int i = 0; i < bodySegmentControllers.Length; ++i)
-        {
-            bodySegmentControllers[i].SetVulnerable();
-        }
-    }
-
-    public void SetBodyPartsInvulnerable()
-    {
-        for (int i = 0; i < bodySegmentControllers.Length; ++i)
-        {
-            bodySegmentControllers[i].SetInvulnerable();
-        }
-    }
+  
 
     public void ShuffleBodyParts()
     {

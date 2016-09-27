@@ -46,7 +46,7 @@ public class WormBodySegmentController : MonoBehaviour
 
     private bool overground;
 
-    private bool invulnerable;
+    private bool invulnerable; 
 
     void Awake()
     {

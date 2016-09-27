@@ -31,6 +31,8 @@ public class WormAIHeadDestroyedState : WormAIBaseState
     {
         base.OnStateEnter();
 
+        bb.SetWormInvulnerable();
+
         head.agent.enabled = false;
         destinyInRange = false;
         elapsedTime = 0f;

@@ -48,7 +48,7 @@ public class WormAIMeteorAttackState : WormAIBaseState
         destinyInRange = false;
         elapsedTime = 0f;
 
-        bb.SetBodyPartsInvulnerable();    
+        bb.SetWormInvulnerable();    
 
         timeBetweenShots = bb.MeteorAttackSettingsPhase.timeShooting / (bb.MeteorAttackSettingsPhase.numberOfThrownMeteors -1);
         totalShots = 0;
@@ -75,8 +75,6 @@ public class WormAIMeteorAttackState : WormAIBaseState
     public override void OnStateExit()
     {
         base.OnStateExit();
-
-        bb.SetBodyPartsVulnerable();
 
         rsc.eventMng.StopListening(EventManager.EventType.METEOR_RAIN_ENDED, MeteorRainEnded);
     }

@@ -57,6 +57,8 @@ public class WormAIWanderingState : WormAIBaseState
         exitRumble = false;
         head.angryEyes.Stop();
 
+        bb.SetWormVulnerable();
+
         elapsedTime = 0f;
         WPIndex = 0;
         //Set initial substate, nav mesh layer and select a random route
@@ -147,7 +149,6 @@ public class WormAIWanderingState : WormAIBaseState
 
                     head.animator.SetBool("MouthOpen", false);
 
-                    rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_VULNERABLE, EventInfo.emptyInfo);
                     bb.meteorInmediate = true;
 
                     subState = SubState.FOLLOWING_PATH;
@@ -179,7 +180,6 @@ public class WormAIWanderingState : WormAIBaseState
                 //TODO: remove when tested
                 if (Input.GetKeyDown(KeyCode.M))
                 {
-                    rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_INVULNERABLE, EventInfo.emptyInfo);
                     return head.meteorAttackState;
                 }
 
@@ -198,7 +198,6 @@ public class WormAIWanderingState : WormAIBaseState
                                 angryEyes = false;
                                 head.angryEyes.Stop();
                             }
-                            rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_INVULNERABLE, EventInfo.emptyInfo);
                             return head.aboveAttackState;
                         }
                     }                   
@@ -302,7 +301,6 @@ public class WormAIWanderingState : WormAIBaseState
                 else
                 {
                     bb.applySinMovement = false;
-                    rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_INVULNERABLE, EventInfo.emptyInfo);
 
                     if(bb.shouldMeteorBeTriggedAfterWandering)
                     {

@@ -63,6 +63,8 @@ public class WormAIBehaviour : MonoBehaviour
 
     private bool overground;
 
+    private bool invulnerable;
+
     private Color[] gizmosColors = { Color.blue, Color.cyan, Color.green, Color.grey, Color.magenta, Color.red, Color.yellow };
     //Debug
     void OnDrawGizmos()
@@ -98,6 +100,7 @@ public class WormAIBehaviour : MonoBehaviour
         headState = HeadSubState.DEACTIVATED;
 
         overground = false;
+        invulnerable = false;
     }
 
     void Start()
@@ -158,6 +161,16 @@ public class WormAIBehaviour : MonoBehaviour
                 ChangeState(newState);
             }
         }
+    }
+
+    public void SetInvulnerable()
+    {
+        invulnerable = true;
+    }
+
+    public void SetVulnerable()
+    {
+        invulnerable = false;
     }
 
     public bool CanSpawnMinion()
@@ -288,7 +301,7 @@ public class WormAIBehaviour : MonoBehaviour
 
     public void ImpactedByShot(ChromaColor shotColor, float damage, PlayerController player)
     {
-        if (headState != HeadSubState.ACTIVATED) return;
+        if (headState != HeadSubState.ACTIVATED || invulnerable) return;
    
         if (currentState != null)
         {
@@ -323,7 +336,7 @@ public class WormAIBehaviour : MonoBehaviour
 
     public void ImpactedBySpecial(float damage, PlayerController player)
     {
-        if (headState != HeadSubState.KNOCKED_OUT) return;
+        if (headState != HeadSubState.KNOCKED_OUT || invulnerable) return;
 
         if (currentState != null)
         {

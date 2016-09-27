@@ -33,6 +33,8 @@ public class WormAIAboveAttackState : WormAIBaseState
 
         destiny = null;
 
+        bb.SetWormInvulnerable();
+
         //Set origin and destiny
         GameObject playerGO = rsc.enemyMng.SelectPlayerRandom();
         if (playerGO != null)
