@@ -27,8 +27,8 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
     public AudioClip explosion2SoundFx;
     public AudioClip explosionWrongColorSoundFx;
 
-	// Use this for initialization
-	protected override void Awake ()
+    // Use this for initialization
+    protected override void Awake ()
     {
         base.Awake();
 

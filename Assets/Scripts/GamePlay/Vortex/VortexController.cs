@@ -121,7 +121,7 @@ public class VortexController : MonoBehaviour
             {
                 elapsedTime = 0f;
 
-                SpiderAIBehaviour enemy = coloredObjMng.GetSpider(ChromaColorInfo.Random);
+                SpiderAIBehaviour enemy = coloredObjMng.GetSpider(ChromaColorInfo.Random, spawnPoint.position);
 
                 if (enemy != null)
                 {

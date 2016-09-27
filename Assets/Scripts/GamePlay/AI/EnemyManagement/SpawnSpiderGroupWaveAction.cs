@@ -103,18 +103,18 @@ public class SpawnSpiderGroupWaveAction : WaveAction  {
         //-4 to -1 (current color plus optional offset)
         if(color >= ChromaColorInfo.CURRENT_COLOR_OFFSET && color <= ChromaColorInfo.CURRENT_COLOR_PLUS3_OFFSET)
         {
-            spider = rsc.coloredObjectsMng.GetSpider(color);
+            spider = rsc.coloredObjectsMng.GetSpider(color, spawnPoint.position);
         }
         //first chroma color to last chroma color (fixed color)
         else if (color >= (int)ChromaColorInfo.First && color <= (int)ChromaColorInfo.Last)
         {
-            spider = rsc.coloredObjectsMng.GetSpider((ChromaColor)color);
+            spider = rsc.coloredObjectsMng.GetSpider((ChromaColor)color, spawnPoint.position);
         }
         //any other number will be handled as offset
         else
         {
             color = color % ChromaColorInfo.Count;
-            spider = rsc.coloredObjectsMng.GetSpider(color);
+            spider = rsc.coloredObjectsMng.GetSpider(color, spawnPoint.position);
         }
 
         if (spider != null)

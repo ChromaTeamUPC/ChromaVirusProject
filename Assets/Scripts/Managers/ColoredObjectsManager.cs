@@ -238,13 +238,13 @@ public class ColoredObjectsManager : MonoBehaviour
     }
 
     //Spider methods
-    public SpiderAIBehaviour GetSpider(bool random = false)
+    public SpiderAIBehaviour GetSpider(bool random, Vector3 position)
     {
         if(random)
-            return GetSpider(ChromaColorInfo.Random);
+            return GetSpider(ChromaColorInfo.Random, position);
 
         //Get a spider from pool
-        SpiderAIBehaviour spider = spiderPool.GetObject();       
+        SpiderAIBehaviour spider = spiderPool.GetObject(position);       
 
         if (spider != null)
         {
@@ -256,7 +256,7 @@ public class ColoredObjectsManager : MonoBehaviour
         return null;
     }
 
-    public SpiderAIBehaviour GetSpider(int offset)
+    public SpiderAIBehaviour GetSpider(int offset, Vector3 position)
     {
         int colorIndex = ((int)currentColor + offset) % ChromaColorInfo.Count;
 
@@ -266,13 +266,13 @@ public class ColoredObjectsManager : MonoBehaviour
 
         ChromaColor color = (ChromaColor)colorIndex;
 
-        return GetSpider(color);
+        return GetSpider(color, position);
     }
 
-    public SpiderAIBehaviour GetSpider(ChromaColor color)
+    public SpiderAIBehaviour GetSpider(ChromaColor color, Vector3 position)
     {
         //Get a spider from pool
-        SpiderAIBehaviour spider = spiderPool.GetObject();
+        SpiderAIBehaviour spider = spiderPool.GetObject(position);
 
         if (spider != null)
         {
@@ -288,13 +288,13 @@ public class ColoredObjectsManager : MonoBehaviour
 
 
     //Mosquito methods
-    public MosquitoAIBehaviour GetMosquito(bool random = false)
+    public MosquitoAIBehaviour GetMosquito(bool random, Vector3 position)
     {
         if (random)
-            return GetMosquito(ChromaColorInfo.Random);
+            return GetMosquito(ChromaColorInfo.Random, position);
 
         //Get a mosquito from pool
-        MosquitoAIBehaviour mosquito = mosquitoPool.GetObject();
+        MosquitoAIBehaviour mosquito = mosquitoPool.GetObject(position);
 
         if (mosquito != null)
         {
@@ -306,7 +306,7 @@ public class ColoredObjectsManager : MonoBehaviour
         return null;
     }
 
-    public MosquitoAIBehaviour GetMosquito(int offset)
+    public MosquitoAIBehaviour GetMosquito(int offset, Vector3 position)
     {
         int colorIndex = ((int)currentColor + offset) % ChromaColorInfo.Count;
 
@@ -316,13 +316,13 @@ public class ColoredObjectsManager : MonoBehaviour
 
         ChromaColor color = (ChromaColor)colorIndex;
 
-        return GetMosquito(color);
+        return GetMosquito(color, position);
     }
 
-    public MosquitoAIBehaviour GetMosquito(ChromaColor color)
+    public MosquitoAIBehaviour GetMosquito(ChromaColor color, Vector3 position)
     {
         //Get a mosquito from pool
-        MosquitoAIBehaviour mosquito = mosquitoPool.GetObject();
+        MosquitoAIBehaviour mosquito = mosquitoPool.GetObject(position);
 
         if (mosquito != null)
         {

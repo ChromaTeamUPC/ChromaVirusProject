@@ -40,7 +40,7 @@ public class HexagonInfectedState : HexagonBaseState
             {
                 if(rsc.enemyMng.bb.worm != null && rsc.enemyMng.bb.worm.head.CanSpawnMinion())
                 {
-                    SpiderAIBehaviour enemy = rsc.coloredObjectsMng.GetSpider(rsc.colorMng.GetRandomActiveColor());
+                    SpiderAIBehaviour enemy = rsc.coloredObjectsMng.GetSpider(rsc.colorMng.GetRandomActiveColor(), hex.spawnPoint.transform.position);
 
                     if (enemy != null)
                     {

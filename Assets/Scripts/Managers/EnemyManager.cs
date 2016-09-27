@@ -214,7 +214,7 @@ public class EnemyManager : MonoBehaviour
     private void EnemySpawned(EventInfo eventInfo)
     {
         ++bb.activeEnemies;
-        //Debug.Log("Enemies++ = " + blackboard.activeEnemies);
+        //Debug.Log("Enemies++ = " + bb.activeEnemies);
     }
 
     private void EnemyDied(EventInfo eventInfo)
@@ -224,7 +224,7 @@ public class EnemyManager : MonoBehaviour
         EnemyDiedEventInfo info = (EnemyDiedEventInfo)eventInfo;
         bb.zoneCurrentInfectionLevel -= info.infectionValue;
 
-        //Debug.Log("Enemies-- = " + blackboard.activeEnemies);
+        //Debug.Log("Enemies-- = " + bb.activeEnemies);
     }
 
     private void TurretSpawned(EventInfo eventInfo)

@@ -83,19 +83,19 @@ public class SpawnMosquitoWaveAction : WaveAction
         switch (colorMode)
         {
             case ColorMode.FIXED:
-                mosquito = rsc.coloredObjectsMng.GetMosquito(color);
+                mosquito = rsc.coloredObjectsMng.GetMosquito(color, spawnPoint.position);
                 break;
 
             case ColorMode.CURRENT:
-                mosquito = rsc.coloredObjectsMng.GetMosquito(colorOffset);
+                mosquito = rsc.coloredObjectsMng.GetMosquito(colorOffset, spawnPoint.position);
                 break;
 
             case ColorMode.RANDOM:
-                mosquito = rsc.coloredObjectsMng.GetMosquito(true);
+                mosquito = rsc.coloredObjectsMng.GetMosquito(true, spawnPoint.position);
                 break;
 
             default:
-                mosquito = rsc.coloredObjectsMng.GetMosquito(colorOffset);
+                mosquito = rsc.coloredObjectsMng.GetMosquito(colorOffset, spawnPoint.position);
                 break;
         }
 

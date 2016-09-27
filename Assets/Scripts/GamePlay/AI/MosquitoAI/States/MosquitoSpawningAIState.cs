@@ -11,7 +11,7 @@ public class MosquitoSpawningAIState : MosquitoAIBaseState {
         mosquitoBlackboard.mosquito.projector.enabled = false;
         mosquitoBlackboard.agent.enabled = false;
         mosquitoBlackboard.entity.mainCollider.enabled = false;
-        //mosquitoBlackboard.entity.dyingCollider.SetActive(false);
+        mosquitoBlackboard.entity.dyingCollider.SetActive(false);
         mosquitoBlackboard.canReceiveDamage = false;
         mosquitoBlackboard.spawnAnimationEnded = false;
 

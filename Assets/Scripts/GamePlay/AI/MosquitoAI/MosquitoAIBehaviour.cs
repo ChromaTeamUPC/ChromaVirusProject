@@ -274,7 +274,6 @@ public class MosquitoAIBehaviour : EnemyBaseAIBehaviour
             }
         }
 
-        voxelization.SpawnColliderThisTime = false;
         SpawnVoxels();
         rsc.poolMng.mosquitoPool.AddObject(this);
     }

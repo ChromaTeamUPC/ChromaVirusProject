@@ -16,7 +16,6 @@ public class MosquitoPatrolingAIState : MosquitoAIActionsBaseState
         base.Init(actions);
         currentActionIndex = 0;
         currentExecutor = null;
-        UpdateExecutor();
     }
 
     public override void OnStateEnter()

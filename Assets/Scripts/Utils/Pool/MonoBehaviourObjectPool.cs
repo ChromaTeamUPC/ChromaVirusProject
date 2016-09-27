@@ -92,6 +92,29 @@ public class MonoBehaviourObjectPool<T> where T : MonoBehaviour
             return null;
     }
 
+    public T GetObject(Vector3 position)
+    {
+        if (pool.Count > 0)
+        {
+            T pooledObject = pool.Dequeue();
+            pooledObject.gameObject.transform.position = position;
+            pooledObject.gameObject.SetActive(true);
+            return pooledObject;
+        }
+        else if (grow)
+        {
+            //Grow will happen not now but when all the objects will be enqueued again and capacity will be full
+            GameObject aux = GameObject.Instantiate(prefabWhereBehaviourIsIn) as GameObject;
+            aux.SetActive(false);
+            aux.transform.SetParent(objectsParent.transform);
+            T comp = aux.GetComponent<T>();
+            auxList.Add(comp);
+            return comp;
+        }
+        else
+            return null;
+    }
+
     public void AddObject(T pooledObject)
     {
         pooledObject.gameObject.SetActive(false);

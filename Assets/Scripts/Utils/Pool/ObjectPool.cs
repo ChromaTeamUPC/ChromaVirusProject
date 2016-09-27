@@ -92,6 +92,28 @@ public class ObjectPool {
             return null;
     }
 
+    public GameObject GetObject(Vector3 position)
+    {
+        if (pool.Count > 0)
+        {
+            GameObject pooledObject = pool.Dequeue();
+            pooledObject.transform.position = position;
+            pooledObject.SetActive(true);
+            return pooledObject;
+        }
+        else if (grow)
+        {
+            //Grow will happen not now but when all the objects will be enqueued again and capacity will be full
+            GameObject aux = GameObject.Instantiate(pooledPrefab) as GameObject;
+            aux.SetActive(false);
+            aux.transform.SetParent(objectsParent.transform);
+            auxList.Add(aux);
+            return aux;
+        }
+        else
+            return null;
+    }
+
     public void AddObject(GameObject pooledObject)
     {
         pooledObject.SetActive(false);

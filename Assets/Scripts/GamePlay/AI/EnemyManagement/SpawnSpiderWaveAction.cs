@@ -87,19 +87,19 @@ public class SpawnSpiderWaveAction : WaveAction
         switch (colorMode)
         {
             case ColorMode.FIXED:
-                spider = rsc.coloredObjectsMng.GetSpider(color);
+                spider = rsc.coloredObjectsMng.GetSpider(color, spawnPoint.position);
                 break;
 
             case ColorMode.CURRENT:
-                spider = rsc.coloredObjectsMng.GetSpider(colorOffset);
+                spider = rsc.coloredObjectsMng.GetSpider(colorOffset, spawnPoint.position);
                 break;
 
             case ColorMode.RANDOM:
-                spider = rsc.coloredObjectsMng.GetSpider(true);
+                spider = rsc.coloredObjectsMng.GetSpider(true, spawnPoint.position);
                 break;
 
             default:
-                spider = rsc.coloredObjectsMng.GetSpider(colorOffset);
+                spider = rsc.coloredObjectsMng.GetSpider(colorOffset, spawnPoint.position);
                 break;
         }
 
