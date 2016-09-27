@@ -37,16 +37,19 @@ public class TurretAIBehaviour : MonoBehaviour
     public float knockOutFXChangeTime = 0.2f;
     private float knockOutElapsedTime;
     public ParticleSystem knockedOutFx;
-    private SphereCollider sphereCollider;
     private BlinkController blinkController;
     public Animator anim;
 
+
     public AudioSource stunnedSoundFx;
 
-    private PlayerController player1;
-    private PlayerController player2;
+    [HideInInspector]
+    public PlayerController player1;
+    [HideInInspector]
+    public PlayerController player2;
 
     [Header("Attack Settings")]
+    public SphereCollider sphereCollider;
     public bool isPhaseControlled = true;
     private int currentPhase = 0;
     [SerializeField]
@@ -66,7 +69,6 @@ public class TurretAIBehaviour : MonoBehaviour
 	{
         player1 = null;
         player2 = null;
-        sphereCollider = GetComponent<SphereCollider>();
         blinkController = GetComponent<BlinkController>();
         knockedOutYOffset = knockedOutFx.transform.localPosition.y;
         currentColor = ChromaColor.RED;
@@ -312,35 +314,5 @@ public class TurretAIBehaviour : MonoBehaviour
         }
 
         return result;
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Player1")
-        {
-            player1 = other.GetComponent<PlayerController>();
-            //Debug.Log("Player 1 entered turret range");
-        }
-
-        if (other.tag == "Player2")
-        {
-            player2 = other.GetComponent<PlayerController>();
-            //Debug.Log("Player 2 entered turret range");
-        }
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "Player1")
-        {
-            player1 = null;
-            //Debug.Log("Player 1 exit turret range");
-        }
-
-        if (other.tag == "Player2")
-        {
-            player2 = null;
-            //Debug.Log("Player 2 exit turret range");
-        }
     }
 }
