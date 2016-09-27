@@ -146,7 +146,49 @@ public class LevelBossController : MonoBehaviour
 
     private void PositionPlayer(PlayerController player)
     {
-        player.transform.position = playerSpawnPoint[Random.Range(0, playerSpawnPoint.Length)].position;
+        if(rsc.gameInfo.numberOfPlayers == 1)
+        {
+            player.transform.position = singlePlayerStartPoint.position;
+            player.transform.rotation = singlePlayerStartPoint.rotation;
+        }
+        else
+        {
+            PlayerController otherPlayer = rsc.gameInfo.player1Controller;
+            if(player.Id == 1)
+                otherPlayer = rsc.gameInfo.player2Controller;
+
+            if(otherPlayer.ActiveAndAlive)
+            {
+                Transform spawnPoint = playerSpawnPoint[0];
+                float distance = Vector3.Distance(otherPlayer.transform.position, spawnPoint.position);
+
+                for(int i = 1; i < playerSpawnPoint.Length -1; ++i)
+                {
+                    float newDistance = Vector3.Distance(otherPlayer.transform.position, playerSpawnPoint[i].position);
+                    if (newDistance < distance)
+                    {
+                        spawnPoint = playerSpawnPoint[i];
+                        distance = newDistance;
+                    }
+                }
+
+                player.transform.position = spawnPoint.position;
+                player.transform.rotation = otherPlayer.transform.rotation;
+            }
+            else
+            {
+                if (player.Id == 1)
+                {
+                    player.transform.position = player1StartPoint.position;
+                    player.transform.rotation = player1StartPoint.rotation;
+                }
+                else
+                {
+                    player.transform.position = player2StartPoint.position;
+                    player.transform.rotation = player2StartPoint.rotation;
+                }
+            }
+        }
 
         player.transform.SetParent(null);
     }
