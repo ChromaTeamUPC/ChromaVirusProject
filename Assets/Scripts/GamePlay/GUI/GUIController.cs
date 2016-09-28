@@ -182,6 +182,7 @@ public class GUIController : MonoBehaviour
     public AudioSource exitPauseToMenuSoundFx;
     public AudioSource brokenChainSoundFx;
     public AudioSource gameOverSoundFx;
+    public AudioSource levelClearSoundFx;
     public AudioSource scoreTicSoundFx;
     public AudioSource gradeStampSoundFx;
 
@@ -238,6 +239,7 @@ public class GUIController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
         rsc.eventMng.StartListening(EventManager.EventType.START_CUT_SCENE, StartCutScene);
         rsc.eventMng.StartListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
+        rsc.eventMng.StartListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanFinished);
         rsc.eventMng.StartListening(EventManager.EventType.SHOW_TUTORIAL, ShowTutorial);
         rsc.eventMng.StartListening(EventManager.EventType.HIDE_TUTORIAL, HideTutorial);
         rsc.eventMng.StartListening(EventManager.EventType.SHOW_SCORE, ShowScore);
@@ -278,6 +280,7 @@ public class GUIController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.LEVEL_STARTED, LevelStarted);
             rsc.eventMng.StopListening(EventManager.EventType.START_CUT_SCENE, StartCutScene);
             rsc.eventMng.StopListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
+            rsc.eventMng.StopListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanFinished);
             rsc.eventMng.StopListening(EventManager.EventType.SHOW_TUTORIAL, ShowTutorial);
             rsc.eventMng.StopListening(EventManager.EventType.HIDE_TUTORIAL, HideTutorial);
             rsc.eventMng.StopListening(EventManager.EventType.SHOW_SCORE, ShowScore);
@@ -721,6 +724,23 @@ public class GUIController : MonoBehaviour
     {
         playersArea.SetActive(true);
         skipHint.SetActive(false);
+    }
+
+    private void ZonePlanFinished(EventInfo eventInfo)
+    {
+        ZonePlanEndedInfo info = (ZonePlanEndedInfo)eventInfo;
+
+        switch (rsc.gameMng.CurrentLevel)
+        {
+            case GameManager.Level.LEVEL_01:
+                if (info.planId == 103)
+                    levelClearSoundFx.Play();
+                break;
+            case GameManager.Level.LEVEL_BOSS:
+                break;
+            default:
+                break;
+        }
     }
 
     private void ShowTutorial(EventInfo eventInfo)
@@ -1517,6 +1537,8 @@ public class GUIController : MonoBehaviour
         //Debug.Log("Boss died");
         StopAllBossCoroutines();
         bossZone.SetActive(false);
+
+        levelClearSoundFx.Play();
     }
     #endregion
 }
