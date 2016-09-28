@@ -65,7 +65,9 @@ public class PlayerController : MonoBehaviour
     public float energyIncreaseWhenBlockedCorrectColor = 1f;
     public float specialAttackNecessaryEnergy = 50f;
 
-    [Header("Fire Settings")]   
+    [Header("Fire Settings")]
+    [Range(1, 2)]
+    public int numberOfShots = 2;
     public float fireRate = 0.25f;
     public float speedRatioReductionWhileFiring = 0.6f;
     public Transform shotSpawn;

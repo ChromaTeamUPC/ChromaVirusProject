@@ -289,10 +289,24 @@ public class PlayerBaseState
                     nextFire = Time.time + bb.player.fireRate;
 
                     // check if it's first shot (single projectile)...
-                    if (bb.firstShot)
+                    if (bb.firstShot || bb.player.numberOfShots == 1)
                     {
                         //Get a shot from pool
-                        PlayerShotController shot = coloredObjMng.GetPlayer1Shot();
+                        PlayerShotController shot;
+
+                        switch (bb.player.Id)
+                        {
+                            case 1:
+                                shot = coloredObjMng.GetPlayer1Shot();
+                                break;
+                            case 2:
+                                shot = coloredObjMng.GetPlayer2Shot();
+                                break;
+                            default:
+                                shot = coloredObjMng.GetPlayer1Shot();
+                                break;
+                        }
+
                         MuzzleController muzzle = coloredObjMng.GetPlayerMuzzle();
 
                         if (shot != null && muzzle != null)
