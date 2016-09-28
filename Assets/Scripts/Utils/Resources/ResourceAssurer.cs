@@ -4,17 +4,17 @@ using System.Collections;
 
 public class ResourceAssurer : MonoBehaviour {
 
-    public bool godMode = false;
-    public bool alwaysKillOk = false;
-    public bool showPlayerLimits = false;
     [Range(1,2)]
     public int numberOfPlayers = 1;
-    public bool vibration = true;
-    public bool tutorial = true;
     [Range(-80,0)]
     public int musicVol = 0;
     [Range(-80, 0)]
     public int fxVol = 0;
+    public bool godMode = false;
+    public bool alwaysKillOk = false;
+    public bool showPlayerLimits = false;
+    public bool vibration = true;
+    public bool tutorial = true;
 
     private bool resourcesForced;
 

@@ -200,15 +200,15 @@ public class LevelBossController : MonoBehaviour
         switch (info.wormBb.wormCurrentPhase)
         {
             case 0:
-                rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_02, 1f);
+                rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_02, 5f);
                 break;
 
             case 1:
-                rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_03, 1f);
+                rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_03, 5f);
                 break;
 
             case 2:
-                rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_04, 1f);
+                rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_04, 5f);
                 break;
 
             default:

@@ -227,6 +227,7 @@ public class AudioManager : MonoBehaviour {
 
     private IEnumerator CrossFade(AudioSource newMusic, float fadeSeconds, float maxVolume = 1f)
     {
+        float fadeHalfSeconds = fadeSeconds / 2;
         float fadeSpeed;
         float fadeTime = 0f;
 
@@ -245,7 +246,7 @@ public class AudioManager : MonoBehaviour {
             }
             else
             {
-                fadeSpeed = 1 / fadeSeconds * 2;
+                fadeSpeed = 1 / fadeHalfSeconds;
 
                 float originalVolume = currentMusic.volume;
                 while (currentMusic.volume > 0.025f)
@@ -257,6 +258,7 @@ public class AudioManager : MonoBehaviour {
                 currentMusic.volume = 0;
                 currentMusic.Stop();
 
+                fadeTime = 0;
                 currentMusic = newMusic;
                 currentMusic.Play();
                 currentMusic.volume = 0;
