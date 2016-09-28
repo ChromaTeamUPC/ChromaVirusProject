@@ -41,14 +41,22 @@ public class MosquitoFanProjectileAttackController : MosquitoMainAttackControlle
 
         //First projectile straight
         projectile[0].transform.position = source.position;
-        projectile[0].transform.rotation = source.rotation;
+        //projectile[0].transform.rotation = source.rotation;
+        if (player != null && player.Alive)
+            projectile[0].transform.LookAt(player.transform.position, Vector3.up);
+        else
+            projectile[0].transform.rotation = source.rotation;
 
         projController[0].Shoot();
 
         for (int i = 1; i < numberOfProjectiles; ++i)
         {
             projectile[i].transform.position = source.position;
-            projectile[i].transform.rotation = source.rotation;
+            //projectile[i].transform.rotation = source.rotation;
+            if (player != null && player.Alive)
+                projectile[i].transform.LookAt(player.transform.position, Vector3.up);
+            else
+                projectile[i].transform.rotation = source.rotation;
 
             if (left)
             {
