@@ -401,7 +401,7 @@ public class PlayerBaseState
         if (rsc.debugMng.godMode || bb.isInvulnerable) return null;
 
         bb.blinkController.BlinkWhiteOnce();
-
+        bb.player.Damaged();
         bb.currentHealth -= damage;
 
         if (bb.currentHealth <= 0) bb.currentHealth = 0;

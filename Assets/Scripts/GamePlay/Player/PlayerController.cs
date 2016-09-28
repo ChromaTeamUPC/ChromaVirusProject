@@ -124,6 +124,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private AudioSource beamUpSoundFx;
     [SerializeField]
+    private AudioSource hurtSoundFx;
+    [SerializeField]
     private AudioSource dieSoundFx;
     [SerializeField]
     private AudioClip dieExplosionSoundFx;
@@ -700,6 +702,11 @@ public class PlayerController : MonoBehaviour
     public void ShieldProtected()
     {
         shieldProtectSoundFx.Play();
+    }
+
+    public void Damaged()
+    {
+        hurtSoundFx.Play();
     }
 
     //Particle Systems methods
