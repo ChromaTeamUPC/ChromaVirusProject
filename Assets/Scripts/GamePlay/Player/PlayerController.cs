@@ -116,6 +116,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private AudioSource dashSoundFx;
     [SerializeField]
+    private AudioSource speedUpSoundFx;
+    [SerializeField]
     private AudioSource beamUpSoundFx;
     [SerializeField]
     private AudioSource dieSoundFx;
@@ -694,6 +696,16 @@ public class PlayerController : MonoBehaviour
     public void ShieldProtected()
     {
         shieldProtectSoundFx.Play();
+    }
+
+    public void StartSpeedUp()
+    {
+        speedUpSoundFx.Play();
+    }
+
+    public void StopSpeedUp()
+    {
+        speedUpSoundFx.Stop();
     }
 
     //Particle Systems methods

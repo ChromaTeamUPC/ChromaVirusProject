@@ -13,10 +13,12 @@ public class PlayerSpeedBumpState : PlayerBaseState
         bb.currentSpeed = bb.player.fastMovingSpeed;
 
         speedReductionOn = bb.player.fastMovingMaxSeconds * bb.player.fastMovingSpeedReductionOn;
+        bb.player.StartSpeedUp();
     }
 
     public override void OnStateExit()
     {
+        bb.player.StopSpeedUp();
         bb.currentSpeed = bb.player.walkSpeed;
     }
 
