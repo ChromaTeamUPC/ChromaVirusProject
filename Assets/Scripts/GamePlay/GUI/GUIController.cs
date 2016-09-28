@@ -750,6 +750,8 @@ public class GUIController : MonoBehaviour
         }
     }
 
+    #region Score Management
+
     private void ShowScore(EventInfo eventInfo)
     {
         if (!scoreGO.activeSelf)
@@ -800,13 +802,14 @@ public class GUIController : MonoBehaviour
         factor = elapsedTime / scoreChainDuration;
 
         scoreTicSoundFx.Play();
+        float realScoreTickSeconds = (scoreChainDuration / player1Stats.maxChain > scoreTickEverySeconds? scoreChainDuration / player1Stats.maxChain : scoreTickEverySeconds);
 
         while (elapsedTime < scoreChainDuration)
         {
-            if (elapsedTimeTick >= scoreTickEverySeconds)
+            if (elapsedTimeTick >= realScoreTickSeconds)
             {
                 scoreTicSoundFx.Play();
-                elapsedTimeTick -= scoreTickEverySeconds;
+                elapsedTimeTick -= realScoreTickSeconds;
             }
 
             currentChain = (int)Mathf.Lerp(0, player1Stats.maxChain, factor);
@@ -833,13 +836,14 @@ public class GUIController : MonoBehaviour
         factor = 0f;
 
         scoreTicSoundFx.Play();
+        realScoreTickSeconds = (scoreAccuracyDuration / player1Stats.colorAccuracy > scoreTickEverySeconds ? scoreAccuracyDuration / player1Stats.colorAccuracy : scoreTickEverySeconds);
 
         while (elapsedTime < scoreAccuracyDuration)
         {
-            if (elapsedTimeTick >= scoreTickEverySeconds)
+            if (elapsedTimeTick >= realScoreTickSeconds)
             {
                 scoreTicSoundFx.Play();
-                elapsedTimeTick -= scoreTickEverySeconds;
+                elapsedTimeTick -= realScoreTickSeconds;
             }
 
             currentAccuracy = (int)Mathf.Lerp(0, player1Stats.colorAccuracy, factor);
@@ -871,13 +875,14 @@ public class GUIController : MonoBehaviour
             scoreSingleTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.RED);
 
         scoreTicSoundFx.Play();
+        realScoreTickSeconds = (scoreTimeDuration / Mathf.Abs(baseTime - totalTime) > scoreTickEverySeconds ? scoreTimeDuration / Mathf.Abs(baseTime - totalTime) : scoreTickEverySeconds);
 
         while (elapsedTime < scoreTimeDuration)
         {
-            if (elapsedTimeTick >= scoreTickEverySeconds)
+            if (elapsedTimeTick >= realScoreTickSeconds)
             {
                 scoreTicSoundFx.Play();
-                elapsedTimeTick -= scoreTickEverySeconds;
+                elapsedTimeTick -= realScoreTickSeconds;
             }
 
             int seconds = (int)Mathf.Lerp(baseTime, totalTime, factor);
@@ -995,13 +1000,18 @@ public class GUIController : MonoBehaviour
         factor = elapsedTime / scoreChainDuration;
 
         scoreTicSoundFx.Play();
+        float realScoreTickSeconds = scoreTickEverySeconds;
+        if(player1Stats.maxChain > player2Stats.maxChain)
+            realScoreTickSeconds = (scoreChainDuration / player1Stats.maxChain > scoreTickEverySeconds ? scoreChainDuration / player1Stats.maxChain : scoreTickEverySeconds);
+        else
+            realScoreTickSeconds = (scoreChainDuration / player2Stats.maxChain > scoreTickEverySeconds ? scoreChainDuration / player2Stats.maxChain : scoreTickEverySeconds);
 
         while (elapsedTime < scoreChainDuration)
         {
-            if (elapsedTimeTick >= scoreTickEverySeconds)
+            if (elapsedTimeTick >= realScoreTickSeconds)
             {
                 scoreTicSoundFx.Play();
-                elapsedTimeTick -= scoreTickEverySeconds;
+                elapsedTimeTick -= realScoreTickSeconds;
             }
 
             currentChainP1 = (int)Mathf.Lerp(0, player1Stats.maxChain, factor);
@@ -1038,13 +1048,17 @@ public class GUIController : MonoBehaviour
         factor = 0f;
 
         scoreTicSoundFx.Play();
+        if (player1Stats.colorAccuracy > player2Stats.colorAccuracy)
+            realScoreTickSeconds = (scoreAccuracyDuration / player1Stats.colorAccuracy > scoreTickEverySeconds ? scoreAccuracyDuration / player1Stats.colorAccuracy : scoreTickEverySeconds);
+        else
+            realScoreTickSeconds = (scoreAccuracyDuration / player2Stats.colorAccuracy > scoreTickEverySeconds ? scoreAccuracyDuration / player2Stats.colorAccuracy : scoreTickEverySeconds);
 
         while (elapsedTime < scoreAccuracyDuration)
         {
-            if (elapsedTimeTick >= scoreTickEverySeconds)
+            if (elapsedTimeTick >= realScoreTickSeconds)
             {
                 scoreTicSoundFx.Play();
-                elapsedTimeTick -= scoreTickEverySeconds;
+                elapsedTimeTick -= realScoreTickSeconds;
             }
 
             currentAccuracyP1 = (int)Mathf.Lerp(0, player1Stats.colorAccuracy, factor);
@@ -1086,13 +1100,14 @@ public class GUIController : MonoBehaviour
             scoreMultiTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.RED);
 
         scoreTicSoundFx.Play();
+        realScoreTickSeconds = (scoreTimeDuration / Mathf.Abs(baseTime - totalTime) > scoreTickEverySeconds ? scoreTimeDuration / Mathf.Abs(baseTime - totalTime) : scoreTickEverySeconds);
 
         while (elapsedTime < scoreTimeDuration)
         {
-            if (elapsedTimeTick >= scoreTickEverySeconds)
+            if (elapsedTimeTick >= realScoreTickSeconds)
             {
                 scoreTicSoundFx.Play();
-                elapsedTimeTick -= scoreTickEverySeconds;
+                elapsedTimeTick -= realScoreTickSeconds;
             }
 
             int seconds = (int)Mathf.Lerp(baseTime, totalTime, factor);
@@ -1191,6 +1206,8 @@ public class GUIController : MonoBehaviour
             rsc.eventMng.TriggerEvent(EventManager.EventType.SCORE_CLOSED, EventInfo.emptyInfo);
         }
     }
+
+#endregion
 
     #region Boss UI Management
     private void InitBossValues()
