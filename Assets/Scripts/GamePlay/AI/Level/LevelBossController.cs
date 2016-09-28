@@ -197,25 +197,28 @@ public class LevelBossController : MonoBehaviour
     {
         WormEventInfo info = (WormEventInfo)eventInfo;
 
-        switch (info.wormBb.wormCurrentPhase)
+        if (info.wormBb.wormCurrentPhase < info.wormBb.wormMaxPhases - 1)
         {
-            case 0:
-                rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_02, 5f);
-                break;
+            switch (info.wormBb.wormCurrentPhase)
+            {
+                case 0:
+                    rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_02, 5f);
+                    break;
 
-            case 1:
-                rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_03, 5f);
-                break;
+                case 1:
+                    rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_03, 5f);
+                    break;
 
-            case 2:
-                rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_04, 5f);
-                break;
+                case 2:
+                    rsc.audioMng.ChangeMusic(AudioManager.MusicType.LEVEL_BOSS_04, 5f);
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
         }
-
-        if(info.wormBb.wormCurrentPhase == info.wormBb.wormMaxPhases - 1)
+        else //Last phase
+        //if(info.wormBb.wormCurrentPhase == info.wormBb.wormMaxPhases - 1)
         {
             if (rsc.gameInfo.player1Controller.ActiveAndAlive)
             {
