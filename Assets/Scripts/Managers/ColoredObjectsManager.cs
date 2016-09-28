@@ -99,8 +99,11 @@ public class ColoredObjectsManager : MonoBehaviour
     private PlayerShotPool[] player1ShotPools = new PlayerShotPool[4];
     private PlayerShotPool currentPlayer1ShotPool;
 
-    private MuzzlePool[] player1MuzzlePools = new MuzzlePool[4];
-    private MuzzlePool currentPlayer1MuzzlePool;
+    private PlayerShotPool[] player2ShotPools = new PlayerShotPool[4];
+    private PlayerShotPool currentPlayer2ShotPool;
+
+    private MuzzlePool[] playerMuzzlePools = new MuzzlePool[4];
+    private MuzzlePool currentPlayerMuzzlePool;
 
     private SpiderPool spiderPool;
     private MosquitoPool mosquitoPool;
@@ -121,10 +124,15 @@ public class ColoredObjectsManager : MonoBehaviour
         player1ShotPools[2] = rsc.poolMng.player1ShotBluePool;
         player1ShotPools[3] = rsc.poolMng.player1ShotYellowPool;
 
-        player1MuzzlePools[0] = rsc.poolMng.player1MuzzleRedPool;
-        player1MuzzlePools[1] = rsc.poolMng.player1MuzzleGreenPool;
-        player1MuzzlePools[2] = rsc.poolMng.player1MuzzleBluePool;
-        player1MuzzlePools[3] = rsc.poolMng.player1MuzzleYellowPool;
+        player2ShotPools[0] = rsc.poolMng.player2ShotRedPool;
+        player2ShotPools[1] = rsc.poolMng.player2ShotGreenPool;
+        player2ShotPools[2] = rsc.poolMng.player2ShotBluePool;
+        player2ShotPools[3] = rsc.poolMng.player2ShotYellowPool;
+
+        playerMuzzlePools[0] = rsc.poolMng.playerMuzzleRedPool;
+        playerMuzzlePools[1] = rsc.poolMng.playerMuzzleGreenPool;
+        playerMuzzlePools[2] = rsc.poolMng.playerMuzzleBluePool;
+        playerMuzzlePools[3] = rsc.poolMng.playerMuzzleYellowPool;
 
         spiderPool = rsc.poolMng.spiderPool;
         mosquitoPool = rsc.poolMng.mosquitoPool;
@@ -165,7 +173,8 @@ public class ColoredObjectsManager : MonoBehaviour
         int colorIndex = (int)currentColor;
 
         currentPlayer1ShotPool = player1ShotPools[colorIndex];
-        currentPlayer1MuzzlePool = player1MuzzlePools[colorIndex];
+        currentPlayer2ShotPool = player2ShotPools[colorIndex];
+        currentPlayerMuzzlePool = playerMuzzlePools[colorIndex];
         currentVoxelMat = voxelMats[colorIndex];
         currentSpiderMat = spiderMats[colorIndex];
         currentMosquitoMat = mosquitoMats[colorIndex];
@@ -222,19 +231,29 @@ public class ColoredObjectsManager : MonoBehaviour
         return currentPlayer1ShotPool.GetObject();
     }
 
-    public MuzzleController GetPlayer1Muzzle(ChromaColor color)
-    {
-        return player1MuzzlePools[(int)color].GetObject();
-    }
-
-    public MuzzleController GetPlayer1Muzzle()
-    {
-        return currentPlayer1MuzzlePool.GetObject();
-    }
-
     public PlayerShotController GetPlayer1Shot(ChromaColor color)
     {
         return player1ShotPools[(int)color].GetObject();
+    }
+
+    public PlayerShotController GetPlayer2Shot()
+    {
+        return currentPlayer2ShotPool.GetObject();
+    }
+
+    public PlayerShotController GetPlayer2Shot(ChromaColor color)
+    {
+        return player2ShotPools[(int)color].GetObject();
+    }
+
+    public MuzzleController GetPlayerMuzzle()
+    {
+        return currentPlayerMuzzlePool.GetObject();
+    }
+
+    public MuzzleController GetPlayerMuzzle(ChromaColor color)
+    {
+        return playerMuzzlePools[(int)color].GetObject();
     }
 
     //Spider methods

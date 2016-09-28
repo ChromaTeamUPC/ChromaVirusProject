@@ -28,10 +28,15 @@ public class PoolManager : MonoBehaviour
     public PlayerShotPool player1ShotBluePool = new PlayerShotPool();
     public PlayerShotPool player1ShotYellowPool = new PlayerShotPool();
 
-    public MuzzlePool player1MuzzleRedPool = new MuzzlePool();
-    public MuzzlePool player1MuzzleGreenPool = new MuzzlePool();
-    public MuzzlePool player1MuzzleBluePool = new MuzzlePool();
-    public MuzzlePool player1MuzzleYellowPool = new MuzzlePool();
+    public PlayerShotPool player2ShotRedPool = new PlayerShotPool();
+    public PlayerShotPool player2ShotGreenPool = new PlayerShotPool();
+    public PlayerShotPool player2ShotBluePool = new PlayerShotPool();
+    public PlayerShotPool player2ShotYellowPool = new PlayerShotPool();
+
+    public MuzzlePool playerMuzzleRedPool = new MuzzlePool();
+    public MuzzlePool playerMuzzleGreenPool = new MuzzlePool();
+    public MuzzlePool playerMuzzleBluePool = new MuzzlePool();
+    public MuzzlePool playerMuzzleYellowPool = new MuzzlePool();
 
     public PlayerSpecialAttackPool player1SpecialAttackPool = new PlayerSpecialAttackPool();
 
@@ -72,10 +77,15 @@ public class PoolManager : MonoBehaviour
         player1ShotBluePool.Init(gameObject, poolContainerPrefab);
         player1ShotYellowPool.Init(gameObject, poolContainerPrefab);
 
-        player1MuzzleRedPool.Init(gameObject, poolContainerPrefab);
-        player1MuzzleGreenPool.Init(gameObject, poolContainerPrefab);
-        player1MuzzleBluePool.Init(gameObject, poolContainerPrefab);
-        player1MuzzleYellowPool.Init(gameObject, poolContainerPrefab);
+        player2ShotRedPool.Init(gameObject, poolContainerPrefab);
+        player2ShotGreenPool.Init(gameObject, poolContainerPrefab);
+        player2ShotBluePool.Init(gameObject, poolContainerPrefab);
+        player2ShotYellowPool.Init(gameObject, poolContainerPrefab);
+
+        playerMuzzleRedPool.Init(gameObject, poolContainerPrefab);
+        playerMuzzleGreenPool.Init(gameObject, poolContainerPrefab);
+        playerMuzzleBluePool.Init(gameObject, poolContainerPrefab);
+        playerMuzzleYellowPool.Init(gameObject, poolContainerPrefab);
 
         player1SpecialAttackPool.Init(gameObject, poolContainerPrefab);
 

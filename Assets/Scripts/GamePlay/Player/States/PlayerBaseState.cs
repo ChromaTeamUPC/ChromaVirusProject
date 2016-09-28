@@ -293,7 +293,7 @@ public class PlayerBaseState
                     {
                         //Get a shot from pool
                         PlayerShotController shot = coloredObjMng.GetPlayer1Shot();
-                        MuzzleController muzzle = coloredObjMng.GetPlayer1Muzzle();
+                        MuzzleController muzzle = coloredObjMng.GetPlayerMuzzle();
 
                         if (shot != null && muzzle != null)
                         {
@@ -316,11 +316,27 @@ public class PlayerBaseState
                     else
                     {
                         //Get two shots from pool
-                        PlayerShotController shot1 = coloredObjMng.GetPlayer1Shot();
-                        PlayerShotController shot2 = coloredObjMng.GetPlayer1Shot();
+                        PlayerShotController shot1;
+                        PlayerShotController shot2;
 
-                        MuzzleController muzzle1 = coloredObjMng.GetPlayer1Muzzle();
-                        MuzzleController muzzle2 = coloredObjMng.GetPlayer1Muzzle();
+                        switch (bb.player.Id)
+                        {
+                            case 1:
+                                shot1 = coloredObjMng.GetPlayer1Shot();
+                                shot2 = coloredObjMng.GetPlayer1Shot();
+                                break;
+                            case 2:
+                                shot1 = coloredObjMng.GetPlayer2Shot();
+                                shot2 = coloredObjMng.GetPlayer2Shot();
+                                break;
+                            default:
+                                shot1 = coloredObjMng.GetPlayer1Shot();
+                                shot2 = coloredObjMng.GetPlayer1Shot();
+                                break;
+                        }
+
+                        MuzzleController muzzle1 = coloredObjMng.GetPlayerMuzzle();
+                        MuzzleController muzzle2 = coloredObjMng.GetPlayerMuzzle();
 
                         if (shot1 != null && shot2 != null && muzzle1 != null && muzzle2 != null)
                         {

@@ -1,16 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerShotController : MonoBehaviour {
-
-    /*public class PlayerShotInfo{
-        public ChromaColor color;
-        public int damage;
-        public Vector3 direction;
-        public PlayerController player;
-    }
-
-    private PlayerShotInfo shotInfo;*/
+public class PlayerShotController : MonoBehaviour
+{
+    public int playerId = 1;
 
     public ChromaColor color;
 
@@ -26,6 +19,7 @@ public class PlayerShotController : MonoBehaviour {
     [Range(0,20)]
     private float maxDuration;
 
+    [HideInInspector]
     public PlayerController player;
 
     [SerializeField]
@@ -185,16 +179,28 @@ public class PlayerShotController : MonoBehaviour {
         switch (color)
         {
             case ChromaColor.RED:
-                rsc.poolMng.player1ShotRedPool.AddObject(this);
+                if (playerId == 1)
+                    rsc.poolMng.player1ShotRedPool.AddObject(this);
+                else
+                    rsc.poolMng.player2ShotRedPool.AddObject(this);
                 break;
             case ChromaColor.GREEN:
-                rsc.poolMng.player1ShotGreenPool.AddObject(this);
+                if (playerId == 1)
+                    rsc.poolMng.player1ShotGreenPool.AddObject(this);
+                else
+                    rsc.poolMng.player2ShotGreenPool.AddObject(this);
                 break;
             case ChromaColor.BLUE:
-                rsc.poolMng.player1ShotBluePool.AddObject(this);
+                if (playerId == 1)
+                    rsc.poolMng.player1ShotBluePool.AddObject(this);
+                else
+                    rsc.poolMng.player2ShotBluePool.AddObject(this);
                 break;
             case ChromaColor.YELLOW:
-                rsc.poolMng.player1ShotYellowPool.AddObject(this);
+                if (playerId == 1)
+                    rsc.poolMng.player1ShotYellowPool.AddObject(this);
+                else
+                    rsc.poolMng.player2ShotYellowPool.AddObject(this);
                 break;
         }
     }
