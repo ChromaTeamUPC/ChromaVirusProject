@@ -90,7 +90,7 @@ public class MeteorController : MonoBehaviour
         explosionFX.SetActive(false);
         meteorThrowFx.SetActive(false);
         fireTrail.Play();
-        //fallingSoundFx.Play();
+        fallingSoundFx.Play();
 
         mainModel.transform.rotation = Random.rotation;
         //Default state is falling
