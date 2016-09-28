@@ -84,6 +84,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private ParticleSystem[] dashPSs = new ParticleSystem[4];
     [SerializeField]
+    private ParticleSystem speedBumpPS;
+    [SerializeField]
     private ParticleSystem electricPS;
     [SerializeField]
     private ParticleSystem lifeChargehargePS;
@@ -698,17 +700,19 @@ public class PlayerController : MonoBehaviour
         shieldProtectSoundFx.Play();
     }
 
+    //Particle Systems methods
     public void StartSpeedUp()
     {
+        speedBumpPS.Play();
         speedUpSoundFx.Play();
     }
 
     public void StopSpeedUp()
     {
+        speedBumpPS.Stop();
         speedUpSoundFx.Stop();
     }
 
-    //Particle Systems methods
     public void SpawnDashParticles()
     {
         dashSoundFx.Play();
