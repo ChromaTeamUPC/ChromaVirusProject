@@ -9,7 +9,6 @@ public class PlayerBaseState
     private float continousFallingTime;
 
     //Shoot variables
-    private float nextFire;
     private const float maxSideOffset = 0.4f;
     private const float minSideOffset = 0.2f;
     private float shotSideOffset = minSideOffset;
@@ -282,9 +281,14 @@ public class PlayerBaseState
             {
                 rsc.rumbleMng.AddContinousRumble(RumbleType.PLAYER_SHOOT, bb.player.Id, 0.0f, 0.1f);
 
-                if (Time.time > nextFire)
+                if (Time.time > bb.nextFire)
                 {
-                    nextFire = Time.time + bb.player.fireRate;
+                    if(Time.time - bb.nextFire > bb.player.fireRate)
+                        bb.nextFire = Time.time + bb.player.fireRate;
+                    else
+                        bb.nextFire = bb.nextFire + bb.player.fireRate;
+                    //Debug.Log("Time: " + Time.time);
+                    //Debug.Log("Next: " + bb.nextFire);
 
                     // check if it's first shot (single projectile)...
                     if (bb.firstShot || bb.player.numberOfShots == 1)

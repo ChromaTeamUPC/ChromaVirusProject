@@ -94,6 +94,7 @@ public class PlayerBlackboard
     //Shoot variables
     public bool canShoot;
     public bool firstShot;
+    public float nextFire;
 
     //Special attack variables
     public List<EnemyBaseAIBehaviour> enemiesInRange = new List<EnemyBaseAIBehaviour>();
@@ -221,6 +222,7 @@ public class PlayerBlackboard
 
         canShoot = true;
         firstShot = true;
+        nextFire = 0;
 
         enemiesInRange.Clear();
         shotsInRange.Clear();
