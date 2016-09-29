@@ -44,20 +44,16 @@ public class PlayerController : MonoBehaviour
     private float forceMovementRatio = 0.0005f;
 
     [Header("Fast Moving & Dash Settings")]
-    public float fastMovingSpeed = 20f;
-    public float fastMovingMaxSeconds = 0.75f;
-    [Range(0f,1f)]
-    public float fastMovingSpeedReductionOn = 0.75f;
-    //public float fastMovingCostXSecond = 100f;
-    //public float movingRechargeXSecond = 33.3f;
-    //public float dashCost = 25f;
-    //public float dashDetectionThreshold = 0.2f;
     public float maxDashSeconds = 0.1f;
     public float initialDashSpeed = 20.0f;
     public float dashDeceleration = 5f;
     public bool isDecelerationRatio = false;
     public float minDashSpeed = 1;
-    //public float dashStoppingSpeed = 1.0f;
+    public bool fastMoving = false;
+    public float fastMovingSpeed = 20f;
+    public float fastMovingMaxSeconds = 0.75f;
+    [Range(0f,1f)]
+    public float fastMovingSpeedReductionOn = 0.75f;
 
     //Attack
     [Header("Energy Settings")]

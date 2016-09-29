@@ -85,19 +85,17 @@ public class PlayerBaseState
             bb.player.StopNoShoot();
         }
 
-        //Dash
+        //Dash & Speed bump
         //if (Input.GetButtonDown(blackboard.dash))
-        if(bb.controller.LeftBumper.WasPressed)
+        if (bb.controller.LeftBumper.WasPressed)
         {
             bb.dashPressed = true;
             bb.KeyPressed = true;
         }
 
-        //Speed bump
-        //if (Input.GetButtonDown(blackboard.dash))
-        if (bb.controller.LeftTrigger.WasPressed)
+        if (bb.controller.LeftBumper.IsPressed) //To know if it was continously pressed
         {
-            //bb.speedBumpPressed = true;
+            bb.dashWasPressed = true;
             bb.KeyPressed = true;
         }
 

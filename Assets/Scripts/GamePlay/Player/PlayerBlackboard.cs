@@ -56,7 +56,7 @@ public class PlayerBlackboard
     public bool aimPressed; //Reset per frame
     public bool shootPressed; //Reset per frame
     public bool dashPressed; //Reset per frame
-    public bool speedBumpPressed; //Reset per frame
+    public bool dashWasPressed; //Reset per frame
     public bool specialPressed; //Reset per frame
     public bool greenPressed; //Reset per frame
     public bool redPressed; //Reset per frame
@@ -245,7 +245,7 @@ public class PlayerBlackboard
         aimPressed = false;
         shootPressed = false;
         dashPressed = false;
-        speedBumpPressed = false;
+        dashWasPressed = false;
         specialPressed = false;
         greenPressed = false;
         redPressed = false;

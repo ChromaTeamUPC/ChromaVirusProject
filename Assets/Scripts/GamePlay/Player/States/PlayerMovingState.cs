@@ -35,14 +35,10 @@ public class PlayerMovingState : PlayerBaseState
         }
         else if (bb.dashPressed)
         {
-            if (bb.player.Id == 1)
+            if (!bb.player.fastMoving)
                 return bb.dashingState;
             else
                 return bb.speedBumpState;
-        }
-        else if (bb.speedBumpPressed)
-        {
-            return bb.speedBumpState;
         }
         else if (!bb.movePressed)
         {

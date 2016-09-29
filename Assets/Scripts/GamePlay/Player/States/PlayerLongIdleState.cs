@@ -28,18 +28,17 @@ public class PlayerLongIdleState : PlayerBaseState
         }
         else if (bb.dashPressed)
         {
-            if (bb.player.Id == 1)
+            if (!bb.player.fastMoving)
                 return bb.dashingState;
             else
                 return bb.speedBumpState;
         }
-        else if (bb.speedBumpPressed)
-        {
-            return bb.speedBumpState;
-        }
         else if (bb.movePressed)
         {
-            return bb.movingState;
+            if (bb.player.fastMoving && bb.dashWasPressed)
+                return bb.speedBumpState;
+            else
+                return bb.movingState;
         }
         else
         {
