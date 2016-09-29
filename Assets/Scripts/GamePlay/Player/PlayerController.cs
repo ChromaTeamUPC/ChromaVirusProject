@@ -11,10 +11,13 @@ public class PlayerController : MonoBehaviour
 
     public PlayerBlackboard bb;
 
+    [Header("Debug Settings")]
     [Range(0f, 1f)]
     public float weak = 0f;
     [Range(0f, 1f)]
     public float strong = 0f;
+
+    public float shake = 0f;
 
     //Life
     [Header("Health Settings")]
@@ -433,6 +436,12 @@ public class PlayerController : MonoBehaviour
             rsc.rumbleMng.AddContinousRumble(RumbleId.TEST, 0, weak, strong);
         else
             rsc.rumbleMng.RemoveContinousRumble(RumbleId.TEST);
+
+        if (bb.controller.GetControl(InputControlType.LeftTrigger).IsPressed)
+            rsc.camerasMng.AddContinousEffect(EffectId.TEST, 0, 0, shake);
+        else
+            rsc.camerasMng.RemoveContinousEffect(EffectId.TEST);
+
         //END TEST
 
         if (bb.active && bb.alive)
@@ -444,7 +453,7 @@ public class PlayerController : MonoBehaviour
 
             bb.ResetFlagVariables();
 
-            if(bb.contactFlag && currentState != null)
+            if (bb.contactFlag && currentState != null)
             {
                 ChangeStateIfNotNull(currentState.EnemyContactOnInvulnerabilityEnd());
             }
@@ -457,7 +466,7 @@ public class PlayerController : MonoBehaviour
                 ChangeStateIfNotNull(currentState.Update());
             }
 
-            if(gameObject.activeSelf) //Check to avoid a warning trying to update CharacterController if we just died and deactivated gameObject
+            if (gameObject.activeSelf) //Check to avoid a warning trying to update CharacterController if we just died and deactivated gameObject
                 UpdatePosition();
 
             //Show arrow to boss if needed
