@@ -63,7 +63,7 @@ public class AudioManager : MonoBehaviour {
         startFx.ignoreListenerPause = true;
     }
 
-    #region MUSIC_CONTROL
+    #region MUSIC CONTROL
     public void FadeInMusic(MusicType type)
     {
         FadeInMusic(type, defaultFadeSeconds);
@@ -276,7 +276,68 @@ public class AudioManager : MonoBehaviour {
             }
         }
     }
-
     #endregion
 
+    #region EXTERNAL CONTROL
+    public void FadeInExternalMusic(AudioSource source, float fadeSeconds)
+    {
+        StartCoroutine(FadeMusicExternal(source, fadeSeconds, true));
+    }
+
+    public void FadeOutExternalMusic(AudioSource source, float fadeSeconds)
+    {
+        StartCoroutine(FadeMusicExternal(source, fadeSeconds, false));
+    }
+
+    private IEnumerator FadeMusicExternal(AudioSource source, float fadeSeconds, bool fadeIn, float maxVolume = 1f)
+    {    
+        float fadeSpeed;
+        float fadeTime = 0f;
+
+        if (fadeIn)
+        {
+            float actualMaxVolume = Mathf.Min(maxVolume, musicMaxVolume);
+
+            if (!source.isPlaying)
+            {
+                source.Play();
+
+                if (fadeSeconds > 0)
+                {
+                    fadeSpeed = 1 / fadeSeconds;
+                    source.volume = 0;
+
+                    while (source.volume < actualMaxVolume - 0.025f)
+                    {
+                        fadeTime += Time.deltaTime;
+                        source.volume = Mathf.Lerp(0, actualMaxVolume, fadeSpeed * fadeTime);
+                        yield return null;
+                    }
+                }
+
+                source.volume = actualMaxVolume;
+            }
+        }
+        else
+        {
+            if (source.isPlaying)
+            {
+                if (fadeSeconds > 0)
+                {
+                    fadeSpeed = 1 / fadeSeconds;
+
+                    float originalVolume = source.volume;
+                    while (source.volume > 0.025f)
+                    {
+                        fadeTime += Time.deltaTime;
+                        source.volume = originalVolume - Mathf.Lerp(0, originalVolume, fadeSpeed * fadeTime);
+                        yield return null;
+                    }
+                }
+                source.volume = 0;
+                source.Stop();
+            }
+        }
+    }
+    #endregion
 }

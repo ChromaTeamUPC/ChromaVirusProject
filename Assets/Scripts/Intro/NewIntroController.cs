@@ -40,6 +40,7 @@ public class NewIntroController : MonoBehaviour
 
     public float activatingColorUntil = 80f;
     public float activatingColorDuration = 4f;
+    public float activatingColorStartChangingAt = 1.5f;
 
     public float startingProgramUntil = 100f;
     public float startingProgramDuration = 4f;
@@ -53,7 +54,9 @@ public class NewIntroController : MonoBehaviour
     public Text percentageBackgroundText;
     public Text percentageForegroundText;
     public Text loadingText;
-    public GameObject alertCircle;
+    public GameObject alertArea;
+    public GameObject alertCircle1;
+    public GameObject alertCircle2;
     public GameObject alertTriangle;
     public GameObject exclamationMark;
 
@@ -96,9 +99,7 @@ public class NewIntroController : MonoBehaviour
         async = SceneManager.LoadSceneAsync("Level01");
         async.allowSceneActivation = false;
 
-        alertCircle.SetActive(false);
-        alertTriangle.SetActive(false);
-        exclamationMark.SetActive(false);
+        alertArea.SetActive(false);
 
         Material[] mats = kdtRenderer.sharedMaterials;
         mats[0] = wireBase;
@@ -158,8 +159,7 @@ public class NewIntroController : MonoBehaviour
                 }
                 else
                 {                  
-                    alertCircle.SetActive(true);
-                    alertTriangle.SetActive(true);
+                    alertArea.SetActive(true);
 
                     blinkExclamation = StartCoroutine(BlinkExclamationMark());
                     rotateCircle = StartCoroutine(RotateCircles());
@@ -178,9 +178,9 @@ public class NewIntroController : MonoBehaviour
                 {
                     StopCoroutine(blinkExclamation);
                     StopCoroutine(rotateCircle);
-                    alertCircle.SetActive(false);
-                    alertTriangle.SetActive(false);
-                    exclamationMark.SetActive(false);
+                    alertArea.SetActive(false);
+
+                    rsc.audioMng.FadeOutExternalMusic(alarmSoundFx, 1f);
 
                     //Set kdt
                     wireBase.SetFloat("_Thickness", 0f);
@@ -285,6 +285,7 @@ public class NewIntroController : MonoBehaviour
                     percentageBackgroundText.text = percentage + "%";
                     percentageForegroundText.text = percentage + "%";
 
+                    factor = (elapsedTime - activatingColorStartChangingAt) / (activatingColorDuration - activatingColorStartChangingAt);
                     matColor.SetColor("_EmissionColor", Color.Lerp(Color.black, matEmissionFinalColor, factor));
 
                     elapsedTime += Time.deltaTime;
@@ -346,7 +347,7 @@ public class NewIntroController : MonoBehaviour
             && state != State.FADING_IN && state != State.FADING_OUT)
         {
             skipHint.SetActive(false);
-            alarmSoundFx.Stop();
+            rsc.audioMng.FadeOutExternalMusic(alarmSoundFx, 0.5f);
             wireframeToSolidSoundFx.Stop();
             rsc.audioMng.acceptFx.Play();
             fadeScript.StartFadingToColor(finalFadeTime);
@@ -381,8 +382,8 @@ public class NewIntroController : MonoBehaviour
     {
         while(true)
         {
-            exclamationMark.SetActive(!exclamationMark.activeSelf);
             yield return new WaitForSeconds(exclamationMarkBlinkInterval);
+            exclamationMark.SetActive(!exclamationMark.activeSelf);
         }
     }
 
@@ -390,7 +391,8 @@ public class NewIntroController : MonoBehaviour
     {
         while(true)
         {
-            alertCircle.transform.Rotate(0f, 0f, Time.deltaTime * alertCirclesDPS);
+            alertCircle1.transform.Rotate(0f, 0f, Time.deltaTime * alertCirclesDPS);
+            alertCircle2.transform.Rotate(0f, 0f, -Time.deltaTime * alertCirclesDPS);
 
             yield return null;
         }

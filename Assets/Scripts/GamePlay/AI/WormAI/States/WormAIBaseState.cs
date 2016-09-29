@@ -29,8 +29,7 @@ public class WormAIBaseState
 
     virtual protected void AttackActions()
     {
-        //rsc.camerasMng.PlayEffect(0, bb.attackRumbleDuration, 0, 0.3f);
-        rsc.camerasMng.PlayEffect(0, 5, 0, 1f);
+        rsc.camerasMng.PlayEffect(0, bb.attackRumbleDuration, 0, 0.5f);
         rsc.rumbleMng.Rumble(0, bb.attackRumbleDuration);
     }
 
