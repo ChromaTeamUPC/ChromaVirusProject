@@ -312,7 +312,8 @@ public class GUIController : MonoBehaviour
         if (player1Controller.Active)
         {
             //Lives
-            player1Lives.text = player1Controller.Lives.ToString();
+            int lives = (player1Controller.Lives > 0 ? player1Controller.Lives - 1 : 0);
+            player1Lives.text = lives.ToString();
 
             //Combo
             player1CurrentCombo.text = player1Stats.currentChain.ToString();
@@ -327,7 +328,8 @@ public class GUIController : MonoBehaviour
         if (player2Controller.Active)
         {
             //Lives
-            player2Lives.text = player2Controller.Lives.ToString();
+            int lives = (player2Controller.Lives > 0 ? player2Controller.Lives - 1 : 0);
+            player2Lives.text = lives.ToString();
 
             //Combo
             player2CurrentCombo.text = player2Stats.currentChain.ToString();
