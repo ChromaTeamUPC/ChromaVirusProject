@@ -269,6 +269,7 @@ public class WormBodySegmentController : MonoBehaviour
 
                 explosionWrongSoundFx.Play();
                 rsc.rumbleMng.Rumble(0, 0.25f, 0f, 0.5f);
+                rsc.camerasMng.PlayEffect(0, 0.25f, 0.2f);
 
                 EnemyDiedEventInfo.eventInfo.color = color;
                 EnemyDiedEventInfo.eventInfo.infectionValue = 0;
@@ -295,6 +296,7 @@ public class WormBodySegmentController : MonoBehaviour
 
                 explosionOkSoundFx.Play();
                 rsc.rumbleMng.Rumble(0, 0.25f, 0f, 0.5f);
+                rsc.camerasMng.PlayEffect(0, 0.25f, 0.2f);
 
                 EnemyDiedEventInfo.eventInfo.color = color;
                 EnemyDiedEventInfo.eventInfo.infectionValue = 0;

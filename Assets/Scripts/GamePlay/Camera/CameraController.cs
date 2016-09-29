@@ -46,6 +46,7 @@ public class CameraController : MonoBehaviour
         TOP,
         BOTTOM
     }
+
     private Transform target1;
     private Transform target2;
     private PlayerController player1;
@@ -109,7 +110,6 @@ public class CameraController : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_CLOSED, GameResumed);
         rsc.eventMng.StartListening(EventManager.EventType.SCORE_OPENING, GamePaused);
         //rsc.eventMng.StartListening(EventManager.EventType.SCORE_CLOSED, GameResumed);
-        rsc.eventMng.StartListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
 
         if (type == CameraType.ENTRY)
         {
@@ -128,7 +128,6 @@ public class CameraController : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_CLOSED, GameResumed);
             rsc.eventMng.StopListening(EventManager.EventType.SCORE_OPENING, GamePaused);
             //rsc.eventMng.StopListening(EventManager.EventType.SCORE_CLOSED, GameResumed);
-            rsc.eventMng.StopListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
         }
     }
 
@@ -153,13 +152,16 @@ public class CameraController : MonoBehaviour
         blur.enabled = false;
     }
 
-    public void SetEffects(CameraEffectsInfo effects)
+    public void SetEffects(CamerasManager.CameraEffectsInfo effects)
     {
         if (type == CameraType.GOD && !applyEffectsInGodCamera) return;
 
         shakeIntensity = effects.shakeIntensity;
-        if (glitch != null) glitch.enabled = effects.glitch;
-        if (rsc.gameMng.motionBlur && motionBlur != null) motionBlur.enabled = effects.motionBlur;
+
+        if (glitch != null) glitch.enabled = ((effects.effectSet & Effects.GLITCH) > 0);
+        if (rsc.gameMng.motionBlur && motionBlur != null) motionBlur.enabled = ((effects.effectSet & Effects.MOTION_BLUR) > 0);
+        if (grayScale != null) grayScale.enabled = ((effects.effectSet & Effects.BN) > 0);
+        if (noise != null) noise.enabled = ((effects.effectSet & Effects.NOISE) > 0);
     }
   
     void Update () 
@@ -249,78 +251,6 @@ public class CameraController : MonoBehaviour
                 break;
         }
     }
-
-    #region DEVICE INFECTED EFFECTS
-    private void DeviceInfectionChanged(EventInfo eventInfo)
-    {
-        DeviceEventInfo info = (DeviceEventInfo)eventInfo;
-        if (info.device.type != DeviceController.Type.VIDEO)
-            return;
-
-        StopAllCoroutines();
-        StopInfection();
-
-        switch (info.device.CurrentInfectionLevel)
-        {
-            case DeviceController.InfectionLevel.LEVEL1:
-                StartCoroutine(InfectionLevel01());
-                break;
-            case DeviceController.InfectionLevel.LEVEL2:
-                StartCoroutine(InfectionLevel02());
-                break;
-            case DeviceController.InfectionLevel.LEVEL3:
-                StartCoroutine(InfectionLevel03());
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void StopInfection()
-    {
-        noise.enabled = false;
-        grayScale.enabled = false;
-    }
-
-    private IEnumerator InfectionLevel01()
-    {
-        while (true)
-        {
-            noise.enabled = true;
-            grayScale.enabled = true;
-            yield return new WaitForSeconds(1f);
-            noise.enabled = false;
-            grayScale.enabled = false;
-            yield return new WaitForSeconds(3f);
-        }
-    }
-
-    private IEnumerator InfectionLevel02()
-    {
-        while (true)
-        {
-            noise.enabled = true;
-            grayScale.enabled = true;
-            yield return new WaitForSeconds(2f);
-            noise.enabled = false;
-            grayScale.enabled = false;
-            yield return new WaitForSeconds(2f);
-        }
-    }
-
-    private IEnumerator InfectionLevel03()
-    {
-        noise.enabled = true;
-
-        while (true)
-        {
-            grayScale.enabled = true;
-            yield return new WaitForSeconds(3f);
-            grayScale.enabled = false;
-            yield return new WaitForSeconds(1f);
-        }
-    }
-    #endregion
 
     #region ENTRY CAMERA METHODS
     public void SetLevelAnimation(int levelAnimation)

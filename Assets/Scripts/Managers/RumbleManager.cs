@@ -11,7 +11,7 @@ public enum RumbleId
     PLAYER_DASH,
     PLAYER_USB,
     PLAYER_DISINFECT,
-    PLAYER_DYING
+    PLAYER_DYING,
 }
 
 public class RumbleManager : MonoBehaviour 
@@ -88,7 +88,7 @@ public class RumbleManager : MonoBehaviour
     }
 
     private List<TemporalRumbleInfo> temporalRumbleList = new List<TemporalRumbleInfo>();
-    private Dictionary<RumbleId, ContinousRumbleInfo> continousRumbleList = new Dictionary<RumbleId, ContinousRumbleInfo>();
+    private Dictionary<string, ContinousRumbleInfo> continousRumbleList = new Dictionary<string, ContinousRumbleInfo>();
 
     void Awake()
     {
@@ -263,16 +263,20 @@ public class RumbleManager : MonoBehaviour
     {
         if (!active) return;
 
-        if (!continousRumbleList.ContainsKey(rumbleId))
+        string key = rumbleId.ToString() + player.ToString();
+
+        if (!continousRumbleList.ContainsKey(key))
         {
             ContinousRumbleInfo rumble = new ContinousRumbleInfo(player, weakMotor, strongMotor, rumbleId);
-            continousRumbleList.Add(rumbleId, rumble);
+            continousRumbleList.Add(key, rumble);
         }
     }
 
-    public void RemoveContinousRumble(RumbleId rumbleId)
+    public void RemoveContinousRumble(RumbleId rumbleId, int player)
     {
-        continousRumbleList.Remove(rumbleId);
+        string key = rumbleId.ToString() + player.ToString();
+
+        continousRumbleList.Remove(key);
 
         //If that was the last rumble, stop all controllers
         if(temporalRumbleList.Count == 0 && continousRumbleList.Count == 0)

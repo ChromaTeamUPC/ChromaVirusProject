@@ -124,6 +124,7 @@ public class MeteorController : MonoBehaviour
         destructionModel.transform.Rotate(0f, Random.Range(0f, 360f), 0f, Space.World);
 
         rsc.rumbleMng.Rumble(0, 0.3f, 0.4f, 0.4f);
+        rsc.camerasMng.PlayEffect(0, 0.5f, 0.2f);
 
         animator.Rebind();
         animator.SetFloat("SpeedFactor", Random.Range(1.5f, 2.5f));

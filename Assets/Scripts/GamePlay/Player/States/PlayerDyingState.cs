@@ -48,7 +48,7 @@ public class PlayerDyingState : PlayerBaseState
 
                 if (bb.animationEnded)
                 {
-                    rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_DYING);
+                    rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_DYING, bb.player.Id);
                     rsc.rumbleMng.Rumble(bb.player.Id, 0.5f, 0.5f, 0.5f);
                    
                     bb.blinkController.StopPreviousBlinkings();

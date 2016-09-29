@@ -249,6 +249,7 @@ public class TurretAIBehaviour : MonoBehaviour
             stunnedSoundFx.Play();
             elapsedTime = 0f;
             rsc.rumbleMng.Rumble(0, 0.35f, 0f, 0.75f);
+            rsc.camerasMng.PlayEffect(0, 0.25f, 0.2f);
             state = State.KNOCKED_OUT;
         }
     }

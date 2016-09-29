@@ -252,7 +252,6 @@ public class EventManager : MonoBehaviour {
 
         DEVICE_ACTIVATED,
         DEVICE_DEACTIVATED,
-        DEVICE_INFECTION_LEVEL_CHANGED,
 
         BUTTON_HINT,
         FADE_CURTAIN,

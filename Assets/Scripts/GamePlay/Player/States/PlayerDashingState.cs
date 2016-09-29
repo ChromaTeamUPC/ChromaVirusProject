@@ -25,15 +25,15 @@ public class PlayerDashingState : PlayerBaseState
 
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DASHING, EventInfo.emptyInfo);
         rsc.rumbleMng.AddContinousRumble(RumbleId.PLAYER_DASH, bb.player.Id, 1f, 0f);
-        rsc.camerasMng.AddContinousEffect(EffectId.PLAYER_DASH, bb.player.Id, Effects.EFFECT_MOTION_BLUR);
+        rsc.camerasMng.AddContinousEffect(EffectId.PLAYER_DASH, bb.player.Id, 0f, Effects.MOTION_BLUR);
     }
 
     public override void OnStateExit()
     {
         bb.currentSpeed = bb.player.walkSpeed;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DASHED, EventInfo.emptyInfo);
-        rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_DASH);
-        rsc.camerasMng.RemoveContinousEffect(EffectId.PLAYER_DASH);
+        rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_DASH, bb.player.Id);
+        rsc.camerasMng.RemoveContinousEffect(EffectId.PLAYER_DASH, bb.player.Id);
     }
 
     public override PlayerBaseState Update()

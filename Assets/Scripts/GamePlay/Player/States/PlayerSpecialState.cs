@@ -29,7 +29,9 @@ public class PlayerSpecialState : PlayerBaseState {
             bb.player.SpendEnergy(bb.player.specialAttackNecessaryEnergy);
         bb.player.StartSpecialEnergyCharging();
         state = State.MOVING;
-        //elapsedTime = 0f;  
+        //elapsedTime = 0f;
+
+        rsc.camerasMng.AddContinousEffect(EffectId.PLAYER_SPECIAL_CHARGE, 0, 0.075f); 
     }
 
     public override void OnStateExit()
@@ -59,8 +61,10 @@ public class PlayerSpecialState : PlayerBaseState {
                 {
                     bb.horizontalDirection = Vector3.zero;
                     bb.animationTrigger = false;
+                    rsc.camerasMng.RemoveContinousEffect(EffectId.PLAYER_SPECIAL_CHARGE, 0);
                     bb.player.StopSpecialEnergyCharging();
                     bb.player.StartSpecial();
+                    rsc.camerasMng.PlayEffect(0, 0.5f, 0.3f);
 
                     currentPos = bb.player.transform.position;
 

@@ -433,14 +433,14 @@ public class PlayerController : MonoBehaviour
     {
         //TEST
         if (bb.controller.GetControl(InputControlType.Back).IsPressed)
-            rsc.rumbleMng.AddContinousRumble(RumbleId.TEST, 0, weak, strong);
+            rsc.rumbleMng.AddContinousRumble(RumbleId.TEST, playerId, weak, strong);
         else
-            rsc.rumbleMng.RemoveContinousRumble(RumbleId.TEST);
+            rsc.rumbleMng.RemoveContinousRumble(RumbleId.TEST, playerId);
 
         if (bb.controller.GetControl(InputControlType.LeftTrigger).IsPressed)
-            rsc.camerasMng.AddContinousEffect(EffectId.TEST, 0, 0, shake);
+            rsc.camerasMng.AddContinousEffect(EffectId.TEST, 0, shake);
         else
-            rsc.camerasMng.RemoveContinousEffect(EffectId.TEST);
+            rsc.camerasMng.RemoveContinousEffect(EffectId.TEST, playerId);
 
         //END TEST
 
@@ -448,8 +448,8 @@ public class PlayerController : MonoBehaviour
         {
             //Reset flags
             if (!bb.shootPressed)
-                rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_SHOOT);
-            rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_DISINFECT);
+                rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_SHOOT, playerId);
+            rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_DISINFECT, playerId);
 
             bb.ResetFlagVariables();
 
@@ -712,6 +712,7 @@ public class PlayerController : MonoBehaviour
     public void Damaged()
     {
         hurtSoundFx.Play();
+        rsc.camerasMng.PlayEffect(playerId, 0.25f, 0, Effects.GLITCH | Effects.BN);
     }
 
     //Particle Systems methods
@@ -736,8 +737,8 @@ public class PlayerController : MonoBehaviour
     public void EnteredUSB()
     {
         ChangeState(bb.invisibleState);
-        rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_SHOOT);
-        rsc.rumbleMng.AddContinousRumble(RumbleId.PLAYER_USB, Id, 0.2f, 0f);
+        rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_SHOOT, playerId);
+        rsc.rumbleMng.AddContinousRumble(RumbleId.PLAYER_USB, playerId, 0.2f, 0f);
         DeactivateShield();
         trail.enabled = false;
         ui.SetActive(false);
@@ -752,7 +753,7 @@ public class PlayerController : MonoBehaviour
         electricPS.Stop();
         trail.enabled = true;
         ui.SetActive(true);
-        rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_USB);
+        rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_USB, playerId);
         ChangeState(bb.idleState);
     }
 

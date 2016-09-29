@@ -106,13 +106,7 @@ public class DeviceController : MonoBehaviour
         DeviceEventInfo.eventInfo.device = this;
         rsc.eventMng.TriggerEvent(EventManager.EventType.DEVICE_DEACTIVATED, DeviceEventInfo.eventInfo);
         active = false;
-    }
-
-    private void NotifyInfectionChange()
-    {
-        DeviceEventInfo.eventInfo.device = this;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceEventInfo.eventInfo);
-    }
+    }   
 
     public void Infect()
     {
@@ -174,17 +168,17 @@ public class DeviceController : MonoBehaviour
                 if(currentInfection >= level2To3Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL3;
-                    NotifyInfectionChange();
+                    ManageInfectionChange();
                 }
                 else if (currentInfection >= level1To2Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL2;
-                    NotifyInfectionChange();
+                    ManageInfectionChange();
                 }
                 else if (currentInfection >= level0To1Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL1;
-                    NotifyInfectionChange();
+                    ManageInfectionChange();
                 }
                 break;
 
@@ -193,17 +187,17 @@ public class DeviceController : MonoBehaviour
                 if (currentInfection >= level2To3Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL3;
-                    NotifyInfectionChange();
+                    ManageInfectionChange();
                 }
                 else if (currentInfection >= level1To2Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL2;
-                    NotifyInfectionChange();
+                    ManageInfectionChange();
                 }
                 else if (currentInfection < level0To1Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL0;
-                    NotifyInfectionChange();
+                    ManageInfectionChange();
                 }
                 break;
 
@@ -212,17 +206,17 @@ public class DeviceController : MonoBehaviour
                 if (currentInfection >= level2To3Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL3;
-                    NotifyInfectionChange();
+                    ManageInfectionChange();
                 }
                 else if (currentInfection < level0To1Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL0;
-                    NotifyInfectionChange();
+                    ManageInfectionChange();
                 }
                 else if (currentInfection < level1To2Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL1;
-                    NotifyInfectionChange();
+                    ManageInfectionChange();
                 }
                 break;
 
@@ -231,17 +225,17 @@ public class DeviceController : MonoBehaviour
                 if (currentInfection < level0To1Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL0;
-                    NotifyInfectionChange();
+                    ManageInfectionChange();
                 }
                 else if (currentInfection < level1To2Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL1;
-                    NotifyInfectionChange();
+                    ManageInfectionChange();
                 }
                 else if (currentInfection < level2To3Threshold)
                 {
                     infectionLevel = InfectionLevel.LEVEL2;
-                    NotifyInfectionChange();
+                    ManageInfectionChange();
                 }
                 break;
             default:
@@ -260,4 +254,44 @@ public class DeviceController : MonoBehaviour
         else
             return gameObject;
     }
+
+    private void ManageInfectionChange()
+    {
+        StopAllCoroutines();
+        StopInfectionEffects();
+
+        switch (infectionLevel)
+        {
+            case InfectionLevel.LEVEL1:
+                StartCoroutine(ManageInfectionEffects(1f, 3f));
+                break;
+            case InfectionLevel.LEVEL2:
+                StartCoroutine(ManageInfectionEffects(2f, 2f));
+                break;
+            case InfectionLevel.LEVEL3:
+                StartCoroutine(ManageInfectionEffects(3f, 1f, true));
+                break;
+            default:
+                break;
+        }
+    }
+    private void StopInfectionEffects()
+    {
+        rsc.camerasMng.RemoveContinousEffect(EffectId.DEVICE_INFECTION, 0);
+    }
+
+    private IEnumerator ManageInfectionEffects(float timeEnabled, float timeDisabled, bool keepNoise = false)
+    {
+        while (true)
+        {
+            if (keepNoise)
+                rsc.camerasMng.RemoveContinousEffect(EffectId.DEVICE_INFECTION, 0);
+            rsc.camerasMng.AddContinousEffect(EffectId.DEVICE_INFECTION, 0, 0, Effects.BN | Effects.NOISE);
+            yield return new WaitForSeconds(timeEnabled);
+            rsc.camerasMng.RemoveContinousEffect(EffectId.DEVICE_INFECTION, 0);
+            if (keepNoise)
+                rsc.camerasMng.AddContinousEffect(EffectId.DEVICE_INFECTION, 0, 0, Effects.NOISE);
+            yield return new WaitForSeconds(timeDisabled);
+        }
+    }  
 }

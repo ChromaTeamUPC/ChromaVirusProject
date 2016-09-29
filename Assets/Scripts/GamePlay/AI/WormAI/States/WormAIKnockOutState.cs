@@ -35,6 +35,7 @@ public class WormAIKnockOutState : WormAIBaseState
         destinyInRange = false;
         elapsedTime = 0f;
 
+        rsc.camerasMng.PlayEffect(0, 0.3f, 0.3f);
         head.explosion1SoundFx.Play();
         head.SpawnEnergyVoxels();
         head.HeadKnockOut();

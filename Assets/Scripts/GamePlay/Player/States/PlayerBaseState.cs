@@ -598,7 +598,7 @@ public class PlayerBaseState
     {
         if (rsc.debugMng.godMode) return null;
 
-        rsc.camerasMng.PlayEffect(bb.player.Id, bb.player.effectDurationOnColorMismatch, Effects.EFFECT_GLITCH, 0.3f);
+        rsc.camerasMng.PlayEffect(bb.player.Id, bb.player.effectDurationOnColorMismatch, 0.3f, Effects.GLITCH);
         rsc.rumbleMng.Rumble(bb.player.Id, bb.player.effectDurationOnColorMismatch);
 
         if (bb.player.fireSuppresionTimeOnColorMismatch > 0f)

@@ -4,43 +4,19 @@ using System.Collections.Generic;
 
 public struct Effects
 {
-    public const int EFFECT_NONE = 0;
-    public const int EFFECT_GLITCH = 1;
-    public const int EFFECT_MOTION_BLUR = 2;
+    public const int NONE = 0;
+    public const int GLITCH = 1;
+    public const int MOTION_BLUR = 2;
+    public const int BN = 4;
+    public const int NOISE = 8;
 }
 
 public enum EffectId
 {
     TEST,
-    PLAYER_DASH
-}
-
-public class CameraEffectsInfo
-{
-    public float shakeIntensity;
-    public bool glitch;
-    public bool motionBlur;
-
-    public void Reset()
-    {
-        shakeIntensity = 0;
-        glitch = false;
-        motionBlur = false;
-    }
-
-    public void SetMax(CameraEffectsInfo e1, CameraEffectsInfo e2)
-    {
-        shakeIntensity = Mathf.Max(e1.shakeIntensity, e2.shakeIntensity);
-        glitch = (e1.glitch || e2.glitch);
-        motionBlur = (e1.motionBlur || e2.motionBlur);
-    }
-
-    public void Copy(CameraEffectsInfo e)
-    {
-        shakeIntensity = e.shakeIntensity;
-        glitch = e.glitch;
-        motionBlur = e.motionBlur;
-    }
+    PLAYER_DASH,
+    PLAYER_SPECIAL_CHARGE,
+    DEVICE_INFECTION
 }
 
 public class CamerasManager : MonoBehaviour
@@ -71,7 +47,39 @@ public class CamerasManager : MonoBehaviour
     private CameraController entryCameraController;
     private CameraController godCameraController;
 
-    private class EffectInfo
+    public class CameraEffectsInfo
+    {
+        public float shakeIntensity;
+        public int effectSet;
+
+        public void Reset()
+        {
+            shakeIntensity = 0;
+            effectSet = 0;
+        }
+
+        public void SetMax(CameraEffectsInfo e1, CameraEffectsInfo e2)
+        {
+            shakeIntensity = Mathf.Max(e1.shakeIntensity, e2.shakeIntensity);
+
+            effectSet = e1.effectSet | e2.effectSet;
+        }
+
+        public void SetMax(EffectInfo e)
+        {
+            shakeIntensity = e.GetMaxShakeValue(shakeIntensity);
+
+            effectSet |= e.effectSet;
+        }
+
+        public void Copy(CameraEffectsInfo e)
+        {
+            shakeIntensity = e.shakeIntensity;
+            effectSet = e.effectSet;
+        }
+    }
+
+    public class EffectInfo
     {
         public int player = 0;
         public int effectSet = 0;
@@ -128,7 +136,7 @@ public class CamerasManager : MonoBehaviour
     }
 
     private List<TemporalEffectInfo> temporalEffectList = new List<TemporalEffectInfo>();
-    private Dictionary<EffectId, ContinousEffectInfo> continousEffectList = new Dictionary<EffectId, ContinousEffectInfo>();
+    private Dictionary<string, ContinousEffectInfo> continousEffectList = new Dictionary<string, ContinousEffectInfo>();
 
     private CameraEffectsInfo p0Effects = new CameraEffectsInfo();
     private CameraEffectsInfo p1Effects = new CameraEffectsInfo();
@@ -248,9 +256,7 @@ public class CamerasManager : MonoBehaviour
                                 break;
                         }
 
-                        currentPlayerEffects.shakeIntensity = effect.GetMaxShakeValue(currentPlayerEffects.shakeIntensity);
-                        currentPlayerEffects.glitch |= ((effect.effectSet & Effects.EFFECT_GLITCH) > 0);
-                        currentPlayerEffects.motionBlur |= ((effect.effectSet & Effects.EFFECT_MOTION_BLUR) > 0);
+                        currentPlayerEffects.SetMax(effect);
                     }
                     else
                     {
@@ -275,10 +281,7 @@ public class CamerasManager : MonoBehaviour
                             currentPlayerEffects = p2Effects;
                             break;
                     }
-
-                    currentPlayerEffects.shakeIntensity = effect.GetMaxShakeValue(currentPlayerEffects.shakeIntensity);
-                    currentPlayerEffects.glitch |= ((effect.effectSet & Effects.EFFECT_GLITCH) > 0);
-                    currentPlayerEffects.motionBlur |= ((effect.effectSet & Effects.EFFECT_MOTION_BLUR) > 0);
+                    currentPlayerEffects.SetMax(effect);
                 }
 
                 if (rsc.gameInfo.numberOfPlayers == 1)
@@ -321,7 +324,7 @@ public class CamerasManager : MonoBehaviour
     }
 
 
-    public void PlayEffect(int player = 0, float duration = 0.5f, int effects = Effects.EFFECT_NONE, float shake = 0f, float startFading = -1f)
+    public void PlayEffect(int player = 0, float duration = 0.5f, float shake = 0f, int effects = Effects.NONE, float startFading = -1f)
     {
         if (!effectsActive) return;
 
@@ -330,20 +333,24 @@ public class CamerasManager : MonoBehaviour
         temporalEffectList.Add(effect);
     }
 
-    public void AddContinousEffect(EffectId effectId, int player = 0, int effects = Effects.EFFECT_NONE, float shake = 0f)
+    public void AddContinousEffect(EffectId effectId, int player = 0, float shake = 0f, int effects = Effects.NONE)
     {
         if (!effectsActive) return;
 
-        if (!continousEffectList.ContainsKey(effectId))
+        string key = effectId.ToString() + player.ToString();
+
+        if (!continousEffectList.ContainsKey(key))
         {
             ContinousEffectInfo effect = new ContinousEffectInfo(player, effects, shake, effectId);
-            continousEffectList.Add(effectId, effect);
+            continousEffectList.Add(key, effect);
         }
     }
 
-    public void RemoveContinousEffect(EffectId effectId)
+    public void RemoveContinousEffect(EffectId effectId, int player)
     {
-        continousEffectList.Remove(effectId);
+        string key = effectId.ToString() + player.ToString();
+
+        continousEffectList.Remove(key);
 
         //If that was the last effect, stop all effects
         if (temporalEffectList.Count == 0 && continousEffectList.Count == 0)
