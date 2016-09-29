@@ -120,6 +120,8 @@ public class RumbleManager : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.GAME_RESUMED, GameResumed);
         }
         //Debug.Log("Rumble Manager destroyed");
+        if (InputManager.Devices.Count >= 1) InputManager.Devices[0].Vibrate(0f, 0f);
+        if (InputManager.Devices.Count >= 2) InputManager.Devices[1].Vibrate(0f, 0f);
     }
 
     private void ClearAllRumbles(EventInfo eventInfo)
