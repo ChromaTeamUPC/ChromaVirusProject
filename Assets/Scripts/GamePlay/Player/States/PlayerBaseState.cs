@@ -283,7 +283,7 @@ public class PlayerBaseState
 
                 if (Time.time > bb.nextFire)
                 {
-                    if(Time.time - bb.nextFire > bb.player.fireRate)
+                    if(Time.time - bb.nextFire > Time.deltaTime)
                         bb.nextFire = Time.time + bb.player.fireRate;
                     else
                         bb.nextFire = bb.nextFire + bb.player.fireRate;
@@ -600,6 +600,8 @@ public class PlayerBaseState
 
         PlayerEventInfo.eventInfo.player = bb.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerEventInfo.eventInfo);
+        //rsc.camerasMng.effects.PlayEffect(0, bb.player.effectDurationOnColorMismatch, 0.3f);
+        //rsc.rumbleMng.Rumble(0, bb.player.effectDurationOnColorMismatch);
 
         if (bb.player.fireSuppresionTimeOnColorMismatch > 0f)
         {
