@@ -430,17 +430,17 @@ public class PlayerController : MonoBehaviour
     {
         //TEST
         if (bb.controller.GetControl(InputControlType.Back).IsPressed)
-            rsc.rumbleMng.AddContinousRumble(RumbleType.TEST, 0, weak, strong);
+            rsc.rumbleMng.AddContinousRumble(RumbleId.TEST, 0, weak, strong);
         else
-            rsc.rumbleMng.RemoveContinousRumble(RumbleType.TEST);
+            rsc.rumbleMng.RemoveContinousRumble(RumbleId.TEST);
         //END TEST
 
         if (bb.active && bb.alive)
         {
             //Reset flags
             if (!bb.shootPressed)
-                rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_SHOOT);
-            rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_DISINFECT);
+                rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_SHOOT);
+            rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_DISINFECT);
 
             bb.ResetFlagVariables();
 
@@ -727,8 +727,8 @@ public class PlayerController : MonoBehaviour
     public void EnteredUSB()
     {
         ChangeState(bb.invisibleState);
-        rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_SHOOT);
-        rsc.rumbleMng.AddContinousRumble(RumbleType.PLAYER_USB, Id, 0.2f, 0f);
+        rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_SHOOT);
+        rsc.rumbleMng.AddContinousRumble(RumbleId.PLAYER_USB, Id, 0.2f, 0f);
         DeactivateShield();
         trail.enabled = false;
         ui.SetActive(false);
@@ -743,7 +743,7 @@ public class PlayerController : MonoBehaviour
         electricPS.Stop();
         trail.enabled = true;
         ui.SetActive(true);
-        rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_USB);
+        rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_USB);
         ChangeState(bb.idleState);
     }
 

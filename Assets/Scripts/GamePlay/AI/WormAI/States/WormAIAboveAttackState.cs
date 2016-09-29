@@ -126,8 +126,7 @@ public class WormAIAboveAttackState : WormAIBaseState
                         headTrf.position.y < destiny.transform.position.y) //Safety check. When jump is too fast distance can never be less than range distance
                     {
                         destinyInRange = true;
-                        WormEventInfo.eventInfo.wormBb = bb;
-                        rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_ATTACK, WormEventInfo.eventInfo);
+                        AttackActions();
                         destiny.WormAboveAttackStart();
                     }
                 }

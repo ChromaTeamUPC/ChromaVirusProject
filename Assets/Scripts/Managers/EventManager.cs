@@ -187,9 +187,6 @@ public class EventManager : MonoBehaviour {
         PLAYER_DYING,
         PLAYER_DIED,
         PLAYER_WIN,
-        PLAYER_COLOR_MISMATCH,
-        PLAYER_COLOR_MISMATCH_START,
-        PLAYER_COLOR_MISMATCH_END,
         PLAYER_OUT_OF_ZONE,
 
         KILL_ENEMIES,
@@ -223,8 +220,6 @@ public class EventManager : MonoBehaviour {
         WORM_SECTION_ACTIVATED,
         WORM_SECTION_COLOR_CHANGED,
         WORM_SECTION_DESTROYED,
-
-        WORM_ATTACK,
 
         METEOR_RAIN_START,
         METEOR_RAIN_STARTED,

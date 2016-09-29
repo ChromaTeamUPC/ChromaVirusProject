@@ -203,7 +203,7 @@ public class PlayerBaseState
 
         if (bb.greenPressed)
         {
-            rsc.rumbleMng.AddContinousRumble(RumbleType.PLAYER_DISINFECT, bb.player.Id, 0.2f, 0f);
+            rsc.rumbleMng.AddContinousRumble(RumbleId.PLAYER_DISINFECT, bb.player.Id, 0.2f, 0f);
             bb.device.Disinfect();
         }
     }
@@ -279,7 +279,7 @@ public class PlayerBaseState
         {
             if (bb.canShoot)
             {
-                rsc.rumbleMng.AddContinousRumble(RumbleType.PLAYER_SHOOT, bb.player.Id, 0.0f, 0.1f);
+                rsc.rumbleMng.AddContinousRumble(RumbleId.PLAYER_SHOOT, bb.player.Id, 0.0f, 0.1f);
 
                 if (Time.time > bb.nextFire)
                 {
@@ -598,10 +598,8 @@ public class PlayerBaseState
     {
         if (rsc.debugMng.godMode) return null;
 
-        PlayerEventInfo.eventInfo.player = bb.player;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerEventInfo.eventInfo);
-        //rsc.camerasMng.effects.PlayEffect(0, bb.player.effectDurationOnColorMismatch, 0.3f);
-        //rsc.rumbleMng.Rumble(0, bb.player.effectDurationOnColorMismatch);
+        rsc.camerasMng.PlayEffect(bb.player.Id, bb.player.effectDurationOnColorMismatch, Effects.EFFECT_GLITCH, 0.3f);
+        rsc.rumbleMng.Rumble(bb.player.Id, bb.player.effectDurationOnColorMismatch);
 
         if (bb.player.fireSuppresionTimeOnColorMismatch > 0f)
         {
@@ -626,16 +624,11 @@ public class PlayerBaseState
     protected void StartColorMismatch()
     {
         bb.canShoot = false;
-        PlayerEventInfo.eventInfo.player = bb.player;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_COLOR_MISMATCH_START, PlayerEventInfo.eventInfo);
     }
 
     protected void EndColorMismatch()
     {
         bb.canShoot = true;
         bb.player.StopNoShoot();
-        PlayerEventInfo.eventInfo.player = bb.player;
-        rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_COLOR_MISMATCH_END, PlayerEventInfo.eventInfo);
-
     }
 }

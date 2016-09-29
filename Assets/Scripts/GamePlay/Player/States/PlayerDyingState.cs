@@ -26,7 +26,7 @@ public class PlayerDyingState : PlayerBaseState
 
         subState = SubState.WAITING_ANIMATION;
 
-        rsc.rumbleMng.AddContinousRumble(RumbleType.PLAYER_DYING, bb.player.Id, 0.2f, 0f);
+        rsc.rumbleMng.AddContinousRumble(RumbleId.PLAYER_DYING, bb.player.Id, 0.2f, 0f);
 
         PlayerEventInfo.eventInfo.player = bb.player;
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_DYING, PlayerEventInfo.eventInfo);
@@ -48,7 +48,7 @@ public class PlayerDyingState : PlayerBaseState
 
                 if (bb.animationEnded)
                 {
-                    rsc.rumbleMng.RemoveContinousRumble(RumbleType.PLAYER_DYING);
+                    rsc.rumbleMng.RemoveContinousRumble(RumbleId.PLAYER_DYING);
                     rsc.rumbleMng.Rumble(bb.player.Id, 0.5f, 0.5f, 0.5f);
                    
                     bb.blinkController.StopPreviousBlinkings();

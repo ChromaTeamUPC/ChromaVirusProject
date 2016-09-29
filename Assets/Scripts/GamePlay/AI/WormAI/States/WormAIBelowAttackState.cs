@@ -106,8 +106,8 @@ public class WormAIBelowAttackState : WormAIBaseState
                     head.SetVisible(true);
 
                     origin.WormBelowAttackStart();
-                    WormEventInfo.eventInfo.wormBb = bb;
-                    rsc.eventMng.TriggerEvent(EventManager.EventType.WORM_ATTACK, WormEventInfo.eventInfo);
+
+                    AttackActions();
 
                     bb.isHeadOverground = true;
                     subState = SubState.JUMPING;

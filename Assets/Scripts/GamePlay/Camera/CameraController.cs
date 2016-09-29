@@ -1,10 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections;
+using InControl;
 using UnityStandardAssets.ImageEffects;
 using VideoGlitches;
 
-public class MainCameraController : MonoBehaviour {
+public class CameraController : MonoBehaviour 
+{
+    public enum CameraType
+    {
+        ENTRY,
+        NORMAL,
+        GOD
+    }
 
+    public CameraType type;
+
+    [Header("Entry Camera Settings")]
+    public bool skippeable = true;
+    private bool skipped = false;
+    private Animator anim;
+
+    [Header("Main Camera Settings")]
+    public bool smoothMovement = true;
+    public float smoothing = 5f;
+    public float topViewportLimit = 0.9f;
+    public float bottomViewportLimit = 0.1f;
+    public float leftViewportLimit = 0.1f;
+    public float rightViewportLimit = 0.9f;
+    private float maxHorizontalDistance;
+    private float maxVerticalDistance;
+    private float camRayLength = 100f;
+
+    private Vector3 smoothedPosition;
+
+    private Vector3 offset;
+    private Camera thisCamera;
     private enum Horizontal
     {
         LEFT,
@@ -16,7 +46,6 @@ public class MainCameraController : MonoBehaviour {
         TOP,
         BOTTOM
     }
-
     private Transform target1;
     private Transform target2;
     private PlayerController player1;
@@ -24,39 +53,35 @@ public class MainCameraController : MonoBehaviour {
     private Vector3 target1LastPos;
     private Vector3 target2LastPos;
 
-    public bool smoothMovement = false;
-    public float smoothing = 5f;
-    public float defaultShakeMaximum = 0.3f;
-    public float topViewportLimit = 0.9f;
-    public float bottomViewportLimit = 0.1f;
-    public float leftViewportLimit = 0.1f;
-    public float rightViewportLimit = 0.9f;
-    private float maxHorizontalDistance;
-    private float maxVerticalDistance;
-    private float camRayLength = 100f;
+    [Header("God Camera Settings")]
+    public bool applyEffectsInGodCamera = true;
+    public int speed = 10;
 
-    private Vector3 smoothedPosition;
+    public float minY = -90.0f;
+    public float maxY = 90.0f;
 
-    private MotionBlur motionBlur;
+    public float sens = 50.0f;
+
+    float rotationY = 0.0f;
+    float rotationX = 0.0f;   
+
+    //Effects control
+    private float shakeIntensity;
+    private BlurOptimized blur;
     private VideoGlitchSpectrumOffset glitch;
+    private MotionBlur motionBlur;
     private NoiseAndGrain noise;
     private Grayscale grayScale;
 
-    private Vector3 offset;
-    private Camera thisCamera;
-
-    private float colorMismatchDuration;
-    private float shakeDuration;
-    private float currentShakeMaximum;
-
-    private bool pauseEffects;
-
-
+    private DebugKeys keys;
+    private bool viewWireFrame = false;
 
     void Awake()
     {
-        motionBlur = GetComponent<MotionBlur>();
+        anim = GetComponent<Animator>();
+        blur = GetComponent<BlurOptimized>();
         glitch = GetComponent<VideoGlitchSpectrumOffset>();
+        motionBlur = GetComponent<MotionBlur>();
         noise = GetComponent<NoiseAndGrain>();
         grayScale = GetComponent<Grayscale>();
 
@@ -64,12 +89,11 @@ public class MainCameraController : MonoBehaviour {
         maxVerticalDistance = 1 - bottomViewportLimit - (1 - topViewportLimit);
     }
 
-    void Start()
-    {
+    void Start () 
+	{
         thisCamera = gameObject.GetComponent<Camera>();
         offset = rsc.gameInfo.gameCameraOffset;
         smoothedPosition = transform.position;
-        //gameObject.transform.rotation = rsc.gameInfo.gameCameraRotation;
 
         target1 = rsc.gameInfo.player1.transform;
         player1 = rsc.gameInfo.player1Controller;
@@ -77,85 +101,156 @@ public class MainCameraController : MonoBehaviour {
         target2 = rsc.gameInfo.player2.transform;
         player2 = rsc.gameInfo.player2Controller;
 
-        colorMismatchDuration = 0f;
-        shakeDuration = 0f;
-        currentShakeMaximum = 0f;
-        pauseEffects = false;
+        keys = rsc.debugMng.keys;
 
-        rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DASHING, PlayerStartDash);
-        rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DASHED, PlayerEndDash);
-        rsc.eventMng.StartListening(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerColorMismatch);
-        rsc.eventMng.StartListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
-        rsc.eventMng.StartListening(EventManager.EventType.WORM_ATTACK, WormAttack);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_PAUSED, GamePaused);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESUMED, GameResumed);
         rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_OPENED, GamePaused);
         rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_CLOSED, GameResumed);
         rsc.eventMng.StartListening(EventManager.EventType.SCORE_OPENING, GamePaused);
         //rsc.eventMng.StartListening(EventManager.EventType.SCORE_CLOSED, GameResumed);
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_PAUSED, GamePaused);
-        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESUMED, GameResumed);
+        rsc.eventMng.StartListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
+
+        if (type == CameraType.ENTRY)
+        {
+            CutSceneEventInfo.eventInfo.skippeable = skippeable;
+            rsc.eventMng.TriggerEvent(EventManager.EventType.START_CUT_SCENE, CutSceneEventInfo.eventInfo);
+        }
     }
 
     void OnDestroy()
     {
         if (rsc.eventMng != null)
         {
-            rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DASHING, PlayerStartDash);
-            rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DASHED, PlayerEndDash);
-            rsc.eventMng.StopListening(EventManager.EventType.PLAYER_COLOR_MISMATCH, PlayerColorMismatch);
-            rsc.eventMng.StopListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
-            rsc.eventMng.StopListening(EventManager.EventType.WORM_ATTACK, WormAttack);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_PAUSED, GamePaused);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESUMED, GameResumed);
             rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_OPENED, GamePaused);
             rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_CLOSED, GameResumed);
             rsc.eventMng.StopListening(EventManager.EventType.SCORE_OPENING, GamePaused);
             //rsc.eventMng.StopListening(EventManager.EventType.SCORE_CLOSED, GameResumed);
-            rsc.eventMng.StopListening(EventManager.EventType.GAME_PAUSED, GamePaused);
-            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESUMED, GameResumed);
+            rsc.eventMng.StopListening(EventManager.EventType.DEVICE_INFECTION_LEVEL_CHANGED, DeviceInfectionChanged);
         }
     }
 
-    private void PlayerStartDash(EventInfo eventInfo)
+    void OnPreRender()
     {
-        if(rsc.gameMng.motionBlur)
-            motionBlur.enabled = true;
+        if (viewWireFrame)
+            GL.wireframe = true;
     }
 
-    private void PlayerEndDash(EventInfo eventInfo)
+    void OnPostRender()
     {
-        if (rsc.gameMng.motionBlur)
-            motionBlur.enabled = false;
-    }
-
-    private void PlayerColorMismatch(EventInfo eventInfo)
-    {
-        PlayerEventInfo info = (PlayerEventInfo)eventInfo;
-
-        colorMismatchDuration = info.player.effectDurationOnColorMismatch;
-        shakeDuration = info.player.effectDurationOnColorMismatch;
-
-        if (colorMismatchDuration > 0)
-            glitch.enabled = true;
-
-        rsc.rumbleMng.Rumble(0, shakeDuration);
-    }
-
-    private void WormAttack(EventInfo eventInfo)
-    {
-        WormEventInfo info = (WormEventInfo)eventInfo;
-
-        shakeDuration = info.wormBb.attackRumbleDuration;
-        rsc.rumbleMng.Rumble(0, shakeDuration);
+        GL.wireframe = false;
     }
 
     private void GamePaused(EventInfo eventInfo)
     {
-        pauseEffects = true;
+        blur.enabled = true;
     }
 
-    private void GameResumed(EventInfo eventInfo)
+    private void GameResumed(EventInfo evetInfo)
     {
-        pauseEffects = false;
+        blur.enabled = false;
     }
 
+    public void SetEffects(CameraEffectsInfo effects)
+    {
+        if (type == CameraType.GOD && !applyEffectsInGodCamera) return;
+
+        shakeIntensity = effects.shakeIntensity;
+        if (glitch != null) glitch.enabled = effects.glitch;
+        if (rsc.gameMng.motionBlur && motionBlur != null) motionBlur.enabled = effects.motionBlur;
+    }
+  
+    void Update () 
+	{
+        switch (type)
+        {
+            case CameraType.ENTRY:
+                if (rsc.gameMng.State == GameManager.GameState.STARTED)
+                {
+                    if (skippeable && InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action2))
+                    {
+                        skipped = true;
+                        rsc.eventMng.TriggerEvent(EventManager.EventType.CAMERA_ANIMATION_ENDED, EventInfo.emptyInfo);
+                    }
+                }
+                break;
+
+            case CameraType.NORMAL:
+                break;
+
+            case CameraType.GOD:               
+                break;
+
+            default:
+                break;
+        }
+
+        if (Input.GetKeyDown(keys.toggleWireframeKey))
+            viewWireFrame = !viewWireFrame;
+    }
+
+    void LateUpdate()
+    {
+        switch (type)
+        {
+            case CameraType.ENTRY:
+                if (shakeIntensity > 0)
+                {
+                    transform.position = transform.position + Random.insideUnitSphere * shakeIntensity;
+                }
+                break;
+
+            case CameraType.NORMAL:
+                Vector3 newCamPos = GetCamTargetPosition();
+                if (smoothMovement)
+                    smoothedPosition = Vector3.Lerp(smoothedPosition, newCamPos, smoothing * Time.deltaTime);
+                else
+                    smoothedPosition = newCamPos;
+
+                //Save players position for the next frame
+                target1LastPos = target1.position;
+                target2LastPos = target2.position;
+
+                if (shakeIntensity > 0)
+                    transform.position = smoothedPosition + Random.insideUnitSphere * shakeIntensity;
+                else
+                    transform.position = smoothedPosition;
+                break;
+
+            case CameraType.GOD:
+                if (Input.GetKey(keys.godCameraRight))
+                {
+                    Vector3 displacement = transform.right * Time.deltaTime * speed;
+                    transform.position = transform.position + displacement;
+                }
+                else if (Input.GetKey(keys.godCameraLeft))
+                {
+                    Vector3 displacement = transform.right * Time.deltaTime * speed * -1;
+                    transform.position = transform.position + displacement;
+                }
+                if (Input.GetKey(keys.godCameraForward))
+                {
+                    Vector3 displacement = transform.forward * Time.deltaTime * speed;
+                    transform.position = transform.position + displacement;
+                }
+                else if (Input.GetKey(keys.godCameraBackward))
+                {
+                    Vector3 displacement = transform.forward * Time.deltaTime * speed * -1;
+                    transform.position = transform.position + displacement;
+                }
+
+                // camera rotation with mouse coordinates
+                rotationX += Input.GetAxis("Mouse X") * sens * Time.deltaTime;
+                rotationY += Input.GetAxis("Mouse Y") * sens * Time.deltaTime;
+                rotationY = Mathf.Clamp(rotationY, minY, maxY);
+                transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
+                break;
+        }
+    }
+
+    #region DEVICE INFECTED EFFECTS
     private void DeviceInfectionChanged(EventInfo eventInfo)
     {
         DeviceEventInfo info = (DeviceEventInfo)eventInfo;
@@ -225,18 +320,34 @@ public class MainCameraController : MonoBehaviour {
             yield return new WaitForSeconds(1f);
         }
     }
+    #endregion
 
+    #region ENTRY CAMERA METHODS
+    public void SetLevelAnimation(int levelAnimation)
+    {
+        if (type == CameraType.ENTRY)
+            anim.SetInteger("LevelAnim", levelAnimation);
+    }
+
+    public void AnimationEnded()
+    {
+        if (!skipped)
+            rsc.eventMng.TriggerEvent(EventManager.EventType.CAMERA_ANIMATION_ENDED, EventInfo.emptyInfo);
+    }
+    #endregion
+
+    #region NORMAL CAMERA METHODS
     public Vector3 GetCamTargetPosition()
     {
         //1 player: follow him until last life lost
         if (rsc.gameInfo.numberOfPlayers == 1)
         {
-            if(player1.IsPlaying)
+            if (player1.IsPlaying)
                 return target1.position + offset;
         }
         //2 players
         else
-        {           
+        {
             if (player1.IsPlaying || player2.IsPlaying)
             {
                 if (player1.IsPlaying && !player2.IsPlaying)
@@ -261,7 +372,7 @@ public class MainCameraController : MonoBehaviour {
                         return target1.position + offset;
                     }
 
-                    return CheckPlayersAndCameraPosition();                   
+                    return CheckPlayersAndCameraPosition();
                 }
             }
         }
@@ -270,7 +381,7 @@ public class MainCameraController : MonoBehaviour {
     }
 
     private Vector3 CheckPlayersAndCameraPosition()
-    {      
+    {
         Vector3 p1NewViewportPos = thisCamera.WorldToViewportPoint(target1.position);
         Vector3 p2NewViewportPos = thisCamera.WorldToViewportPoint(target2.position);
 
@@ -328,7 +439,7 @@ public class MainCameraController : MonoBehaviour {
             //If both players are outside horizontal limits simply restrict to current limit
             if (leftNewViewportPos.x < leftViewportLimit && rightNewViewportPos.x > rightViewportLimit)
             {
-                if(leftMoved)
+                if (leftMoved)
                 {
                     leftNewViewportPos.x = Mathf.Max(leftViewportLimit, leftNewViewportPos.x);
                 }
@@ -343,7 +454,7 @@ public class MainCameraController : MonoBehaviour {
             {
                 float leftTotalOffset = Mathf.Abs(leftViewportLimit - leftNewViewportPos.x);
                 float rightTotalOffset = Mathf.Abs(rightViewportLimit - rightNewViewportPos.x);
-                
+
                 if (rightTotalOffset < leftTotalOffset)
                 {
                     float newLeftLimit = leftNewViewportPos.x + (leftTotalOffset - rightTotalOffset);
@@ -527,7 +638,7 @@ public class MainCameraController : MonoBehaviour {
             if (p1Horizontal == Horizontal.LEFT)
             {
                 newPlayer1Pos.x = leftNewViewportPos.x;
-                newPlayer2Pos.x = rightNewViewportPos.x;          
+                newPlayer2Pos.x = rightNewViewportPos.x;
             }
             else
             {
@@ -607,14 +718,9 @@ public class MainCameraController : MonoBehaviour {
         return true;
     }
 
-    public void SetCamPosition()
-    {
-        transform.position = GetCamTargetPosition();
-    }
-
     void OnGUI()
     {
-        if (rsc.debugMng.showPlayerLimits)
+        if (type == CameraType.NORMAL && rsc.debugMng.showPlayerLimits)
         {
             GUI.color = Color.red;
 
@@ -708,55 +814,5 @@ public class MainCameraController : MonoBehaviour {
 
         }
     }
-
-    void Update()
-    {
-        if (colorMismatchDuration > 0)
-        {
-            colorMismatchDuration -= Time.deltaTime; 
-            
-            if(colorMismatchDuration <= 0)
-            {
-                colorMismatchDuration = 0f;
-                glitch.enabled = false;
-            }      
-        }
-    }
-	
-	// Update is called once per frame
-	void LateUpdate () 
-    {
-        if (!pauseEffects)
-        {
-            Vector3 newCamPos = GetCamTargetPosition();
-            if (smoothMovement)
-                smoothedPosition = Vector3.Lerp(smoothedPosition, newCamPos, smoothing * Time.deltaTime);
-            else
-                smoothedPosition = newCamPos;
-
-            if (shakeDuration > 0)
-            {
-                transform.position = smoothedPosition + Random.insideUnitSphere * (currentShakeMaximum > 0 ? currentShakeMaximum : defaultShakeMaximum);
-
-                shakeDuration -= Time.deltaTime;
-
-                if (shakeDuration <= 0)
-                {
-                    shakeDuration = 0f;
-                    currentShakeMaximum = 0f;
-                }
-            }
-            else
-            {
-                transform.position = smoothedPosition;
-            }
-            //transform.position = smoothedPosition; 
-        }
-
-        //Save players position for the next frame
-        target1LastPos = target1.position;
-        target2LastPos = target2.position;      	
-	}
-
-    
+    #endregion
 }

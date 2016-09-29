@@ -27,6 +27,13 @@ public class WormAIBaseState
         return null;
     }
 
+    virtual protected void AttackActions()
+    {
+        //rsc.camerasMng.PlayEffect(0, bb.attackRumbleDuration, 0, 0.3f);
+        rsc.camerasMng.PlayEffect(0, 5, 0, 1f);
+        rsc.rumbleMng.Rumble(0, bb.attackRumbleDuration);
+    }
+
     public virtual WormAIBaseState ImpactedByShot(ChromaColor shotColor, float damage, PlayerController player)
     {
         return null;

@@ -1,7 +1,50 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class CamerasManager : MonoBehaviour {
+public struct Effects
+{
+    public const int EFFECT_NONE = 0;
+    public const int EFFECT_GLITCH = 1;
+    public const int EFFECT_MOTION_BLUR = 2;
+}
+
+public enum EffectId
+{
+    TEST,
+    PLAYER_DASH
+}
+
+public class CameraEffectsInfo
+{
+    public float shakeIntensity;
+    public bool glitch;
+    public bool motionBlur;
+
+    public void Reset()
+    {
+        shakeIntensity = 0;
+        glitch = false;
+        motionBlur = false;
+    }
+
+    public void SetMax(CameraEffectsInfo e1, CameraEffectsInfo e2)
+    {
+        shakeIntensity = Mathf.Max(e1.shakeIntensity, e2.shakeIntensity);
+        glitch = (e1.glitch || e2.glitch);
+        motionBlur = (e1.motionBlur || e2.motionBlur);
+    }
+
+    public void Copy(CameraEffectsInfo e)
+    {
+        shakeIntensity = e.shakeIntensity;
+        glitch = e.glitch;
+        motionBlur = e.motionBlur;
+    }
+}
+
+public class CamerasManager : MonoBehaviour
+{
 
     [HideInInspector]
     public GameObject currentCameraObj;
@@ -18,28 +61,257 @@ public class CamerasManager : MonoBehaviour {
 
     private float camRayLength = 100f;
 
+    //Effects control
+    [HideInInspector]
+    public bool effectsActive;
+
+    private bool pauseEffects;
+
+    private CameraController mainCameraController;
+    private CameraController entryCameraController;
+    private CameraController godCameraController;
+
+    private class EffectInfo
+    {
+        public int player = 0;
+        public int effectSet = 0;
+        public float shakeIntensity = 0f;
+
+        public EffectInfo(int pl, int set, float shake)
+        {
+            player = pl;
+            effectSet = set;
+            shakeIntensity = shake;
+        }
+
+        public virtual float GetMaxShakeValue(float reference)
+        {
+            return Mathf.Max(shakeIntensity, reference);
+        }
+    }
+
+    private class TemporalEffectInfo : EffectInfo
+    {
+        public float duration = 0f;
+        public float startFadingTime = 0f;
+
+        private float powerFactor;
+
+        public TemporalEffectInfo(int pl, int set, float shake, float dur, float fade) : base(pl, set, shake)
+        {
+            duration = dur;
+            startFadingTime = fade;
+            if (startFadingTime <= 0)
+                startFadingTime = 0.1f;
+        }
+
+        public void Update()
+        {
+            duration -= Time.deltaTime;
+            powerFactor = Mathf.Clamp(duration / startFadingTime, 0f, 1f);
+        }
+
+        public override float GetMaxShakeValue(float reference)
+        {
+            return Mathf.Max(shakeIntensity * powerFactor, reference);
+        }
+    }
+
+    private class ContinousEffectInfo : EffectInfo
+    {
+        public EffectId id;
+
+        public ContinousEffectInfo(int pl, int set, float shake, EffectId effectId) : base(pl, set, shake)
+        {
+            id = effectId;
+        }
+    }
+
+    private List<TemporalEffectInfo> temporalEffectList = new List<TemporalEffectInfo>();
+    private Dictionary<EffectId, ContinousEffectInfo> continousEffectList = new Dictionary<EffectId, ContinousEffectInfo>();
+
+    private CameraEffectsInfo p0Effects = new CameraEffectsInfo();
+    private CameraEffectsInfo p1Effects = new CameraEffectsInfo();
+    private CameraEffectsInfo p2Effects = new CameraEffectsInfo();
+
+    private CameraEffectsInfo currentPlayerEffects;
+    private CameraEffectsInfo finalEffects = new CameraEffectsInfo();
+
     void Awake()
     {
+        effectsActive = true;
+
         currentCameraObj = mainCameraObj;
         currentCamera = currentCameraObj.GetComponent<Camera>();
+
+        mainCameraController = mainCameraObj.GetComponent<CameraController>();
+        entryCameraController = entryCameraObj.GetComponent<CameraController>();
+        godCameraController = godCameraObj.GetComponent<CameraController>();
 
         //We are sure rsc is created because we forced script execution order from unity editor - project settings
         rsc.camerasMng = this;
     }
 
+    void Start()
+    {
+        keys = rsc.debugMng.keys;
+
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, ClearAllEffects);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_LOADED, ClearAllEffects);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_UNLOADED, ClearAllEffects);
+        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
+        rsc.eventMng.StartListening(EventManager.EventType.TUTORIAL_CLOSED, TutorialClosed);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_PAUSED, GamePaused);
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESUMED, GameResumed);
+    }
+
     void OnDestroy()
     {
+        if (rsc.eventMng != null)
+        {
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, ClearAllEffects);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_LOADED, ClearAllEffects);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_UNLOADED, ClearAllEffects);
+            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_OPENED, TutorialOpened);
+            rsc.eventMng.StopListening(EventManager.EventType.TUTORIAL_CLOSED, TutorialClosed);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_PAUSED, GamePaused);
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESUMED, GameResumed);
+        }
+
         rsc.camerasMng = null;
     }
 
-    void Start()
-    { 
-        keys = rsc.debugMng.keys;
+    private void ClearAllEffects(EventInfo eventInfo)
+    {
+        pauseEffects = false;
+        temporalEffectList.Clear();
+        continousEffectList.Clear();
+
+        finalEffects.Reset();
+        mainCameraController.SetEffects(finalEffects);
+        entryCameraController.SetEffects(finalEffects);
+        godCameraController.SetEffects(finalEffects);
+    }
+
+    private void TutorialOpened(EventInfo eventInfo)
+    {
+        pauseEffects = true;
+    }
+
+    private void TutorialClosed(EventInfo eventInfo)
+    {
+        pauseEffects = false;
+    }
+
+    private void GamePaused(EventInfo eventInfo)
+    {
+        pauseEffects = true;
+    }
+
+    private void GameResumed(EventInfo eventInfo)
+    {
+        pauseEffects = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (temporalEffectList.Count > 0 || continousEffectList.Count > 0)
+        {
+            p0Effects.Reset();
+            p1Effects.Reset();
+            p2Effects.Reset();
+
+            finalEffects.Reset();
+
+            if (!pauseEffects)
+            {
+                for (int i = temporalEffectList.Count - 1; i >= 0; --i)
+                {
+                    TemporalEffectInfo effect = temporalEffectList[i];
+                    effect.Update();
+
+                    if (effect.duration > 0)
+                    {
+                        switch (effect.player)
+                        {
+                            case 0:
+                                currentPlayerEffects = p0Effects;
+                                break;
+
+                            case 1:
+                                currentPlayerEffects = p1Effects;
+                                break;
+
+                            case 2:
+                                currentPlayerEffects = p2Effects;
+                                break;
+                        }
+
+                        currentPlayerEffects.shakeIntensity = effect.GetMaxShakeValue(currentPlayerEffects.shakeIntensity);
+                        currentPlayerEffects.glitch |= ((effect.effectSet & Effects.EFFECT_GLITCH) > 0);
+                        currentPlayerEffects.motionBlur |= ((effect.effectSet & Effects.EFFECT_MOTION_BLUR) > 0);
+                    }
+                    else
+                    {
+                        temporalEffectList.RemoveAt(i);
+                    }
+                }
+
+
+                foreach (ContinousEffectInfo effect in continousEffectList.Values)
+                {
+                    switch (effect.player)
+                    {
+                        case 0:
+                            currentPlayerEffects = p0Effects;
+                            break;
+
+                        case 1:
+                            currentPlayerEffects = p1Effects;
+                            break;
+
+                        case 2:
+                            currentPlayerEffects = p2Effects;
+                            break;
+                    }
+
+                    currentPlayerEffects.shakeIntensity = effect.GetMaxShakeValue(currentPlayerEffects.shakeIntensity);
+                    currentPlayerEffects.glitch |= ((effect.effectSet & Effects.EFFECT_GLITCH) > 0);
+                    currentPlayerEffects.motionBlur |= ((effect.effectSet & Effects.EFFECT_MOTION_BLUR) > 0);
+                }
+
+                if (rsc.gameInfo.numberOfPlayers == 1)
+                {
+                    finalEffects.SetMax(p0Effects, p1Effects);
+                }
+                else
+                {
+                    if (rsc.gameInfo.player1Controller.IsPlaying && rsc.gameInfo.player2Controller.IsPlaying)
+                    {
+                        finalEffects.Copy(p0Effects);
+                    }
+                    else if (rsc.gameInfo.player1Controller.IsPlaying)
+                    {
+                        finalEffects.SetMax(p0Effects, p1Effects);
+                    }
+                    else if (rsc.gameInfo.player2Controller.IsPlaying)
+                    {
+                        finalEffects.SetMax(p0Effects, p2Effects);
+                    }
+                }
+            }
+            //If effects paused should stop only shake
+            else
+            {
+                finalEffects.shakeIntensity = 0f;
+            }
+
+            mainCameraController.SetEffects(finalEffects);
+            entryCameraController.SetEffects(finalEffects);
+            godCameraController.SetEffects(finalEffects);
+        }
+
         if (Input.GetKeyDown(keys.mainCameraActivationKey))
             ChangeCamera(0);
         else if (Input.GetKeyDown(keys.godCameraActivationKey))
@@ -48,9 +320,44 @@ public class CamerasManager : MonoBehaviour {
             ToggleCameraFollowPlayers();
     }
 
+
+    public void PlayEffect(int player = 0, float duration = 0.5f, int effects = Effects.EFFECT_NONE, float shake = 0f, float startFading = -1f)
+    {
+        if (!effectsActive) return;
+
+        //Player 0 means both players
+        TemporalEffectInfo effect = new TemporalEffectInfo(player, effects, shake, duration, (startFading == -1f ? duration * 0.75f : startFading));
+        temporalEffectList.Add(effect);
+    }
+
+    public void AddContinousEffect(EffectId effectId, int player = 0, int effects = Effects.EFFECT_NONE, float shake = 0f)
+    {
+        if (!effectsActive) return;
+
+        if (!continousEffectList.ContainsKey(effectId))
+        {
+            ContinousEffectInfo effect = new ContinousEffectInfo(player, effects, shake, effectId);
+            continousEffectList.Add(effectId, effect);
+        }
+    }
+
+    public void RemoveContinousEffect(EffectId effectId)
+    {
+        continousEffectList.Remove(effectId);
+
+        //If that was the last effect, stop all effects
+        if (temporalEffectList.Count == 0 && continousEffectList.Count == 0)
+        {
+            finalEffects.Reset();
+            mainCameraController.SetEffects(finalEffects);
+            entryCameraController.SetEffects(finalEffects);
+            godCameraController.SetEffects(finalEffects);
+        }
+    }
+
     public void SetEntryCameraLevelAnimation(int levelAnimation)
     {
-        entryCameraObj.GetComponent<EntryCameraController>().SetLevelAnimation(levelAnimation);
+        entryCameraObj.GetComponent<CameraController>().SetLevelAnimation(levelAnimation);
     }
 
     public void SetMainCameraPositionToEntryCameraPosition()
@@ -86,7 +393,7 @@ public class CamerasManager : MonoBehaviour {
 
     void ToggleCameraFollowPlayers()
     {
-        MainCameraController script = mainCameraObj.GetComponent<MainCameraController>();
+        CameraController script = mainCameraObj.GetComponent<CameraController>();
         script.enabled = !script.enabled;
     }
 
@@ -123,7 +430,7 @@ public class CamerasManager : MonoBehaviour {
         }
         else
             return CalculateDirectionTransforming(displacement);
-           
+
     }
 
     private Vector3 CalculateDirectionTransforming(Vector3 displacement)

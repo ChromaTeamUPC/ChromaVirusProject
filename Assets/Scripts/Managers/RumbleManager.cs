@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using XInputDotNetPure;
 using InControl;
 
-public enum RumbleType
+public enum RumbleId
 {
     TEST,
     PLAYER_SHOOT,
@@ -79,16 +79,16 @@ public class RumbleManager : MonoBehaviour
 
     private class ContinousRumbleInfo : RumbleInfo
     {
-        public RumbleType id;
+        public RumbleId id;
 
-        public ContinousRumbleInfo(int pl, float weak, float strong, RumbleType rumbleId) : base(pl, weak, strong)
+        public ContinousRumbleInfo(int pl, float weak, float strong, RumbleId rumbleId) : base(pl, weak, strong)
         {
             id = rumbleId;
         }
     }
 
     private List<TemporalRumbleInfo> temporalRumbleList = new List<TemporalRumbleInfo>();
-    private Dictionary<RumbleType, ContinousRumbleInfo> continousRumbleList = new Dictionary<RumbleType, ContinousRumbleInfo>();
+    private Dictionary<RumbleId, ContinousRumbleInfo> continousRumbleList = new Dictionary<RumbleId, ContinousRumbleInfo>();
 
     void Awake()
     {
@@ -257,7 +257,7 @@ public class RumbleManager : MonoBehaviour
         temporalRumbleList.Add(rumble);
     }
 
-    public void AddContinousRumble(RumbleType rumbleId, int player = 0, float weakMotor = 1f, float strongMotor = 1f)
+    public void AddContinousRumble(RumbleId rumbleId, int player = 0, float weakMotor = 1f, float strongMotor = 1f)
     {
         if (!active) return;
 
@@ -268,7 +268,7 @@ public class RumbleManager : MonoBehaviour
         }
     }
 
-    public void RemoveContinousRumble(RumbleType rumbleId)
+    public void RemoveContinousRumble(RumbleId rumbleId)
     {
         continousRumbleList.Remove(rumbleId);
 
