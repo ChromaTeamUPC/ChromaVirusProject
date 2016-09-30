@@ -185,6 +185,9 @@ public class WormAIMeteorAttackState : WormAIBaseState
                         meteor.transform.position = head.meteorSpawnPoint.position;               
                         meteor.GoUp(bb.MeteorAttackSettingsPhase.speedOfThrownMeteors);
 
+                        rsc.rumbleMng.Rumble(0, 0.15f, 0, 0.6f);
+                        rsc.camerasMng.PlayEffect(0, 0.1f, 0.3f);
+
                         ++totalShots;
                         elapsedTime = timeBetweenShots;
                     }
@@ -250,7 +253,7 @@ public class WormAIMeteorAttackState : WormAIBaseState
                     {
                         destinyInRange = true;
 
-                        AttackActions();
+                        EnterExitActions();
 
                         destiny.WormEnterExit();
                     }

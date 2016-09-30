@@ -133,7 +133,7 @@ public class CapacitorController : MonoBehaviour {
                     explosionSoundFx.Play();
                     state = State.EXPLODING;
                     rsc.rumbleMng.Rumble(0, 0.5f, 0.5f, 0.5f);
-                    rsc.camerasMng.PlayEffect(0, 0.5f, 0.3f);
+                    rsc.camerasMng.PlayEffect(0, 0.5f, 0.4f);
                     //Debug.Log("Moving to Exploding state");
                     StartCoroutine(Exploding());
                 }

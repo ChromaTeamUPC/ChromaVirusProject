@@ -35,7 +35,7 @@ public class WormAIKnockOutState : WormAIBaseState
         destinyInRange = false;
         elapsedTime = 0f;
 
-        rsc.camerasMng.PlayEffect(0, 0.3f, 0.3f);
+        rsc.camerasMng.PlayEffect(0, 0.5f, 0.4f);
         head.explosion1SoundFx.Play();
         head.SpawnEnergyVoxels();
         head.HeadKnockOut();
@@ -142,7 +142,7 @@ public class WormAIKnockOutState : WormAIBaseState
                     {
                         destinyInRange = true;
 
-                        AttackActions();
+                        EnterExitActions();
 
                         destiny.WormEnterExit();
                     }

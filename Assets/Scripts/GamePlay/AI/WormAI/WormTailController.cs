@@ -46,6 +46,8 @@ public class WormTailController : MonoBehaviour
             explosion.PlayAll(finalExplosionSoundFx);
         }
 
+        rsc.rumbleMng.Rumble(0, 0.3f, 0.5f, 0.5f);
+        rsc.camerasMng.PlayEffect(0, 0.3f, 0.2f);
         voxelization.SpawnVoxels();
         //Destroy(gameObject);
         gameObject.SetActive(false);

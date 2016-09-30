@@ -64,7 +64,7 @@ public class PlayerSpecialState : PlayerBaseState {
                     rsc.camerasMng.RemoveContinousEffect(EffectId.PLAYER_SPECIAL_CHARGE, 0);
                     bb.player.StopSpecialEnergyCharging();
                     bb.player.StartSpecial();
-                    rsc.camerasMng.PlayEffect(0, 0.5f, 0.3f);
+                    rsc.camerasMng.PlayEffect(0, 0.75f, 0.4f);
 
                     currentPos = bb.player.transform.position;
 

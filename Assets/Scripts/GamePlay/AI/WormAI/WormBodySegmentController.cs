@@ -249,6 +249,8 @@ public class WormBodySegmentController : MonoBehaviour
             explosion.PlayAll(finalExplosionSoundFx);
         }
 
+        rsc.rumbleMng.Rumble(0, 0.3f, 0.5f, 0.5f);
+        rsc.camerasMng.PlayEffect(0, 0.3f, 0.25f);
         //Destroy(gameObject);
         gameObject.SetActive(false);
     }

@@ -37,7 +37,8 @@ public class WormAIHeadDestroyedState : WormAIBaseState
         destinyInRange = false;
         elapsedTime = 0f;
 
-        rsc.camerasMng.PlayEffect(0, 0.3f, 0.3f);
+        rsc.rumbleMng.Rumble(0, 1f, 0.3f, 0.2f);
+        rsc.camerasMng.PlayEffect(0, 1.5f, 0.3f);
         head.explosion2SoundFx.Play();
         head.phaseExplosion.Play();
         head.animator.SetBool("Hit", true);
@@ -141,7 +142,7 @@ public class WormAIHeadDestroyedState : WormAIBaseState
                     {
                         destinyInRange = true;
 
-                        AttackActions();
+                        EnterExitActions();
 
                         destiny.WormEnterExit();
                     }

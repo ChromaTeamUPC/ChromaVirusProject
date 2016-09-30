@@ -408,6 +408,8 @@ public class WormAIBehaviour : MonoBehaviour
             explosion.PlayAll(finalExplosionSoundFx);
         }
 
+        rsc.rumbleMng.Rumble(0, 1.5f, 1f, 1f);
+        rsc.camerasMng.PlayEffect(0, 1.5f, 0.75f);
         voxelization.SpawnFakeVoxels();
         headModel.SetActive(false);
 

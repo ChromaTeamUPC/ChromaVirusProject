@@ -105,7 +105,7 @@ public class WormAIWanderingState : WormAIBaseState
                     HexagonController hexagon = route.wayPoints[WPIndex].GetComponent<HexagonController>();
                     hexagon.WormEnterExit();
 
-                    rsc.rumbleMng.Rumble(0, 1f, 0.5f, 0.5f);
+                    EnterExitActions();
                     head.animator.SetBool("MouthOpen", true);
 
                     bb.isHeadOverground = true;
@@ -262,7 +262,7 @@ public class WormAIWanderingState : WormAIBaseState
                     if(t >= 1.6f && !exitRumble)
                     {
                         exitRumble = true;
-                        rsc.rumbleMng.Rumble(0, 1f, 0.5f, 0.5f);
+                        EnterExitActions();
                     }
 
                     while (actuallyMoved < shouldMove && t <= 2)

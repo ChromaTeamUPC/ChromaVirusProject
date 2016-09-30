@@ -137,6 +137,7 @@ public class WormAIBelowAttackState : WormAIBaseState
                         currentX >= 0)) //Safety check. When jump is too fast distance can never be less than range distance
                     {
                         destinyInRange = true;
+                        EnterExitActions();
                         destiny.WormEnterExit();
                     }
                 }
