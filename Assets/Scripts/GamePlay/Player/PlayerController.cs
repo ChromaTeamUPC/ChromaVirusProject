@@ -440,7 +440,7 @@ public class PlayerController : MonoBehaviour
         if (bb.controller.GetControl(InputControlType.LeftTrigger).IsPressed)
             rsc.camerasMng.AddContinousEffect(EffectId.TEST, 0, shake);
         else
-            rsc.camerasMng.RemoveContinousEffect(EffectId.TEST, playerId);
+            rsc.camerasMng.RemoveContinousEffect(EffectId.TEST, 0);
 
         //END TEST
 
