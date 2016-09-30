@@ -32,7 +32,7 @@ public class PlayerLevelClearedState : PlayerBaseState
         else
         {
             destiny = bb.player.transform.position;
-            bb.animator.SetTrigger("LongIdle");
+            bb.animator.SetTrigger("LevelEnd");
             bb.animationEnded = false;
             subState = SubState.LEVEL_END_ANIMATION;
         }
@@ -59,7 +59,7 @@ public class PlayerLevelClearedState : PlayerBaseState
                 }
                 else
                 {
-                    bb.animator.SetTrigger("LongIdle");
+                    bb.animator.SetTrigger("LevelEnd");
                     bb.animationEnded = false;
 
                     subState = SubState.LEVEL_END_ANIMATION;

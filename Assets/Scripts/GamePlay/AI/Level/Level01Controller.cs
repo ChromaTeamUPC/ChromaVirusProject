@@ -78,6 +78,10 @@ public class Level01Controller : MonoBehaviour
     public Transform player1StartPoint;
     public Transform player2StartPoint;
 
+    public Transform singlePlayerEndPoint;
+    public Transform player1EndPoint;
+    public Transform player2EndPoint;
+
     public FloorController floor;
 
     [SerializeField]
@@ -120,6 +124,7 @@ public class Level01Controller : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
         rsc.eventMng.StartListening(EventManager.EventType.ZONE_REACHED, ZoneReached);
         rsc.eventMng.StartListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanFinished);
+        rsc.eventMng.StartListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
         rsc.eventMng.StartListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
 
@@ -143,6 +148,7 @@ public class Level01Controller : MonoBehaviour
             rsc.eventMng.StopListening(EventManager.EventType.CAMERA_ANIMATION_ENDED, CameraEnded);
             rsc.eventMng.StopListening(EventManager.EventType.ZONE_REACHED, ZoneReached);
             rsc.eventMng.StopListening(EventManager.EventType.ZONE_PLAN_FINISHED, ZonePlanFinished);
+            rsc.eventMng.StopListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_DIED, PlayerDied);
             rsc.eventMng.StopListening(EventManager.EventType.PLAYER_OUT_OF_ZONE, PlayerOutOfZone);
         }
@@ -200,6 +206,36 @@ public class Level01Controller : MonoBehaviour
         ZoneActivableObjects zone;
         if (zoneDictionary.TryGetValue(info.planId, out zone))
             zone.ZoneFinished();
+    }
+
+    private void LevelCleared(EventInfo eventInfo)
+    {
+        if (rsc.gameInfo.numberOfPlayers == 1)
+        {
+            rsc.gameInfo.player1Controller.SetInvulnerable();
+            rsc.gameInfo.player1Controller.LevelCleared(singlePlayerEndPoint.position);
+        }
+        else
+        {
+            if (rsc.gameInfo.player1Controller.ActiveAndAlive && rsc.gameInfo.player2Controller.ActiveAndAlive)
+            {
+                rsc.gameInfo.player1Controller.SetInvulnerable();
+                rsc.gameInfo.player1Controller.LevelCleared(player1EndPoint.position);
+
+                rsc.gameInfo.player2Controller.SetInvulnerable();
+                rsc.gameInfo.player2Controller.LevelCleared(player2EndPoint.position);
+            }
+            else if(rsc.gameInfo.player1Controller.ActiveAndAlive)
+            {
+                rsc.gameInfo.player1Controller.SetInvulnerable();
+                rsc.gameInfo.player1Controller.LevelCleared(singlePlayerEndPoint.position);
+            }
+            else
+            {
+                rsc.gameInfo.player2Controller.SetInvulnerable();
+                rsc.gameInfo.player2Controller.LevelCleared(singlePlayerEndPoint.position);
+            }
+        }
     }
 
     //This function will reposition player in the battleground in case he fell and god mode was active
