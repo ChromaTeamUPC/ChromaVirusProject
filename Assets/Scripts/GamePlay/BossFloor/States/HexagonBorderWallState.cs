@@ -38,37 +38,62 @@ public class HexagonBorderWallState : HexagonBaseState
 
     public override HexagonBaseState Update()
     {
-        if (!hex.AnyProbeInRange) subState = SubState.GOING_DOWN;
-
         switch (subState)
         {
             case SubState.GOING_UP:
-                if (hex.geometryOffset.transform.position.y < totalHeight)
+                if (!hex.AnyProbeInRange)
                 {
-                    float displacement = Time.deltaTime * hex.borderSpeed;
-                    hex.geometryOffset.transform.position += new Vector3(0f, displacement, 0f);
+                    subState = SubState.GOING_DOWN;
                 }
                 else
                 {
-                    hex.geometryOffset.transform.position = new Vector3(hex.geometryOffset.transform.position.x, totalHeight, hex.geometryOffset.transform.position.z);
-                    subState = SubState.IDLE;
+                    if (hex.geometryOffset.transform.position.y < totalHeight)
+                    {
+                        float displacement = Time.deltaTime * hex.borderSpeed;
+                        hex.geometryOffset.transform.position += new Vector3(0f, displacement, 0f);
+                    }
+                    else
+                    {
+                        hex.geometryOffset.transform.position = new Vector3(hex.geometryOffset.transform.position.x, totalHeight, hex.geometryOffset.transform.position.z);
+                        subState = SubState.IDLE;
+                    }
+                }
+                break;
+
+            case SubState.IDLE:
+                if (!hex.AnyProbeInRange)
+                {
+                    subState = SubState.GOING_DOWN;
                 }
                 break;
 
             case SubState.GOING_DOWN:
-                if (hex.geometryOffset.transform.position.y > hex.geometryOriginalY)
+                if (hex.AnyProbeInRange)
                 {
-                    float displacement = Time.deltaTime * hex.borderSpeed;
-                    hex.geometryOffset.transform.position -= new Vector3(0f, displacement, 0f);
+                    Debug.Log("New probes. Going up again.");
+                    subState = SubState.GOING_UP;
                 }
                 else
                 {
-                    hex.geometryOffset.transform.position = new Vector3(hex.geometryOffset.transform.position.x, hex.geometryOriginalY, hex.geometryOffset.transform.position.z);
-                    return hex.idleState;
+                    if (hex.geometryOffset.transform.position.y > hex.geometryOriginalY)
+                    {
+                        float displacement = Time.deltaTime * hex.borderSpeed;
+                        hex.geometryOffset.transform.position -= new Vector3(0f, displacement, 0f);
+                    }
+                    else
+                    {
+                        hex.geometryOffset.transform.position = new Vector3(hex.geometryOffset.transform.position.x, hex.geometryOriginalY, hex.geometryOffset.transform.position.z);
+                        return hex.idleState;
+                    }
                 }
                 break;
         }
 
+        return null;
+    }
+
+    public override HexagonBaseState ProbeTouched()
+    {
         return null;
     }
 }

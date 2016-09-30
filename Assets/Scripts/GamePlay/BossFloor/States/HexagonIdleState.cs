@@ -65,11 +65,11 @@ public class HexagonIdleState : HexagonBaseState
         return null;
     }
 
-    public override HexagonBaseState ProbeTouched()
+    /*public override HexagonBaseState ProbeTouched()
     {
         if (hex.isBorder)
             return hex.borderWallState;
 
         return null;
-    }
+    }*/
 }

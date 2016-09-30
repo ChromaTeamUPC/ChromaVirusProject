@@ -15,7 +15,13 @@ public class HexagonBaseState
 
     public virtual HexagonBaseState Update() { return null; }
 
-    public virtual HexagonBaseState ProbeTouched() { return null; }
+    public virtual HexagonBaseState ProbeTouched()
+    {
+        if (hex.isBorder)
+            return hex.borderWallState;
+
+        return null;
+    }
 
     public virtual HexagonBaseState WormHeadEntered() { return null; }
     public virtual HexagonBaseState WormHeadStay(Transform headTrf) { return null; }
