@@ -15,6 +15,7 @@ public class DecorativeHexagonController : MonoBehaviour
     private State state;
 
     public bool isStatic = false;
+    public bool forceStatic = false;
 
     //Movement variables
     [Header("Movement Settings")]
@@ -62,13 +63,18 @@ public class DecorativeHexagonController : MonoBehaviour
     // Use this for initialization
     void Start () 
 	{
-        double dice;
-        dice = rand.NextDouble() * 100;
-
-        if (dice < chancesOfStatic)
+        if (forceStatic)
             isStatic = true;
         else
-            isStatic = false;
+        {
+            double dice;
+            dice = rand.NextDouble() * 100;
+
+            if (dice < chancesOfStatic)
+                isStatic = true;
+            else
+                isStatic = false;
+        }
 
 
         if (isStatic)

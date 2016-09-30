@@ -9,6 +9,7 @@ public class PositionGigaClusterItems : MonoBehaviour
     public bool position = false;
     public bool set = false;
     public bool reset = false;
+    public bool setHeight = false;
 
     public float minDistanceHexagons = 9;
     public float maxDistanceHexagons = 18;
@@ -16,6 +17,9 @@ public class PositionGigaClusterItems : MonoBehaviour
     private float maxDistance;
     public float probabilityAtStart = 40f;
     public float probabilityAtEnd = 5f;
+
+    public float minHeight = -20;
+    public float maxHeight = 20;
 
     private Transform center;
     private Transform[] neigbours = new Transform[6];
@@ -141,6 +145,25 @@ public class PositionGigaClusterItems : MonoBehaviour
             }
 
             reset = false;
+        }
+
+        if (setHeight && false)
+        {
+            DecorativeHexagonController[] hexagons = gameObject.GetComponentsInChildren<DecorativeHexagonController>(true);
+
+            System.Random rand = new System.Random();
+            double newY = 0;
+            float amplitude = maxHeight - minHeight;
+
+            for (int i = 0; i < hexagons.Length; ++i)
+            {
+                newY = (rand.NextDouble() * amplitude) + minHeight;
+
+                Vector3 newModelPos = new Vector3(0, (float)newY, 0);
+                hexagons[i].column.transform.localPosition = newModelPos;
+            }
+
+            setHeight = false;
         }
     }
 }

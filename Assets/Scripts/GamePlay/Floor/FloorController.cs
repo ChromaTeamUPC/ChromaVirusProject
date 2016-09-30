@@ -12,14 +12,18 @@ public class FloorController : MonoBehaviour {
     public Renderer rend;
     private ColoredObjectsManager coloredObjMng;
     private ChromaColor currentColor;
+    private Color color;
     private BlinkController blinkController;
     private Material whiteMat;
+    public Material hexagonMaterial;
 
     void Start()
     {
         blinkController = GetComponent<BlinkController>();
         coloredObjMng = rsc.coloredObjectsMng;
-        whiteMat = coloredObjMng.GetFloorWhiteMaterial();     
+        whiteMat = coloredObjMng.GetFloorWhiteMaterial();
+        hexagonMaterial.SetColor("_Color", Color.white);
+        hexagonMaterial.SetColor("_EmissionColor", Color.grey);
     }
 
     void OnDestroy()
@@ -53,6 +57,9 @@ public class FloorController : MonoBehaviour {
         blinkController.StopPreviousBlinkings();
         rend.sharedMaterial = coloredObjMng.GetFloorMaterial(currentColor);
         blinkController.InvalidateMaterials();
+
+        color = coloredObjMng.GetColor(currentColor);
+        hexagonMaterial.SetColor("_EmissionColor", color);
     }
 
     private void ColorPrewarn(EventInfo eventInfo)
