@@ -89,9 +89,9 @@ public class MainMenuManager : MonoBehaviour {
         if(!rsc.audioMng.IsMusicPlaying() || !rsc.audioMng.IsCurrentMusic(AudioManager.MusicType.MAIN_MENU))
             rsc.audioMng.FadeInMusic(AudioManager.MusicType.MAIN_MENU, fadeInTime);
 
-        switch (rsc.gameMng.startLevel)
+        switch (rsc.gameMng.StartLevel)
         {
-            case GameManager.Level.LEVEL_01:
+            case GameManager.Level.INTRO:
                 level01Txt.color = Color.white;
                 levelBossTxt.color = unselectedLevelColor;
                 break;
@@ -132,16 +132,16 @@ public class MainMenuManager : MonoBehaviour {
         if ((InputManager.Devices.Count >= 1 && InputManager.Devices[0].Action4.WasPressed)
                     || (InputManager.Devices.Count >= 2 && InputManager.Devices[1].Action4.WasPressed))
         {
-            switch (rsc.gameMng.startLevel)
+            switch (rsc.gameMng.StartLevel)
             {
-                case GameManager.Level.LEVEL_01:
-                    rsc.gameMng.startLevel = GameManager.Level.LEVEL_BOSS;
+                case GameManager.Level.INTRO:
+                    rsc.gameMng.StartLevel = GameManager.Level.LEVEL_BOSS;
                     level01Txt.color = unselectedLevelColor;
                     levelBossTxt.color = Color.white;                   
                     break;
 
                 case GameManager.Level.LEVEL_BOSS:
-                    rsc.gameMng.startLevel = GameManager.Level.LEVEL_01;
+                    rsc.gameMng.StartLevel = GameManager.Level.INTRO;
                     level01Txt.color = Color.white;
                     levelBossTxt.color = unselectedLevelColor;
                     break;

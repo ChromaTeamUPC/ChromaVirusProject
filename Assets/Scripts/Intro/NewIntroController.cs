@@ -108,8 +108,6 @@ public class NewIntroController : MonoBehaviour
 
     private float elapsedTime;
 
-    private AsyncOperation async;
-
     private Coroutine blinkExclamation = null;
     private Coroutine rotateCircle = null;
 
@@ -118,8 +116,9 @@ public class NewIntroController : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-        async = SceneManager.LoadSceneAsync("Level01");
-        async.allowSceneActivation = false;
+        rsc.gameMng.CurrentLevel = GameManager.Level.INTRO;
+
+        rsc.gameMng.StartLoadingNextScene(GameManager.Level.LEVEL_01);
 
         alertArea.SetActive(false);
 
@@ -416,8 +415,7 @@ public class NewIntroController : MonoBehaviour
             case State.FADING_OUT:
                 if (!fadeScript.FadingToColor)
                 {
-                    //SceneManager.LoadScene("Level01");
-                    async.allowSceneActivation = true;
+                    rsc.gameMng.AllowNextSceneActivation();
                 }
                 break;
 
@@ -425,7 +423,8 @@ public class NewIntroController : MonoBehaviour
                 break;
         }
 
-        if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action2)
+        if ((InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action2) ||
+            InputManager.GetAnyControllerButtonWasPressed(InputControlType.Start))
             && state != State.FADING_IN && state != State.FADING_OUT)
         {
             skipHint.SetActive(false);

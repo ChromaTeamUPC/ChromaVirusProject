@@ -97,6 +97,7 @@ public class Level01Controller : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
+        rsc.gameMng.CurrentLevel = GameManager.Level.LEVEL_01;
         //Ensure all resources are in place (ie, enemies back to pool)
         rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_LOADED, EventInfo.emptyInfo);
 

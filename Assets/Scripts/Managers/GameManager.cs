@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviour {
     public enum Level
     {
         LEVEL_01,
-        LEVEL_BOSS
+        LEVEL_BOSS,
+        INTRO
     }
 
     public enum GameState
@@ -26,13 +27,15 @@ public class GameManager : MonoBehaviour {
 
     private GameState state;
 
-    public Level startLevel = Level.LEVEL_01;
+    private Level startLevel = Level.INTRO;
     private Level currentLevel;
 
     private AsyncOperation nextLevel;
 
     public GameState State { get { return state; } }
-    public Level CurrentLevel { get { return currentLevel; } }
+
+    public Level StartLevel { get { return startLevel; } set { startLevel = value; } }
+    public Level CurrentLevel { get { return currentLevel; } set { currentLevel = value; } }
 
     void Awake()
     {
@@ -71,7 +74,7 @@ public class GameManager : MonoBehaviour {
         switch (state)
         {
             case GameState.STARTED:
-                if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Start))
+                if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Start) && currentLevel != Level.INTRO)
                     Pause();
                 break;
 
@@ -177,16 +180,7 @@ public class GameManager : MonoBehaviour {
     {
         state = GameState.STARTED;
 
-        if (SceneManager.GetActiveScene().name == "Level01")
-        {
-            Debug.Log("Level01 scene loaded");
-            currentLevel = Level.LEVEL_01;
-        }
-        else if (SceneManager.GetActiveScene().name == "LevelBoss")
-        {
-            Debug.Log("LevelBoss scene loaded");
-            currentLevel = Level.LEVEL_BOSS;
-        }
+        Debug.Log(SceneManager.GetActiveScene().name + " scene loaded");
 
         Debug.Log("WARNING: gameStarted set to true through a debug function!");
     }
@@ -199,18 +193,42 @@ public class GameManager : MonoBehaviour {
 
         switch (startLevel)
         {
-            case Level.LEVEL_01:
-                //SceneManager.LoadScene("Level01");
-                currentLevel = Level.LEVEL_01;
+            case Level.INTRO:
                 SceneManager.LoadScene("Intro");
                 break;
+            case Level.LEVEL_01:
+                SceneManager.LoadScene("Level01");
+                break;
             case Level.LEVEL_BOSS:
-                currentLevel = Level.LEVEL_BOSS;
                 SceneManager.LoadScene("LevelBoss");
                 break;
             default:
                 break;
         }
+    }
+
+    public void StartLoadingNextScene(Level level)
+    {
+        switch (level)
+        {
+            case Level.INTRO:
+                nextLevel = SceneManager.LoadSceneAsync("Intro");
+                break;
+            case Level.LEVEL_01:
+                nextLevel = SceneManager.LoadSceneAsync("Level01");
+                break;
+            case Level.LEVEL_BOSS:
+                nextLevel = SceneManager.LoadSceneAsync("LevelBoss");
+                break;
+            default:
+                break;
+        }
+        nextLevel.allowSceneActivation = false;
+    }
+
+    public void AllowNextSceneActivation()
+    {
+        nextLevel.allowSceneActivation = true;
     }
 
     public void InitPlayers(int numPlayers)
@@ -339,19 +357,7 @@ public class GameManager : MonoBehaviour {
 
     private IEnumerator GoToNextLevel(Level newLevel)
     {
-        switch (newLevel)
-        {
-            case Level.LEVEL_01:
-                currentLevel = Level.LEVEL_01;
-                nextLevel = SceneManager.LoadSceneAsync("Level01");
-                break;
-
-            case Level.LEVEL_BOSS:
-                currentLevel = Level.LEVEL_BOSS;
-                nextLevel = SceneManager.LoadSceneAsync("LevelBoss");
-                break;
-        }
-        nextLevel.allowSceneActivation = false;
+        StartLoadingNextScene(newLevel);
 
         rsc.audioMng.FadeOutMusic(2.5f);
 
@@ -367,7 +373,7 @@ public class GameManager : MonoBehaviour {
 
         //Ensure all resources are in place (ie, enemies back to pool)
         rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_UNLOADED, EventInfo.emptyInfo);
-        //SceneManager.LoadScene(nextLevel);
-        nextLevel.allowSceneActivation = true;
+
+        AllowNextSceneActivation();
     }
 }
