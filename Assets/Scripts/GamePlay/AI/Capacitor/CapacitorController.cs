@@ -21,6 +21,7 @@ public class CapacitorController : MonoBehaviour {
 
     public float maxCharge = 100;
     public int chargePerShot = 10;
+    public float chargeTimeOut = 3f;
     public bool manualInstantCharge = false;
     public float manualChargePerSecond = 100;
     public float timeToStopAura = 3f;
@@ -28,6 +29,7 @@ public class CapacitorController : MonoBehaviour {
     public int damage = 50;
     public float forceMultiplier = 15f;
 
+    public Material capacitorNoCharge;
     public SphereCollider attractingCollider;
     public float attractingColliderRange;
     public ParticleSystem attractingDome;
@@ -120,6 +122,15 @@ public class CapacitorController : MonoBehaviour {
                     attractingStopped = false;
                     //Debug.Log("Moving to Charged state");
                 }
+                else if(currentCharge > 0)
+                {
+                    elapsedTime += Time.deltaTime;
+                    if(elapsedTime >= chargeTimeOut)
+                    {
+                        currentCharge = 0;
+                        SetMaterial(capacitorNoCharge);
+                    }
+                }
                 break;
             case State.CHARGED:
                 elapsedTime += Time.deltaTime;
@@ -170,6 +181,7 @@ public class CapacitorController : MonoBehaviour {
         switch (state)
         {
             case State.NOT_STARTED:
+                elapsedTime = 0;
                 state = State.IDLE;               
                 currentCharge += chargePerShot;
                 currentColor = shotColor;
@@ -181,6 +193,7 @@ public class CapacitorController : MonoBehaviour {
                 break;
 
             case State.IDLE:
+                elapsedTime = 0;
                 if (currentColor == shotColor)
                 {
                     if (currentCharge < maxCharge)
@@ -219,6 +232,7 @@ public class CapacitorController : MonoBehaviour {
         switch (state)
         {
             case State.NOT_STARTED:
+                elapsedTime = 0;
                 state = State.IDLE;
                 currentColor = color;
                 activatingPlayer = player;
@@ -239,6 +253,7 @@ public class CapacitorController : MonoBehaviour {
                 break;
 
             case State.IDLE:
+                elapsedTime = 0;
                 if (manualInstantCharge)
                 {
                     currentColor = color;
