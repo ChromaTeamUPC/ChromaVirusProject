@@ -107,7 +107,7 @@ public class PlayerShotController : MonoBehaviour
             VortexController vortex = collision.collider.GetComponent<VortexController>();
             if (vortex != null)
             {
-                vortex.ImpactedByShot(color, damage);
+                vortex.ImpactedByShot(color, damage, player);
                 if(vortex.Active)
                     impactParticle.GetComponent<AudioSource>().clip = goodImpact;
                 else
@@ -146,7 +146,7 @@ public class PlayerShotController : MonoBehaviour
             HexagonController hexagon = collision.collider.GetComponentInParent<HexagonController>();
             if (hexagon != null)
             {
-                hexagon.ImpactedByShot();
+                hexagon.ImpactedByShot(player);
                 if(hexagon.HasActiveTurret())
                     impactParticle.GetComponent<AudioSource>().clip = goodImpact;
                 else

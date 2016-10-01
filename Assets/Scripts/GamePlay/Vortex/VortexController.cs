@@ -25,6 +25,8 @@ public class VortexController : MonoBehaviour
 
     public float blinkSeconds = 0.1f;
 
+    private PlayerController killerPlayer;
+
     private ColoredObjectsManager coloredObjMng;
 
     private List<AIAction> entryActions;
@@ -71,7 +73,7 @@ public class VortexController : MonoBehaviour
         active = false;
         audioSource.Play();
         particleSys.Stop();
-        rsc.rumbleMng.Rumble(0, 0.5f, 0f, 0.75f);
+        rsc.rumbleMng.Rumble(killerPlayer.Id, 0.5f, 0f, 0.75f);
         anim.SetTrigger("Destroyed");
         rsc.eventMng.TriggerEvent(EventManager.EventType.VORTEX_DESTROYED, EventInfo.emptyInfo);
     }
@@ -81,7 +83,7 @@ public class VortexController : MonoBehaviour
         //zoneWavesFinished = true;
     }
 
-    public void ImpactedByShot(ChromaColor shotColor, int damage)
+    public void ImpactedByShot(ChromaColor shotColor, int damage, PlayerController player)
     {
         if (!active) return;
 
@@ -91,12 +93,13 @@ public class VortexController : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            killerPlayer = player;
             //Play destroy animation, then destroy object
             Deactivate();
         }
     }
 
-    public void ImpactedBySpecial()
+    public void ImpactedBySpecial(PlayerController player)
     {
         if (!active) return;
 
@@ -106,6 +109,7 @@ public class VortexController : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            killerPlayer = player;
             //Play destroy animation, then destroy object
             Deactivate();
         }

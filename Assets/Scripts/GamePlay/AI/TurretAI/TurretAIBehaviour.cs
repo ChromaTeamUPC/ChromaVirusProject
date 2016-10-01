@@ -234,7 +234,7 @@ public class TurretAIBehaviour : MonoBehaviour
         return state == State.ENABLED;
     }
 
-    public void TakeDamage()
+    public void TakeDamage(PlayerController player)
     {
         if (state == State.KNOCKED_OUT) return;
 
@@ -248,13 +248,13 @@ public class TurretAIBehaviour : MonoBehaviour
             knockedOutFx.Play();
             stunnedSoundFx.Play();
             elapsedTime = 0f;
-            rsc.rumbleMng.Rumble(0, 0.35f, 0f, 0.75f);
+            rsc.rumbleMng.Rumble(player.Id, 0.35f, 0f, 0.75f);
             rsc.camerasMng.PlayEffect(0, 0.25f, 0.4f);
             state = State.KNOCKED_OUT;
         }
     }
 
-    public void ImpactedBySpecial()
+    public void ImpactedBySpecial(PlayerController player)
     {
         if (state == State.KNOCKED_OUT) return;
 
@@ -268,7 +268,8 @@ public class TurretAIBehaviour : MonoBehaviour
             knockedOutFx.Play();
             stunnedSoundFx.Play();
             elapsedTime = 0f;
-            rsc.rumbleMng.Rumble(0, 0.35f, 0f, 0.75f);
+            rsc.rumbleMng.Rumble(player.Id, 0.35f, 0f, 0.75f);
+            rsc.camerasMng.PlayEffect(0, 0.25f, 0.4f);
             state = State.KNOCKED_OUT;
         }
     }

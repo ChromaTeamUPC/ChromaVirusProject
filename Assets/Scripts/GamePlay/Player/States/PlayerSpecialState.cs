@@ -118,12 +118,12 @@ public class PlayerSpecialState : PlayerBaseState {
 
         foreach (VortexController vortex in bb.vortexInRange)
         {
-            vortex.ImpactedBySpecial();
+            vortex.ImpactedBySpecial(bb.player);
         }
 
         foreach (TurretAIBehaviour turret in bb.turretsInRange)
         {
-            turret.ImpactedBySpecial();
+            turret.ImpactedBySpecial(bb.player);
         }
 
         while (i < enemies.Count)

@@ -270,7 +270,7 @@ public class WormBodySegmentController : MonoBehaviour
                 bodyState = BodySubState.DEACTIVATED; //not really deactivated but flagged to allow notify properly when colors reset
 
                 explosionWrongSoundFx.Play();
-                rsc.rumbleMng.Rumble(0, 0.25f, 0f, 0.5f);
+                rsc.rumbleMng.Rumble(player.Id, 0.25f, 0f, 0.5f);
                 rsc.camerasMng.PlayEffect(0, 0.25f, 0.2f);
 
                 EnemyDiedEventInfo.eventInfo.color = color;
@@ -297,7 +297,7 @@ public class WormBodySegmentController : MonoBehaviour
                 bodyState = BodySubState.DEACTIVATED;
 
                 explosionOkSoundFx.Play();
-                rsc.rumbleMng.Rumble(0, 0.25f, 0f, 0.5f);
+                rsc.rumbleMng.Rumble(player.Id, 0.25f, 0f, 0.5f);
                 rsc.camerasMng.PlayEffect(0, 0.25f, 0.2f);
 
                 EnemyDiedEventInfo.eventInfo.color = color;

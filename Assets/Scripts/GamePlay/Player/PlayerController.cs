@@ -322,6 +322,7 @@ public class PlayerController : MonoBehaviour
 
     public void RechargeLife(bool extraLife, bool heal)
     {
+        rsc.rumbleMng.Rumble(playerId, 0.25f, 0f, 0.5f);
         lifeChargehargePS.Play();
 
         if (extraLife /*&& bb.currentLives < maxLives*/)

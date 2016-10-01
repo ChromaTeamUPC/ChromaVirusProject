@@ -391,14 +391,14 @@ public class HexagonController : MonoBehaviour
         }
     }
 
-    public void ImpactedByShot()
+    public void ImpactedByShot(PlayerController player)
     {
         if(isStatic && turret != null)
         {
             if(turret.CanTakeDamage())
             {
                 columnBlinkController.BlinkWhiteOnce();
-                turret.TakeDamage();
+                turret.TakeDamage(player);
             }
         }
     }
