@@ -36,6 +36,8 @@ public class MainMenuManager : MonoBehaviour {
     public Button playBtn;
     private MainMenuButtonController playBtnController;
     public Button player2Btn;
+    public Sprite player2IdleSprite;
+    public Sprite player2DisabledSprite;
 
     public Button helpBtn;
     public Button optionsBtn;
@@ -234,24 +236,16 @@ public class MainMenuManager : MonoBehaviour {
 
     private void SetPlayButtonImages()
     {
-        SpriteState st = new SpriteState();
         if (InputManager.Devices.Count == 1)
         {
-            playBtn.GetComponent<Image>().sprite = singlePlayerIdleSprite;
-            st.highlightedSprite = singlePlayerSelectedSprite;
-            st.pressedSprite = singlePlayerClickedSprite;
-
-            player2Btn.gameObject.SetActive(false);
+            player2Btn.GetComponent<Image>().sprite = player2DisabledSprite;
+            player2Btn.enabled = false;
         }
         else if (InputManager.Devices.Count > 1)
         {
-            playBtn.GetComponent<Image>().sprite = player1IdleSprite;
-            st.highlightedSprite = player1SelectedSprite;
-            st.pressedSprite = player1ClickedSprite;
-
-            player2Btn.gameObject.SetActive(true);
+            player2Btn.GetComponent<Image>().sprite = player2IdleSprite;
+            player2Btn.enabled = true;
         }
-        playBtn.spriteState = st;     
     }
 
     private void EnableMainButtons()
