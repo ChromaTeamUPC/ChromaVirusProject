@@ -5,6 +5,8 @@ public class DebugManager : MonoBehaviour {
 
     public DebugKeys keys;
 
+    public bool debugModeEnabled = false;
+
     public float refreshFPSTime = 0.5f;
 
     private int linePosition;
@@ -15,6 +17,7 @@ public class DebugManager : MonoBehaviour {
 
     private bool statsVisible = false;
     private bool calculateTriangles = false;
+    public bool viewWireFrame = false;
 
     public bool godMode = false;
     public bool alwaysKillOk = false;
@@ -34,44 +37,91 @@ public class DebugManager : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(keys.toggleStatsKey))
+        if (debugModeEnabled)
         {
-            statsVisible = !statsVisible;
-            if (statsVisible) calculateTriangles = true;
-        }
-        
-        if(Input.GetKeyDown(keys.toggleGodMode))
-        {
-            godMode = !godMode;
-        }
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.D))
+            {
+                debugModeEnabled = false;
+                rsc.audioMng.backFx.Play();
 
-        if (Input.GetKeyDown(keys.toggleAlwaysKillOk))
-        {
-            alwaysKillOk = !alwaysKillOk;
-        }
+                statsVisible = false;
+                viewWireFrame = false;
+                godMode = false;
+                alwaysKillOk = false;
+                showPlayerLimits = false;
+                rsc.camerasMng.SetCameraFollowPlayers();
+                rsc.camerasMng.ChangeCamera(0);
+                if(!rsc.gameMng.IsPaused())
+                    Time.timeScale = 1;
+            }
 
-        if (Input.GetKeyDown(keys.toggleShowPlayerLimits))
-        {
-            showPlayerLimits = !showPlayerLimits;
-        }
+            if (Input.GetKeyDown(keys.toggleStatsKey))
+            {
+                statsVisible = !statsVisible;
+                if (statsVisible) calculateTriangles = true;
+            }
 
-        if (Input.GetKeyDown(keys.doubleSpeed))
-        {
-            Time.timeScale *= 2;
-        }
+            if (Input.GetKeyDown(keys.toggleWireframeKey))
+            {
+                viewWireFrame = !viewWireFrame;
+            }
 
-        if(Input.GetKeyDown(keys.halfSpeed))
-        {
-            Time.timeScale /= 2;
-        }
+            if (Input.GetKeyDown(keys.toggleGodMode))
+            {
+                godMode = !godMode;
+            }
 
-        elapsedTime += Time.deltaTime;
-        ++frameCount;
-        if(elapsedTime >= refreshFPSTime)
+            if (Input.GetKeyDown(keys.toggleAlwaysKillOk))
+            {
+                alwaysKillOk = !alwaysKillOk;
+            }
+
+            if (Input.GetKeyDown(keys.toggleShowPlayerLimits))
+            {
+                showPlayerLimits = !showPlayerLimits;
+            }
+
+            if (Input.GetKeyDown(keys.mainCameraFollowPlayersKey))
+            {
+                rsc.camerasMng.ToggleCameraFollowPlayers();
+            }
+
+            if (Input.GetKeyDown(keys.mainCameraActivationKey))
+            {
+                rsc.camerasMng.ChangeCamera(0);
+            }
+
+            if (Input.GetKeyDown(keys.godCameraActivationKey))
+            {
+                rsc.camerasMng.ChangeCamera(2);
+            }
+
+            if (Input.GetKeyDown(keys.doubleSpeed))
+            {
+                Time.timeScale *= 2;
+            }
+
+            if (Input.GetKeyDown(keys.halfSpeed))
+            {
+                Time.timeScale /= 2;
+            }
+
+            elapsedTime += Time.deltaTime;
+            ++frameCount;
+            if (elapsedTime >= refreshFPSTime)
+            {
+                fps = (int)(frameCount / elapsedTime);
+                frameCount = 0;
+                elapsedTime -= refreshFPSTime;
+            }
+        }
+        else
         {
-            fps = (int)(frameCount / elapsedTime);
-            frameCount = 0;
-            elapsedTime -= refreshFPSTime;
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.D))
+            {
+                debugModeEnabled = true;
+                rsc.audioMng.acceptFx.Play();
+            }
         }
     }
 

@@ -10,6 +10,8 @@ public class ResourceAssurer : MonoBehaviour {
     public int musicVol = 0;
     [Range(-80, 0)]
     public int fxVol = 0;
+
+    public bool enableDebug = true;
     public bool godMode = false;
     public bool alwaysKillOk = false;
     public bool showPlayerLimits = false;
@@ -38,6 +40,7 @@ public class ResourceAssurer : MonoBehaviour {
     {
 	    if(resourcesForced)
         {
+            rsc.debugMng.debugModeEnabled = enableDebug;
             rsc.debugMng.godMode = godMode;
             rsc.debugMng.alwaysKillOk = alwaysKillOk;
             rsc.debugMng.showPlayerLimits = showPlayerLimits;

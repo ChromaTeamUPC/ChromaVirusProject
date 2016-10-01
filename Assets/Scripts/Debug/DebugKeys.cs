@@ -12,12 +12,6 @@ public class DebugKeys : MonoBehaviour {
 
     public KeyCode toggleStatsKey = KeyCode.F7;
     public KeyCode toggleWireframeKey = KeyCode.F8;
-    public KeyCode toggleGizmos = KeyCode.F9;
-
-    public KeyCode toggleGrayScaleKey;
-    public KeyCode toggleNoiseKey;
-    public KeyCode toggleMusic;
-    public KeyCode playNoiseFx;
 
     public KeyCode doubleSpeed = KeyCode.KeypadPlus;
     public KeyCode halfSpeed = KeyCode.KeypadMinus;

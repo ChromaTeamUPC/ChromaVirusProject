@@ -33,8 +33,6 @@ public class CamerasManager : MonoBehaviour
     public GameObject entryCameraObj;
     public GameObject godCameraObj;
 
-    private DebugKeys keys;
-
     private float camRayLength = 100f;
 
     //Effects control
@@ -161,9 +159,7 @@ public class CamerasManager : MonoBehaviour
     }
 
     void Start()
-    {
-        keys = rsc.debugMng.keys;
-
+    { 
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, ClearAllEffects);
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_LOADED, ClearAllEffects);
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_UNLOADED, ClearAllEffects);
@@ -313,14 +309,7 @@ public class CamerasManager : MonoBehaviour
             mainCameraController.SetEffects(finalEffects);
             entryCameraController.SetEffects(finalEffects);
             godCameraController.SetEffects(finalEffects);
-        }
-
-        if (Input.GetKeyDown(keys.mainCameraActivationKey))
-            ChangeCamera(0);
-        else if (Input.GetKeyDown(keys.godCameraActivationKey))
-            ChangeCamera(2);
-        else if (Input.GetKeyDown(keys.mainCameraFollowPlayersKey))
-            ToggleCameraFollowPlayers();
+        }          
     }
 
 
@@ -424,10 +413,14 @@ public class CamerasManager : MonoBehaviour
         }
     }
 
-    void ToggleCameraFollowPlayers()
+    public void ToggleCameraFollowPlayers()
     {
-        CameraController script = mainCameraObj.GetComponent<CameraController>();
-        script.enabled = !script.enabled;
+        mainCameraController.enabled = !mainCameraController.enabled;
+    }
+
+    public void SetCameraFollowPlayers()
+    {
+        mainCameraController.enabled = true;
     }
 
     public Vector3 GetDirection(Vector3 originalPosition, Vector3 displacement, int rayCastMask)

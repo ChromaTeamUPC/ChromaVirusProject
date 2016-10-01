@@ -74,9 +74,6 @@ public class CameraController : MonoBehaviour
     private NoiseAndGrain noise;
     private Grayscale grayScale;
 
-    private DebugKeys keys;
-    private bool viewWireFrame = false;
-
     void Awake()
     {
         anim = GetComponent<Animator>();
@@ -101,8 +98,6 @@ public class CameraController : MonoBehaviour
 
         target2 = rsc.gameInfo.player2.transform;
         player2 = rsc.gameInfo.player2Controller;
-
-        keys = rsc.debugMng.keys;
 
         rsc.eventMng.StartListening(EventManager.EventType.GAME_PAUSED, GamePaused);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_RESUMED, GameResumed);
@@ -133,7 +128,7 @@ public class CameraController : MonoBehaviour
 
     void OnPreRender()
     {
-        if (viewWireFrame)
+        if (rsc.debugMng.viewWireFrame)
             GL.wireframe = true;
     }
 
@@ -195,9 +190,6 @@ public class CameraController : MonoBehaviour
             default:
                 break;
         }
-
-        if (Input.GetKeyDown(keys.toggleWireframeKey))
-            viewWireFrame = !viewWireFrame;
     }
 
     void LateUpdate()
@@ -229,22 +221,22 @@ public class CameraController : MonoBehaviour
                 break;
 
             case CameraType.GOD:
-                if (Input.GetKey(keys.godCameraRight))
+                if (Input.GetKey(rsc.debugMng.keys.godCameraRight))
                 {
                     Vector3 displacement = transform.right * Time.deltaTime * speed;
                     transform.position = transform.position + displacement;
                 }
-                else if (Input.GetKey(keys.godCameraLeft))
+                else if (Input.GetKey(rsc.debugMng.keys.godCameraLeft))
                 {
                     Vector3 displacement = transform.right * Time.deltaTime * speed * -1;
                     transform.position = transform.position + displacement;
                 }
-                if (Input.GetKey(keys.godCameraForward))
+                if (Input.GetKey(rsc.debugMng.keys.godCameraForward))
                 {
                     Vector3 displacement = transform.forward * Time.deltaTime * speed;
                     transform.position = transform.position + displacement;
                 }
-                else if (Input.GetKey(keys.godCameraBackward))
+                else if (Input.GetKey(rsc.debugMng.keys.godCameraBackward))
                 {
                     Vector3 displacement = transform.forward * Time.deltaTime * speed * -1;
                     transform.position = transform.position + displacement;

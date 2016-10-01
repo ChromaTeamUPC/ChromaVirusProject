@@ -103,6 +103,11 @@ public class GameManager : MonoBehaviour {
         }
 	}
 
+    public bool IsPaused()
+    {
+        return state == GameState.PAUSED || state == GameState.SHOWING_TUTORIAL;
+    }
+
     public void Pause()
     {
         if (state != GameState.STARTED) return;
