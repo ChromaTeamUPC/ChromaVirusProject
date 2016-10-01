@@ -9,7 +9,8 @@ public class DecorativeHexagonController : MonoBehaviour
     {
         STATIC,
         IDLE, 
-        MOVING
+        MOVING,
+        FLOATING
     }
 
     private State state;
@@ -20,6 +21,17 @@ public class DecorativeHexagonController : MonoBehaviour
     //Movement variables
     [Header("Movement Settings")]
     public float chancesOfStatic = 15f;
+
+    private float continousHMin = 0.5f;
+    private float continouHsMax = 1.5f;
+    private float speedMin = 1f;
+    private float speedMax = 1.5f;
+
+    private float continousH;
+    private float speed;
+    private float direction;
+
+
     public float movementMinWaitTime = 1f;
     public float movementMaxWaitTime = 3f;
     public float upMinMovement = 1f;
@@ -45,14 +57,6 @@ public class DecorativeHexagonController : MonoBehaviour
     private bool up;
     private float totalMovement;
     private bool returning;
-
-    void OnDrawGizmos()
-    {
-        if (isStatic)
-            columnRend.sharedMaterial = floorStaticMat;
-        else
-            columnRend.sharedMaterial = floorNonStaticMat;
-    }
 
     void Awake()
     {
@@ -80,20 +84,35 @@ public class DecorativeHexagonController : MonoBehaviour
         if (isStatic)
         {
             columnRend.sharedMaterial = floorStaticMat;
-            ResetMovement();
+            //ResetMovement();
 
-            if (up)
+            /*if (up)
                 geometryOffset.transform.position += new Vector3(0f, totalMovement, 0f);
             else
-                geometryOffset.transform.position -= new Vector3(0f, totalMovement, 0f);
+                geometryOffset.transform.position -= new Vector3(0f, totalMovement, 0f);*/
 
             state = State.STATIC;
         }
-        else
+        /*else
         {
-            columnRend.sharedMaterial = floorNonStaticMat;
+            //columnRend.sharedMaterial = floorNonStaticMat;
+            columnRend.sharedMaterial = rsc.coloredObjectsMng.GetHexagonMaterial();
             ResetTime();
             state = State.IDLE;
+        }*/
+        else
+        {
+            columnRend.sharedMaterial = rsc.coloredObjectsMng.GetHexagonMaterial();
+
+            float amplitude = continouHsMax - continousHMin;
+            continousH = (float)(rand.NextDouble() * amplitude) + continousHMin;
+
+            amplitude = speedMax - speedMin;
+            speed = (float)(rand.NextDouble() * amplitude) + speedMin;
+
+            direction = (rand.NextDouble() >= 0.5f? 1f: -1f);
+
+            state = State.FLOATING;
         }
     }
 
@@ -177,6 +196,12 @@ public class DecorativeHexagonController : MonoBehaviour
                         state = State.IDLE;
                     }
                 }
+                break;
+
+            case State.FLOATING:
+
+                float currHeight = Mathf.Sin(Time.time * speed) * continousH * direction;
+                geometryOffset.transform.position = new Vector3(geometryOffset.transform.position.x, currHeight, geometryOffset.transform.position.z);
 
                 break;
         }

@@ -10,6 +10,7 @@ public class PositionGigaClusterItems : MonoBehaviour
     public bool set = false;
     public bool reset = false;
     public bool setHeight = false;
+    public bool setScale = false;
 
     public float minDistanceHexagons = 9;
     public float maxDistanceHexagons = 18;
@@ -20,6 +21,9 @@ public class PositionGigaClusterItems : MonoBehaviour
 
     public float minHeight = -20;
     public float maxHeight = 20;
+
+    public float minScale = 0.2f;
+    public float maxScale = 1f;
 
     private Transform center;
     private Transform[] neigbours = new Transform[6];
@@ -147,7 +151,7 @@ public class PositionGigaClusterItems : MonoBehaviour
             reset = false;
         }
 
-        if (setHeight && false)
+        if (setHeight)
         {
             DecorativeHexagonController[] hexagons = gameObject.GetComponentsInChildren<DecorativeHexagonController>(true);
 
@@ -164,6 +168,25 @@ public class PositionGigaClusterItems : MonoBehaviour
             }
 
             setHeight = false;
+        }
+
+        if (setScale)
+        {
+            DecorativeHexagonController[] hexagons = gameObject.GetComponentsInChildren<DecorativeHexagonController>(true);
+
+            System.Random rand = new System.Random();
+            double scale = 0;
+            float amplitude = maxScale - minScale;
+
+            for (int i = 0; i < hexagons.Length; ++i)
+            {
+                scale = (rand.NextDouble() * amplitude) + minScale;
+
+                Vector3 newModelScale = new Vector3(1, 1, (float)scale);
+                hexagons[i].columnRend.transform.localScale = newModelScale;
+            }
+
+            setScale = false;
         }
     }
 }

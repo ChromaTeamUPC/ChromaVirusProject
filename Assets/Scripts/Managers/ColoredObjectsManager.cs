@@ -85,6 +85,10 @@ public class ColoredObjectsManager : MonoBehaviour
     [SerializeField]
     private Material[] bridgeMats = new Material[4];
 
+    //Hexagon Materials
+    [SerializeField]
+    private Material[] hexagonMats = new Material[4];
+
     [Header("Props Materials")]
     //Capacitor Materials
     [SerializeField]
@@ -457,6 +461,16 @@ public class ColoredObjectsManager : MonoBehaviour
     public Material GetBridgeMaterial(ChromaColor color)
     {
         return GetMaterial(bridgeMats, color);
+    }
+
+    public Material GetHexagonMaterial(ChromaColor color)
+    {
+        return GetMaterial(hexagonMats, color);
+    }
+
+    public Material GetHexagonMaterial()
+    {
+        return GetMaterial(hexagonMats, ChromaColorInfo.Random);
     }
 
     public Material GetCapacitorMaterial(CapacitorController.CapacitorLevel chargeLevel, ChromaColor color)
