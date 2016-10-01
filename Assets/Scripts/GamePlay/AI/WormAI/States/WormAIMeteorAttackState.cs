@@ -253,7 +253,7 @@ public class WormAIMeteorAttackState : WormAIBaseState
                     {
                         destinyInRange = true;
 
-                        EnterExitActions();
+                        JumpExitActions();
 
                         destiny.WormEnterExit();
                     }

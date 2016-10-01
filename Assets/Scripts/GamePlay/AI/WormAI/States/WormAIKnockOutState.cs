@@ -142,7 +142,7 @@ public class WormAIKnockOutState : WormAIBaseState
                     {
                         destinyInRange = true;
 
-                        EnterExitActions();
+                        JumpExitActions();
 
                         destiny.WormEnterExit();
                     }

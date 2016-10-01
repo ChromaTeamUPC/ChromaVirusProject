@@ -142,7 +142,7 @@ public class WormAIHeadDestroyedState : WormAIBaseState
                     {
                         destinyInRange = true;
 
-                        EnterExitActions();
+                        JumpExitActions();
 
                         destiny.WormEnterExit();
                     }

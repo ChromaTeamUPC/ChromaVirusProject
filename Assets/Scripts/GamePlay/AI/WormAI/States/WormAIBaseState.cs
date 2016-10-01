@@ -29,6 +29,12 @@ public class WormAIBaseState
 
     virtual protected void EnterExitActions()
     {
+        //rsc.camerasMng.PlayEffect(0, 0.75f, 0.3f);
+        //rsc.rumbleMng.Rumble(0, 0.75f, 0.35f, 0.3f);
+    }
+
+    virtual protected void JumpExitActions()
+    {
         rsc.camerasMng.PlayEffect(0, 0.75f, 0.3f);
         rsc.rumbleMng.Rumble(0, 0.75f, 0.35f, 0.3f);
     }
