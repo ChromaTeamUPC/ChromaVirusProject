@@ -73,6 +73,8 @@ public class Level01Controller : MonoBehaviour
 {
     public ZoneActivableObjects[] zoneActivableObjects;
 
+    public Transform mainCameraStartPoint;
+
     private float respawnDelay = 2f;
     public Transform singlePlayerStartPoint;
     public Transform player1StartPoint;
@@ -98,6 +100,7 @@ public class Level01Controller : MonoBehaviour
         //Ensure all resources are in place (ie, enemies back to pool)
         rsc.eventMng.TriggerEvent(EventManager.EventType.LEVEL_LOADED, EventInfo.emptyInfo);
 
+        rsc.camerasMng.PositionCamera(0, mainCameraStartPoint);
         rsc.camerasMng.ChangeCamera(1);
 
         if (rsc.gameInfo.player1Controller.Active)

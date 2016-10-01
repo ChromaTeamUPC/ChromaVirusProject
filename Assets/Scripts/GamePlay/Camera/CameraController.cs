@@ -142,6 +142,13 @@ public class CameraController : MonoBehaviour
         GL.wireframe = false;
     }
 
+    public void UpdatePosition(Transform trf)
+    {
+        transform.position = trf.position;
+        transform.rotation = trf.rotation;
+        smoothedPosition = transform.position;
+    }
+
     private void GamePaused(EventInfo eventInfo)
     {
         blur.enabled = true;

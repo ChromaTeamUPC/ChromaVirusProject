@@ -398,6 +398,32 @@ public class CamerasManager : MonoBehaviour
         rsc.eventMng.TriggerEvent(EventManager.EventType.CAMERA_CHANGED, new CameraEventInfo { newCamera = currentCamera });
     }
 
+    public void PositionCamera(int cameraIndex, Transform trf)
+    {
+        //Find selected camera
+        switch (cameraIndex)
+        {
+            case 0:
+                if (mainCameraObj != null)
+                {
+                    mainCameraController.UpdatePosition(trf);
+                }
+                break;
+            case 1:
+                if (entryCameraObj != null)
+                {
+                    entryCameraController.UpdatePosition(trf);
+                }
+                break;
+            case 2:
+                if (godCameraObj != null)
+                {
+                    godCameraController.UpdatePosition(trf);
+                }
+                break;
+        }
+    }
+
     void ToggleCameraFollowPlayers()
     {
         CameraController script = mainCameraObj.GetComponent<CameraController>();
