@@ -202,7 +202,7 @@ public class GameManager : MonoBehaviour {
             case Level.LEVEL_01:
                 //SceneManager.LoadScene("Level01");
                 currentLevel = Level.LEVEL_01;
-                SceneManager.LoadScene("NewIntro");
+                SceneManager.LoadScene("Intro");
                 break;
             case Level.LEVEL_BOSS:
                 currentLevel = Level.LEVEL_BOSS;
