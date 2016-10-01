@@ -712,7 +712,8 @@ public class PlayerController : MonoBehaviour
     public void Damaged()
     {
         hurtSoundFx.Play();
-        rsc.camerasMng.PlayEffect(playerId, 0.25f, 0, Effects.GLITCH | Effects.BN);
+        rsc.rumbleMng.Rumble(playerId, 0.5f, 0.5f, 0f);
+        rsc.camerasMng.PlayEffect(playerId, effectDurationOnColorMismatch, 0.3f, Effects.GLITCH);
     }
 
     //Particle Systems methods

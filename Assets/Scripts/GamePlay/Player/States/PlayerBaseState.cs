@@ -403,8 +403,7 @@ public class PlayerBaseState
     {
         if (rsc.debugMng.godMode || bb.isInvulnerable) return null;
 
-        bb.blinkController.BlinkWhiteOnce();
-        bb.player.Damaged();
+        bb.blinkController.BlinkWhiteOnce();       
         bb.currentHealth -= damage;
 
         if (bb.currentHealth <= 0) bb.currentHealth = 0;
@@ -420,7 +419,8 @@ public class PlayerBaseState
         }
         else
         {
-            rsc.rumbleMng.Rumble(bb.player.Id, 0.5f, 0.5f, 0f);
+            bb.player.Damaged();
+            
             return nextStateIfDamaged;
         }
     }

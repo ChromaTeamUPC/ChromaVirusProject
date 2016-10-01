@@ -26,6 +26,7 @@ public class WormAIBehaviour : MonoBehaviour
     [Header("Sound Fx")]
     public AudioSource inOutSoundFx;
     public AudioSource attackWarningSoundFx;
+    public AudioSource watchingSoundFx;
     public AudioSource jumpAttackSoundFx;
     public AudioSource explosion1SoundFx;
     public AudioSource explosion2SoundFx;
@@ -541,5 +542,20 @@ public class WormAIBehaviour : MonoBehaviour
         }
 
         return result;
-    }   
+    }  
+    
+    public void WatchingPlayer()
+    {
+        angryEyes.Play();
+        watchingSoundFx.Play();
+    } 
+
+    public void NotWatchingPlayer()
+    {
+        if (angryEyes.isPlaying)
+            angryEyes.Stop();
+
+        if (watchingSoundFx.isPlaying)
+            watchingSoundFx.Stop();
+    }
 }

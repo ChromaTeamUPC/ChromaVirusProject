@@ -46,7 +46,7 @@ public class WormAIWanderingState : WormAIBaseState
     {
         base.OnStateExit();
 
-        head.angryEyes.Stop();
+        head.NotWatchingPlayer();
     }
 
     private void SetInitialState()
@@ -55,7 +55,7 @@ public class WormAIWanderingState : WormAIBaseState
         bb.meteorInmediate = false;
         angryEyes = false;
         exitRumble = false;
-        head.angryEyes.Stop();
+        head.NotWatchingPlayer();
 
         bb.SetWormVulnerable();
 
@@ -158,14 +158,14 @@ public class WormAIWanderingState : WormAIBaseState
 
             case SubState.FOLLOWING_PATH:
 
-                if(head.CheckPlayerInSight(bb.AboveAttackSettingsPhase.exposureMinHexagons, bb.AboveAttackSettingsPhase.exposureMaxHexagons, false)) 
+                if(bb.AboveAttackSettingsPhase.active && head.CheckPlayerInSight(bb.AboveAttackSettingsPhase.exposureMinHexagons, bb.AboveAttackSettingsPhase.exposureMaxHexagons, false)) 
                 {
                     bb.aboveAttackCurrentExposureTime += Time.deltaTime;
 
                     if (!angryEyes)
                     {
                         angryEyes = true;
-                        head.angryEyes.Play();
+                        head.WatchingPlayer();
                     }
                 }
                 else
@@ -173,14 +173,8 @@ public class WormAIWanderingState : WormAIBaseState
                     if (angryEyes)
                     {
                         angryEyes = false;
-                        head.angryEyes.Stop();
+                        head.NotWatchingPlayer();
                     }
-                }
-
-                //TODO: remove when tested
-                if (Input.GetKeyDown(KeyCode.M))
-                {
-                    return head.meteorAttackState;
                 }
 
                 if (bb.attacksEnabled && bb.AboveAttackSettingsPhase.active && bb.aboveAttackCurrentExposureTime >= bb.AboveAttackSettingsPhase.exposureTimeNeeded &&
@@ -196,7 +190,7 @@ public class WormAIWanderingState : WormAIBaseState
                             if (angryEyes)
                             {
                                 angryEyes = false;
-                                head.angryEyes.Stop();
+                                head.NotWatchingPlayer();
                             }
                             return head.aboveAttackState;
                         }
@@ -228,7 +222,7 @@ public class WormAIWanderingState : WormAIBaseState
                         if (angryEyes)
                         {
                             angryEyes = false;
-                            head.angryEyes.Stop();
+                            head.NotWatchingPlayer();
                         }
                       
                         head.animator.SetBool("MouthOpen", true);
@@ -246,12 +240,6 @@ public class WormAIWanderingState : WormAIBaseState
                 break;
 
             case SubState.EXITING:
-                //TODO: remove when tested
-                if (Input.GetKeyDown(KeyCode.M))
-                {
-                    bb.shouldMeteorBeTriggedAfterWandering = true;
-                }
-
                 if (t <= 2)
                 {
                     shouldMove = Time.deltaTime * bb.WanderingSettingsPhase.wanderingSpeed;
@@ -287,11 +275,6 @@ public class WormAIWanderingState : WormAIBaseState
                 break;
 
             case SubState.WAITING_FOR_TAIL:
-                //TODO: remove when tested
-                if (Input.GetKeyDown(KeyCode.M))
-                {
-                    bb.shouldMeteorBeTriggedAfterWandering = true;
-                }
 
                 //move head until tail is undeground
                 if (!bb.tailReachedMilestone)
