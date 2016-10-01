@@ -316,7 +316,8 @@ public class PlayerBaseState
                             Transform shotSpawn = bb.player.shotSpawn;
                             shot.transform.position = shotSpawn.position;
                             shot.transform.rotation = shotSpawn.rotation;
-                            shot.damage *= 2;
+                            if (bb.player.numberOfShots != 1)
+                                shot.damage *= 2;
                             shot.player = bb.player;
                             shot.Shoot();
 
