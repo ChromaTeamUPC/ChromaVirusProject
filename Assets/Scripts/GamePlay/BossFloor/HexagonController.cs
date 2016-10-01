@@ -695,6 +695,7 @@ public class HexagonController : MonoBehaviour
 
     private void WormAboveAttackAdjacentStart(Vector3 attackCenter)
     {
+        if (isBorder) return;
         if (isStatic) return;
 
         this.attackCenter = attackCenter;
