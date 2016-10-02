@@ -5,6 +5,7 @@ using InControl;
 
 public class GameManager : MonoBehaviour {
 
+    public bool firstTime = true;
     public bool motionBlur = true;
     public bool colorBar = false;
 

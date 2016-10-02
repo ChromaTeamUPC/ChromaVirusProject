@@ -19,6 +19,7 @@ public class MainMenuManager : MonoBehaviour {
     }
     private MainMenuState currentState;
 
+    public float fadeInFirstTime = 2f;
     public float fadeInTime = 0.25f;
     public float fadeOutToPlayTime = 2f;
     public float fadeOutToOptionsTime = 0.25f;
@@ -87,7 +88,15 @@ public class MainMenuManager : MonoBehaviour {
         DisableMainButtons();
               
         currentState = MainMenuState.FADING_IN;
-        fadeScript.StartFadingToClear(fadeInTime);
+        if (rsc.gameMng.firstTime)
+        {
+            fadeScript.StartFadingToClear(fadeInFirstTime);
+            rsc.gameMng.firstTime = false;
+        }
+        else
+        {
+            fadeScript.StartFadingToClear(fadeInTime);
+        }
         if(!rsc.audioMng.IsMusicPlaying() || !rsc.audioMng.IsCurrentMusic(AudioManager.MusicType.MAIN_MENU))
             rsc.audioMng.FadeInMusic(AudioManager.MusicType.MAIN_MENU, fadeInTime);
 
