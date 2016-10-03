@@ -20,7 +20,8 @@ public class LevelStats
     public int specialKillsChainIncrement = 3;
 
     [Header("Computed Score Settings")]
-    public int maxChainMultiplier = 1000;
+    public int maxChain1PlayerMultiplier = 1000;
+    public int maxChain2PlayersMultiplier = 2000;
 
     public int baseSeconds1Player = 300;
     public int baseSeconds2Players = 300;
@@ -181,13 +182,21 @@ public class PlayerStats
             colorAccuracy = 0;
 
         //Chain * multiplier
-        finalScore = maxChain * currentLevelStats.maxChainMultiplier;
+        if (rsc.gameInfo.numberOfPlayers == 1)
+            finalScore = maxChain * currentLevelStats.maxChain1PlayerMultiplier;
+        else
+            finalScore = maxChain * currentLevelStats.maxChain2PlayersMultiplier;
 
         //Accuracy factor
         finalScore = finalScore / 100 * colorAccuracy;
 
         //Time score
-        finalScore += ((rsc.gameInfo.numberOfPlayers == 1? currentLevelStats.baseSeconds1Player: currentLevelStats.baseSeconds2Players) - totalTime) * currentLevelStats.secondMultiplier;
+        int timeScore = ((rsc.gameInfo.numberOfPlayers == 1 ? currentLevelStats.baseSeconds1Player : currentLevelStats.baseSeconds2Players) - totalTime) * currentLevelStats.secondMultiplier;
+
+        if (timeScore < 0)
+            timeScore /= 10;
+
+        finalScore += timeScore;
 
         if (finalScore < 0) finalScore = 0;
 

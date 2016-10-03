@@ -835,7 +835,7 @@ public class GUIController : MonoBehaviour
             }
 
             currentChain = (int)Mathf.Lerp(0, player1Stats.maxChain, factor);
-            totalScore = currentChain * levelStats.maxChainMultiplier;
+            totalScore = currentChain * levelStats.maxChain1PlayerMultiplier;
 
             scoreSingleChain.text = currentChain.ToString();
             scoreSingleTotal.text = string.Format("{0:n0}", (totalScore > 0) ? totalScore : 0);
@@ -847,7 +847,7 @@ public class GUIController : MonoBehaviour
             factor = elapsedTime / scoreChainDuration;
         }
 
-        totalScore = player1Stats.maxChain * levelStats.maxChainMultiplier;
+        totalScore = player1Stats.maxChain * levelStats.maxChain1PlayerMultiplier;
         scoreSingleChain.text = player1Stats.maxChain.ToString();
         scoreSingleTotal.text = string.Format("{0:n0}", (totalScore > 0) ? totalScore : 0);
         yield return null;
@@ -891,10 +891,16 @@ public class GUIController : MonoBehaviour
         elapsedTimeTick = 0f;
         factor = 0f;
 
+        float timeFactor = 1f;
         if (totalTime < baseTime)
+        {
             scoreSingleTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.GREEN);
+        }
         else if (totalTime > baseTime)
+        {
             scoreSingleTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.RED);
+            timeFactor = 0.1f;
+        }
 
         scoreTicSoundFx.Play();
         realScoreTickSeconds = (scoreTimeDuration / Mathf.Abs(baseTime - totalTime) > scoreTickEverySeconds ? scoreTimeDuration / Mathf.Abs(baseTime - totalTime) : scoreTickEverySeconds);
@@ -908,7 +914,7 @@ public class GUIController : MonoBehaviour
             }
 
             int seconds = (int)Mathf.Lerp(baseTime, totalTime, factor);
-            timeScore = percentScore + ((baseTime - seconds) * levelStats.secondMultiplier);
+            timeScore = percentScore + ((baseTime - seconds) * (int)(levelStats.secondMultiplier * timeFactor));
 
             scoreSingleTime.text = seconds.ToString();
             scoreSingleTotal.text = string.Format("{0:n0}", (timeScore > 0) ? timeScore : 0);
@@ -920,7 +926,7 @@ public class GUIController : MonoBehaviour
             factor = elapsedTime / scoreTimeDuration;
         }
 
-        timeScore = percentScore + ((baseTime - totalTime) * levelStats.secondMultiplier);
+        timeScore = percentScore + ((baseTime - totalTime) * (int)(levelStats.secondMultiplier * timeFactor));
         scoreSingleTime.text = totalTime.ToString();
         scoreSingleTotal.text = string.Format("{0:n0}", (timeScore > 0) ? timeScore : 0);
 
@@ -1037,16 +1043,16 @@ public class GUIController : MonoBehaviour
             }
 
             currentChainP1 = (int)Mathf.Lerp(0, player1Stats.maxChain, factor);
-            totalScoreP1 = currentChainP1 * levelStats.maxChainMultiplier;
+            totalScoreP1 = currentChainP1 * levelStats.maxChain2PlayersMultiplier;
 
             scoreMultiChainP1.text = currentChainP1.ToString();
-            scoreMultiTotalP1.text = string.Format("{0:n0}", (player1Stats.maxChain * levelStats.maxChainMultiplier > 0) ? player1Stats.maxChain * levelStats.maxChainMultiplier : 0);
+            scoreMultiTotalP1.text = string.Format("{0:n0}", (player1Stats.maxChain * levelStats.maxChain2PlayersMultiplier > 0) ? player1Stats.maxChain * levelStats.maxChain2PlayersMultiplier : 0);
 
             currentChainP2 = (int)Mathf.Lerp(0, player2Stats.maxChain, factor);
-            totalScoreP2 = currentChainP2 * levelStats.maxChainMultiplier;
+            totalScoreP2 = currentChainP2 * levelStats.maxChain2PlayersMultiplier;
 
             scoreMultiChainP2.text = currentChainP2.ToString();
-            scoreMultiTotalP2.text = string.Format("{0:n0}", (player2Stats.maxChain * levelStats.maxChainMultiplier > 0) ? player2Stats.maxChain * levelStats.maxChainMultiplier : 0);
+            scoreMultiTotalP2.text = string.Format("{0:n0}", (player2Stats.maxChain * levelStats.maxChain2PlayersMultiplier > 0) ? player2Stats.maxChain * levelStats.maxChain2PlayersMultiplier : 0);
 
             yield return null;
 
@@ -1055,13 +1061,13 @@ public class GUIController : MonoBehaviour
             factor = elapsedTime / scoreChainDuration;
         }
 
-        totalScoreP1 = player1Stats.maxChain * levelStats.maxChainMultiplier;
+        totalScoreP1 = player1Stats.maxChain * levelStats.maxChain2PlayersMultiplier;
         scoreMultiChainP1.text = player1Stats.maxChain.ToString();
-        scoreMultiTotalP1.text = string.Format("{0:n0}", (player1Stats.maxChain * levelStats.maxChainMultiplier > 0) ? player1Stats.maxChain * levelStats.maxChainMultiplier : 0);
+        scoreMultiTotalP1.text = string.Format("{0:n0}", (player1Stats.maxChain * levelStats.maxChain2PlayersMultiplier > 0) ? player1Stats.maxChain * levelStats.maxChain2PlayersMultiplier : 0);
 
-        totalScoreP2 = player2Stats.maxChain * levelStats.maxChainMultiplier;
+        totalScoreP2 = player2Stats.maxChain * levelStats.maxChain2PlayersMultiplier;
         scoreMultiChainP2.text = player2Stats.maxChain.ToString();
-        scoreMultiTotalP2.text = string.Format("{0:n0}", (player2Stats.maxChain * levelStats.maxChainMultiplier > 0) ? player2Stats.maxChain * levelStats.maxChainMultiplier : 0);
+        scoreMultiTotalP2.text = string.Format("{0:n0}", (player2Stats.maxChain * levelStats.maxChain2PlayersMultiplier > 0) ? player2Stats.maxChain * levelStats.maxChain2PlayersMultiplier : 0);
         yield return null;
 
         //Accuracy update
@@ -1116,10 +1122,16 @@ public class GUIController : MonoBehaviour
         elapsedTimeTick = 0f;
         factor = 0f;
 
+        float timeFactor = 1f;
         if (totalTime < baseTime)
-            scoreMultiTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.GREEN);
+        {
+            scoreSingleTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.GREEN);
+        }
         else if (totalTime > baseTime)
-            scoreMultiTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.RED);
+        {
+            scoreSingleTime.color = rsc.coloredObjectsMng.GetColor(ChromaColor.RED);
+            timeFactor = 0.1f;
+        }
 
         scoreTicSoundFx.Play();
         realScoreTickSeconds = (scoreTimeDuration / Mathf.Abs(baseTime - totalTime) > scoreTickEverySeconds ? scoreTimeDuration / Mathf.Abs(baseTime - totalTime) : scoreTickEverySeconds);
@@ -1134,8 +1146,8 @@ public class GUIController : MonoBehaviour
 
             int seconds = (int)Mathf.Lerp(baseTime, totalTime, factor);
 
-            timeScoreP1 = percentScoreP1 + ((baseTime - seconds) * levelStats.secondMultiplier);
-            timeScoreP2 = percentScoreP2 + ((baseTime - seconds) * levelStats.secondMultiplier);
+            timeScoreP1 = percentScoreP1 + ((baseTime - seconds) * (int)(levelStats.secondMultiplier * timeFactor));
+            timeScoreP2 = percentScoreP2 + ((baseTime - seconds) * (int)(levelStats.secondMultiplier * timeFactor));
 
             scoreMultiTime.text = seconds.ToString();
             scoreMultiTotalP1.text = string.Format("{0:n0}", (timeScoreP1 > 0) ? timeScoreP1 : 0);
@@ -1148,8 +1160,8 @@ public class GUIController : MonoBehaviour
             factor = elapsedTime / scoreTimeDuration;
         }
 
-        timeScoreP1 = percentScoreP1 + ((baseTime - totalTime) * levelStats.secondMultiplier);
-        timeScoreP2 = percentScoreP2 + ((baseTime - totalTime) * levelStats.secondMultiplier);
+        timeScoreP1 = percentScoreP1 + ((baseTime - totalTime) * (int)(levelStats.secondMultiplier * timeFactor));
+        timeScoreP2 = percentScoreP2 + ((baseTime - totalTime) * (int)(levelStats.secondMultiplier * timeFactor));
         scoreMultiTime.text = totalTime.ToString();
         scoreMultiTotalP1.text = string.Format("{0:n0}", (timeScoreP1 > 0) ? timeScoreP1 : 0);
         scoreMultiTotalP2.text = string.Format("{0:n0}", (timeScoreP2 > 0) ? timeScoreP2 : 0);
