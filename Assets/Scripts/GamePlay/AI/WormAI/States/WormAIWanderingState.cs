@@ -9,7 +9,9 @@ public class WormAIWanderingState : WormAIBaseState
         ENTERING,
         FOLLOWING_PATH,
         EXITING,
-        WAITING_FOR_TAIL
+        WAITING_FOR_TAIL,
+        JUMPING,
+        JUMP_EXITING
     }
 
     private SubState subState;
@@ -31,6 +33,16 @@ public class WormAIWanderingState : WormAIBaseState
 
     private bool angryEyes;
     private bool exitRumble;
+
+    private HexagonController destiny;
+
+    private float currentX;
+    private Quaternion initialRotation;
+    private float destinyInRangeDistance = 1f;
+    private bool destinyInRange;
+    private float speed;
+
+    private Vector3 priorPosition;
 
     public WormAIWanderingState(WormBlackboard bb) : base(bb)
     { }
@@ -61,6 +73,7 @@ public class WormAIWanderingState : WormAIBaseState
 
         elapsedTime = 0f;
         WPIndex = 0;
+        destinyInRange = false;
         //Set initial substate, nav mesh layer and select a random route
         subState = SubState.WAITING;
 
@@ -150,6 +163,8 @@ public class WormAIWanderingState : WormAIBaseState
                     head.animator.SetBool("MouthOpen", false);
 
                     bb.meteorInmediate = true;
+                    priorPosition = headTrf.position;
+                    elapsedTime = 0;
 
                     subState = SubState.FOLLOWING_PATH;
                 }
@@ -196,47 +211,75 @@ public class WormAIWanderingState : WormAIBaseState
                         }
                     }                   
                 }
-          
 
-                if (!head.agent.hasPath || (head.agent.hasPath && head.agent.remainingDistance <= 0.25))
+                //Not reached next waypoint
+                if (elapsedTime >= 6f)
                 {
-                    if (WPIndex == route.wayPoints.Length - 2)
+                    head.agent.enabled = false;
+
+                    destiny = GetExitHexagon();
+                    bb.CalculateParabola(headTrf.position, destiny.transform.position);
+                    speed = (headTrf.position - destiny.transform.position).magnitude / bb.headDestroyedJumpDuration;
+
+                    //Calculate start point and prior point
+                    currentX = bb.GetJumpXGivenY(0, false);
+                    Vector3 startPosition = bb.GetJumpPositionGivenY(0, false);
+                    headTrf.position = startPosition;
+
+                    lastPosition = bb.GetJumpPositionGivenX(currentX);
+
+                    float fakeNextX = currentX + Time.deltaTime * 2;
+                    Vector3 nextPosition = bb.GetJumpPositionGivenX(fakeNextX);
+                    headTrf.rotation = Quaternion.LookRotation(nextPosition - startPosition, headTrf.up);
+
+                    subState = SubState.JUMPING;
+                }
+                else
+                {
+                    elapsedTime += Time.deltaTime;
+
+                    if (!head.agent.hasPath || (head.agent.hasPath && head.agent.remainingDistance <= 0.25))
                     {
-                        head.agent.enabled = false;
-
-                        currentWP = route.wayPoints[WPIndex].transform.position;
-                        nextWP = route.wayPoints[WPIndex + 1].transform.position;
-
-                        currentWPUG = currentWP - bb.navMeshLayersDistance;
-                        nextWPUG = nextWP - bb.navMeshLayersDistance;
-
-                        headTrf.LookAt(nextWP, Vector3.up);
-
-                        bb.CalculateWorldExitBezierPoints(headTrf);
-
-                        t = 0;
-
-                        HexagonController hexagon = route.wayPoints[WPIndex + 1].GetComponent<HexagonController>();
-                        hexagon.WormEnterExit();
-
-                        if (angryEyes)
+                        if (WPIndex == route.wayPoints.Length - 2)
                         {
-                            angryEyes = false;
-                            head.NotWatchingPlayer();
-                        }
-                      
-                        head.animator.SetBool("MouthOpen", true);
-                        bb.meteorInmediate = false;
+                            head.agent.enabled = false;
 
-                        subState = SubState.EXITING;
-                    }
-                    else
-                    {
-                        ++WPIndex;
-                        currentWP = route.wayPoints[WPIndex].transform.position;
-                        head.agent.SetDestination(currentWP);
+                            currentWP = route.wayPoints[WPIndex].transform.position;
+                            nextWP = route.wayPoints[WPIndex + 1].transform.position;
+
+                            currentWPUG = currentWP - bb.navMeshLayersDistance;
+                            nextWPUG = nextWP - bb.navMeshLayersDistance;
+
+                            headTrf.LookAt(nextWP, Vector3.up);
+
+                            bb.CalculateWorldExitBezierPoints(headTrf);
+
+                            t = 0;
+
+                            HexagonController hexagon = route.wayPoints[WPIndex + 1].GetComponent<HexagonController>();
+                            hexagon.WormEnterExit();
+
+                            if (angryEyes)
+                            {
+                                angryEyes = false;
+                                head.NotWatchingPlayer();
+                            }
+
+                            head.animator.SetBool("MouthOpen", true);
+                            bb.meteorInmediate = false;
+
+                            subState = SubState.EXITING;
+                        }
+                        else
+                        {
+                            elapsedTime = 0;
+                            ++WPIndex;
+                            currentWP = route.wayPoints[WPIndex].transform.position;
+                            head.agent.SetDestination(currentWP);
+                        }
                     }
                 }
+
                 break;
 
             case SubState.EXITING:
@@ -297,6 +340,56 @@ public class WormAIWanderingState : WormAIBaseState
                         SetInitialState();
                 }
 
+                break;
+
+
+            //Failsafe exit 
+            case SubState.JUMPING:
+                //While not again below underground navmesh layer advance
+                currentX += Time.deltaTime * speed;
+                lastPosition = headTrf.position;
+                headTrf.position = bb.GetJumpPositionGivenX(currentX);
+
+                headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition), headTrf.up);
+
+                if (!destinyInRange)
+                {
+                    float distanceToDestiny = (headTrf.position - destiny.transform.position).magnitude;
+                    if (distanceToDestiny <= destinyInRangeDistance ||
+                        headTrf.position.y < destiny.transform.position.y) //Safety check. When jump is too fast distance can never be less than range distance
+                    {
+                        destinyInRange = true;
+
+                        JumpExitActions();
+
+                        destiny.WormEnterExit();
+                    }
+                }
+
+                if (headTrf.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
+                {
+                    SetHeadUnderground();
+                    head.animator.SetBool("MouthOpen", false);
+
+                    subState = SubState.JUMP_EXITING;
+                }
+                break;
+
+            case SubState.JUMP_EXITING:
+                currentX += Time.deltaTime * speed;
+                lastPosition = headTrf.position;
+                headTrf.position = bb.GetJumpPositionGivenX(currentX);
+
+                headTrf.LookAt(headTrf.position + (headTrf.position - lastPosition));
+
+                if (bb.tailReachedMilestone)
+                {
+                    Vector3 pos = headTrf.position;
+                    pos.y = -WormBlackboard.NAVMESH_LAYER_HEIGHT;
+                    headTrf.position = pos;
+
+                    return head.wanderingState;
+                }
                 break;
 
             default:

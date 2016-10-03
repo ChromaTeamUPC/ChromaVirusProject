@@ -19,7 +19,8 @@ public class MosquitoDyingAIState : MosquitoAIBaseState
 
         blackboard.entity.DisableShields();
 
-        rsc.rumbleMng.Rumble(mosquitoBlackboard.lastShotPlayer.Id, 0.25f, 0f, 0.5f);
+        if(mosquitoBlackboard.lastShotPlayer != null)
+            rsc.rumbleMng.Rumble(mosquitoBlackboard.lastShotPlayer.Id, 0.25f, 0f, 0.5f);
 
         EnemyDiedEventInfo.eventInfo.color = color;
         EnemyDiedEventInfo.eventInfo.infectionValue = MosquitoAIBehaviour.infectionValue;
