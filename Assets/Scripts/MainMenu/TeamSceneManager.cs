@@ -27,6 +27,7 @@ public class TeamSceneManager : MonoBehaviour
     public GameObject teamGroupGO;
     public GameObject presentsGroupGO;
 
+    public AudioSource glitchSoundFx;
     public VideoGlitches.VideoGlitchSpectrumOffset glitch;
 
     private float elapsedTime;
@@ -47,6 +48,8 @@ public class TeamSceneManager : MonoBehaviour
         {
             loadingResources = false;
         }
+
+        glitchSoundFx = GetComponent<AudioSource>();
     }
 
     // Use this for initialization
@@ -113,6 +116,7 @@ public class TeamSceneManager : MonoBehaviour
                 {
                     //fadeScript.StartFadingToColor(fadeToMenuTime);
                     glitch.enabled = true;
+                    glitchSoundFx.Play();
                     elapsedTime = 0f;
                     currentState = TeamState.GLITCH;
                 }
@@ -132,6 +136,7 @@ public class TeamSceneManager : MonoBehaviour
             case TeamState.GLITCH:
                 if (elapsedTime >= fadeToMenuTime)
                 {
+                    glitchSoundFx.Stop();
                     loadMainMenu.allowSceneActivation = true;
                 }
                 else
