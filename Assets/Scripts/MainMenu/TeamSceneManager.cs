@@ -11,7 +11,8 @@ public class TeamSceneManager : MonoBehaviour
         FADING_OUT_TO_PRESENT,
         FADING_IN_TO_PRESENT,
         PRESENT,      
-        FADING_OUT
+        FADING_OUT,
+        GLITCH
     }
     private TeamState currentState;
 
@@ -25,6 +26,8 @@ public class TeamSceneManager : MonoBehaviour
 
     public GameObject teamGroupGO;
     public GameObject presentsGroupGO;
+
+    public VideoGlitches.VideoGlitchSpectrumOffset glitch;
 
     private float elapsedTime;
 
@@ -108,8 +111,10 @@ public class TeamSceneManager : MonoBehaviour
             case TeamState.PRESENT:
                 if (elapsedTime >= presentsTime)
                 {
-                    fadeScript.StartFadingToColor(fadeToMenuTime);
-                    currentState = TeamState.FADING_OUT;
+                    //fadeScript.StartFadingToColor(fadeToMenuTime);
+                    glitch.enabled = true;
+                    elapsedTime = 0f;
+                    currentState = TeamState.GLITCH;
                 }
                 else
                 {
@@ -122,7 +127,18 @@ public class TeamSceneManager : MonoBehaviour
                 {
                     loadMainMenu.allowSceneActivation = true;
                 }
-                break;        
+                break;
+
+            case TeamState.GLITCH:
+                if (elapsedTime >= fadeToMenuTime)
+                {
+                    loadMainMenu.allowSceneActivation = true;
+                }
+                else
+                {
+                    elapsedTime += Time.deltaTime;
+                }
+                break;
         }
     }
 }
