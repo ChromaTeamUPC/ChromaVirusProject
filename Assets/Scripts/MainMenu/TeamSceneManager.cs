@@ -50,6 +50,7 @@ public class TeamSceneManager : MonoBehaviour
         }
 
         glitchSoundFx = GetComponent<AudioSource>();
+        Cursor.visible = false;
     }
 
     // Use this for initialization
