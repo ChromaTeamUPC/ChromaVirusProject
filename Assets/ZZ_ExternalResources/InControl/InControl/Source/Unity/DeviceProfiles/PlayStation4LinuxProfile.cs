@@ -53,7 +53,7 @@ namespace InControl
 				},
 				new InputControlMapping {
 					Handle = "Options",
-					Target = InputControlType.Select,
+					Target = InputControlType.Start,
 					Source = Button9
 				},
 				new InputControlMapping {

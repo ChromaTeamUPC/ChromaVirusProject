@@ -332,11 +332,17 @@ namespace UnityEngine.EventSystems
                 return false;
 
             var data = GetBaseEventData();
-            if (Input.GetButtonDown(m_SubmitButton))
+            
+            if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action1))
+                ExecuteEvents.Execute(eventSystem.currentSelectedGameObject, data, ExecuteEvents.submitHandler);
+
+            if (InputManager.GetAnyControllerButtonWasPressed(InputControlType.Action2))
+                ExecuteEvents.Execute(eventSystem.currentSelectedGameObject, data, ExecuteEvents.cancelHandler);
+            /*if (Input.GetButtonDown(m_SubmitButton))
                 ExecuteEvents.Execute(eventSystem.currentSelectedGameObject, data, ExecuteEvents.submitHandler);
 
             if (Input.GetButtonDown(m_CancelButton))
-                ExecuteEvents.Execute(eventSystem.currentSelectedGameObject, data, ExecuteEvents.cancelHandler);
+                ExecuteEvents.Execute(eventSystem.currentSelectedGameObject, data, ExecuteEvents.cancelHandler);*/
             return data.used;
         }
 

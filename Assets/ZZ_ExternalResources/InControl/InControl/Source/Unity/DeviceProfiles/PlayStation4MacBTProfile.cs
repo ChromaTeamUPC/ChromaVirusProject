@@ -52,20 +52,15 @@ namespace InControl
 					Source = Button5
 				},
 				new InputControlMapping {
-					Handle = "System",
-					Target = InputControlType.System,
-					Source = Button12
-				},
-				new InputControlMapping {
-					Handle = "Options",
-					Target = InputControlType.Select,
-					Source = Button9
-				},
-				new InputControlMapping {
 					Handle = "Share",
 					Target = InputControlType.Share,
 					Source = Button8
 				},
+				new InputControlMapping {
+					Handle = "Options",
+					Target = InputControlType.Start,
+					Source = Button9
+				},						
 				new InputControlMapping {
 					Handle = "Left Stick Button",
 					Target = InputControlType.LeftStickButton,
@@ -75,6 +70,11 @@ namespace InControl
 					Handle = "Right Stick Button",
 					Target = InputControlType.RightStickButton,
 					Source = Button11
+				},
+				new InputControlMapping {
+					Handle = "System",
+					Target = InputControlType.System,
+					Source = Button12
 				},
 				new InputControlMapping {
 					Handle = "TouchPad Button",
