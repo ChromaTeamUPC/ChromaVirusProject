@@ -42,8 +42,6 @@ public class WormAIWanderingState : WormAIBaseState
     private bool destinyInRange;
     private float speed;
 
-    private Vector3 priorPosition;
-
     public WormAIWanderingState(WormBlackboard bb) : base(bb)
     { }
 
@@ -163,7 +161,6 @@ public class WormAIWanderingState : WormAIBaseState
                     head.animator.SetBool("MouthOpen", false);
 
                     bb.meteorInmediate = true;
-                    priorPosition = headTrf.position;
                     elapsedTime = 0;
 
                     subState = SubState.FOLLOWING_PATH;

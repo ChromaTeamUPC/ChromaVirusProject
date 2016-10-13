@@ -33,20 +33,13 @@ public class TeamSceneManager : MonoBehaviour
     private float elapsedTime;
 
     private AsyncOperation loadMainMenu;
-    private AsyncOperation loadResources;
-    private bool loadingResources;
 
     void Awake()
     {
         //Loading of managers, players, and various resources
         if (!rsc.ObjectsInitialized)
         {
-            loadResources = SceneManager.LoadSceneAsync("LoadingScene", LoadSceneMode.Additive);
-            loadingResources = true;
-        }
-        else
-        {
-            loadingResources = false;
+            SceneManager.LoadSceneAsync("LoadingScene", LoadSceneMode.Additive);
         }
 
         glitchSoundFx = GetComponent<AudioSource>();

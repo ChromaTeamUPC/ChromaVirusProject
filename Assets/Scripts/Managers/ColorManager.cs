@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
-using SynchronizerData;
 
 
 //Helper class to know the first and last colors defined in the enumerator, so we can check for .First or .Last and always will return the proper color even if we reorder the enum
@@ -58,8 +57,6 @@ public class ColorManager : MonoBehaviour
     private ChromaColor newColor;
     private float elapsedTime = 0f;
 
-    private BeatObserver beatObserver;
-    private bool colorChange;
     private bool colorPrecalculated;
     private float prewarnInterval;
 
@@ -74,10 +71,8 @@ public class ColorManager : MonoBehaviour
         //Debug.Log("Color Manager created");
         prewarnInterval = changeInterval - prewarningSeconds;
         active = false;
-        colorChange = true;
         currentColor = ChromaColorInfo.Random;
         newColor = currentColor;
-        beatObserver = GetComponent<BeatObserver>();
     }
 
     void Start()
@@ -194,20 +189,6 @@ public class ColorManager : MonoBehaviour
             }
         }
 	}
-
-    void Update()
-    {
-        if (active && musicSynced)
-        {
-            if ((beatObserver.beatMask & BeatType.DownBeat) == BeatType.DownBeat)
-            {
-                if(colorChange)
-                    SetNewColor();
-
-                colorChange = !colorChange;
-            }
-        }
-    }
 
     private ChromaColor GetColor()
     {
