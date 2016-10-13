@@ -228,16 +228,19 @@ public class NewIntroController : MonoBehaviour
                     rsc.audioMng.FadeOutExternalMusic(alarmSoundFx, 1f);
 
                     //Set kdt
-                    wireBase.SetFloat("_Thickness", 0f);
+                    /*wireBase.SetFloat("_Thickness", 0f);
                     wireColor.SetFloat("_Thickness", 0f);
-                    wireFace.SetFloat("_Thickness", 0f);
+                    wireFace.SetFloat("_Thickness", 0f);*/
+                    wireBase.SetFloat("_V_WIRE_Size", 0f);
+                    wireColor.SetFloat("_V_WIRE_Size", 0f);
+                    wireFace.SetFloat("_V_WIRE_Size", 0f);
 
                     kdt.SetActive(true);
 
                     //Set jnk
-                    jnkWireBase.SetFloat("_Thickness", 0f);
-                    jnkWireColor.SetFloat("_Thickness", 0f);
-                    jnkWireFace.SetFloat("_Thickness", 0f);
+                    jnkWireBase.SetFloat("_V_WIRE_Size", 0f);
+                    jnkWireColor.SetFloat("_V_WIRE_Size", 0f);
+                    jnkWireFace.SetFloat("_V_WIRE_Size", 0f);
 
                     if (multiPlayer)
                         jnk.SetActive(true);
@@ -269,13 +272,13 @@ public class NewIntroController : MonoBehaviour
                     {
                         factor = (elapsedTime - startingKDT1InitialDelay) / (startingKDT1Duration - startingKDT1InitialDelay);
                         float thickness = Mathf.Lerp(0, wireMiddleThickness, factor);
-                        wireBase.SetFloat("_Thickness", thickness);
-                        wireColor.SetFloat("_Thickness", thickness);
-                        wireFace.SetFloat("_Thickness", thickness);
+                        wireBase.SetFloat("_V_WIRE_Size", thickness);
+                        wireColor.SetFloat("_V_WIRE_Size", thickness);
+                        wireFace.SetFloat("_V_WIRE_Size", thickness);
 
-                        jnkWireBase.SetFloat("_Thickness", thickness);
-                        jnkWireColor.SetFloat("_Thickness", thickness);
-                        jnkWireFace.SetFloat("_Thickness", thickness);
+                        jnkWireBase.SetFloat("_V_WIRE_Size", thickness);
+                        jnkWireColor.SetFloat("_V_WIRE_Size", thickness);
+                        jnkWireFace.SetFloat("_V_WIRE_Size", thickness);
                     }
 
                     kdt.transform.Rotate(0, Time.deltaTime * startingKdtDPS, 0);
@@ -305,13 +308,13 @@ public class NewIntroController : MonoBehaviour
                     percentageForegroundText.text = percentage + "%";
 
                     float thickness = Mathf.Lerp(wireMiddleThickness, wireMaxThickness, factor);
-                    wireBase.SetFloat("_Thickness", thickness);
-                    wireColor.SetFloat("_Thickness", thickness);
-                    wireFace.SetFloat("_Thickness", thickness);
+                    wireBase.SetFloat("_V_WIRE_Size", thickness);
+                    wireColor.SetFloat("_V_WIRE_Size", thickness);
+                    wireFace.SetFloat("_V_WIRE_Size", thickness);
 
-                    jnkWireBase.SetFloat("_Thickness", thickness);
-                    jnkWireColor.SetFloat("_Thickness", thickness);
-                    jnkWireFace.SetFloat("_Thickness", thickness);
+                    jnkWireBase.SetFloat("_V_WIRE_Size", thickness);
+                    jnkWireColor.SetFloat("_V_WIRE_Size", thickness);
+                    jnkWireFace.SetFloat("_V_WIRE_Size", thickness);
 
                     kdt.transform.Rotate(0, Time.deltaTime * startingKdtDPS, 0);
 

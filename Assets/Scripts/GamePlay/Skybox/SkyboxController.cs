@@ -22,7 +22,8 @@ public class SkyboxController : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-        sphereMat.color = originalColor;
+        //sphereMat.color = originalColor;
+        sphereMat.SetColor("_V_WIRE_Color", originalColor);
         skyBoxMat.SetColor("_SkyTint", originalSkyTint);
         skyBoxMat.SetColor("_GroundColor", originalGroundTint);
         rsc.eventMng.StartListening(EventManager.EventType.LEVEL_CLEARED, LevelCleared);
@@ -49,7 +50,8 @@ public class SkyboxController : MonoBehaviour
         {
             float factor = elapsedTime / changeDuration;
 
-            sphereMat.color = Color.Lerp(originalColor, clearColor, factor);
+            //sphereMat.color = Color.Lerp(originalColor, clearColor, factor);
+            sphereMat.SetColor("_V_WIRE_Color", Color.Lerp(originalColor, clearColor, factor));
             skyBoxMat.SetColor("_SkyTint", Color.Lerp(originalSkyTint, clearSkyTint, factor));
             skyBoxMat.SetColor("_GroundColor", Color.Lerp(originalGroundTint, cloarGroundTint, factor));
             yield return null;
@@ -57,7 +59,8 @@ public class SkyboxController : MonoBehaviour
             elapsedTime += Time.deltaTime;
         }
 
-        sphereMat.color = clearColor;
+        //sphereMat.color = clearColor;
+        sphereMat.SetColor("_V_WIRE_Color", clearColor);
         skyBoxMat.SetColor("_SkyTint", clearSkyTint);
         skyBoxMat.SetColor("_GroundColor", cloarGroundTint);
     }
