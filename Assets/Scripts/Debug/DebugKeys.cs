@@ -6,6 +6,7 @@ public class DebugKeys : MonoBehaviour {
     public KeyCode toggleAlwaysKillOk = KeyCode.F2;
     public KeyCode toggleShowPlayerLimits = KeyCode.F3;
     public KeyCode mainCameraFollowPlayersKey = KeyCode.F4;
+    public KeyCode toggleUI = KeyCode.F5;
     public KeyCode mainCameraActivationKey = KeyCode.Alpha1;
     public KeyCode godCameraActivationKey = KeyCode.Alpha2;
     //... morrrre camerrasssss

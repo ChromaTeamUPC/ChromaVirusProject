@@ -15,6 +15,7 @@ public class DebugManager : MonoBehaviour {
     private string textFPS;
     private string textTriangles;
 
+    public bool UIVisible = true;
     private bool statsVisible = false;
     private bool calculateTriangles = false;
     public bool viewWireFrame = false;
@@ -44,6 +45,7 @@ public class DebugManager : MonoBehaviour {
                 debugModeEnabled = false;
                 rsc.audioMng.backFx.Play();
 
+                UIVisible = true;
                 statsVisible = false;
                 viewWireFrame = false;
                 godMode = false;
@@ -79,6 +81,11 @@ public class DebugManager : MonoBehaviour {
             if (Input.GetKeyDown(keys.toggleShowPlayerLimits))
             {
                 showPlayerLimits = !showPlayerLimits;
+            }
+
+            if (Input.GetKeyDown(keys.toggleUI))
+            {
+                UIVisible = !UIVisible;
             }
 
             if (Input.GetKeyDown(keys.mainCameraFollowPlayersKey))

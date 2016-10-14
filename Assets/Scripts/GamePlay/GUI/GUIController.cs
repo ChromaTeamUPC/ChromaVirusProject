@@ -168,6 +168,7 @@ public class GUIController : MonoBehaviour
     public Image tutorialImg;
 
     [Header("Other Items")]
+    public GameObject group;
     public GameObject infoArea;
     public GameObject playersArea;
     public Text youWinTxt;
@@ -308,6 +309,15 @@ public class GUIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(group.activeSelf && !rsc.debugMng.UIVisible)
+        {
+            group.SetActive(false);
+        }
+        else if (!group.activeSelf && rsc.debugMng.UIVisible)
+        {
+            group.SetActive(true);
+        }
+
         //Player 1 update
         if (player1Controller.Active)
         {

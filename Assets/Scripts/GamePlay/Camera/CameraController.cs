@@ -146,7 +146,8 @@ public class CameraController : MonoBehaviour
 
     private void GamePaused(EventInfo eventInfo)
     {
-        blur.enabled = true;
+        if(rsc.debugMng.UIVisible)
+            blur.enabled = true;
     }
 
     private void GameResumed(EventInfo evetInfo)
@@ -223,28 +224,28 @@ public class CameraController : MonoBehaviour
             case CameraType.GOD:
                 if (Input.GetKey(rsc.debugMng.keys.godCameraRight))
                 {
-                    Vector3 displacement = transform.right * Time.deltaTime * speed;
+                    Vector3 displacement = transform.right * Time.unscaledDeltaTime * speed;
                     transform.position = transform.position + displacement;
                 }
                 else if (Input.GetKey(rsc.debugMng.keys.godCameraLeft))
                 {
-                    Vector3 displacement = transform.right * Time.deltaTime * speed * -1;
+                    Vector3 displacement = transform.right * Time.unscaledDeltaTime * speed * -1;
                     transform.position = transform.position + displacement;
                 }
                 if (Input.GetKey(rsc.debugMng.keys.godCameraForward))
                 {
-                    Vector3 displacement = transform.forward * Time.deltaTime * speed;
+                    Vector3 displacement = transform.forward * Time.unscaledDeltaTime * speed;
                     transform.position = transform.position + displacement;
                 }
                 else if (Input.GetKey(rsc.debugMng.keys.godCameraBackward))
                 {
-                    Vector3 displacement = transform.forward * Time.deltaTime * speed * -1;
+                    Vector3 displacement = transform.forward * Time.unscaledDeltaTime * speed * -1;
                     transform.position = transform.position + displacement;
                 }
 
                 // camera rotation with mouse coordinates
-                rotationX += Input.GetAxis("Mouse X") * sens * Time.deltaTime;
-                rotationY += Input.GetAxis("Mouse Y") * sens * Time.deltaTime;
+                rotationX += Input.GetAxis("Mouse X") * sens * Time.unscaledDeltaTime;
+                rotationY += Input.GetAxis("Mouse Y") * sens * Time.unscaledDeltaTime;
                 rotationY = Mathf.Clamp(rotationY, minY, maxY);
                 transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
                 break;
