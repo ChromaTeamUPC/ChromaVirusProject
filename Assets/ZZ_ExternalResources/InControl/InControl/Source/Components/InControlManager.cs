@@ -12,6 +12,7 @@ namespace InControl
 		public bool logDebugInfo = false;
 		public bool invertYAxis = false;
 		public bool enableXInput = false;
+        public bool enablePS4Win = false;
 		public bool useFixedUpdate = false;
 		public bool dontDestroyOnLoad = false;
 		public List<string> customProfiles = new List<string>();
@@ -27,7 +28,8 @@ namespace InControl
 
 			InputManager.InvertYAxis = invertYAxis;
 			InputManager.EnableXInput = enableXInput;
-			InputManager.SetupInternal();
+            InputManager.EnablePS4Win = enablePS4Win;
+            InputManager.SetupInternal();
 
 			foreach (var className in customProfiles)
 			{

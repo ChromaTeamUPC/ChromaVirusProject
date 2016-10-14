@@ -31,6 +31,7 @@ namespace InControl
 		public static bool InvertYAxis;
 
 		static bool enableXInput;
+        static bool enablePS4Win;
 		static bool isSetup;
 
 		static float initialTime;
@@ -77,9 +78,13 @@ namespace InControl
 			{
 				XInputDeviceManager.Enable();
 			}
-			#endif
+            if (enablePS4Win)
+            {
+                PS4WinDeviceManager.Enable();
+            }
+            #endif
 
-			if (OnSetup != null)
+            if (OnSetup != null)
 			{
 				OnSetup.Invoke();
 				OnSetup = null;
@@ -418,8 +423,21 @@ namespace InControl
 			}
 		}
 
+        public static bool EnablePS4Win
+        {
+            get
+            {
+                return enablePS4Win;
+            }
 
-		public static VersionInfo UnityVersion
+            set
+            {
+                enablePS4Win = value;
+            }
+        }
+
+
+        public static VersionInfo UnityVersion
 		{
 			get
 			{

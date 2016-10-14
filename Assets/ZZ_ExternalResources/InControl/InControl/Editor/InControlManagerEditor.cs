@@ -13,7 +13,8 @@ namespace InControl
 		SerializedProperty logDebugInfo;
 		SerializedProperty invertYAxis;
 		SerializedProperty enableXInput;
-		SerializedProperty useFixedUpdate;
+        SerializedProperty enablePS4Win;
+        SerializedProperty useFixedUpdate;
 		SerializedProperty dontDestroyOnLoad;
 		SerializedProperty customProfiles;
 		Texture headerTexture;
@@ -24,7 +25,8 @@ namespace InControl
 			logDebugInfo = serializedObject.FindProperty( "logDebugInfo" );
 			invertYAxis = serializedObject.FindProperty( "invertYAxis" );
 			enableXInput = serializedObject.FindProperty( "enableXInput" );
-			useFixedUpdate = serializedObject.FindProperty( "useFixedUpdate" );
+            enablePS4Win = serializedObject.FindProperty("enablePS4Win");
+            useFixedUpdate = serializedObject.FindProperty( "useFixedUpdate" );
 			dontDestroyOnLoad = serializedObject.FindProperty( "dontDestroyOnLoad" );
 			customProfiles = serializedObject.FindProperty( "customProfiles" );
 
@@ -48,7 +50,8 @@ namespace InControl
 			logDebugInfo.boolValue = EditorGUILayout.ToggleLeft( "Log Debug Info", logDebugInfo.boolValue );
 			invertYAxis.boolValue = EditorGUILayout.ToggleLeft( "Invert Y Axis", invertYAxis.boolValue );
 			enableXInput.boolValue = EditorGUILayout.ToggleLeft( "Enable XInput (Windows)", enableXInput.boolValue );
-			useFixedUpdate.boolValue = EditorGUILayout.ToggleLeft( "Use Fixed Update", useFixedUpdate.boolValue );
+            enablePS4Win.boolValue = EditorGUILayout.ToggleLeft("Enable PS4 (Windows)", enablePS4Win.boolValue);
+            useFixedUpdate.boolValue = EditorGUILayout.ToggleLeft( "Use Fixed Update", useFixedUpdate.boolValue );
 			dontDestroyOnLoad.boolValue = EditorGUILayout.ToggleLeft( "Don't Destroy On Load", dontDestroyOnLoad.boolValue );
 
 			ReorderableListGUI.Title( "Custom Profiles" );

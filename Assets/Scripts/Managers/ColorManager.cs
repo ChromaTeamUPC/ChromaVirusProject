@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using InControl;
 
 
 //Helper class to know the first and last colors defined in the enumerator, so we can check for .First or .Last and always will return the proper color even if we reorder the enum
@@ -340,7 +341,35 @@ public class ColorManager : MonoBehaviour
 
     private void SendNewColorEvent()
     {
+        SetControllersColor();
         ColorEventInfo.eventInfo.newColor = currentColor;
         rsc.eventMng.TriggerEvent(EventManager.EventType.COLOR_CHANGED, ColorEventInfo.eventInfo);
+    }
+
+    private void SetControllersColor()
+    {
+        byte red = 0, green = 0, blue = 0;
+
+        switch (currentColor)
+        {
+            case ChromaColor.RED:
+                red = 255;
+                break;
+            case ChromaColor.GREEN:
+                green = 255;
+                break;
+            case ChromaColor.BLUE:
+                blue = 255;
+                break;
+            case ChromaColor.YELLOW:
+                red = 255;
+                green = 255;
+                break;
+            default:
+                break;
+        }
+
+        if (InputManager.Devices.Count >= 1) InputManager.Devices[0].Iluminate(red, green, blue);
+        if (InputManager.Devices.Count >= 2) InputManager.Devices[1].Iluminate(red, green, blue);
     }
 }

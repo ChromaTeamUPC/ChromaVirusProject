@@ -53,7 +53,7 @@ namespace InControl
 				},
 				new InputControlMapping {
 					Handle = "Share",
-					Target = InputControlType.Share,
+					Target = InputControlType.Back,
 					Source = Button8
 				},
 				new InputControlMapping {

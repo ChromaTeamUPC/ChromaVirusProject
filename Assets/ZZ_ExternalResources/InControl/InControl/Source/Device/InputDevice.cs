@@ -226,6 +226,11 @@ namespace InControl
 		}
 
 
+        public virtual void Iluminate(byte red, byte green, byte blue)
+        {
+        }
+
+
 		public virtual bool IsSupportedOnThisPlatform
 		{
 			get { return true; }
