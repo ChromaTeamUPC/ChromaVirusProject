@@ -930,13 +930,6 @@ public class EnemyManager : MonoBehaviour
         plan0101.enemiesThreshold = 2;
 
         List<WaveAction> z01wave00 = new List<WaveAction>();    // initial wave with easy enemies
-        z01wave00.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP03", level01Z01SpiderEntry00, level01Z01spiderAttack00, defaultSpiderInfect, 0f, 1, 3f));
-        z01wave00.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP03", level01Z01SpiderEntry00, level01Z01spiderAttack00, defaultSpiderInfect, 0f, 1, 3f));
-        z01wave00.Add(new SpawnSpiderWaveAction(ChromaColor.BLUE, "Z01SP03", level01Z01SpiderEntry00, level01Z01spiderAttack00, defaultSpiderInfect, 0f, 1, 3f));
-        z01wave00.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP03", level01Z01SpiderEntry00, level01Z01spiderAttack00, defaultSpiderInfect, 0f, 1, 3f));
-        plan0101.sequentialWaves.Add(z01wave00);
-
-        /*List<WaveAction> z01wave00 = new List<WaveAction>();    // initial wave with easy enemies
         z01wave00.Add(new SpawnSpiderWaveAction(true, 0, "Z01SP03", level01Z01SpiderEntry00, level01Z01spiderAttack00, defaultSpiderInfect, 0f, 3, 3f));
         plan0101.sequentialWaves.Add(z01wave00);
 
@@ -984,7 +977,7 @@ public class EnemyManager : MonoBehaviour
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.GREEN, "Z01SP01", level01Z01spiderEntry07, defaultGreenSpiderAttack, defaultSpiderInfect, 0.7f, 2, 0.7f));
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.RED, "Z01SP01", level01Z01spiderEntry07, defaultRedSpiderAttack, defaultSpiderInfect, 0.7f, 2, 0.7f));
         z01wave07.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z01SP01", level01Z01spiderEntry07, defaultYellowSpiderAttack, defaultSpiderInfect, 0.7f, 2, 0.7f));
-        plan0101.sequentialWaves.Add(z01wave07);*/
+        plan0101.sequentialWaves.Add(z01wave07);
 
 
         ////plan0102---------------------------------------------------------------------------------------------------------------
@@ -992,13 +985,6 @@ public class EnemyManager : MonoBehaviour
         plan0102.enemiesThreshold = 4;
 
         List<WaveAction> z02wave001 = new List<WaveAction>();
-        z02wave001.Add(new SpawnMosquitoWaveAction(ChromaColor.RED, "Z02SSP02", level01Z02MosquitoPatrol02, MosquitoDefaultAttack01));
-        z02wave001.Add(new SpawnMosquitoWaveAction(ChromaColor.GREEN, "Z02SSP03", level01Z02MosquitoPatrol03, MosquitoDefaultAttack01, 1f));
-        z02wave001.Add(new SpawnMosquitoWaveAction(ChromaColor.BLUE, "Z02SSP04", level01Z02MosquitoPatrol04, MosquitoDefaultAttack01, 1f));
-        z02wave001.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z02SSP01", level01Z02MosquitoPatrol04, MosquitoDefaultAttack01, 1f));
-        plan0102.sequentialWaves.Add(z02wave001);
-
-        /*List<WaveAction> z02wave001 = new List<WaveAction>();
         z02wave001.Add(new SpawnMosquitoWaveAction(ChromaColor.RED, "Z02SSP02", level01Z02MosquitoPatrol02, MosquitoDefaultAttack01));
         z02wave001.Add(new SpawnMosquitoWaveAction(ChromaColor.RED, "Z02SSP03", level01Z02MosquitoPatrol03, MosquitoDefaultAttack01, 1f));
         z02wave001.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z02SSP04", level01Z02MosquitoPatrol04, MosquitoDefaultAttack01, 1f));
@@ -1046,7 +1032,7 @@ public class EnemyManager : MonoBehaviour
         z02wave04.Add(new SpawnSpiderGroupWaveAction("Z02SP01", level01Z02leader1, defaultSpiderAttack, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.THREE_FRONT,
             new int[] { (int)ChromaColor.YELLOW, (int)ChromaColor.RED, (int)ChromaColor.GREEN, (int)ChromaColor.BLUE }));
 
-        plan0102.sequentialWaves.Add(z02wave04);*/
+        plan0102.sequentialWaves.Add(z02wave04);
 
         //plan0103---------------------------------------------------------------------------------------------------------------
 
@@ -1060,7 +1046,7 @@ public class EnemyManager : MonoBehaviour
         z03wave02.Add(new SpawnSpiderWaveAction(ChromaColor.YELLOW, "Z03SP04", level01Z03spiderEntry02a, level01Z03spiderAttack02a, defaultSpiderInfect, 1f, 2, 0.7f));
         plan0103.sequentialWaves.Add(z03wave02);
 
-        /*List<WaveAction> z03wave002 = new List<WaveAction>();
+        List<WaveAction> z03wave002 = new List<WaveAction>();
         z03wave002.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z03SSP01", level01Z03MosquitoPatrol01, MosquitoDefaultAttack01));
         z03wave002.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z03SSP01", level01Z03MosquitoPatrol01, MosquitoDefaultAttack01, 2f));
         z03wave002.Add(new SpawnMosquitoWaveAction(ChromaColor.YELLOW, "Z03SSP01", level01Z03MosquitoPatrol01, MosquitoDefaultAttack01, 2f));
@@ -1123,7 +1109,7 @@ public class EnemyManager : MonoBehaviour
             new int[] { (int)ChromaColor.GREEN, (int)ChromaColor.BLUE, (int)ChromaColor.BLUE, (int)ChromaColor.RED }));
         z03wave07.Add(new SpawnSpiderGroupWaveAction("Z03SP01", level01Z03leader2, defaultSpiderAttack3, defaultSpiderInfect, SpawnSpiderGroupWaveAction.FormationType.TRIANGLE,
             new int[] { (int)ChromaColor.BLUE, (int)ChromaColor.GREEN, (int)ChromaColor.GREEN, (int)ChromaColor.YELLOW, (int)ChromaColor.RED }));
-        plan0103.sequentialWaves.Add(z03wave07);*/
+        plan0103.sequentialWaves.Add(z03wave07);
 
     }
 
