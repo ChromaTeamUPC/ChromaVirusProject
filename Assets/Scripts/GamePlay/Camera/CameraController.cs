@@ -222,32 +222,35 @@ public class CameraController : MonoBehaviour
                 break;
 
             case CameraType.GOD:
-                if (Input.GetKey(rsc.debugMng.keys.godCameraRight))
+                if (rsc.debugMng.canMoveGodCamera)
                 {
-                    Vector3 displacement = transform.right * Time.unscaledDeltaTime * speed;
-                    transform.position = transform.position + displacement;
-                }
-                else if (Input.GetKey(rsc.debugMng.keys.godCameraLeft))
-                {
-                    Vector3 displacement = transform.right * Time.unscaledDeltaTime * speed * -1;
-                    transform.position = transform.position + displacement;
-                }
-                if (Input.GetKey(rsc.debugMng.keys.godCameraForward))
-                {
-                    Vector3 displacement = transform.forward * Time.unscaledDeltaTime * speed;
-                    transform.position = transform.position + displacement;
-                }
-                else if (Input.GetKey(rsc.debugMng.keys.godCameraBackward))
-                {
-                    Vector3 displacement = transform.forward * Time.unscaledDeltaTime * speed * -1;
-                    transform.position = transform.position + displacement;
-                }
+                    if (Input.GetKey(rsc.debugMng.godCameraRight))
+                    {
+                        Vector3 displacement = transform.right * Time.unscaledDeltaTime * speed;
+                        transform.position = transform.position + displacement;
+                    }
+                    else if (Input.GetKey(rsc.debugMng.godCameraLeft))
+                    {
+                        Vector3 displacement = transform.right * Time.unscaledDeltaTime * speed * -1;
+                        transform.position = transform.position + displacement;
+                    }
+                    if (Input.GetKey(rsc.debugMng.godCameraForward))
+                    {
+                        Vector3 displacement = transform.forward * Time.unscaledDeltaTime * speed;
+                        transform.position = transform.position + displacement;
+                    }
+                    else if (Input.GetKey(rsc.debugMng.godCameraBackward))
+                    {
+                        Vector3 displacement = transform.forward * Time.unscaledDeltaTime * speed * -1;
+                        transform.position = transform.position + displacement;
+                    }
 
-                // camera rotation with mouse coordinates
-                rotationX += Input.GetAxis("Mouse X") * sens * Time.unscaledDeltaTime;
-                rotationY += Input.GetAxis("Mouse Y") * sens * Time.unscaledDeltaTime;
-                rotationY = Mathf.Clamp(rotationY, minY, maxY);
-                transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
+                    // camera rotation with mouse coordinates
+                    rotationX += Input.GetAxis("Mouse X") * sens * Time.unscaledDeltaTime;
+                    rotationY += Input.GetAxis("Mouse Y") * sens * Time.unscaledDeltaTime;
+                    rotationY = Mathf.Clamp(rotationY, minY, maxY);
+                    transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
+                }
                 break;
         }
     }

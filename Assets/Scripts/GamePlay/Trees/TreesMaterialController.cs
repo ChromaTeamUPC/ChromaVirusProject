@@ -9,14 +9,14 @@ public class TreesMaterialController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        foreach (Material mat in treesMat)
-            mat.SetColor("_EmissionColor", baseColor);
-
+        SetEmissionColor(baseColor);
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
     }
 
     void OnDestroy()
     {
+        SetEmissionColor(baseColor);
+
         if (rsc.eventMng != null)
         {
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
@@ -28,7 +28,13 @@ public class TreesMaterialController : MonoBehaviour
         ColorEventInfo info = (ColorEventInfo)eventInfo;
 
         Color color = rsc.coloredObjectsMng.GetTreeColor(info.newColor);
+
+        SetEmissionColor(color);
+    }
+
+    private void SetEmissionColor(Color emissionColor)
+    {
         foreach (Material mat in treesMat)
-            mat.SetColor("_EmissionColor", color);
+            mat.SetColor("_EmissionColor", emissionColor);
     }
 }

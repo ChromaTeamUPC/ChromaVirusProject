@@ -13,8 +13,6 @@ public class BossFloorController : MonoBehaviour
     public Material hexagonMaterial;
     private ChromaColor currentColor;
     private Color color;
-    private ColoredObjectsManager coloredObjMng;
-
 
     private List<HexagonController> hexagons = new List<HexagonController>();
 
@@ -61,14 +59,15 @@ public class BossFloorController : MonoBehaviour
 
     void Start()
     {
-        coloredObjMng = rsc.coloredObjectsMng;
-        SetColor(Color.white, Color.grey);
+        SetEmissionColor(Color.grey);
         player1 = rsc.gameInfo.player1Controller;
         player2 = rsc.gameInfo.player2Controller;
     }
 
     void OnDestroy()
     {
+        SetEmissionColor(Color.grey);
+
         if (rsc.eventMng != null)
         {
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
@@ -89,13 +88,7 @@ public class BossFloorController : MonoBehaviour
     }
 
     void Update()
-    {
-        //TODO: remove when tested
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            hex.FallMeteor(0f, 2f);
-        }        
-
+    {  
         if(hexagonsToCheck.Count > 0)
         {
             while (hexagonsToCheck.Count > 0 && !hexagonsToCheck.Peek().IsFallingMeteor())
@@ -231,20 +224,13 @@ public class BossFloorController : MonoBehaviour
         StopCoroutine("ColorChangeWarning");
         StopCoroutine("DoBlinkMultiple");
 
-        color = coloredObjMng.GetColor(currentColor);
-        SetColor(color);
+        color = rsc.coloredObjectsMng.GetHexagonColor(currentColor);
+        SetEmissionColor(color);
     }
 
-    private void SetColor(Color mainColor, Color emissionColor)
+    private void SetEmissionColor(Color emissionColor)
     {
-        hexagonMaterial.SetColor("_Color", mainColor);
         hexagonMaterial.SetColor("_EmissionColor", emissionColor);
-    }
-
-    private void SetColor(Color mainColor)
-    {
-        //hexagonMaterial.SetColor("_Color", mainColor);
-        hexagonMaterial.SetColor("_EmissionColor", mainColor);
     }
 
     private void ColorPrewarn(EventInfo eventInfo)
@@ -273,13 +259,13 @@ public class BossFloorController : MonoBehaviour
         {
             if (blink)
             {
-                SetColor(Color.white);
+                SetEmissionColor(Color.white);
                 yield return new WaitForSeconds(blinkInterval);
                 elapsedTime += blinkInterval;
             }
             else
             {
-                SetColor(color);
+                SetEmissionColor(color);
                 yield return new WaitForSeconds(normalInterval);
                 elapsedTime += normalInterval;
             }
@@ -287,6 +273,6 @@ public class BossFloorController : MonoBehaviour
             blink = !blink;
         }
 
-        SetColor(color);
+        SetEmissionColor(color);
     }
 }

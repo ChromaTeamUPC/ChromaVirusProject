@@ -19,7 +19,8 @@ public class PlayerDyingState : PlayerBaseState
 
         bb.player.StopTrail();
         bb.player.DisableUI();
-        bb.shield.SetActive(false);
+        bb.player.DeactivateShield();
+
         bb.animator.SetTrigger("Die");
         bb.animationEnded = false;
         bb.player.PlayDieSound();

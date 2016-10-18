@@ -19,6 +19,7 @@ public class EnergyVoxelController : MonoBehaviour {
 
     public float energyCharge = 0.5f;
 
+    public GameObject model;
     public ParticleSystem lifeTimeParticles;
     public ParticleSystem pickUpParticles;
     public AudioSource pickUpSoundFx;
@@ -45,6 +46,7 @@ public class EnergyVoxelController : MonoBehaviour {
         state = State.ENTRY;
         blinkingTime = duration * startBlinkingRatio;
         rigid.isKinematic = false;
+        model.SetActive(true);
 
         StartCoroutine(StartLifeTimeParticles());
     }
@@ -115,6 +117,7 @@ public class EnergyVoxelController : MonoBehaviour {
                         target.RechargeEnergy(energyCharge);
                         elapsedTime = 0f;
                         lifeTimeParticles.Stop();
+                        model.SetActive(false);
                         pickUpParticles.Play();
                         pickUpSoundFx.Play();
                         state = State.WAIT_PICK_UP_FX;

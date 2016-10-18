@@ -6,6 +6,14 @@ public class PlayerUIController : MonoBehaviour
 {
     public PlayerController playerController;
 
+    [Header("Debug Settings")]
+    public bool changeHealthDebug = false;
+    [Range(0f, 100f)]
+    public float healthDebug = 100f;
+    public bool changeEnergyDebug = false;
+    [Range(0f, 100f)]
+    public float energyDebug = 100f;
+
     [Header("Health settings")]
     public Color healthEmptyColor;
     public float healthThreshold1 = 0.2f;
@@ -15,6 +23,7 @@ public class PlayerUIController : MonoBehaviour
     public float healthThreshold3 = 0.4f;
     public Color healthThreshold3Color;
     public float startGradientThreshold = 0.5f;
+    public Color healthFullColor;
 
     public float brightnessCicleDuration = 0.5f;
     public float startBrightnessThreshold = 0.3f;
@@ -55,7 +64,7 @@ public class PlayerUIController : MonoBehaviour
         referenceHealthFactor = playerHealth.maxValue / playerController.maxHealth;
         referenceEnergyFactor = energyMaxValue / playerController.maxEnergy;
 
-        currentHealthColor = Color.white;
+        currentHealthColor = healthFullColor;
 
         currentBrightness = 1f;
         if (brightnessCicleDuration > 0)
@@ -94,13 +103,18 @@ public class PlayerUIController : MonoBehaviour
             currentBrightness = (Mathf.Sin(Time.time * Mathf.PI * brightnessSpeed) / 2) + 1; //Values between 0.5 and 1.5
 
             //Health
-            float pHealthValue = playerController.Health * referenceHealthFactor;
+            float pHealthValue;
+            if (!changeHealthDebug)
+                pHealthValue = playerController.Health * referenceHealthFactor;
+            else
+                pHealthValue = healthDebug;
+
             playerHealth.value = pHealthValue;
 
             if (pHealthValue > startGradientThreshold)
-                currentHealthColor = Color.white;
+                currentHealthColor = healthFullColor;
             else if (pHealthValue >= healthThreshold3)
-                currentHealthColor = Color.Lerp(healthThreshold3Color, Color.white, (pHealthValue - healthThreshold3) / (startGradientThreshold - healthThreshold3));
+                currentHealthColor = Color.Lerp(healthThreshold3Color, healthFullColor, (pHealthValue - healthThreshold3) / (startGradientThreshold - healthThreshold3));
             else if (pHealthValue >= healthThreshold2)
                 currentHealthColor = Color.Lerp(healthThreshold2Color, healthThreshold3Color, (pHealthValue - healthThreshold2) / (healthThreshold3 - healthThreshold2));
             else if (pHealthValue >= healthThreshold1)
@@ -117,7 +131,12 @@ public class PlayerUIController : MonoBehaviour
             playerHealthFill.color = currentHealthColor;
 
             //Energy
-            float pEnergyValue = energyBarInitialValue + (playerController.Energy * referenceEnergyFactor);
+            float pEnergyValue;
+            if (!changeEnergyDebug)
+                pEnergyValue = energyBarInitialValue + (playerController.Energy * referenceEnergyFactor);
+            else
+                pEnergyValue = energyDebug;
+
             playerEnergy.value = pEnergyValue;
 
             if (playerController.Energy == playerController.maxEnergy)

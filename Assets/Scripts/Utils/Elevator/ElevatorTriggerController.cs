@@ -4,34 +4,56 @@ using System.Collections;
 public class ElevatorTriggerController : MonoBehaviour {
 
     private PlayerController player1;
+    private bool firstTimePlayer1 = true;
     private PlayerController player2;
+    private bool firstTimePlayer2 = true;
 
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player1" || other.tag == "Player2")
         {
-            other.transform.SetParent(transform);
             if (other.tag == "Player1")
-                player1 = other.GetComponent<PlayerController>();
+            {
+                if (firstTimePlayer1)
+                {
+                    other.transform.SetParent(transform);
+                    player1 = other.GetComponent<PlayerController>();
+                    firstTimePlayer1 = false;
+                }
+            }
             else
-                player2 = other.GetComponent<PlayerController>();
+            {
+                if (firstTimePlayer2)
+                {
+                    other.transform.SetParent(transform);
+                    player2 = other.GetComponent<PlayerController>();
+                    firstTimePlayer2 = false;
+                }
+            }
         }
     }
 
     void OnTriggerExit(Collider other)
     {
         if (other.tag == "Player1" || other.tag == "Player2")
-        {
-            other.transform.SetParent(null);
+        {           
             if (other.tag == "Player1")
             {
-                player1.forceMovementEnabled = false;
-                player1 = null;
+                if (player1 != null)
+                {
+                    other.transform.SetParent(null);
+                    player1.forceMovementEnabled = false;
+                    player1 = null;
+                }
             }
             else
             {
-                player2.forceMovementEnabled = false;
-                player2 = null;
+                if (player2 != null)
+                {
+                    other.transform.SetParent(null);
+                    player2.forceMovementEnabled = false;
+                    player2 = null;
+                }
             }
         }
     }

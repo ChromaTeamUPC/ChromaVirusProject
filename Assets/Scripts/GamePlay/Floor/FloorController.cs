@@ -9,25 +9,22 @@ public class FloorController : MonoBehaviour {
     public float flashDuration = 0.083f;
     public float normalDuration = 0.25f;
 
-    public Renderer rend;
-    private ColoredObjectsManager coloredObjMng;
     private ChromaColor currentColor;
-    private Color color;
     private BlinkController blinkController;
-    private Material whiteMat;
-    public Material hexagonMaterial;
+    public Material floorMaterial;
+    public Material floorWhiteMat;
+    public Material bridgeMaterial;
 
     void Start()
     {
         blinkController = GetComponent<BlinkController>();
-        coloredObjMng = rsc.coloredObjectsMng;
-        whiteMat = coloredObjMng.GetFloorWhiteMaterial();
-        hexagonMaterial.SetColor("_Color", Color.white);
-        hexagonMaterial.SetColor("_EmissionColor", Color.grey);
+        SetEmissionColor(Color.grey);
     }
 
     void OnDestroy()
     {
+        SetEmissionColor(Color.grey);
+
         if (rsc.eventMng != null)
         {
             rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
@@ -54,20 +51,23 @@ public class FloorController : MonoBehaviour {
 
     private void SetMaterial()
     {
-        blinkController.StopPreviousBlinkings();
-        rend.sharedMaterial = coloredObjMng.GetFloorMaterial(currentColor);
-        blinkController.InvalidateMaterials();
+        StopCoroutine("ColorChangeWarning");
 
-        color = coloredObjMng.GetColor(currentColor);
-        hexagonMaterial.SetColor("_EmissionColor", color);
+        Color color = rsc.coloredObjectsMng.GetFloorColor(currentColor);
+        SetEmissionColor(color);
+    }
+
+    private void SetEmissionColor(Color emissionColor)
+    {
+        floorMaterial.SetColor("_EmissionColor", emissionColor);
+        bridgeMaterial.SetColor("_EmissionColor", emissionColor);
     }
 
     private void ColorPrewarn(EventInfo eventInfo)
     {
         //Debug.Log("Color prewarn: " + Time.time);
         ColorPrewarnEventInfo info = (ColorPrewarnEventInfo)eventInfo;
-        StopAllCoroutines();
-        blinkController.StopPreviousBlinkings();
+        StopCoroutine("ColorChangeWarning");
 
         StartCoroutine(ColorChangeWarning(info.prewarnSeconds));
     }
@@ -76,6 +76,6 @@ public class FloorController : MonoBehaviour {
     {
         yield return new WaitForSeconds(prewarnTime - startFlashingSecondsBeforeChange);
 
-        blinkController.BlinkCustomMultipleTimes(whiteMat, totalTimeFlashing, flashDuration, normalDuration);
+        blinkController.BlinkCustomMultipleTimes(floorWhiteMat, totalTimeFlashing, flashDuration, normalDuration);
     }
 }

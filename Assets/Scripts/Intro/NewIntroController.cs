@@ -60,19 +60,7 @@ public class NewIntroController : MonoBehaviour
     public GameObject alertTriangle;
     public GameObject exclamationMark;
 
-    //KDT
-    public GameObject kdt;
-    public SkinnedMeshRenderer kdtRenderer;
-    public GameObject kdtShield;
-    public Animator kdtAnimator;
-    public ParticleSystem wireframeToSolidFx;
 
-    //JNK
-    public GameObject jnk;
-    public SkinnedMeshRenderer jnkRenderer;
-    public GameObject jnkShield;
-    public Animator jnkAnimator;
-    public ParticleSystem jnkWireframeToSolidFx;
 
     public AudioSource alarmSoundFx;
     public AudioSource wireframeToSolidSoundFx;
@@ -80,7 +68,14 @@ public class NewIntroController : MonoBehaviour
     public GameObject skipHint;
     public FadeSceneScript fadeScript;
 
-    [Header("Materials KDT")]
+    //KDT
+    [Header("KDT Objects")]
+    public GameObject kdt;
+    public SkinnedMeshRenderer kdtRenderer;
+    public GameObject kdtShield;
+    public Animator kdtAnimator;
+    public ParticleSystem wireframeToSolidFx;
+    public Light kdtLight;
     public Material wireBase;
     public Material wireColor;
     public Material wireFace;
@@ -91,7 +86,14 @@ public class NewIntroController : MonoBehaviour
     public Material matShield;
     public Color matEmissionFinalColor;
 
-    [Header("Materials JNK")]
+    //JNK
+    [Header("JNK Objects")]
+    public GameObject jnk;
+    public SkinnedMeshRenderer jnkRenderer;
+    public GameObject jnkShield;
+    public Animator jnkAnimator;
+    public ParticleSystem jnkWireframeToSolidFx;
+    public Light jnkLight;
     public Material jnkWireBase;
     public Material jnkWireColor;
     public Material jnkWireFace;
@@ -146,7 +148,11 @@ public class NewIntroController : MonoBehaviour
         percentageBackgroundText.text = "0%";
         percentageForegroundText.text = "0%";
 
-        matEmissionFinalColor = rsc.coloredObjectsMng.GetColor(ChromaColorInfo.Random);
+        ChromaColor kdtColor = ChromaColorInfo.Random;
+        matEmissionFinalColor = rsc.coloredObjectsMng.GetPlayerColor(kdtColor);
+        kdtLight.color = rsc.coloredObjectsMng.GetColor(kdtColor);
+        kdtLight.intensity = 0;
+        kdtLight.enabled = false;
 
         multiPlayer = rsc.gameInfo.numberOfPlayers > 1;
 
@@ -156,10 +162,15 @@ public class NewIntroController : MonoBehaviour
         }
         else
         {
-            jnkMatEmissionFinalColor = rsc.coloredObjectsMng.GetColor(ChromaColorInfo.Random);
+            ChromaColor jnkColor = ChromaColorInfo.Random;
 
-            while(matEmissionFinalColor == jnkMatEmissionFinalColor)
-                jnkMatEmissionFinalColor = rsc.coloredObjectsMng.GetColor(ChromaColorInfo.Random);
+            while(jnkColor == kdtColor)
+                jnkColor = ChromaColorInfo.Random;
+
+            jnkMatEmissionFinalColor = rsc.coloredObjectsMng.GetPlayerColor(jnkColor);
+            jnkLight.color = rsc.coloredObjectsMng.GetColor(jnkColor);
+            jnkLight.intensity = 0;
+            jnkLight.enabled = false;
         }
 
         rsc.audioMng.FadeInMusic(AudioManager.MusicType.INTRO, 1f);
@@ -330,12 +341,15 @@ public class NewIntroController : MonoBehaviour
                     mats[1] = matColor;
                     mats[2] = matFace;
                     kdtRenderer.sharedMaterials = mats;
+                    kdtLight.enabled = true;
 
+                    jnkMatColor.SetColor("_EmissionColor", Color.black);
                     mats = jnkRenderer.sharedMaterials;
                     mats[0] = jnkMatBase;
                     mats[1] = jnkMatFace;
                     mats[2] = jnkMatColor;
                     jnkRenderer.sharedMaterials = mats;
+                    jnkLight.enabled = true;
 
                     wireframeToSolidFx.Play();
                     if (multiPlayer) jnkWireframeToSolidFx.Play();
@@ -365,6 +379,9 @@ public class NewIntroController : MonoBehaviour
                     matColor.SetColor("_EmissionColor", Color.Lerp(Color.black, matEmissionFinalColor, factor));
                     jnkMatColor.SetColor("_EmissionColor", Color.Lerp(Color.black, jnkMatEmissionFinalColor, factor));
 
+                    kdtLight.intensity = Mathf.Lerp(0f, 1f, factor);
+                    jnkLight.intensity = Mathf.Lerp(0f, 1f, factor);
+
                     elapsedTime += Time.deltaTime;
                 }
                 else
@@ -378,6 +395,9 @@ public class NewIntroController : MonoBehaviour
                     jnkShield.SetActive(true);
                     jnkAnimator.SetBool("Aiming", true);
                     jnkMatColor.SetColor("_EmissionColor", jnkMatEmissionFinalColor);
+
+                    kdtLight.intensity = 1f;
+                    jnkLight.intensity = 1f;
 
                     elapsedTime = 0;
 

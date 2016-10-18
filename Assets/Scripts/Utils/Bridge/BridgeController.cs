@@ -4,17 +4,14 @@ using System.Collections;
 public class BridgeController : MonoBehaviour
 {
     public GameObject model;
-    private Renderer rend;
 
     public GameObject[] fragments;
     private BridgeFragmentController[] fragmentControllers;
 
-    private ChromaColor currentColor;
     private bool active;
 
     void Awake()
     {
-        rend = model.GetComponentInChildren<Renderer>();
         active = false;
 
         fragmentControllers = new BridgeFragmentController[fragments.Length];
@@ -22,33 +19,6 @@ public class BridgeController : MonoBehaviour
         {
             fragmentControllers[i] = fragments[i].GetComponent<BridgeFragmentController>();
         }
-    }
-
-	// Use this for initialization
-	void Start ()
-    {
-        rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
-	}
-
-    void OnDestroy()
-    {
-        if (rsc.eventMng != null)
-        {
-            rsc.eventMng.StopListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
-        }
-    }
-
-    void ColorChanged(EventInfo eventInfo)
-    {
-        ColorEventInfo info = (ColorEventInfo)eventInfo;
-        currentColor = info.newColor;
-
-        SetMaterial();
-    }
-
-    private void SetMaterial()
-    {
-        rend.sharedMaterial = rsc.coloredObjectsMng.GetBridgeMaterial(currentColor);       
     }
 
     public void Activate()

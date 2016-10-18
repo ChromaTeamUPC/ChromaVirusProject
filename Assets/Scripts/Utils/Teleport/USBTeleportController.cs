@@ -168,6 +168,9 @@ public class USBTeleportController : MonoBehaviour {
 
                         players.RemoveAt(i);
                         playerCurrentDestiny.RemoveAt(i);
+                        //playerCurrentDestiny[i] = 1;
+                        //player.transform.position = waypoints[0].position;
+
                     }
                     else
                     {

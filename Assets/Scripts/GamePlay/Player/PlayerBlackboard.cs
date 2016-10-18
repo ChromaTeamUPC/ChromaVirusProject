@@ -11,7 +11,6 @@ public class PlayerBlackboard
     public BlinkController blinkController; //Never reset
     public Animator animator; //Never reset
     public GameObject shield; //Never reset
-    public GameObject laserAim; //Never reset
     public InputDevice controller; //Never reset
 
     public int playerRayCastMask; //Never reset

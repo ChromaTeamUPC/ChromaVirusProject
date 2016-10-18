@@ -16,7 +16,7 @@ public class PlayerSpawningState : PlayerBaseState {
         rsc.eventMng.TriggerEvent(EventManager.EventType.PLAYER_SPAWNING, PlayerEventInfo.eventInfo);
         bb.player.StopTrail();
         bb.player.DisableUI();       
-        bb.shield.SetActive(true);
+        //bb.shield.SetActive(true);
         bb.currentSpeed = bb.player.walkSpeed;
     }
 

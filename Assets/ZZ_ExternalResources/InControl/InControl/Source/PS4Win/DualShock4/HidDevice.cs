@@ -239,8 +239,6 @@ namespace DS4Windows
                 if (fileStream == null && !safeReadHandle.IsInvalid)
                 {
                     IntPtr handle = safeReadHandle.DangerousGetHandle();
-                    Debug.Log(handle);
-
                     NativeMethods.WriteFile(handle, outputBuffer, (uint)outputBuffer.Length, out bytesWritten, ref aux);
                 }
             }

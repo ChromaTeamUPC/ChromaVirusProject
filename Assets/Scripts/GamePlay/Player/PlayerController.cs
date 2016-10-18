@@ -137,12 +137,11 @@ public class PlayerController : MonoBehaviour
     public GameObject specialDetector;
 
 
+
     [SerializeField]
     private Renderer bodyRend;
     [SerializeField]
-    private Material bodyBaseMaterial;
-    [SerializeField]
-    private GameObject shield;
+    private Material bodyColorMaterial;
     [SerializeField]
     private GameObject laserAim;
     [SerializeField]
@@ -150,9 +149,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private GameObject bossIndicator;
 
+    [SerializeField]
+    private GameObject shield;
     private Renderer shieldRend;
+    [SerializeField]
+    private Material shieldMaterial;
+
+    [SerializeField]
+    private Light internalLight;
+
     private CharacterController ctrl;
-    private ColoredObjectsManager coloredObjMng;
     private VoxelizationClient voxelization;
     private TrailRenderer trail;
    
@@ -179,7 +185,6 @@ public class PlayerController : MonoBehaviour
         bb = new PlayerBlackboard();
         bb.Init(this);
         bb.shield = shield;
-        bb.laserAim = laserAim;
         shieldRend = shield.GetComponent<Renderer>();
         voxelization = GetComponentInChildren<VoxelizationClient>();
         ctrl = GetComponent<CharacterController>();
@@ -194,7 +199,6 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        coloredObjMng = rsc.coloredObjectsMng;
         rsc.eventMng.StartListening(EventManager.EventType.COLOR_CHANGED, ColorChanged);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_OVER, GameStopped);
         rsc.eventMng.StartListening(EventManager.EventType.GAME_FINISHED, GameStopped);
@@ -246,7 +250,25 @@ public class PlayerController : MonoBehaviour
 
     private void SetMaterial()
     {
-        Material bodyMat;
+        Color color = rsc.coloredObjectsMng.GetPlayerColor(bb.currentColor);
+
+        bodyColorMaterial.SetColor("_EmissionColor", color);
+        shieldMaterial.SetColor("_EmissionColor", color);
+
+        trail.sharedMaterial = rsc.coloredObjectsMng.GetPlayerTrailMaterial(bb.currentColor);
+
+        Color aimMain = rsc.coloredObjectsMng.GetPlayerAimLaserColor(bb.currentColor);
+        Color aimFade = color;
+        color.a = 0.5f;
+        aimFade.a = 0f;
+        mainBeam.SetColors(aimMain, aimMain);
+        fadeBeam.SetColors(aimMain, aimFade);
+
+        Color lightColor = rsc.coloredObjectsMng.GetColor(bb.currentColor);
+
+        internalLight.color = lightColor;
+
+        /*Material bodyMat;
         Material shieldMat;
 
         int colorMatIndex = 1; //Player 1 and 2 has material array arranged different
@@ -276,14 +298,13 @@ public class PlayerController : MonoBehaviour
 
         bb.blinkController.InvalidateMaterials();
 
-        trail.sharedMaterial = coloredObjMng.GetPlayerTrailMaterial(bb.currentColor);
 
         Color color = rsc.coloredObjectsMng.GetColor(bb.currentColor);
         Color alpha = color;
         color.a = 0.5f;
         alpha.a = 0f;
         mainBeam.SetColors(color, color);
-        fadeBeam.SetColors(color, alpha);
+        fadeBeam.SetColors(color, alpha);*/
     }
 
     public void ForcePositionUpdate()
@@ -362,22 +383,6 @@ public class PlayerController : MonoBehaviour
 
         if (bb.currentEnergy < 0)
             bb.currentEnergy = 0;
-    }
-
-    public void MakeVisible()
-    {
-        bodyRend.enabled = true;
-        shieldRend.enabled = true;
-        ui.SetActive(true);
-        CheckEnergyFullPS();
-    }
-
-    public void MakeInvisible()
-    {
-        bodyRend.enabled = false;
-        shieldRend.enabled = false;
-        ui.SetActive(false);
-        energyFullPS.Stop();
     }
 
     public void AnimationEnded()
@@ -671,16 +676,32 @@ public class PlayerController : MonoBehaviour
         return result;
     }
 
+    public void MakeVisible()
+    {
+        bodyRend.enabled = true;
+        shieldRend.enabled = true;
+        ui.SetActive(true);
+        CheckEnergyFullPS();
+    }
+
+    public void MakeInvisible()
+    {
+        bodyRend.enabled = false;
+        shieldRend.enabled = false;
+        ui.SetActive(false);
+        energyFullPS.Stop();
+    }
+
     public void ActivateShield()
     {
-        bb.shield.SetActive(true);
-        bb.laserAim.SetActive(true);
+        shield.SetActive(true);
+        laserAim.SetActive(true);
     }
 
     public void DeactivateShield()
     {
-        bb.shield.SetActive(false);
-        bb.laserAim.SetActive(false);
+        shield.SetActive(false);
+        laserAim.SetActive(false);
     }
 
     public void SetCapacitor(CapacitorController capacitor)

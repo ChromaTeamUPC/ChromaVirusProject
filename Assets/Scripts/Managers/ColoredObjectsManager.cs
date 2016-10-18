@@ -12,21 +12,33 @@ public class ColoredObjectsManager : MonoBehaviour
 
     //Colors
     [SerializeField]
+    [ColorUsageAttribute(true, true, 0f, 8f, 0.125f, 3f)]
     private Color[] basicColors = new Color[4];
 
     [SerializeField]
+    [ColorUsageAttribute(true, true, 0f, 8f, 0.125f, 3f)]
+    private Color[] floorColors = new Color[4];
+
+    [SerializeField]
+    [ColorUsageAttribute(true, true, 0f, 8f, 0.125f, 3f)]
+    private Color[] hexagonColors = new Color[4];
+
+    [SerializeField]
+    [ColorUsageAttribute(true, true, 0f, 8f, 0.125f, 3f)]
     private Color[] treeColors = new Color[4];
+    [SerializeField]
+    [ColorUsageAttribute(true, true, 0f, 8f, 0.125f, 3f)]
+    private Color[] treeLightColors = new Color[4];
 
     //Player
     [Header("Player Materials")]
     [SerializeField]
-    private Material[] player1Mats = new Material[4];
+    [ColorUsageAttribute(true, true, 0f, 8f, 0.125f, 3f)]
+    private Color[] playerColors = new Color[4];
 
     [SerializeField]
-    private Material[] player2Mats = new Material[4];
-
-    [SerializeField]
-    private Material[] playerShieldMats = new Material[4];
+    [ColorUsageAttribute(true, true, 0f, 8f, 0.125f, 3f)]
+    private Color[] playerAimLaserColors = new Color[4];
 
     [SerializeField]
     private Material[] playerTrailMats = new Material[4];
@@ -74,22 +86,10 @@ public class ColoredObjectsManager : MonoBehaviour
     [SerializeField]
     private Material wormJunctionWireframeMat;
 
-    [Header("Stage Materials")]
-    //Floor Materials
-    [SerializeField]
-    private Material floorWhiteMat;
-    [SerializeField]
-    private Material[] floorMats = new Material[4];
-
-    //Bridge Materials
-    [SerializeField]
-    private Material[] bridgeMats = new Material[4];
-
+    [Header("Props Materials")]
     //Hexagon Materials
     [SerializeField]
     private Material[] hexagonMats = new Material[4];
-
-    [Header("Props Materials")]
     //Capacitor Materials
     [SerializeField]
     private Material[] capacitorEmptyMats = new Material[4];
@@ -195,9 +195,34 @@ public class ColoredObjectsManager : MonoBehaviour
         return basicColors[(int)color];
     }
 
+    public Color GetFloorColor(ChromaColor color)
+    {
+        return floorColors[(int)color];
+    }
+
+    public Color GetHexagonColor(ChromaColor color)
+    {
+        return hexagonColors[(int)color];
+    }
+
     public Color GetTreeColor(ChromaColor color)
     {
         return treeColors[(int)color];
+    }
+
+    public Color GetTreeLightColor(ChromaColor color)
+    {
+        return treeLightColors[(int)color];
+    }
+
+    public Color GetPlayerColor(ChromaColor color)
+    {
+        return playerColors[(int)color];
+    }
+
+    public Color GetPlayerAimLaserColor(ChromaColor color)
+    {
+        return playerAimLaserColors[(int)color];
     }
 
     private Material GetMaterial(Material[] matArray, ChromaColor color)
@@ -208,21 +233,6 @@ public class ColoredObjectsManager : MonoBehaviour
     public Material WhiteMaterial { get { return whiteMaterial; } }
 
     public Material TransparentMaterial { get { return transparentMaterial; } }
-
-    public Material GetPlayer1Material(ChromaColor color)
-    {
-        return GetMaterial(player1Mats, color);
-    }
-
-    public Material GetPlayer2Material(ChromaColor color)
-    {
-        return GetMaterial(player2Mats, color);
-    }
-
-    public Material GetPlayerShieldMaterial(ChromaColor color)
-    {
-        return GetMaterial(playerShieldMats, color);
-    }
 
     public Material GetPlayerTrailMaterial(ChromaColor color)
     {
@@ -446,26 +456,6 @@ public class ColoredObjectsManager : MonoBehaviour
     public Material GetVoxelRandomMaterial()
     {
         return GetVoxelMaterial(ChromaColorInfo.Random);
-    }
-
-    public Material GetFloorWhiteMaterial()
-    {
-        return floorWhiteMat;
-    }
-
-    public Material GetFloorMaterial(ChromaColor color)
-    {
-        return GetMaterial(floorMats, color);
-    }
-
-    public Material GetBridgeMaterial(ChromaColor color)
-    {
-        return GetMaterial(bridgeMats, color);
-    }
-
-    public Material GetHexagonMaterial(ChromaColor color)
-    {
-        return GetMaterial(hexagonMats, color);
     }
 
     public Material GetHexagonMaterial()

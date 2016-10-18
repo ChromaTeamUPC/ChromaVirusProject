@@ -54,7 +54,7 @@ namespace InControl
 
 		void OnDisable()
 		{
-			InputManager.ResetInternal();
+			//InputManager.ResetInternal();
 		}
 
 

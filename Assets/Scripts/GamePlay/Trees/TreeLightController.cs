@@ -26,6 +26,6 @@ public class TreeLightController : MonoBehaviour
 	private void ColorChanged(EventInfo eventInfo)
     {
         ColorEventInfo info = (ColorEventInfo)eventInfo;
-        treeLight.color = rsc.coloredObjectsMng.GetColor(info.newColor);
+        treeLight.color = rsc.coloredObjectsMng.GetTreeLightColor(info.newColor);
     }
 }

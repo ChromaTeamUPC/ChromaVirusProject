@@ -3,8 +3,31 @@ using System.Collections;
 
 public class DebugManager : MonoBehaviour {
 
-    public DebugKeys keys;
+    [Header("Debug Keys")]
+    public KeyCode toggleGodMode = KeyCode.F1;
+    public KeyCode toggleAlwaysKillOk = KeyCode.F2;
+    public KeyCode toggleShowPlayerLimits = KeyCode.F3;
+    public KeyCode mainCameraFollowPlayersKey = KeyCode.F4;
+    public KeyCode toggleUI = KeyCode.F5;
+    public KeyCode toggleGodCameraMovement = KeyCode.F6;
+    public KeyCode toggleStatsKey = KeyCode.F7;
+    public KeyCode toggleWireframeKey = KeyCode.F8;
 
+    public KeyCode mainCameraActivationKey = KeyCode.Alpha1;
+    public KeyCode godCameraActivationKey = KeyCode.Alpha2;
+
+    public KeyCode doubleSpeed = KeyCode.KeypadPlus;
+    public KeyCode halfSpeed = KeyCode.KeypadMinus;
+
+    //God camera control
+    public KeyCode godCameraForward = KeyCode.UpArrow;
+    public KeyCode godCameraBackward = KeyCode.DownArrow;
+    public KeyCode godCameraLeft = KeyCode.LeftArrow;
+    public KeyCode godCameraRight = KeyCode.RightArrow;
+
+    public KeyCode takeScreenshot = KeyCode.Return;
+
+    [Header("Control Variables")]
     public bool debugModeEnabled = false;
 
     public float refreshFPSTime = 0.5f;
@@ -15,6 +38,7 @@ public class DebugManager : MonoBehaviour {
     private string textFPS;
     private string textTriangles;
 
+    public bool canMoveGodCamera = true;
     public bool UIVisible = true;
     private bool statsVisible = false;
     private bool calculateTriangles = false;
@@ -33,6 +57,7 @@ public class DebugManager : MonoBehaviour {
         frameCount = 0;
         elapsedTime = 0f;
         fps = 0;
+        Time.timeScale = 1;
     }
 
     // Update is called once per frame
@@ -45,6 +70,7 @@ public class DebugManager : MonoBehaviour {
                 debugModeEnabled = false;
                 rsc.audioMng.backFx.Play();
 
+                canMoveGodCamera = true;
                 UIVisible = true;
                 statsVisible = false;
                 viewWireFrame = false;
@@ -57,60 +83,69 @@ public class DebugManager : MonoBehaviour {
                     Time.timeScale = 1;
             }
 
-            if (Input.GetKeyDown(keys.toggleStatsKey))
+            if (Input.GetKeyDown(toggleStatsKey))
             {
                 statsVisible = !statsVisible;
                 if (statsVisible) calculateTriangles = true;
             }
 
-            if (Input.GetKeyDown(keys.toggleWireframeKey))
+            if (Input.GetKeyDown(toggleWireframeKey))
             {
                 viewWireFrame = !viewWireFrame;
             }
 
-            if (Input.GetKeyDown(keys.toggleGodMode))
+            if (Input.GetKeyDown(toggleGodMode))
             {
                 godMode = !godMode;
             }
 
-            if (Input.GetKeyDown(keys.toggleAlwaysKillOk))
+            if (Input.GetKeyDown(toggleAlwaysKillOk))
             {
                 alwaysKillOk = !alwaysKillOk;
             }
 
-            if (Input.GetKeyDown(keys.toggleShowPlayerLimits))
+            if (Input.GetKeyDown(toggleShowPlayerLimits))
             {
                 showPlayerLimits = !showPlayerLimits;
             }
 
-            if (Input.GetKeyDown(keys.toggleUI))
+            if (Input.GetKeyDown(toggleUI))
             {
                 UIVisible = !UIVisible;
             }
 
-            if (Input.GetKeyDown(keys.mainCameraFollowPlayersKey))
+            if (Input.GetKeyDown(toggleGodCameraMovement))
+            {
+                canMoveGodCamera = !canMoveGodCamera;
+            }
+
+            if (Input.GetKeyDown(mainCameraFollowPlayersKey))
             {
                 rsc.camerasMng.ToggleCameraFollowPlayers();
             }
 
-            if (Input.GetKeyDown(keys.mainCameraActivationKey))
+            if (Input.GetKeyDown(mainCameraActivationKey))
             {
                 rsc.camerasMng.ChangeCamera(0);
             }
 
-            if (Input.GetKeyDown(keys.godCameraActivationKey))
+            if (Input.GetKeyDown(godCameraActivationKey))
             {
                 rsc.camerasMng.ChangeCamera(2);
             }
 
-            if (Input.GetKeyDown(keys.doubleSpeed))
+            if (Input.GetKeyDown(doubleSpeed))
             {
+                Debug.Log("Was: " + Time.timeScale);
                 Time.timeScale *= 2;
+                Debug.Log("Now: " + Time.timeScale);
             }
 
-            if (Input.GetKeyDown(keys.halfSpeed))
+            if (Input.GetKeyDown(halfSpeed))
             {
+                Debug.Log("Was: " + Time.timeScale);
                 Time.timeScale /= 2;
+                Debug.Log("Now: " + Time.timeScale);
             }
 
             elapsedTime += Time.deltaTime;
@@ -134,8 +169,7 @@ public class DebugManager : MonoBehaviour {
 
     void LateUpdate()
     {
-
-        if (Input.GetKeyDown(keys.takeScreenshot))
+        if (Input.GetKeyDown(takeScreenshot))
         {
             //string datetime = System.String.Format("yyyyMMddHHmmss", System.DateTime.Now);
             string datetime = System.DateTime.Now.ToString("yyyyMMddHHmmss");
