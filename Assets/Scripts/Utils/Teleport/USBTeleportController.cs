@@ -19,7 +19,6 @@ public class USBTeleportController : MonoBehaviour {
 
     private List<PlayerController> players = new List<PlayerController>();
     private List<int> playerCurrentDestiny = new List<int>();
-    private List<float> playerCurrentLerpTime = new List<float>();
 
     void Awake()
     {
@@ -76,7 +75,6 @@ public class USBTeleportController : MonoBehaviour {
 
             players.Add(player1);
             playerCurrentDestiny.Add(1);
-            playerCurrentLerpTime.Add(0f);
 
             audioSource.Play();
         }
@@ -88,19 +86,17 @@ public class USBTeleportController : MonoBehaviour {
             {
                 multiPlayerTransport = true;
 
-                player1.transform.position = waypoints[0].position;
+                player1.transform.position = Vector3.Lerp(waypoints[0].position, waypoints[1].position, 0.35f);
                 player1.EnteredUSB();
 
                 players.Add(player1);
                 playerCurrentDestiny.Add(1);
-                playerCurrentLerpTime.Add(0f);
 
                 player2.transform.position = waypoints[0].position;
                 player2.EnteredUSB();
 
                 players.Add(player2);
                 playerCurrentDestiny.Add(1);
-                playerCurrentLerpTime.Add(0.3f);
 
                 audioSource.Play();
             }
@@ -113,7 +109,6 @@ public class USBTeleportController : MonoBehaviour {
 
                     players.Add(player1);
                     playerCurrentDestiny.Add(1);
-                    playerCurrentLerpTime.Add(0f);
 
                     audioSource.Play();
                 }
@@ -125,7 +120,6 @@ public class USBTeleportController : MonoBehaviour {
 
                     players.Add(player2);
                     playerCurrentDestiny.Add(1);
-                    playerCurrentLerpTime.Add(0f);
 
                     audioSource.Play();
                 }
@@ -148,6 +142,7 @@ public class USBTeleportController : MonoBehaviour {
                 {
 
                     player.transform.position = Vector3.MoveTowards(player.transform.position, endPoint, Time.deltaTime * speed);
+                    player.transform.LookAt(endPoint);
                     ++i;
                 }
                 else

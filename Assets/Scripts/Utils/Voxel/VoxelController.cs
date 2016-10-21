@@ -44,6 +44,7 @@ public class VoxelController : MonoBehaviour {
                     Vector3 position = gameObject.transform.position;
 
                     VoxelController child;
+                    Material mat = GetComponent<Renderer>().sharedMaterial;
                     for (int i = 0; i < spawnChildrenCount; ++i)
                     {
                         child = rsc.poolMng.voxelPool.GetObject();
@@ -53,7 +54,7 @@ public class VoxelController : MonoBehaviour {
                             child.transform.localScale = scale;
                             child.transform.rotation = Random.rotation;
                             child.gameObject.SetActive(true);
-                            child.GetComponent<Renderer>().sharedMaterial = GetComponent<Renderer>().sharedMaterial;
+                            child.GetComponent<Renderer>().sharedMaterial = mat;
                             child.spawnLevels = spawnLevels - 1;
                         }
                     }

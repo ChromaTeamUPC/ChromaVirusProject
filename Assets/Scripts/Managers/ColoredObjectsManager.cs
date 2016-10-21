@@ -109,6 +109,9 @@ public class ColoredObjectsManager : MonoBehaviour
     private MuzzlePool[] playerMuzzlePools = new MuzzlePool[4];
     private MuzzlePool currentPlayerMuzzlePool;
 
+    private PlayerDashPool[] playerDashPools = new PlayerDashPool[4];
+    private PlayerDashPool currentPlayerDashPool;
+
     private SpiderPool spiderPool;
     private MosquitoPool mosquitoPool;
     private MosquitoWeakShotPool[] mosquitoWeakShotPools = new MosquitoWeakShotPool[4];
@@ -137,6 +140,11 @@ public class ColoredObjectsManager : MonoBehaviour
         playerMuzzlePools[1] = rsc.poolMng.playerMuzzleGreenPool;
         playerMuzzlePools[2] = rsc.poolMng.playerMuzzleBluePool;
         playerMuzzlePools[3] = rsc.poolMng.playerMuzzleYellowPool;
+
+        playerDashPools[0] = rsc.poolMng.playerDashRedPool;
+        playerDashPools[1] = rsc.poolMng.playerDashGreenPool;
+        playerDashPools[2] = rsc.poolMng.playerDashBluePool;
+        playerDashPools[3] = rsc.poolMng.playerDashYellowPool;
 
         spiderPool = rsc.poolMng.spiderPool;
         mosquitoPool = rsc.poolMng.mosquitoPool;
@@ -179,6 +187,7 @@ public class ColoredObjectsManager : MonoBehaviour
         currentPlayer1ShotPool = player1ShotPools[colorIndex];
         currentPlayer2ShotPool = player2ShotPools[colorIndex];
         currentPlayerMuzzlePool = playerMuzzlePools[colorIndex];
+        currentPlayerDashPool = playerDashPools[colorIndex];
         currentVoxelMat = voxelMats[colorIndex];
         currentSpiderMat = spiderMats[colorIndex];
         currentMosquitoMat = mosquitoMats[colorIndex];
@@ -268,6 +277,16 @@ public class ColoredObjectsManager : MonoBehaviour
     public MuzzleController GetPlayerMuzzle(ChromaColor color)
     {
         return playerMuzzlePools[(int)color].GetObject();
+    }
+
+    public PlayerDashController GetPlayerDash()
+    {
+        return currentPlayerDashPool.GetObject();
+    }
+
+    public PlayerDashController GetPlayerDash(ChromaColor color)
+    {
+        return playerDashPools[(int)color].GetObject();
     }
 
     //Spider methods

@@ -12,6 +12,7 @@ public class PlayerBlackboard
     public Animator animator; //Never reset
     public GameObject shield; //Never reset
     public InputDevice controller; //Never reset
+    public Transform dashPSRotator; //Never reset
 
     public int playerRayCastMask; //Never reset
     public int playerPhysicsLayer; //Never reset
@@ -124,6 +125,8 @@ public class PlayerBlackboard
         specialAttackDetector = player.specialDetector;
         specialAttackDetector.GetComponent<PlayerSpecialAttackDetector>().Blackboard = this;
         specialAttackDetector.GetComponent<SphereCollider>().radius = player.specialAttackAffectationRadius;
+
+        dashPSRotator = player.transform.Find("ParticleSystems/DashPSRotation");
 
         if (InputManager.Devices.Count >= player.Id)
             controller = InputManager.Devices[player.Id - 1];

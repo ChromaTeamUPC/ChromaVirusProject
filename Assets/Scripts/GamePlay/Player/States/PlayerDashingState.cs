@@ -3,16 +3,12 @@ using System.Collections;
 
 public class PlayerDashingState : PlayerBaseState
 {
-    private Vector3 dashDirection;
-    private Transform dashPSRotator;
-
     private float currentDashSpeed;
     private float currentDashTime;
 
     public override void Init(PlayerBlackboard bb)
     {
         base.Init(bb);
-        dashPSRotator = base.bb.player.transform.Find("ParticleSystems/DashPSRotation");
     }
 
     public override void OnStateEnter()
@@ -68,7 +64,7 @@ public class PlayerDashingState : PlayerBaseState
             bb.horizontalDirection = bb.player.transform.TransformDirection(Vector3.forward);
         }
 
-        dashPSRotator.rotation = Quaternion.LookRotation(bb.horizontalDirection);
+        bb.dashPSRotator.rotation = Quaternion.LookRotation(bb.horizontalDirection);
 
     }
 }

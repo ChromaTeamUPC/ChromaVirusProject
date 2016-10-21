@@ -4,6 +4,7 @@ using System;
 
 [Serializable] public class PlayerShotPool : MonoBehaviourObjectPool<PlayerShotController> { }
 [Serializable] public class PlayerSpecialAttackPool : MonoBehaviourObjectPool<SpecialAttackController> { }
+[Serializable] public class PlayerDashPool : MonoBehaviourObjectPool<PlayerDashController> { }
 [Serializable] public class MuzzlePool : MonoBehaviourObjectPool<MuzzleController> { }
 [Serializable] public class VoxelPool : MonoBehaviourObjectPool<VoxelController> { }
 [Serializable] public class EnergyVoxelPool : MonoBehaviourObjectPool<EnergyVoxelController> { }
@@ -37,6 +38,11 @@ public class PoolManager : MonoBehaviour
     public MuzzlePool playerMuzzleGreenPool = new MuzzlePool();
     public MuzzlePool playerMuzzleBluePool = new MuzzlePool();
     public MuzzlePool playerMuzzleYellowPool = new MuzzlePool();
+
+    public PlayerDashPool playerDashRedPool = new PlayerDashPool();
+    public PlayerDashPool playerDashGreenPool = new PlayerDashPool();
+    public PlayerDashPool playerDashBluePool = new PlayerDashPool();
+    public PlayerDashPool playerDashYellowPool = new PlayerDashPool();
 
     public PlayerSpecialAttackPool player1SpecialAttackPool = new PlayerSpecialAttackPool();
 
@@ -86,6 +92,11 @@ public class PoolManager : MonoBehaviour
         playerMuzzleGreenPool.Init(gameObject, poolContainerPrefab);
         playerMuzzleBluePool.Init(gameObject, poolContainerPrefab);
         playerMuzzleYellowPool.Init(gameObject, poolContainerPrefab);
+
+        playerDashRedPool.Init(gameObject, poolContainerPrefab);
+        playerDashGreenPool.Init(gameObject, poolContainerPrefab);
+        playerDashBluePool.Init(gameObject, poolContainerPrefab);
+        playerDashYellowPool.Init(gameObject, poolContainerPrefab);
 
         player1SpecialAttackPool.Init(gameObject, poolContainerPrefab);
 

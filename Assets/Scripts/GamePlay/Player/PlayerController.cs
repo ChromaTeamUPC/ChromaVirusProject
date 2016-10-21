@@ -83,8 +83,6 @@ public class PlayerController : MonoBehaviour
 
     [Header("Particle Systems")]
     [SerializeField]
-    private ParticleSystem[] dashPSs = new ParticleSystem[4];
-    [SerializeField]
     private ParticleSystem speedBumpPS;
     [SerializeField]
     private ParticleSystem electricPS;
@@ -754,7 +752,9 @@ public class PlayerController : MonoBehaviour
     public void SpawnDashParticles()
     {
         dashSoundFx.Play();
-        dashPSs[(int)bb.currentColor].Play();
+        PlayerDashController dash = rsc.coloredObjectsMng.GetPlayerDash();
+        dash.transform.position = transform.position;
+        dash.transform.rotation = bb.dashPSRotator.rotation;
     }
 
     public void EnteredUSB()
