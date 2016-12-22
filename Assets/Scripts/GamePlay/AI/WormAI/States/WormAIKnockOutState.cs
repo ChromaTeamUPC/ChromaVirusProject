@@ -91,7 +91,6 @@ public class WormAIKnockOutState : WormAIBaseState
 
                     head.animator.SetBool("Stunned", false);
                     head.animator.SetBool("MouthOpen", true);
-
                     elapsedTime = 0f;
 
                     head.SetInvulnerable();

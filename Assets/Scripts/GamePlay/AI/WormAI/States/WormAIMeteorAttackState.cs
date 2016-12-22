@@ -214,10 +214,13 @@ public class WormAIMeteorAttackState : WormAIBaseState
                     head.fireSpray.Stop();
 
                     elapsedTime = 0;
-                    if(underground)
+                    if (underground)
                         head.animator.SetBool("MouthOpen", false);
                     else
+                    {
                         head.animator.SetBool("MouthOpenTrans", false);
+                        head.animator.SetBool("Jump", true);
+                    }
                     subState = SubState.CLOSING_MOUTH;
                 }
                 break;
@@ -228,6 +231,7 @@ public class WormAIMeteorAttackState : WormAIBaseState
                 {
                     elapsedTime = 0;
                     subState = SubState.JUMPING;
+                    head.animator.SetBool("Jump", false);
                 }
                 else
                 {
@@ -261,7 +265,7 @@ public class WormAIMeteorAttackState : WormAIBaseState
 
                 if (headTrf.position.y < -WormBlackboard.NAVMESH_LAYER_HEIGHT)
                 {
-                    SetHeadUnderground();
+                    SetHeadUnderground();                    
 
                     subState = SubState.EXITING;
                 }
