@@ -13,6 +13,7 @@ public class MainMenuManager : MonoBehaviour {
         IDLE,
         SHOW_HELP,
         FADING_TO_GAME,
+        ASK_TUTORIAL,
         FADING_TO_CREDITS,
         FADING_TO_OPTIONS,
         FADING_OUT
@@ -59,6 +60,8 @@ public class MainMenuManager : MonoBehaviour {
 
     private int tutorialCurrentIndex;
     private int tutorialTotalItems;
+
+    public GameObject askTutorial;
 
     private int playersNumber = 1;
 
@@ -201,7 +204,31 @@ public class MainMenuManager : MonoBehaviour {
 
             case MainMenuState.FADING_TO_GAME:
                 if(!fadeScript.FadingToColor)
+                {                  
+                    if (rsc.tutorialMng.active)
+                    {
+                        askTutorial.SetActive(true);
+                        currentState = MainMenuState.ASK_TUTORIAL;
+                    }
+                    else
+                        rsc.gameMng.StartNewGame(playersNumber);
+                }
+                break;
+
+            case MainMenuState.ASK_TUTORIAL:
+                if ((InputManager.Devices.Count >= 1 && InputManager.Devices[0].Action1.WasPressed)
+                    || (InputManager.Devices.Count >= 2 && InputManager.Devices[1].Action1.WasPressed))
                 {
+                    rsc.audioMng.acceptFx.Play();
+                    askTutorial.SetActive(false);
+                    rsc.gameMng.StartNewGame(playersNumber);
+                }
+                else if ((InputManager.Devices.Count >= 1 && InputManager.Devices[0].Action2.WasPressed)
+                    || (InputManager.Devices.Count >= 2 && InputManager.Devices[1].Action2.WasPressed))
+                {
+                    rsc.tutorialMng.active = false;
+                    rsc.audioMng.acceptFx.Play();
+                    askTutorial.SetActive(false);
                     rsc.gameMng.StartNewGame(playersNumber);
                 }
                 break;

@@ -194,6 +194,8 @@ public class EventManager : MonoBehaviour {
         ENEMY_SPAWNED,
         ENEMY_DIED,
 
+        ENERGY_VOXEL_SPAWNED,
+
         TURRET_SPAWNED,
         TURRET_DESTROYED,
 

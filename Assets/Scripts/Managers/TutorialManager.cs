@@ -10,6 +10,7 @@ public class TutorialManager : MonoBehaviour
         CONTROLLER,
         BASICS,
         COLOR_MECHANICS,
+        COLLECT_ENERGY,
         SPECIAL_ATTACK,
         CAPACITOR,
         DEVICE,

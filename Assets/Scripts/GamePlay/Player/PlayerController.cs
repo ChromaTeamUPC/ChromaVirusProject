@@ -353,20 +353,20 @@ public class PlayerController : MonoBehaviour
 
     public void RechargeEnergy(float energy)
     {
-        if (bb.currentEnergy == maxEnergy) return;
-
-        if(!bb.specialAttackTutorialTriggered)
-        {
-            bb.specialAttackTutorialTriggered = true;
-            TutorialEventInfo.eventInfo.type = TutorialManager.Type.SPECIAL_ATTACK;
-            rsc.eventMng.TriggerEvent(EventManager.EventType.SHOW_TUTORIAL, TutorialEventInfo.eventInfo);
-        }
+        if (bb.currentEnergy == maxEnergy) return;     
 
         bb.currentEnergy += energy;
         if (bb.currentEnergy >= maxEnergy)
         {
             bb.currentEnergy = maxEnergy;
             energyFullSoundFx.Play();
+
+            if (!bb.specialAttackTutorialTriggered)
+            {
+                bb.specialAttackTutorialTriggered = true;
+                TutorialEventInfo.eventInfo.type = TutorialManager.Type.SPECIAL_ATTACK;
+                rsc.eventMng.TriggerEvent(EventManager.EventType.SHOW_TUTORIAL, TutorialEventInfo.eventInfo);
+            }
         }
 
         CheckEnergyFullPS();

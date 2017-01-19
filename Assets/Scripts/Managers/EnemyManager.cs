@@ -152,6 +152,8 @@ public class EnemyManager : MonoBehaviour
         rsc.eventMng.StartListening(EventManager.EventType.ENEMY_SPAWNED, EnemySpawned);
         rsc.eventMng.StartListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
 
+        rsc.eventMng.StartListening(EventManager.EventType.ENERGY_VOXEL_SPAWNED, EnergyVoxelSpawned);
+
         rsc.eventMng.StartListening(EventManager.EventType.TURRET_SPAWNED, TurretSpawned);
         rsc.eventMng.StartListening(EventManager.EventType.TURRET_DESTROYED, TurretDestroyed);
 
@@ -179,6 +181,8 @@ public class EnemyManager : MonoBehaviour
         {
             rsc.eventMng.StopListening(EventManager.EventType.ENEMY_SPAWNED, EnemySpawned);
             rsc.eventMng.StopListening(EventManager.EventType.ENEMY_DIED, EnemyDied);
+
+            rsc.eventMng.StopListening(EventManager.EventType.ENERGY_VOXEL_SPAWNED, EnergyVoxelSpawned);
 
             rsc.eventMng.StopListening(EventManager.EventType.TURRET_SPAWNED, TurretSpawned);
             rsc.eventMng.StopListening(EventManager.EventType.TURRET_DESTROYED, TurretDestroyed);
@@ -225,6 +229,16 @@ public class EnemyManager : MonoBehaviour
         bb.zoneCurrentInfectionLevel -= info.infectionValue;
 
         //Debug.Log("Enemies-- = " + bb.activeEnemies);
+    }
+
+    private void EnergyVoxelSpawned(EventInfo eventInfo)
+    {
+        if (!bb.collectEnergyTutorialTriggered)
+        {
+            bb.collectEnergyTutorialTriggered = true;
+            TutorialEventInfo.eventInfo.type = TutorialManager.Type.COLLECT_ENERGY;
+            rsc.eventMng.TriggerEvent(EventManager.EventType.SHOW_TUTORIAL, TutorialEventInfo.eventInfo);
+        }
     }
 
     private void TurretSpawned(EventInfo eventInfo)

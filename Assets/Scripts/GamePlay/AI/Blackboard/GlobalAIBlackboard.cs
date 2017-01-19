@@ -9,6 +9,7 @@ public class GlobalAIBlackboard
     public int zoneTotalInfectionLevel;
     public int zoneCurrentInfectionLevel;
 
+    public bool collectEnergyTutorialTriggered;
     public int activeEnemies;
     //public int activeSpiders;
     public int activeVortex;
@@ -36,6 +37,7 @@ public class GlobalAIBlackboard
         enemyMng = eMng;
 
         ResetValues();
+        collectEnergyTutorialTriggered = false;
     }
 
     public void ResetValues()

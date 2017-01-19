@@ -224,6 +224,8 @@ public class SpiderAIBehaviour : EnemyBaseAIBehaviour
                     voxel.transform.rotation = Random.rotation;
                 }
             }
+
+            rsc.eventMng.TriggerEvent(EventManager.EventType.ENERGY_VOXEL_SPAWNED, EventInfo.emptyInfo);
         }
         else
         {
