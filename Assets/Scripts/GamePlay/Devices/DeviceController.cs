@@ -112,12 +112,12 @@ public class DeviceController : MonoBehaviour
     {
         if (!active) return;
 
-        if(!tutorialTriggered)
+        /*if(!tutorialTriggered)
         {
             tutorialTriggered = true;
             TutorialEventInfo.eventInfo.type = TutorialManager.Type.DEVICE;
             rsc.eventMng.TriggerEvent(EventManager.EventType.SHOW_TUTORIAL, TutorialEventInfo.eventInfo);
-        }
+        }*/
 
         if (currentInfection < 100f)
         {

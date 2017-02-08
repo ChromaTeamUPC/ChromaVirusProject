@@ -233,12 +233,12 @@ public class EnemyManager : MonoBehaviour
 
     private void EnergyVoxelSpawned(EventInfo eventInfo)
     {
-        if (!bb.collectEnergyTutorialTriggered)
+        /*if (!bb.collectEnergyTutorialTriggered)
         {
             bb.collectEnergyTutorialTriggered = true;
             TutorialEventInfo.eventInfo.type = TutorialManager.Type.COLLECT_ENERGY;
             rsc.eventMng.TriggerEvent(EventManager.EventType.SHOW_TUTORIAL, TutorialEventInfo.eventInfo);
-        }
+        }*/
     }
 
     private void TurretSpawned(EventInfo eventInfo)

@@ -60,13 +60,20 @@ public class NewIntroController : MonoBehaviour
     public GameObject alertTriangle;
     public GameObject exclamationMark;
 
-
-
     public AudioSource alarmSoundFx;
     public AudioSource wireframeToSolidSoundFx;
 
     public GameObject skipHint;
     public FadeSceneScript fadeScript;
+
+    public Material backgroundMat;
+    public Image background;
+    public Image leftTriangles;
+    public Image rightTriangles;
+    public Color backgroundInitialTint;
+    public Color backgroundInfectedTint;
+    public Color trianglesInitialTint;
+    public Color trianglesInfectedTint;
 
     //KDT
     [Header("KDT Objects")]
@@ -123,6 +130,11 @@ public class NewIntroController : MonoBehaviour
         rsc.gameMng.StartLoadingNextScene(GameManager.Level.LEVEL_01);
 
         alertArea.SetActive(false);
+
+        //backgroundMat.color = backgroundInitialTint;
+        background.color = backgroundInitialTint;
+        leftTriangles.color = trianglesInitialTint;
+        rightTriangles.color = trianglesInitialTint;
 
         Material[] mats = kdtRenderer.sharedMaterials;
         mats[0] = wireBase;
@@ -238,6 +250,11 @@ public class NewIntroController : MonoBehaviour
 
                     rsc.audioMng.FadeOutExternalMusic(alarmSoundFx, 1f);
 
+                    //backgroundMat.color = backgroundInfectedTint;
+                    background.color = backgroundInfectedTint;
+                    leftTriangles.color = trianglesInfectedTint;
+                    rightTriangles.color = trianglesInfectedTint;
+
                     //Set kdt
                     /*wireBase.SetFloat("_Thickness", 0f);
                     wireColor.SetFloat("_Thickness", 0f);
@@ -263,6 +280,13 @@ public class NewIntroController : MonoBehaviour
                 }
                 else
                 {
+                    float factor = elapsedTime / virusDetectedDuration;
+
+                    //backgroundMat.color = Color.Lerp(backgroundInitialTint, backgroundInfectedTint, factor);
+                    background.color = Color.Lerp(backgroundInitialTint, backgroundInfectedTint, factor);
+                    leftTriangles.color = Color.Lerp(trianglesInitialTint, trianglesInfectedTint, factor);
+                    rightTriangles.color = Color.Lerp(trianglesInitialTint, trianglesInfectedTint, factor);
+
                     elapsedTime += Time.deltaTime;
                 }
                 break;

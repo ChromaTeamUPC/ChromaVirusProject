@@ -1,0 +1,147 @@
+fileFormatVersion: 2
+guid: 43e90dce49ff36449bff877ee532e8bd
+timeCreated: 1467031890
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Auriculars
+    100002: "Bra\xE7Dreta"
+    100004: "Bra\xE7Esquerra"
+    100006: CamaDreta
+    100008: CamaEsquerra
+    100010: Cap
+    100012: ColseDreta
+    100014: ColseEsquerra
+    100016: Cos
+    100018: DitGordo2Dreta
+    100020: DitGordo2Esquerra
+    100022: DitGordo3Dreta
+    100024: DitGordo3Esquerra
+    100026: DitGordo4Dreta
+    100028: DitGordo4Esquerra
+    100030: DitGordoDreta
+    100032: DitGordoEsquerra
+    100034: Dits2Dreta
+    100036: Dits2Esquerra
+    100038: Dits3Dreta
+    100040: Dits3Esquerra
+    100042: DitsDreta
+    100044: DitsEsquerra
+    100046: GenollDreta
+    100048: GenollEsquerra
+    100050: ikHandle2
+    100052: ikHandle4
+    100054: KDT
+    100056: //RootNode
+    100058: MaDreta
+    100060: MaEsquerra
+    100062: Pantxa
+    100064: Pelvis
+    100066: PeuDreta
+    100068: PeuEsquerra
+    100070: Pit
+    400000: Auriculars
+    400002: "Bra\xE7Dreta"
+    400004: "Bra\xE7Esquerra"
+    400006: CamaDreta
+    400008: CamaEsquerra
+    400010: Cap
+    400012: ColseDreta
+    400014: ColseEsquerra
+    400016: Cos
+    400018: DitGordo2Dreta
+    400020: DitGordo2Esquerra
+    400022: DitGordo3Dreta
+    400024: DitGordo3Esquerra
+    400026: DitGordo4Dreta
+    400028: DitGordo4Esquerra
+    400030: DitGordoDreta
+    400032: DitGordoEsquerra
+    400034: Dits2Dreta
+    400036: Dits2Esquerra
+    400038: Dits3Dreta
+    400040: Dits3Esquerra
+    400042: DitsDreta
+    400044: DitsEsquerra
+    400046: GenollDreta
+    400048: GenollEsquerra
+    400050: ikHandle2
+    400052: ikHandle4
+    400054: KDT
+    400056: //RootNode
+    400058: MaDreta
+    400060: MaEsquerra
+    400062: Pantxa
+    400064: Pelvis
+    400066: PeuDreta
+    400068: PeuEsquerra
+    400070: Pit
+    4300000: KDT
+    7400000: Walking
+    9500000: //RootNode
+    13700000: KDT
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
