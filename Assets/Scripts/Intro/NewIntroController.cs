@@ -129,7 +129,11 @@ public class NewIntroController : MonoBehaviour
 
         rsc.gameMng.StartLoadingNextScene(GameManager.Level.LEVEL_01);
 
-        alertArea.SetActive(false);
+        alertArea.SetActive(true);
+        alertTriangle.SetActive(false);
+        exclamationMark.SetActive(false);
+
+        rotateCircle = StartCoroutine(RotateCircles());
 
         //backgroundMat.color = backgroundInitialTint;
         background.color = backgroundInitialTint;
@@ -226,11 +230,13 @@ public class NewIntroController : MonoBehaviour
                     elapsedTime += Time.deltaTime;
                 }
                 else
-                {                  
-                    alertArea.SetActive(true);
+                {
+                    //alertArea.SetActive(true);
+                    alertTriangle.SetActive(true);
+                    exclamationMark.SetActive(true);
 
                     blinkExclamation = StartCoroutine(BlinkExclamationMark());
-                    rotateCircle = StartCoroutine(RotateCircles());
+                    //rotateCircle = StartCoroutine(RotateCircles());
 
                     alarmSoundFx.Play();
 
