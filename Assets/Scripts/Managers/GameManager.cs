@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour {
         Time.timeScale = 1f;
         AudioListener.pause = false;
         if (disableTutorial)
-            rsc.tutorialMng.active = false;
+            rsc.tutorialMng.Active = false;
         rsc.eventMng.TriggerEvent(EventManager.EventType.HIDE_TUTORIAL, EventInfo.emptyInfo);
     }
 

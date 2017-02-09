@@ -45,7 +45,7 @@ public class ResourceAssurer : MonoBehaviour {
             rsc.debugMng.alwaysKillOk = alwaysKillOk;
             rsc.debugMng.showPlayerLimits = showPlayerLimits;
             rsc.rumbleMng.active = vibration;
-            rsc.tutorialMng.active = tutorial;
+            rsc.tutorialMng.Active = tutorial;
             rsc.audioMng.audioMixer.SetFloat("MusicVolume", musicVol);
             rsc.audioMng.audioMixer.SetFloat("FxVolume", fxVol);
             rsc.gameMng.InitPlayers(numberOfPlayers);

@@ -22,7 +22,7 @@ public class TutorialManager : MonoBehaviour
     private bool[] shown;
 
     [HideInInspector]
-    public bool active;
+    private bool active;
 
     void Awake()
     {
@@ -31,6 +31,35 @@ public class TutorialManager : MonoBehaviour
             shown[i] = false;
 
         active = true;
+
+        rsc.eventMng.StartListening(EventManager.EventType.GAME_RESET, GameReset);
+    }
+
+    void OnDestroy()
+    {
+        if (rsc.eventMng != null)
+        {
+            rsc.eventMng.StopListening(EventManager.EventType.GAME_RESET, GameReset);
+        }
+    }
+
+    void GameReset(EventInfo eventInfo)
+    {
+        for (int i = 0; i < shown.Length; ++i)
+            shown[i] = false;
+    }
+
+    public bool Active
+    {
+        get { return active; }
+
+        set
+        {
+            active = value;
+            if (active)
+                for (int i = 0; i < shown.Length; ++i)
+                    shown[i] = false;
+        }
     }
 
     public int GetTotalImages()

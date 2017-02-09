@@ -205,7 +205,7 @@ public class MainMenuManager : MonoBehaviour {
             case MainMenuState.FADING_TO_GAME:
                 if(!fadeScript.FadingToColor)
                 {                  
-                    if (rsc.tutorialMng.active)
+                    if (rsc.tutorialMng.Active)
                     {
                         askTutorial.SetActive(true);
                         currentState = MainMenuState.ASK_TUTORIAL;
@@ -226,7 +226,7 @@ public class MainMenuManager : MonoBehaviour {
                 else if ((InputManager.Devices.Count >= 1 && InputManager.Devices[0].Action2.WasPressed)
                     || (InputManager.Devices.Count >= 2 && InputManager.Devices[1].Action2.WasPressed))
                 {
-                    rsc.tutorialMng.active = false;
+                    rsc.tutorialMng.Active = false;
                     rsc.audioMng.acceptFx.Play();
                     askTutorial.SetActive(false);
                     rsc.gameMng.StartNewGame(playersNumber);

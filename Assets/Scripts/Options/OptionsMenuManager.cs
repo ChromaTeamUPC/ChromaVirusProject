@@ -83,7 +83,7 @@ public class OptionsMenuManager : MonoBehaviour
 
         vibrationSlider.value = (rsc.rumbleMng.active? 1 : 0);
         motionBlurSlider.value = (rsc.gameMng.motionBlur ? 1 : 0);
-        tutorialSlider.value = (rsc.tutorialMng.active ? 1 : 0);
+        tutorialSlider.value = (rsc.tutorialMng.Active ? 1 : 0);
         colorBarSlider.value = (rsc.gameMng.colorBar ? 1 : 0);
     }
 
@@ -91,7 +91,7 @@ public class OptionsMenuManager : MonoBehaviour
     {
         rsc.rumbleMng.active = (vibrationSlider.value == 1 ? true : false);
         rsc.gameMng.motionBlur = (motionBlurSlider.value == 1 ? true : false);
-        rsc.tutorialMng.active = (tutorialSlider.value == 1 ? true : false);
+        rsc.tutorialMng.Active = (tutorialSlider.value == 1 ? true : false);
         rsc.gameMng.colorBar = (colorBarSlider.value == 1 ? true : false);
     }
 
