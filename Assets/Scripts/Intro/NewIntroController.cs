@@ -27,6 +27,7 @@ public class NewIntroController : MonoBehaviour
 
     public float virusDetectedDuration = 4f;
     public float exclamationMarkBlinkInterval = 0.2f;
+    public float exclamationMarkFadeTime = 2f;
     public float alertCirclesDPS = 45f;
 
     public float startingKDT1Until = 40f;
@@ -252,7 +253,8 @@ public class NewIntroController : MonoBehaviour
                 {
                     StopCoroutine(blinkExclamation);
                     StopCoroutine(rotateCircle);
-                    alertArea.SetActive(false);
+                    StartCoroutine(FadeAlertArea());
+                    //alertArea.SetActive(false);
 
                     rsc.audioMng.FadeOutExternalMusic(alarmSoundFx, 1f);
 
@@ -530,5 +532,37 @@ public class NewIntroController : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    private IEnumerator FadeAlertArea()
+    {
+        float elapsedTime = 0f;
+        float factor = 0f;
+        Image alert1 = alertCircle1.GetComponent<Image>();
+        Image alert2 = alertCircle2.GetComponent<Image>();
+        Image hexagon = alertTriangle.GetComponent<Image>();
+        Image exclamation = exclamationMark.GetComponent<Image>();
+        Color color;
+
+        while (elapsedTime < exclamationMarkFadeTime)
+        {
+            factor = elapsedTime / exclamationMarkFadeTime;
+            color = Color.Lerp(Color.white, Color.clear, factor);
+            alert1.color = color;
+            alert2.color = color;
+            hexagon.color = color;
+            exclamation.color = color; 
+
+            yield return null;
+
+            elapsedTime += Time.deltaTime;
+        }
+
+        alertArea.SetActive(false);
+        color = Color.white; //Reset
+        alert1.color = color;
+        alert2.color = color;
+        hexagon.color = color;
+        exclamation.color = color;
     }
 }

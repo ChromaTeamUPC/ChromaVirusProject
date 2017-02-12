@@ -13,6 +13,7 @@ public class VortexController : MonoBehaviour
 
     public int maxEnemiesInScene = 10;
 
+    public Transform modelAndFx;
     public Transform spawnPoint;
     public ParticleSystem particleSys;
 
@@ -24,6 +25,16 @@ public class VortexController : MonoBehaviour
     private float elapsedTime;
 
     public float blinkSeconds = 0.1f;
+
+    public bool translateVert = true;
+    public float translateVertMinDisplacement = 0.5f;
+    public float translateVertMaxDisplacement = 1.5f;
+    public float translateVertFullCycleMinTime = 7f;
+    public float translateVertFullCycleMaxTime = 10f;
+    private float transVertHalfDisplacement;
+    private float translateVertFullCycleTime;
+    private float transVertOriginalY;
+    private float translateElapsedTime;
 
     private PlayerController killerPlayer;
 
@@ -64,6 +75,12 @@ public class VortexController : MonoBehaviour
         currentHealth = maxHealth;
         spawnDelay = 0.01f;
         elapsedTime = 0f;
+
+        transVertHalfDisplacement = Random.Range(translateVertMinDisplacement, translateVertMaxDisplacement) / 2;
+        translateVertFullCycleTime = Random.Range(translateVertFullCycleMinTime, translateVertFullCycleMaxTime);
+        transVertOriginalY = modelAndFx.position.y;
+        translateElapsedTime = 0f;
+
         rsc.eventMng.TriggerEvent(EventManager.EventType.VORTEX_ACTIVATED, EventInfo.emptyInfo);
     }
 
@@ -118,10 +135,11 @@ public class VortexController : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-	    if(active && !zoneWavesFinished)
+	    if(active)
         {
             elapsedTime += Time.deltaTime;
-            if (elapsedTime > spawnDelay && rsc.enemyMng.bb.activeEnemies < maxEnemiesInScene)
+
+            if (elapsedTime > spawnDelay && rsc.enemyMng.bb.activeEnemies < maxEnemiesInScene && !zoneWavesFinished)
             {
                 elapsedTime = 0f;
 
@@ -135,6 +153,15 @@ public class VortexController : MonoBehaviour
                 }
 
                 spawnDelay = Random.Range(spawnMinDelay, spawnMaxDelay);
+            }
+
+            if (translateVert)
+            {
+                translateElapsedTime += Time.deltaTime;
+
+                float factor = Mathf.Sin(translateElapsedTime / translateVertFullCycleTime * Mathf.PI * 2);
+                float newRtVertPos = transVertOriginalY + (transVertHalfDisplacement * factor);
+                modelAndFx.position = new Vector3(modelAndFx.position.x, newRtVertPos, modelAndFx.position.z);
             }
         }
 	}
