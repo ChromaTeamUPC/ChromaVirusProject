@@ -4,6 +4,7 @@ using System.Collections;
 public class BridgeController : MonoBehaviour
 {
     public GameObject model;
+    public Material modelMat;
 
     public GameObject[] fragments;
     private BridgeFragmentController[] fragmentControllers;
@@ -25,6 +26,7 @@ public class BridgeController : MonoBehaviour
     {
         if (!active)
         {
+            modelMat.mainTextureOffset = new Vector2(0.0f, 0.0f);
             active = true;
             StartCoroutine(EnterFragments());
         } 
