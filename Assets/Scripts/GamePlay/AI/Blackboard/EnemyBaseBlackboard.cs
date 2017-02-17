@@ -6,7 +6,7 @@ public class EnemyBaseBlackboard
     //Non reseteable values
     public GameObject entityGO;
     public EnemyBaseAIBehaviour entity;
-    public NavMeshAgent agent;
+    public UnityEngine.AI.NavMeshAgent agent;
     public Animator animator;
 
     //Reseteable values
@@ -39,7 +39,7 @@ public class EnemyBaseBlackboard
     {     
         entityGO = e;
         entity = entityGO.GetComponent<EnemyBaseAIBehaviour>();
-        agent = entityGO.GetComponent<NavMeshAgent>();
+        agent = entityGO.GetComponent<UnityEngine.AI.NavMeshAgent>();
         animator = entityGO.GetComponent<Animator>();
 
         ResetValues();

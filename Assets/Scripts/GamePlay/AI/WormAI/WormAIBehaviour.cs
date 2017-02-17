@@ -53,7 +53,7 @@ public class WormAIBehaviour : MonoBehaviour
     private WormAIBaseState currentState;
 
     [HideInInspector]
-    public NavMeshAgent agent;
+    public UnityEngine.AI.NavMeshAgent agent;
     public Animator animator;
     [HideInInspector]
     public AudioSource audioSource;
@@ -93,7 +93,7 @@ public class WormAIBehaviour : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();
+        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         audioSource = GetComponent<AudioSource>();
         blinkController = GetComponent<BlinkController>();
         rend = GetComponentInChildren<Renderer>();
