@@ -243,7 +243,7 @@ public class NewIntroController : MonoBehaviour
 
                     elapsedTime = 0f;
 
-                    loadingStr = "CHROMAvIRUS DETECTED";
+                    loadingStr = "CHROMAVIRUS DETECTED";
                     state = State.VIRUS_DETECTED;
                 }
                 break;
@@ -390,7 +390,7 @@ public class NewIntroController : MonoBehaviour
 
                     elapsedTime = 0f;
 
-                    loadingStr = "ACTIvATING COLOR SYSTEM";
+                    loadingStr = "ACTIVATING COLOR SYSTEM";
                     state = State.ACTIVATING_COLOR;
                 }
                 break;
