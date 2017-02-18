@@ -27,7 +27,6 @@ public class MainMenuButtonController : MonoBehaviour, ISelectHandler, IDeselect
 
         firstTime = false;
 
-        //transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
         elapsedTime = 0f;
         StartCoroutine(Scale());
     }

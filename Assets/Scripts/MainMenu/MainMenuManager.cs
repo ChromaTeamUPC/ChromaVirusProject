@@ -42,6 +42,7 @@ public class MainMenuManager : MonoBehaviour {
     public Sprite player2DisabledSprite;
 
     public Button helpBtn;
+    private MainMenuButtonController helpBtnController;
     public Button optionsBtn;
     public Button creditsBtn;
     public Button exitBtn;
@@ -79,6 +80,7 @@ public class MainMenuManager : MonoBehaviour {
         }
 
         playBtnController = playBtn.GetComponent<MainMenuButtonController>();
+        helpBtnController = helpBtn.GetComponent<MainMenuButtonController>();
     }
 
     void Start()
@@ -198,7 +200,7 @@ public class MainMenuManager : MonoBehaviour {
                     rsc.audioMng.backFx.Play();
                     help.SetActive(false);
                     playBtnController.SetFirstTime();
-                    EnableMainButtons();
+                    EnableMainButtons(helpBtn);
                 }
                 break;
 
@@ -284,7 +286,7 @@ public class MainMenuManager : MonoBehaviour {
         }
     }
 
-    private void EnableMainButtons()
+    private void EnableMainButtons(Button selectedButton = null)
     {
         SetPlayButtonImages();
 
@@ -294,7 +296,11 @@ public class MainMenuManager : MonoBehaviour {
         optionsBtn.interactable = true;
         creditsBtn.interactable = true;
         exitBtn.interactable = true;
-        playBtn.Select();
+
+        if (selectedButton != null)
+            selectedButton.Select();
+        else
+            playBtn.Select();
     }
 
     private void DisableMainButtons()
@@ -332,7 +338,7 @@ public class MainMenuManager : MonoBehaviour {
     }
 
     public void OnClickHelp()
-    {
+    {      
         DisableMainButtons();
         tutorialCurrentIndex = 0;
         SetHelpImage();

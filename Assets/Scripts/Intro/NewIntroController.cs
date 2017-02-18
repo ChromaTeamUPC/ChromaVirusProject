@@ -243,7 +243,7 @@ public class NewIntroController : MonoBehaviour
 
                     elapsedTime = 0f;
 
-                    loadingStr = "CHROMAVIRUS DETECTED";
+                    loadingStr = "CHROMAvIRUS DETECTED";
                     state = State.VIRUS_DETECTED;
                 }
                 break;
