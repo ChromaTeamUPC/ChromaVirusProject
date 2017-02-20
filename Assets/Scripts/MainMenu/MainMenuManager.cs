@@ -63,6 +63,7 @@ public class MainMenuManager : MonoBehaviour {
     private int tutorialTotalItems;
 
     public GameObject askTutorial;
+    public GameObject noController;
 
     private int playersNumber = 1;
 
@@ -134,12 +135,14 @@ public class MainMenuManager : MonoBehaviour {
     {
         Debug.Log("Added controller: " + obj.Name);
         SetPlayButtonImages();
+        CheckConnectedControllers();
     }
     private void OnDeviceDetached(InputDevice obj)
     {
         Debug.Log("Removed controller: " + obj.Name);
         playBtn.Select();
         SetPlayButtonImages();
+        CheckConnectedControllers();
     }
 
     // Update is called once per frame
@@ -166,12 +169,18 @@ public class MainMenuManager : MonoBehaviour {
             }
         }
 
+        if (InputManager.Devices.Count == 0 && Input.GetKey(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
         switch (currentState)
         {
             case MainMenuState.FADING_IN:
                 if (!fadeScript.FadingToClear)
                 {
                     EnableMainButtons();
+                    CheckConnectedControllers();
                     currentState = MainMenuState.IDLE;
                 }
                 break;
@@ -283,6 +292,20 @@ public class MainMenuManager : MonoBehaviour {
         {
             player2Btn.GetComponent<Image>().sprite = player2IdleSprite;
             player2Btn.enabled = true;
+        }
+    }
+
+    private void CheckConnectedControllers()
+    {
+        if (InputManager.Devices.Count == 0)
+        {
+            //DisableMainButtons();
+            noController.SetActive(true);
+        }
+        else
+        {
+            //EnableMainButtons();
+            noController.SetActive(false);
         }
     }
 
