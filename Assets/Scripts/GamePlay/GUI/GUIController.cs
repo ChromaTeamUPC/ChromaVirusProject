@@ -26,6 +26,7 @@ public class GUIController : MonoBehaviour
     public GameObject scoreGO;
     public GameObject scoreContinueHintGO;
     public GameObject scoreSingleGO;
+    public GameObject scoreMultiGO;
     public Sprite[] player1ScoreImages = new Sprite[4];
     public Sprite[] player2ScoreImages = new Sprite[4];
     public Sprite[] gradeScoreImages = new Sprite[4];
@@ -35,7 +36,6 @@ public class GUIController : MonoBehaviour
     public Text scoreSingleTotal;
     public Image scoreSinglePlayerImg;
     public Image scoreSingleGradeImg;
-    public GameObject scoreMultiGO;
     public Text scoreMultiChainP1;
     public Text scoreMultiAccuracyP1;
     public Text scoreMultiTotalP1;
