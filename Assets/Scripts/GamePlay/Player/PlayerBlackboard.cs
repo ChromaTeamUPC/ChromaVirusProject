@@ -190,6 +190,9 @@ public class PlayerBlackboard
     //This variables have to be reset every game
     public void ResetGameVariables()
     {
+        if (InputManager.Devices.Count >= player.Id)
+            controller = InputManager.Devices[player.Id - 1];
+
         active = false;
         alive = false;
         playing = false;
